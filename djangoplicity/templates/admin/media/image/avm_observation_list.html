@@ -1,0 +1,49 @@
+{% extends "admin/media/image/avm_review.html" %}
+
+{% block result_list %}
+{% if objects %}
+<table cellspacing="0" id="result_list">
+<thead>
+<tr>
+<th>ID</th>
+<th>Thumbnail</th>
+<th>Spectral.Notes</th>
+<th>Facility</th>
+<th>Instrument</th>
+<th>Spectral.ColorAssignment</th>
+<th>Spectral.Band</th>
+<th>Spectral.Bandpass</th>
+<th>Spectral.CentralWavelength</th>
+<th>Temporal.StartTime</th>
+<th>Temporal.IntegrationTime</th>
+<th>DatesetID</th>
+</tr>
+</thead>
+<tbody>
+{% for object in objects %}
+<!-- {% cycle 'row1' 'row2' as rowcolors %} -->
+{% with object.imageexposure_set.all as exposures %}
+{% for e in exposures %}
+<tr class="{{ rowcolors }}">
+{% if forloop.first %}
+<td rowspan="{{exposures|length}}"><a href="{% url 'admin_site:media_image_change' object.pk %}">{{ object.id }}</a></td>
+<td rowspan="{{exposures|length}}">{% if object.resource_thumbs %}<img src="{{object.resource_thumbs.url}}" />{{ object.id }}{%else%}N/A{% endif %}</td>
+<td rowspan="{{exposures|length}}">{{ object.spectral_notes }}</td>
+{% endif %}
+<td align="center">{{ e.facility }}</td>
+<td>{{ e.instrument }}</td>
+<td>{{ e.spectral_color_assignment|default:"" }}</td>
+<td>{{ e.spectral_band }}</td>
+<td>{{ e.spectral_bandpass }}</td>
+<td>{{ e.spectral_central_wavelength }}</td>
+<td>{{ e.temporal_starttime }}</td>
+<td>{{ e.temporal_integrationtime }}</td>
+<td>{{ e.dataset_id }}</td>
+</tr>
+{% endfor %}
+{% endwith%}
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+{% endblock %}

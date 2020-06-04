@@ -1,0 +1,30 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../">{% trans "Home" %}</a> &rsaquo;
+     <a href="">{% trans "Cache Administration" %}</a>
+</div>
+{% endif %}{% endblock %}
+
+
+{% block coltype %}colMS{% endblock %}
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block content %}
+        <div class="module">
+        <table width="100%">
+            <caption><a href="#" class="section">Cache</a></caption>
+            <tbody><tr>
+                <th scope="row" width="100%"><a href="stats/">Memcached statistics</a></th>
+            </tr>
+        
+            <tr>
+                <th scope="row"><a href="clear/">Clear cache</a></th>
+            </tr>
+        
+        </tbody></table>
+        </div>
+</div>
+{% endblock %}

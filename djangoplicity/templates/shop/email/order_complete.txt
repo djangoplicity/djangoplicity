@@ -1,0 +1,67 @@
+{% load djangoplicity_satchmo %}{% load i18n satchmo_currency satchmo_discounts normalize_decimal %}{% with order.contact.first_name as first_name %}{% with order.contact.last_name as last_name %}{% blocktrans %}Dear {{ first_name }} {{ last_name }},{% endblocktrans %}{% endwith %}{% endwith %}
+
+{% blocktrans %}Thank you for ordering with {{ shop_name }}.{% endblocktrans %}
+
+Your order {{ order|order_variable:"ORDER_ID" }}{% if order.discount_code %} (with discount code {{order.discount_code}}){% endif %} is summarized below:
+
+{% trans "Items Ordered" %}
+--------------
+{% for item in order.orderitem_set.all %}{{ item }} - {{item.unit_price|currency}} x {{item.quantity|normalize_decimal}} = {{item.sub_total|currency}}
+{% endfor %}
+{% trans "Contact Information" %}
+-------------------
+{{ order.contact.full_name }}
+{{ order.contact.email }}
+{{ order.contact.primary_phone.phone }}
+
+{% trans "Billing Information" %}
+-------------------
+{{ order.bill_addressee }}
+{{ order.full_bill_street }}
+{{ order.bill_postal_code }} {{ order.bill_city }}
+{% if order.bill_state %}{{ order.bill_state }}
+{% endif %}{{ order.bill_country|isocode2country }}
+
+{% if order.is_shippable %}{% trans "Shipping Address" %}
+----------------
+{{ order.ship_addressee }}
+{{ order.full_ship_street }}
+{{ order.ship_postal_code }} {{ order.ship_city }}
+{% if order.ship_state %}{{ order.ship_state }}
+{% endif %}{{ order.ship_country|isocode2country }}{% endif %}
+{% if order.shipping_method %}
+{% trans "Shipping Method" %}
+---------------
+{{ order.shipping_description }}
+{{ order.shipping_method }}
+{{ order.shipping_sub_total|currency }}
+
+{% trans "Warning: If your order contains posters, please note we send these as a separate parcel." %}
+
+{% endif %}
+{% trans "Total" %}
+-----
+{% if order.discount %}{% trans "Discount" %} - {{order.discount|currency}}
+{% endif %}{% if order.is_shippable %}{% trans "Shipping" %} + {{order.shipping_sub_total|currency}}
+{% endif %}{% if order.tax %}{% trans "Tax" %} + {{order.tax|currency}}
+{% endif %}{% trans "Total" %} = {{order.total|currency}}
+{% if order.total != 0%}
+{% trans "Payment" %}
+-------
+{% with order.total|currency as order_total %}{% blocktrans %}Your card will be charged {{ order_total }}.{% endblocktrans %}{% endwith %}{% endif %}
+{% if order.has_downloads %}
+{% trans "Your order contains products that can be downloaded" %}
+{% trans "Please click the link to begin the download" %}
+{% for download in order.downloadlink_set.all %}
+{{ download.product_name }} - {{download.get_full_url}}
+{% endfor %}
+{% endif %}
+
+Yours sincerely,
+
+{{shop.store_description}}
+{{shop.street1}}
+{{shop.postal_code}} {{shop.city}}
+{{shop.country}}{% if shop.store_email %}
+E-mail: {{ shop.store_email }}{%endif%}{%if shop.phone %}
+Tel: {{shop.phone}} {% endif%}

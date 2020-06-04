@@ -1,0 +1,31 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../">{% trans "Cache Administration" %}</a> &rsaquo;
+     {% trans "Memcached statistics" %}
+</div>
+{% endif %}{% endblock %}
+
+
+{% block coltype %}colMS{% endblock %}
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block content %}
+{% if has_memcache %}
+<table>
+{% for row in stats %}
+<tr>
+{% for cell in row %}
+<td>{{ cell }}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<strong>Error:</strong> {{error_message}} 
+{% endif %}
+
+{% endblock %}

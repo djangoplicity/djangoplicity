@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% load pages %}
+
+{% block site_title %}{{object.title}} | {{block.super}}{% endblock %}
+
+{% load menus %}
+{% block breadcrumb %}{{ block.super}}{% breadcrumb_append object.title object.get_absolute_url %}{% endblock %}
+
+{% block content %}
+{% endblock %}

@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" style="overflow: hidden">
+    <head>
+    <link href="/css2007/layout_eso_2007.css" rel="stylesheet" type="text/css"/>
+    <link href="{{ MEDIA_URL}}css/mediaarchive.css" rel="stylesheet" type="text/css" />
+    <link href="{{ MEDIA_URL}}css/fb_iframe.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body style="overflow:hidden">
+    <div class="facebook_iframe">
+        <div class="header">
+        {% block header %}
+            <div class="top">
+                <div class="topl">ESO - Reaching New Heights in Astronomy</div>
+                <div class="but topr"><a href="http://www.facebook.com/ESOAstronomy?sk=wall" target="_parent">Wall</a></div>
+                <div class="cl"></div>
+            </div>
+            <a href="https://www.eso.org/public/images/archive/top100/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/tab-top100.png"></img></a>
+
+            <div class="top">
+                <div class="topl">&nbsp;</div>
+                <div class="topr">Follow us on:
+                <a href="http://twitter.com/ESO_Observatory"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/twitter-ico.png"></img></a>
+                <a href="http://www.youtube.com/ESOObservatory/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/youtube-ico.png"></img></a>
+                <a href="http://www.vimeo.com/esoastronomy"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/vimeo-ico.png"></img></a>
+                <a href="http://www.flickr.com/photos/esoastronomy/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/flickr-ico.png"></img></a>
+                <a href="https://podcasts.apple.com/us/podcast/esocast-hd/id295471183"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/itunes-ico.png"></img></a>
+
+                </div>
+                <div class="cl"></div>
+            </div>
+        {% endblock %}
+        </div>
+        <div class="content">
+        {% block body %}
+
+        {% endblock %}
+        </div>
+        {% block footer %}
+            <img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/ipad.png"></img>
+            <div class="cl"></div>
+        {%endblock%}
+    </div>
+
+
+    <div id="fb-root"></div>
+    <script src="https://connect.facebook.net/en_US/all.js"></script>
+
+    <script>
+      FB.init({
+        appId  : '{{DJANGOPLICITY.FACEBOOK_APP_ID}}',
+        status : true, // check login status
+        cookie : true, // enable cookies to allow the server to access the session
+        xfbml  : true  // parse XFBML
+      });
+     window.fbAsyncInit = function() {
+          FB.Canvas.setSize({height:2200});
+        };
+
+    var t=setTimeout("FB.Canvas.setSize();",3000);
+
+    window.onload = function () {
+          var anchors = document.getElementsByTagName('a');
+          for (var i=0; i<anchors.length; i++){
+            if (anchors[i].target != '_parent') {
+                anchors[i].setAttribute('target', '_blank');
+            }
+          }
+        window.fbAsyncInit = function() {
+
+        };
+
+    }
+
+    </script>
+        </body>
+</html>

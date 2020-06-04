@@ -1,0 +1,39 @@
+/*  
+ * Some extra width on the many to many selector.
+ */
+
+.selector {
+    width: 900px !important;
+}
+
+.selector-available, .selector-chosen {
+    width: 420px !important;
+}
+
+.selector select{
+    width: 420px !important;
+}
+
+.selector .selector-available input {
+    width: 380px !important;
+}
+
+.field-subject_category .selector {
+    width: 1300px !important;
+}
+
+.field-subject_category .selector-available, .field-subject_category .selector-chosen {
+    width: 620px !important;
+}
+
+.field-subject_category .selector select{
+    width: 620px !important;
+}
+
+.field-subject_category .selector .selector-available input {
+    width: 580px !important;
+}
+
+.hidden.field-priority {
+    display: block;
+}

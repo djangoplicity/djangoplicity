@@ -1,0 +1,49 @@
+{% extends "site-specific/shop/checkout.html" %}
+{% load i18n %}
+{% load satchmo_currency %}
+{% load satchmo_order %}
+
+{% block content %}
+<h1>{% trans "Checkout" %}</h1>
+<h2>Step 3 of 3: Review order</h2>
+
+{% block error_processing %}
+{% if errors %}
+<div class="pr_box">
+    <h3 class="error">{% block errorheader %}An error was returned while trying to process your card{% endblock %}</h3>
+    <p><span class="error">Reason: {{ errors }}</span>
+    </p>
+    <p>Please go back to <a href="../">Step 2 of 3: Enter credit card information</a> and
+    correct the error given below.</p>
+</div>
+{% else %}
+    <p>Please validate the following information, then submit press "Place order". {% if not order.paid_in_full %} Your credit card will be charged immediately after you
+    have placed the order.{% endif %}</p>
+{% endif %}
+{% endblock %}
+
+{% block order_details %}
+    {% order_details order default_view_tax %}
+{% endblock %}
+
+{% block payment_display %}
+{% if order.balance != 0 %}
+<div class="pr_box">
+<h3>{% trans "Payment" %}</h3>
+{% with order.balance|currency as order_total %}
+{% blocktrans %}Your card will be charged <strong>{{ order_total }}</strong>.{% endblocktrans %}
+{% endwith %}
+{% endif %}
+{% endblock %}
+</div>
+{% block payment_form %}
+
+<div class="pr_box"><form method="post" action="." class="orderform">{% csrf_token %}
+<div align="center">
+<input type="hidden" name="Process" value="True">
+<input type="submit" value="{% trans "Place order" %}"/>
+</div>
+</form></div>
+{% endblock %}
+
+{% endblock content %}

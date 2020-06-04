@@ -1,0 +1,28 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_modify %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../">{{ app_label|capfirst|escape }}</a> &rsaquo; 
+     {% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %} &rsaquo;
+     <a href="../">{{ obj|truncatewords:"18" }}</a> &rsaquo;
+     {% trans "Sync translations" %}
+</div>
+{% endif %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+<form action="{{ form_url }}" method="post" id="{{ opts.model_name }}_rename_form">{% csrf_token %}{% block form_top %}{% endblock %}
+<div>
+{% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
+<br />
+<p>All translation in the current language family will be overwritten by the current version<br />
+Press <em>Sync</em> to continue or go back to cancel</p>
+
+<input type="submit" value={% trans 'Sync' %}  {{ onclick_attrib }}/>
+
+</div>
+</form>
+</div>
+{% endblock %}

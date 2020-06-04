@@ -1,0 +1,16 @@
+{% load i18n staticfiles %}
+{% spaceless %}
+{% if object.videobroadcastaudiotrack_set.all %}
+    <h3 class="archivegrouptitle">{% trans "Broadcast Audio" %}</h3>
+    {% for track in object.videobroadcastaudiotrack_set.all %}
+        {% if track.resource_broadcastaudio %}
+        <div class="archive_download">
+            <span class="archive_dl_icon"><img src="{% static "icons/icon_audio.png" %}" /></span>
+            <span class="archive_dl_text"><a href="{{ track.resource_broadcastaudio.url }}"{{ track.resource_broadcastaudio.extra_attrs }}>{{ track|safe }}</a></span>
+            {% if track.resource_broadcastaudio.size %}<span class="archive_dl_size"><div>{{ track.resource_broadcastaudio.size|filesizeformat }}</div></span>{% endif %}
+        </div>
+        {% endif %}
+    {% endfor %}
+    <hr class="esohr" />
+{% endif %}
+{% endspaceless %}

@@ -1,0 +1,52 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../">{% trans "Cache Administration" %}</a> &rsaquo;
+     {% trans "Clear" %}
+</div>
+{% endif %}{% endblock %}
+
+{% block content %}<div id="content-main">
+<style>
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.alert-warning {
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
+}
+</style>
+
+{% if started %}
+<fieldset class="module" style="background-color: #FFC; ">
+<div class="form-row">
+<p>Clearing cache...</p>
+</div>
+</fieldset>
+
+{% else %}
+<fieldset class="module" style="background-color: #FFC; ">
+<div class="form-row">
+</div>
+</fieldset>
+<div class="alert alert-warning" role="alert">
+    <p style="font-size: 2em"><strong>Warning!</strong></p>
+    <p>This will clear the cache on <strong>ALL</strong> the websites, not just the current one, and should only be used in case of emergency.</p>
+    <p>If you find yourself with a page not updating after it was changed please <a href="mailto:Gurvan.Bazin@eso.org">report a bug</a> as it should not happen.
+</div>
+
+<form action="." method="post" >{% csrf_token %}
+<div align="center">
+<input type="submit" value="I know what I'm doing" class="default" name="_generate">
+</div>
+</form>
+{% endif %}
+</div>
+{% endblock %}

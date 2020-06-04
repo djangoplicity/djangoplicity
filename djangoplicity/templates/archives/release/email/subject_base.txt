@@ -1,0 +1,1 @@
+{%block org_prefix %}{% endblock %}{{obj.release_type.name}} {{obj.id}} {% if embargo %}*UNDER EMBARGO* {% endif %}- {{obj.title|safe}}{% if obj.subtitle%} - {{obj.subtitle|safe}}{% endif %}

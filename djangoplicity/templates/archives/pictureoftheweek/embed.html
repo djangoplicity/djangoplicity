@@ -1,0 +1,11 @@
+{% if potw %}
+<span class="boxheadline">{{ potw.title }}</span><span class="boxrightlink">(<a href="{{ potw.get_absolute_url }}">download options</a>)</span><div style="clear: both;"></div>
+<div class="videoplaceholder" id="featuredvideobox" style="background-image: url('{{potw.resource_frontpagethumb.url}}'); background-repeat: no-repeat;">
+</div>
+{% else %}
+<span class="boxheadline">Video Archive</span><span class="boxrightlink"></span><div style="clear: both;"></div>
+<div class="videoplaceholder">
+<br /><br /><br />
+See our <a href="{% url 'videos_defaultquery' %}">video archive</a>.
+</div>
+{% endif %}

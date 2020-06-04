@@ -1,0 +1,1 @@
+{{obj.title|safe}}{% if obj.subtitle%} - {{obj.subtitle|safe}}{% endif %} - {%block org_prefix %}{% endblock %}Announcement {{obj.id}}

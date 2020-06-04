@@ -1,0 +1,32 @@
+{% extends "pages/page_twocolumn.html" %}
+
+{% block site_title %} {{page.title}} {{page.section.append_title}} {% endblock %}
+{% block breadcrumb %}{{ block.super}} {{ site_vars.bc_sep }} {{page.title}}{% endblock %}
+
+{% block content %}
+{{ page.content }}
+<!-- Google Search Result Snippet Begins -->
+<div align="center">
+    <div id="cse-search-results"></div>
+    <script type="text/javascript">
+      var googleSearchIframeName = "cse-search-results";
+      var googleSearchFormName = "cse-search-box";
+      var googleSearchFrameWidth = 300;
+      var googleSearchDomain = "www.google.com";
+      var googleSearchPath = "/cse";
+    </script>
+    <script type="text/javascript" src="//www.google.com/afsonline/show_afs_search.js"></script>
+    <!-- Google Search Result Snippet Ends -->
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ block.super }}
+
+{% if page.script %}
+    <script type="text/javascript">
+    {{ page.script|safe }}
+    </script>
+{% endif %}
+
+{% endblock %}

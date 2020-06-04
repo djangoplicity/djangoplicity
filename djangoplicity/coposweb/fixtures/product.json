@@ -1,0 +1,1430 @@
+[
+    {
+        "pk": 2, 
+        "model": "product.category", 
+        "fields": {
+            "description": "", 
+            "parent": null, 
+            "ordering": 0, 
+            "is_active": true, 
+            "site": 1, 
+            "related_categories": [], 
+            "meta": null, 
+            "slug": "book", 
+            "name": "Books"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "product.category", 
+        "fields": {
+            "description": "", 
+            "parent": null, 
+            "ordering": 0, 
+            "is_active": true, 
+            "site": 1, 
+            "related_categories": [], 
+            "meta": null, 
+            "slug": "postcard", 
+            "name": "Postcards"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "680.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": true, 
+            "meta": "", 
+            "total_sold": "39.000000", 
+            "category": [
+                2
+            ], 
+            "sku": "book::postcardsfromuniverse", 
+            "taxClass": null, 
+            "ordering": 20, 
+            "height_units": "", 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": "", 
+            "weight_units": "g", 
+            "description": "<div>\r\n<p>From sunspots to black holes, planets around other stars, supernovae and dark matter, <em>Postcards from the Edge of the Universe</em> unveils the mysteries of today's research, looking at cutting-edge astronomy from around the world. Twenty-four frontline astronomers from all corners of the globe explain their science.</p>\r\n</div>", 
+            "taxable": false, 
+            "date_added": "2010-09-07", 
+            "slug": "book_postcardsfromuniverse", 
+            "name": "Postcards from the Edge of the Universe - An Anthology of Frontline Astronomy from Around the World", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": ""
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": true, 
+            "meta": "", 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::cd_book_postcard", 
+            "taxClass": null, 
+            "ordering": 80, 
+            "height_units": "", 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": "", 
+            "weight_units": "g", 
+            "description": "<p>This postcard shows the Carina Nebula. Read more about the \"Postcards From the Edge of the Universe\" on <a href=\"http://www.postcardsfromuniverse.org\">www.postcardsfromuniverse.org</a></p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_cd_book_postcard", 
+            "name": "Postcard From the Edge of the Universe", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": ""
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "6.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": "", 
+            "total_sold": "5.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::facilities_set", 
+            "taxClass": null, 
+            "ordering": 84, 
+            "height_units": "", 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": "", 
+            "weight_units": "g", 
+            "description": "<p>This set contains: The VLT (Very Large Telescope), The VISTA (Visible and Infrared Survey Telescope for Astronomy), La Silla (ESO's first observatory), The APEX (Atacama Pathfinder Experiment), The ALMA (Atacama Large Millimeter/submillimeter Array) and The E-ELT (European Extremely Large Telescope).</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_facilities_set", 
+            "name": "Set of 6 ESO facilities postcards", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": ""
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "6.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": true, 
+            "meta": "", 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::astro_set", 
+            "taxClass": null, 
+            "ordering": 85, 
+            "height_units": "", 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": "", 
+            "weight_units": "g", 
+            "description": "<p>This set contains the following postcards: The Helix Nebula, NGC 2264, Sagittarius Scorpius, The Lagoon Nebula, The Carina Nebula and Centaurus A</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_astro_set", 
+            "name": "Set of 6 astronomical postcards", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": ""
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "6.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::1-helix-nebula", 
+            "taxClass": null, 
+            "ordering": 88, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>Colour-composite image of the Helix Nebula (NGC 7293), created from images obtained using the Wide Field Imager.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_1-helix-nebula", 
+            "name": "The Helix Nebula", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::2-ngc2264", 
+            "taxClass": null, 
+            "ordering": 89, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>NGC 2264, the Cone Nebula &mdash; an area of the sky that includes the sparkling blue baubles of the Christmas Tree star cluster. Created from images obtained using the Wide Field Imager (WFI).</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_2-ngc2264", 
+            "name": "NGC 2264", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::3-sagittarius_scorpius", 
+            "taxClass": null, 
+            "ordering": 90, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>A 34 by 20 degree image that shows the region of sky spanning the constellations of Sagittarius (the Archer) and Scorpius (the Scorpion) as seen from Paranal.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_3-sagittarius_scorpius", 
+            "name": "Sagittarius Scorpius", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::4-lagoonnebula", 
+            "taxClass": null, 
+            "ordering": 91, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>An amazing vista of the Lagoon Nebula taken with the 67-million-pixel Wide Field Imager.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_4-lagoonnebula", 
+            "name": "The Lagoon Nebula", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::5-carinanebula", 
+            "taxClass": null, 
+            "ordering": 92, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>Colour-composite image of the Carina Nebula, created from images obtained using the Wide Field Imager.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_5-carinanebula", 
+            "name": "The Carina Nebula", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::6-centaurusa", 
+            "taxClass": null, 
+            "ordering": 93, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>Colour-composite image of Centaurus A, captured with the APEX, MPG/ESO 2.2-metre and NASA Chandra telescopes, and revealing the lobes and jets emanating from the active galaxy's central black hole.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_6-centaurusa", 
+            "name": "Centaurus A", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::1-vlt", 
+            "taxClass": null, 
+            "ordering": 94, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>The observing platform of ESO's Very Large Telescope (VLT) on Cerro Paranal in Chile.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_1-vlt", 
+            "name": "The VLT (Very Large Telescope)", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::2-vista", 
+            "taxClass": null, 
+            "ordering": 95, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>The Visible and Infrared Survey Telescope for Astronomy (VISTA<span>) in its dome at Paranal.<br /></span></p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_2-vista", 
+            "name": "The VISTA (Visible and Infrared Survey Telescope for Astronomy)", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::3-lasilla", 
+            "taxClass": null, 
+            "ordering": 96, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>View of a rare cloudscape over the La Silla Observatory, in the southern edges of the Atacama Desert, home of ESO's first observing site.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_3-lasilla", 
+            "name": "La Silla (ESO's first observatory)", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::4-apex", 
+            "taxClass": null, 
+            "ordering": 97, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>The Atacama Pathfinder Experiment telescope, located on the Chajnantor plateau at 5100 m altitude.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_4-apex", 
+            "name": "The APEX (Atacama Pathfinder Experiment)", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::5-alma", 
+            "taxClass": null, 
+            "ordering": 98, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>A vision of the 66-antenna ALMA array, soon to be completed at Chajnantor, Chile.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_5-alma", 
+            "name": "The ALMA (Atacama Large Millimeter/submillimeter Array)", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "1.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "0.000000", 
+            "category": [
+                1
+            ], 
+            "sku": "postcard::6-e-elt", 
+            "taxClass": null, 
+            "ordering": 99, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>Artist's impression of the planned 42-metre European Extremely Large Telescope (E-ELT) and its enclosure.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "postcard_6-e-elt", 
+            "name": "The E-ELT (European Extremely Large Telescope)", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "product.product", 
+        "fields": {
+            "weight": "150.00", 
+            "site": 1, 
+            "height": null, 
+            "active": true, 
+            "featured": false, 
+            "meta": null, 
+            "total_sold": "5.000000", 
+            "category": [
+                2
+            ], 
+            "sku": "book::eso_early_history", 
+            "taxClass": null, 
+            "ordering": 100, 
+            "height_units": null, 
+            "width": null, 
+            "related_items": [], 
+            "items_in_stock": "0.000000", 
+            "short_description": "", 
+            "length_units": null, 
+            "weight_units": "g", 
+            "description": "<p>This book, written by Professor Adriaan Blaauw (ESO Director General 1970 - 1974), tells the early story of ESO. It begins in the early 1950's when leading European astronomers initiated the project and started a search for the best possible site under the comparatively unexplored southern sky. It describes the development of ESO up to about 1975.</p>\r\n<p>This is a courtesy of the ESO Library.</p>", 
+            "taxable": false, 
+            "date_added": "2010-09-06", 
+            "slug": "book_eso_early_history", 
+            "name": "ESO'S EARLY HISTORY", 
+            "also_purchased": [], 
+            "length": null, 
+            "shipclass": "DEFAULT", 
+            "width_units": null
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_6-e-elt", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "15.000000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "book_eso_early_history", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_5-alma", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_4-apex", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_3-lasilla", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_2-vista", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_1-vlt", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_6-centaurusa", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_5-carinanebula", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_4-lagoonnebula", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_3-sagittarius_scorpius", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_2-ngc2264", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_1-helix-nebula", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "0.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_cd_book_postcard", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "2.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_astro_set", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "2.500000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "postcard_facilities_set", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "product.productpricelookup", 
+        "fields": {
+            "discountable": true, 
+            "price": "9.900000", 
+            "items_in_stock": "0.000000", 
+            "siteid": 1, 
+            "key": null, 
+            "parentid": null, 
+            "active": true, 
+            "productslug": "book_postcardsfromuniverse", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "product.attributeoption", 
+        "fields": {
+            "validation": "product.utils.validation_simple", 
+            "sort_order": 1, 
+            "description": "Job", 
+            "error_message": "Invalid Entry", 
+            "name": "Job"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "product.attributeoption", 
+        "fields": {
+            "validation": "product.utils.validation_integer", 
+            "sort_order": 1, 
+            "description": "JSP", 
+            "error_message": "Invalid Entry", 
+            "name": "JSP"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 1, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 1, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 2, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 2, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 3, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 3, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 4, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 4, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 5, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 5, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 6, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 6, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 7, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 7, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 8, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 8, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 9, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 9, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 10, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 10, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 11, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 11, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 12, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 12, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 13, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 13, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 14, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 14, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 15, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 15, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 16, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 16, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 17, 
+            "option": 4, 
+            "value": "051"
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "product.productattribute", 
+        "fields": {
+            "languagecode": null, 
+            "product": 17, 
+            "option": 5, 
+            "value": "7576"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "product.price", 
+        "fields": {
+            "product": 1, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "product.price", 
+        "fields": {
+            "product": 16, 
+            "expires": null, 
+            "price": "2.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "product.price", 
+        "fields": {
+            "product": 15, 
+            "expires": null, 
+            "price": "2.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "product.price", 
+        "fields": {
+            "product": 14, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "product.price", 
+        "fields": {
+            "product": 13, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "product.price", 
+        "fields": {
+            "product": 12, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "product.price", 
+        "fields": {
+            "product": 11, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "product.price", 
+        "fields": {
+            "product": 10, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "product.price", 
+        "fields": {
+            "product": 9, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "product.price", 
+        "fields": {
+            "product": 8, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "product.price", 
+        "fields": {
+            "product": 7, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "product.price", 
+        "fields": {
+            "product": 6, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "product.price", 
+        "fields": {
+            "product": 5, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "product.price", 
+        "fields": {
+            "product": 4, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "product.price", 
+        "fields": {
+            "product": 3, 
+            "expires": null, 
+            "price": "0.500000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "product.price", 
+        "fields": {
+            "product": 2, 
+            "expires": null, 
+            "price": "15.000000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "product.price", 
+        "fields": {
+            "product": 17, 
+            "expires": null, 
+            "price": "9.900000", 
+            "quantity": "1.000000"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "product.taxclass", 
+        "fields": {
+            "description": "Default", 
+            "title": "Default"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "product.taxclass", 
+        "fields": {
+            "description": "Shipping", 
+            "title": "Shipping"
+        }
+    }
+]

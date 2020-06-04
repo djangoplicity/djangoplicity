@@ -1,0 +1,74 @@
+{% extends "site-specific/archives/imagecomparison/detail.html" %}{% load pages %}
+
+{% block site_title %}{{object.title}} | {{block.super}}{% endblock %}
+
+{% load menus %}
+{% block breadcrumb %}{{ block.super}}{% breadcrumb_append object.title object.get_absolute_url %}{% endblock %}
+
+{% block content %}
+{% load i18n %}{% include 'archives/embargo_notice.html' %}
+{% include 'archives/translations.html' %}
+
+<h1>{{ object.title }}</h1>
+<div id="before_after_container">
+    <div><img id="img1" src="{{object.image_before.resource_screen.url}}" alt="{{ object.image_before.title }}" width="997px" /></div>
+    <div><img id="img2" src="{{object.image_after.resource_screen.url}}" alt="{{ object.image_after.title }}" width="997px" /></div>
+</div>
+<div class="pr_news_feature_link" style="color: #777777; padding: 0;">{% trans "Drag green handle to reveal images" %}</div>
+
+<div class="subcolumns">
+    <div class="c75l">
+        <p>{{ object.description|safe }}</p>
+        <h3>{% trans "Credit" %}</h3><p>{{ object.credit|safe }}</p>
+        {% include 'archives/extra_footer.html' %}
+    </div>
+    <div class="c25r">
+        {% include "archives/searchbox.html" %}
+        {% include "archives/facebookbox.html" %}
+        {% include "archives/addthisbox.html" %}
+        {% include admin_template %}
+        {% include info_template %}
+
+        {% load i18n %}
+        <h3 class="archivegrouptitle">{% trans "Images" %}</h3>
+        {% with i=image_before %}
+        <div class="pr_image_list">
+        <a href="{{ i.get_absolute_url }}"><img src="{{ i.resource_thumbs.url }}" width="122" alt="{{ i.title }}" /></a><br />
+        <div class="pr_image_list_id"><a href="{{i.get_absolute_url}}">{{ i.source.id|default:i.id }}: {{ i.title }}</a></div>
+        <div class="pr_image_list_title">{% if not i.in_original_language %}<span class="langnote"><br />{% trans "in English only" %}</span>{% endif %}</div>
+        </div>
+        {% endwith %}
+
+        {% with i=image_after %}
+        <div class="pr_image_list">
+        <a href="{{ i.get_absolute_url }}"><img src="{{ i.resource_thumbs.url }}" width="122" alt="{{ i.title }}" /></a><br />
+        <div class="pr_image_list_id"><a href="{{i.get_absolute_url}}">{{ i.source.id|default:i.id }}: {{ i.title }}</a></div>
+        <div class="pr_image_list_title">{% if not i.in_original_language %}<span class="langnote"><br />{% trans "in English only" %}</span>{% endif %}</div>
+        </div>
+        {% endwith %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_header %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}media/beforeafter/jquery.beforeafter-1.4.js"></script>
+<script type="text/javascript">
+
+$(window).load(function() {
+    $('#before_after_container').beforeAfter( {
+        animateIntro : true,
+        introDelay : 1000,
+        introDuration : 500,
+        showFullLinks : false,
+        imagePath : '{{STATIC_URL}}media/beforeafter/',
+        enableKeyboard : true
+    });
+});
+</script>
+{% endblock %}

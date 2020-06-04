@@ -1,0 +1,42 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_modify %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../">{{ app_label|capfirst|escape }}</a> &rsaquo; 
+     {% if has_change_permission %}<a href="../">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %} &rsaquo;
+     <a href="../">{{ original|truncatewords:"18" }}</a> &rsaquo;
+     {% trans "Rename" %}
+</div>
+{% endif %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+<form action="{{ form_url }}" method="post" id="{{ opts.model_name }}_rename_form">{% csrf_token %}{% block form_top %}{% endblock %}
+<div>
+{% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
+{% if errors %}
+    <p class="errornote">
+    {% blocktrans count errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+    </p>
+    <ul class="errorlist">{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+{% endif %}
+<fieldset class="module aligned">
+{% for field in form %}
+      <div class="form-row{% if field.errors %} errors{% endif %} {{ field.name }}">
+      {{ field.errors }}
+      <div>
+          {{ field.label_tag }}{{field}}
+          {% if field.field.help_text %}<p class="help">{{ field.field.help_text|safe }}</p>{% endif %}
+      </div>
+      </div>
+{% endfor %}
+</fieldset>
+</div>
+<div class="submit-row" {% if is_popup %}style="overflow: auto;"{% endif %}>
+<input type="submit" value="{% trans 'Save' %}" class="default" name="_save" {{ onclick_attrib }}/>
+</div>
+</form>
+</div>
+{% endblock %}

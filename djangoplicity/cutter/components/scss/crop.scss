@@ -1,0 +1,53 @@
+.crops {
+	.crop {
+		padding: 10px;
+		border-bottom: 1px solid #ccc;
+
+		.controls {
+			float: left;
+			width: 40%;
+
+			input[type=submit] {
+				float: none;
+			}
+		}
+
+		.img-wrapper {
+			display: inline-block;
+			position: relative;
+
+			.crop-area {
+				position: absolute;
+				background-color: #000;
+				opacity: 0.5;
+				border: 0 dashed #fff;
+			}
+
+			.crop-area-top {
+				top: 0;
+				width: 100%;
+				border-bottom-width: 1px;
+			}
+
+			.crop-area-bottom {
+				bottom: 3px;
+				width: 100%;
+				border-top-width: 1px;
+			}
+
+			.crop-area-left {
+				top: 0;
+				left: 0;
+				bottom: 3px;
+				border-right-width: 1px;
+			}
+
+			.crop-area-right {
+				top: 0;
+				right: 0;
+				bottom: 3px;
+				border-left-width: 1px;
+			}
+		}
+	}
+}

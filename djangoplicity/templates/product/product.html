@@ -1,0 +1,124 @@
+{% extends "site-specific/product/product.html" %}
+{% comment %}
+-------------------------------------------------------------------
+This is the base product detail page.
+To modify the templates of specific types of products, such as
+ProductVariations or CustomProducts, look for product/detail_xxx.html
+-------------------------------------------------------------------
+{% endcomment %}
+{% load i18n %}
+{% load thumbnail %}
+{% load satchmo_price %}
+{% load satchmo_currency satchmo_category %}
+{% load satchmo_util satchmo_discounts %}
+{% load app_plugins %}
+{% load djangoplicity_satchmo %}
+{% load satchmo_cart %}
+{% load normalize_decimal %}
+{% load menus %}
+
+{% block extra_header %}
+{% if product.meta %}
+    <meta name="description" content="{{product.meta}}">
+{% endif %}
+{% endblock %}
+
+{% block breadcrumb %} {{ block.super}}
+{% for name, url in product.category.all.0.get_url_name %}{% breadcrumb_append name url %}{% endfor %}
+{% breadcrumb_append product.name product.get_absolute_url %} {% endblock %}
+
+{% block site_title %} {{product.name}} | {{ shop_name }}{% endblock %}
+
+{% block content %}
+{% block productdetail %}
+{% archiveitem product as object %}
+<h1>{{ shop_name }}: {% if object %}{{ object.title }}{%else%}{{ product.name }}{% endif %}</h1>
+{% if object.resource_medium %}
+<div class="archive_image">
+<div class="image_container">{% if object.resource_screen %}<a href="{{object.resource_screen.url}}" rel="shadowbox" title="{{object}}" />
+<img src="{{object.resource_medium.url}}" width="320" border="0" alt="{{object}}" />
+<br/><p>Click to Enlarge</p></a>
+{% else %}
+<img src="{{object.resource_medium.url}}" width="320" border="0" alt="{{object}}" />
+{% endif %}
+</div>
+</div>
+{% else %}
+<div class="archive_image">
+<div class="image_container">{% thumbnail product.main_image.picture 320x320 as image %}
+<img src="{{image}}" width="320" border="0" alt="{{product.name}}" />
+</div>
+</div>
+{% endthumbnail %}
+{% endif %}
+
+{% if object%}
+<p>{{ object.description|safe }}</p>
+{% if object and object.get_absolute_url %}<p><strong>Credit:</strong><div class="credit"><p>{{ object.credit|safe }}</p></div></p>{% endif %}
+{% if object and object.get_absolute_url %}
+<div class="checkoutdiv"><div align="left" style="line-height: 15px;">
+        <strong>Note:</strong> The digital resources (images, videos, PDFs, etc.) for this product can be downloaded in the <a href="{% if object.image %}{{ object.image.get_absolute_url }}{% else %}{{ object.get_absolute_url }}{% endif %}">archive</a>
+</div></div>
+{% endif %}
+{%else%}
+<p>{{ product.description|safe }}</p>
+{%endif%}
+{% endarchiveitem %}
+{% endblock %}
+{% endblock %}
+
+{% block rightcolumn %}
+<div class="rightbox pricediv">
+<h1 style="">{% trans "Price" %}{% if default_view_tax %} {% trans '(incl. tax)' %}{% endif %}: {% if sale %}<strike id="fullprice" style="display: block;">{{ product|discount_price:""|currency }}</strike>{% endif %}
+<span id="price">{{ product|discount_price:sale|currency }}</span>
+</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<form id="options" action="{% url 'satchmo_smart_add' %}" method="post">{% csrf_token %}
+{% trans "Quantity" %} <input type="text" size="5" name="quantity" id="quantity" value="1" class="priced" />
+<input type="hidden" name="productname" id="productname" value="{{product.slug}}" />
+<input type="submit" name="addcart" value="{% trans "Add to cart" %}" />
+{% plugin_point "product_add_buttons" %}
+{% plugin_point "product_form" %}
+</form>
+{% archiveitem product as object %}
+{% if object and object.get_absolute_url %}<br /><a href="{{ object.get_absolute_url }}">View in Archive</a>{% endif %}
+{% if object.free %}
+<hr />
+<div class="freelink"><div><a href="{% url 'free_order_form' %}"><img src="{{MEDIA_URL}}/educators.png" alt="Educators" width="90" /></a></div><div class="freelinktext"><a href="{% url 'free_order_form' %}">Available for free for educators and media</a></div></div><div class='clear'></div>
+{% endif %}
+<hr />
+<div class="bulkpricing">
+<h3>Product details</h3>
+<table>
+<tr><td><strong>ID</strong></td><td>{{ object.id }}</td></tr>
+{% if object.isbn %}<tr valign="top"><td><strong>ISBN</strong></td><td>{{ object.isbn}}</td></tr>{% endif %}
+{% if object.size %}<tr valign="top"><td><strong>Dimensions</strong></td><td>{{ object.size }}</td></tr>{% endif %}
+{% if object.pages %}<tr valign="top"><td><strong>Pages</strong></td><td>{{ object.pages}}</td></tr>{% endif %}
+{% if object.cover %}<tr valign="top"><td><strong>Cover</strong></td><td>{{ object.cover}}</td></tr>{% endif %}
+{% if object.language %}<tr valign="top"><td><strong>Language</strong></td><td>{{ object.get_language_display }}</td></tr>{% endif %}
+
+</table>
+{% if project_environment == 'eso.org' %}<p style="text-align:left;padding:6px"><strong>More details about this product:</strong><br />See the <a href="/public/archives/brochures/pdf/brochure_0040.pdf">ESO Shop Catalogue</a>.</p>{% endif %}
+</div>
+{% endarchiveitem %}
+{% if product.get_qty_price_list|length > 1 %}
+<hr />
+<div class="bulkpricing">
+<h3>Bulk pricing</h3>
+<table>
+<tr><td><strong>Minimum Quantity</strong></td><td><strong>Unit Price</strong></td></tr>
+{% for qty,price in product.get_qty_price_list reversed %}
+<tr><td>{{qty|normalize_decimal}}</td><td>{{price|currency}}</td></tr>
+{% endfor %}
+</table>
+</div>
+{% endif %}
+</div>
+{% include "product/cart_box.html" %}
+{% endblock %}
+
+{% block productfooter %}
+{% if sale %}{% include "product/product_discount_eligible.html" %}{% endif %}
+{% plugin_point "product_footer" %}
+{% endblock %}

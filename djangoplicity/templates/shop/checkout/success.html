@@ -1,0 +1,28 @@
+{% extends "site-specific/shop/checkout.html" %}
+{% load satchmo_order %}
+{% load satchmo_google %}
+{% load i18n %}
+
+{% block content %}
+<h1>Receipt</h1>
+<h2>Order successfully completed</h2>
+
+<div id="ordersuccess">
+<p>{% trans "Thank you for your order!" %} {% trans 'Please print out this page as a receipt. You will also receive an email with this information.' %}
+Please allow 1-3 business days for handling the order. You will receive a notification via email once the order is shipped/ready for pickup.</p>
+</div>    
+
+{% order_tracking_details order %}
+
+{% endblock %}
+
+{% block google-tracker %}
+{% if shop.options.GOOGLE.ANALYTICS.value %}
+{% show_tracker %}
+{% show_receipt %}
+{% endif %}
+{% if shop.options.GOOGLE.ADWORDS.value %}
+{% google_adwords_sale %}
+{% endif %}
+{% endblock %}
+

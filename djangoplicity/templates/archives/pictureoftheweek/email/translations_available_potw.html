@@ -1,0 +1,14 @@
+{% load i18n %}{% load humanize %}{% load djangoplicity_datetime %}Dear ESON,
+
+The next ESO <strong>picture of the week "{{ obj.id }} - {{ obj.visual|safe }}"</strong> is now available for translation.
+If you want your image to be online together with the English version, please submit your translations{% if obj.embargo_date %} until <strong>{{ obj.embargo_date|timesub:1|time4lang:"en"|naturalday }} at {{obj.embargo_date|timesub:1|time4lang:"en"|datetime:"TIME"}}</strong>{% endif %}.
+The English page is:
+<a href="{{site_url_prefix}}{{obj.get_absolute_url}}">{{site_url_prefix}}{{obj.get_absolute_url}}</a>
+
+You can add your translation on:
+<a href="{{site_url_prefix}}{% url 'admin:media_imageproxy_add' %}?source={{ obj.visual.id }}">{{site_url_prefix}}{% url 'admin:media_imageproxy_add' %}?source={{ obj.visual.id }}</a>
+
+Once the translation is done, don't forget to click on the &quot;Translation ready&quot; box. If you have problems, please contact <a href=mailto:epodweb@eso.org">epodweb@eso.org</a>
+
+Kind regards,
+ESO Department of Communication

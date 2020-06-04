@@ -1,0 +1,33 @@
+{% if imageexposures %}
+{% load avm i18n %}
+<style>
+.band_Purple { color: purple; }
+.band_Blue { color: blue; }
+.band_Cyan { color: cyan; }
+.band_Green { color: green; }
+.band_Yellow { color: yellow; }
+.band_Orange { color: orange; }
+.band_Red { color: red; }
+.band_Magenta { color: magenta; }
+.band_Grayscale { color: gray; }
+.band_Pseudocolor { color: gray; }
+.band_instrument { color: #666666; }
+.row1, .row2 { padding: 2px;}
+.row1 { background-color: #eeeeee }
+.row2 { background-color: #ffffff }
+</style>
+<h3 class="archivegrouptitle">{% trans "Colours & filters" %}</h3>
+<div>
+<table class="info_table" width="100%">
+<tr style="font-weight: bold;"><td>{% trans "Band" %}</td>{% if has_wavelength %}<td>{% trans "Wavelength" %}</td>{% endif %}<td>{% trans "Telescope" %}</td></tr>
+{% for e in imageexposures %}{% if e.spectral_band or e.facility or e.instrument or e.spectral_central_wavelength %}
+<tr class="{% cycle 'row1' 'row2' %}">
+    <td><span{% if e.spectral_color_assignment %} class="band_{{e.spectral_color_assignment}}"{% endif %}>{% if e.spectral_band %}{% trans e.spectral_band %}{% endif %}</span>{% if e.spectral_bandpass %}<br /><span class="band_instrument">{{e.spectral_bandpass}}</span>{% endif%}</td>
+    {% if has_wavelength %}<td>{{e.spectral_central_wavelength|wavelength}}</td>{% endif %}
+    <td>{% if e.facility %}{{e.facility}}{% if e.instrument %}<br/><span class="band_instrument">{{e.instrument}}</span>{% endif %}{% endif %}</td></tr>
+{% endif %}{% endfor %}
+</table>
+{% if object.spectral_notes %}<p><strong>{% trans "Notes" %}:</strong> {{object.spectral_notes}}</p>{% endif %}
+{% if exposure_time %}<p><strong>{% trans "Exposure time" %}:</strong> {{ exposure_time }}s</p>{% endif %}
+</div>
+{% endif %}

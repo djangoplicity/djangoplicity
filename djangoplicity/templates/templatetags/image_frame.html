@@ -1,0 +1,27 @@
+{% load djangoplicity_images %}
+{% if object %}
+    <div
+        class="image-frame{% if position %} {{ position }}{% endif %}"
+        {% if width %} style="width: {{ width }}"{% endif %}
+    >
+    {% if url %}<a href="{{ url }}">{% endif %}
+        <img
+            src="{{ object.resource_screen.url }}"
+            alt="{{ alt }}"
+            srcset="{{ object|srcset }}"
+        />
+        {% if legend or credit %}
+            <div class="legend-wrapper">
+            {% if legend %}
+                <div class="legend">{{ legend }}</div>
+            {% endif %}
+            {% if credit %}
+                <div class="credit"><strong>Credit:</strong> {{ credit|striptags }}</div>
+            {% endif %}
+            </div>
+        {% endif %}
+    {% if url %}</a>{% endif %}
+    </div>
+{% else %}
+    <div class="alert alert-danger" role="alert">Missing 'id' in {% templatetag openblock %} comparison_frame {% templatetag closeblock %}</div>
+{% endif %}

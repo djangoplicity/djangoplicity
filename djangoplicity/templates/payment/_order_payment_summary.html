@@ -1,0 +1,36 @@
+{% load i18n  %}
+{% load satchmo_currency %}
+{% load satchmo_checkout %}
+{% if order.total != 0 %}
+<div class="pr_box">
+<h3>Payments</h3>
+<p>{% if order.paid_in_full %}Order has been paid in full.{% else %}Order has <strong>not</strong> been paid in full.{% endif %}</p>
+<table width="100%">
+<tr style="font-weight: bold;">
+    <td>Date/time</td>
+    <td colspan="2" width="75%">Payment</td>
+    <td>Amount</td>
+</tr>
+{% for payment in order.payments_completed %}
+<tr>
+    <td>{{ payment.time_stamp|date:"j F Y H:i" }}</td>
+    <td colspan="2">{{ payment.payment|payment_label }}<span class="small">&nbsp;&nbsp;&nbsp;Transaction ID: {{payment.transaction_id}}</span></td>
+    <td>{{ payment.amount|currency }}</td>
+</tr>
+{% if forloop.last %}
+{% with order.balance|currency as balance %}
+<tr style="font-weight: bold; background-color: #dddddd;">
+    <td>{% blocktrans %}Balance{% endblocktrans %}</td>
+    <td></td>
+    <td align="right">=&nbsp;</td>
+    <td>{{ balance }}</td>
+</tr>
+{% endwith %}
+{% endif %}
+{% endfor %}
+</table>
+{% if paylink and not order.paid_in_full %}
+<p><a href="{% url 'satchmo_balance_remaining_order' order.id %}">{% trans 'Pay remaining balance' %}</a></p>
+{% endif %}
+</div>
+{% endif %}

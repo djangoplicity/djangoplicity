@@ -1,0 +1,25 @@
+{% load i18n %}
+<h1>{{category.name}}</h1>
+
+<div class="category_description">
+{{ category.description|safe }}
+</div>
+
+{% if ongoing_object_list %}
+<h2>{% trans "Ongoing" %}</h2>
+<ul>
+    {% for obj in ongoing_object_list %}
+    {% if obj.link %}<li><a href="{{obj.link}}">{{ obj.title }}</a></li>{% else %}<li>{{ obj.title }}</li>{% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
+
+<ul>
+{% for obj in object_list %}
+    {% ifchanged obj.start_date.year %}
+        </ul>
+        <h2>{{ obj.start_date|date:"Y" }}</h3>
+        <ul>
+    {% endifchanged %}
+    <li>{{ obj.get_dates }}: {% if obj.link %}<a href="{{obj.link}}">{{ obj.title }}</a>{% else %}{{ obj.title }}{% endif %}.{% if obj.get_location %} {{ obj.get_location }}.{% endif %}</li>
+{% endfor %}

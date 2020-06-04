@@ -1,0 +1,45 @@
+{% load djangoplicity_satchmo %}{% load i18n %}{% with order.contact.first_name as first_name %}{% with order.contact.last_name as last_name %}{% blocktrans %}Dear {{ first_name }} {{ last_name }},{% endblocktrans %}{% endwith %}{% endwith %}
+
+{% blocktrans %}Thank you for ordering with {{ shop_name }}.{% endblocktrans %}
+{% if order.shipping_model == "PUP1" %}
+Your order {{ order|order_variable:"ORDER_ID" }} is ready to be picked up at the reception desk (9-17 CET/CEST) at ESO Headquarters:
+
+ESO Headquarters
+Karl-Schwarzschild-Str. 2
+85748 Garching bei München
+Germany
+
+Detailed travel information is available at https://www.eso.org/public/about-eso/travel.html.
+{% else %}{% if order.shipping_model == "PUP2" %}
+Your order {{ order|order_variable:"ORDER_ID" }} is ready to be picked up at the reception desk (9-17 CLT/CLST) at ESO Vitacura Office:
+
+ESO Vitacura
+Alonso de Córdova 3107
+Vitacura, Casilla 19001
+Santiago de Chile 19
+Chile
+
+Detailed travel information is available at https://www.eso.org/public/about-eso/travel/vitacura.html.
+{% else %}{% if order.shipping_model == "ESOO" %}
+Your order {{ order|order_variable:"ORDER_ID" }} has shipped today via ESO internal delivery.
+{% else %}
+Your order {{ order|order_variable:"ORDER_ID" }} has been shipped today.
+
+{% trans "Shipping Address" %}
+----------------
+{{ order.ship_addressee }}
+{{ order.full_ship_street }}
+{{ order.ship_postal_code }} {{ order.ship_city }}
+{% if order.ship_state %}{{ order.ship_state }}
+{% endif %}{{ order.ship_country|isocode2country }}
+{% endif %}{% endif %}{% endif %}
+{% blocktrans %}This completes your order.{% endblocktrans %}
+
+Yours sincerely,
+
+{{shop.store_description}}
+{{shop.street1}}
+{{shop.postal_code}} {{shop.city}}
+{{shop.country}}{% if shop.store_email %}
+E-mail: {{ shop.store_email }}{%endif%}{%if shop.phone %}
+Tel: {{shop.phone}} {% endif%}

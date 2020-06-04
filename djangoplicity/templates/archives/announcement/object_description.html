@@ -1,0 +1,48 @@
+{% load i18n %}
+{% load djangoplicity_datetime %}
+{% include 'archives/embargo_notice.html' %}
+{% include 'archives/translations.html' %}
+<h3 class="pr_typeid">{{object.id}} &mdash; {% trans "Announcement" %}</h3>
+<h1 class="pr_title">{{object.title}}</h1>
+{% if object.subtitle %}<h3>{{object.subtitle}}</h3>{% endif %}
+<p class="date">{{object.release_date|datetime:"DATE"}}</p>
+
+{% spaceless %}
+{% if main_visual %}
+    {% if main_visual.resource_newsfeature %}
+        <div class="pr_news_feature" style="padding:0;">
+        <a href="{% if main_visual.resource_medium_flash %}{{main_visual.resource_medium_flash.url}}{% else %}{{ main_visual.resource_screen.url }}{% endif %}" rel="{% if main_visual.resource_medium_flash %}shadowbox;width=640;height=360{% else %}shadowbox[newswheel]{% endif %}" title="{{ main_visual.title }}"><img src="{{ main_visual.resource_newsfeature.url }}" class="pr_news_feature_img" style="padding:0;" /></a>
+        {% if images and not main_visual.resource_medium_flash %}
+            {% for im in images %}
+                {% if main_visual != im %}<a href="{{ im.resource_screen.url }}" rel="shadowbox[newswheel]" title="{{ im.title }}" class="hidden">image</a>{% endif %}
+            {% endfor %}
+        {% endif %}
+        </div>
+
+
+        {% if main_visual.resource_medium_flash %}
+            <div class="pr_news_feature_link" style="color: #777777; padding: 0;"><a style="color: #777777; padding: 0;"  href="{{main_visual.resource_medium_flash.url}}" rel="shadowbox;width=640;height=360" title="{{ main_visual.title }}">{% trans "Click to Play" %}</a></div>
+        {% else %}
+            <div class="pr_news_feature_link" style="color: #777777; padding: 0;"><a style="color: #777777; padding: 0;"  href="{{ main_visual.resource_screen.url }}" rel="shadowbox" title="{{ main_visual.title }}">{% trans "Click to Enlarge" %}</a></div>
+        {% endif %}
+    {% endif %}
+
+    {% if not main_visual.resource_newsfeature %}
+        {% if main_visual.resource_news %}
+            <div class="inline_image"><a href="{{ main_visual.resource_screen.url }}" rel="shadowbox" title="{{ main_visual.title }}"><img src="{{ main_visual.resource_news.url }}" class="pr_image" /><br/><p>{% trans "Click to Enlarge" %}</p></a></div>
+        {% endif %}
+    {%endif%}
+{%endif%}
+
+{% endspaceless %}
+
+<p>{{ object.description|safe }}</p>
+{% if object.links %}
+<h3>{% trans "Links" %}</h3>
+<p>{{ object.links|safe }}</p>
+{%endif%}
+{% if object.contacts %}
+<h3>{% trans "Contacts" %}</h3>
+<p>{{ object.contacts|safe }}</p>
+{%endif%}
+{% include 'archives/extra_footer.html' %}

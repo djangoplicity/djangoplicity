@@ -1,0 +1,6 @@
+This directory is meant to store static files that need to be processed such
+as original images to convert to sprites, SCSS files that will be converted
+to CSS, etc.
+
+# To generate main CSS file:
+sass --watch  components/scss/crop.scss:static/css/crop.css

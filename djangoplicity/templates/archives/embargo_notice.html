@@ -1,0 +1,6 @@
+{% load i18n %}{% load djangoplicity_datetime %}{% if object.published  %}
+{% if is_staging %}<div class="embargo_notice">{% blocktrans with datetime=object.embargo_date|time4lang:LANGUAGE_CODE|datetime:"DATETIME" %}STAGING UNTIL {{datetime}}{% endblocktrans %}</div>{% endif %}
+{% if is_embargo %}<div class="embargo_notice">{% blocktrans with datetime=object.release_date|time4lang:LANGUAGE_CODE|datetime:"DATETIME" %}EMBARGOED UNTIL {{datetime}}{% endblocktrans %}</div>{% endif %}
+{% else %}
+<div class="embargo_notice">{% trans "PREVIEW ONLY - ITEM NOT PUBLISHED" %}</div>
+{% endif %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block extra_header %}
+    <meta property="og:title" content="{{ category.name }}" />{% if category.opengraph_image %}
+    <meta property="og:image" content="{{ category.opengraph_image }}" />{% endif %}{% if category.description %}
+    <meta property="og:description" content="{{ category.description }}" />
+    <meta name="description" content="{{category.description}}" />{% endif %}
+{% endblock %}
+
+{% block site_title %}{{super}}{{category.name}}{% endblock %}
+
+{% block content %}
+{% include "eventcalendar/includes/index.html" %}
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "admin/media/image/avm_review.html" %}
+
+{% block result_list %}
+{% if objects %}
+<table cellspacing="0" id="result_list">
+<thead>
+<tr>
+<th>ID</th>
+<th>Thumbnail</th>
+<th>Title</th>
+<th>Subject.Category</th>
+<th>Subject.Name</th>
+<th>Distance</th>
+<th>Distance.Notes</th>
+<th>Type</th>
+<th>Credit</th>
+<th>Date</th>
+<th>ReferenceURL</th>
+<th>Image.ProductQuality</th>
+<th>Headline</th>
+<th>Description</th>
+
+</tr>
+</thead>
+<tbody>
+{% for object in objects %}
+<tr class="{% cycle 'row1' 'row2' %}">
+<td><a href="{% url 'admin_site:media_image_change' object.pk %}">{{ object.id }}</a></td>
+<td>{% if object.resource_thumbs %}<img src="{{object.resource_thumbs.url}}" />{{ object.id }}{%else%}N/A{% endif %}</td>
+<td>{{ object.title }}</td>
+
+<td><ul>{% for c in object.subject_category.all %}<li>{{c}}</li>{% endfor%}</ul></td>
+<td><ul>{% for c in object.subject_name.all %}<li>{{c}}</li>{% endfor%}</ul></td>
+<td>{{ object.distance }}</td>
+<td>{{ object.distance_notes }}</td>
+<td>{{ object.type }}</td>
+<td>{{ object.credit }}</td>
+<td>{{ object.release_date }}</td>
+<td>{{ object.reference_url }}</td>
+<td>{{ object.image_product_quality }}</td>
+<td>{{ object.headline }}</td>
+<td>{{ object.description }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+{% endblock %}

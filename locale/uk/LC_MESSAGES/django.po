@@ -1,0 +1,5021 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-09-24 12:31+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/djangoplicity/announcements/models.py:129
+msgid "Announcement Type"
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:138
+#: src/djangoplicity/releases/models.py:121
+#: src/djangoplicity/science/models.py:51
+msgid "Optional subtitle to be shown just above the headline."
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:140
+#: src/djangoplicity/science/models.py:53
+#: templates/archives/announcement/object_description.html:45
+#: templates/archives/release/object_description.html:32
+msgid "Contacts"
+msgstr "Контакти"
+
+#: src/djangoplicity/announcements/models.py:141
+#: src/djangoplicity/science/models.py:54
+#: templates/archives/announcement/object_description.html:41
+#: templates/archives/release/object_description.html:31
+msgid "Links"
+msgstr "Посилання"
+
+#: src/djangoplicity/announcements/models.py:281
+#: src/djangoplicity/science/models.py:92
+msgid "Science paper"
+msgstr "Наукова стаття"
+
+#: src/djangoplicity/announcements/models.py:327
+msgid "Announcement translation"
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:350
+msgid "Related announcement"
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:359
+#: src/djangoplicity/releases/models.py:442
+#: src/djangoplicity/science/models.py:135
+msgid "Override ID"
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:363
+#: src/djangoplicity/releases/models.py:445
+#: src/djangoplicity/science/models.py:139
+msgid "Hide on kiosk"
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:367
+#, python-format
+msgid "Archive Item for Announcement %s"
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:375
+#: src/djangoplicity/releases/models.py:456
+#: src/djangoplicity/science/models.py:151
+msgid "Related Image"
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:380
+#: src/djangoplicity/releases/models.py:462
+msgid "Related Video"
+msgstr ""
+
+#: src/djangoplicity/announcements/models.py:388
+#: src/djangoplicity/releases/models.py:472
+msgid "Related Image Comparison"
+msgstr ""
+
+#: src/djangoplicity/announcements/options.py:64
+msgid "Web Updates"
+msgstr ""
+
+#: src/djangoplicity/announcements/options.py:67
+#: src/djangoplicity/announcements/options.py:125
+#: src/djangoplicity/archives/contrib/browsers/defaults.py:26
+#: src/djangoplicity/releases/options.py:108
+#: src/djangoplicity/science/options.py:72
+msgid "View all"
+msgstr "Показати всі"
+
+#: src/djangoplicity/announcements/options.py:68
+#: src/djangoplicity/announcements/options.py:126
+#: src/djangoplicity/media/options/comparisons.py:97
+#: src/djangoplicity/media/options/images.py:134
+#: src/djangoplicity/media/options/images.py:135
+#: src/djangoplicity/media/options/potws.py:68
+#: src/djangoplicity/media/options/videos.py:236
+#: src/djangoplicity/releases/options.py:109
+#: src/djangoplicity/releases/options.py:110
+msgid "JSON"
+msgstr ""
+
+#: src/djangoplicity/announcements/options.py:69
+#: src/djangoplicity/announcements/options.py:127
+#: src/djangoplicity/media/options/comparisons.py:98
+#: src/djangoplicity/media/options/potws.py:69
+#: src/djangoplicity/releases/options.py:111
+msgid "iCal"
+msgstr ""
+
+#: src/djangoplicity/announcements/options.py:90
+#: src/djangoplicity/media/options/comparisons.py:74
+#: src/djangoplicity/media/options/images.py:87
+#: src/djangoplicity/media/options/videos.py:90
+#: src/djangoplicity/products/base/options.py:56
+#: src/djangoplicity/releases/options.py:82
+#: src/djangoplicity/science/options.py:52
+msgid "Admin"
+msgstr "Адмін"
+
+#: src/djangoplicity/announcements/options.py:101
+#: src/djangoplicity/science/options.py:56
+msgid "About the Announcement"
+msgstr "Про сповіщення"
+
+#: src/djangoplicity/announcements/options.py:105
+#: src/djangoplicity/media/options/comparisons.py:81
+#: src/djangoplicity/media/options/images.py:116
+#: src/djangoplicity/products/base/consts.py:229
+#: src/djangoplicity/products/options.py:126
+#: src/djangoplicity/products/options.py:142
+#: src/djangoplicity/products/options.py:161
+#: src/djangoplicity/products/options.py:176
+#: src/djangoplicity/products/options.py:228
+#: src/djangoplicity/products/options.py:250
+#: src/djangoplicity/products/options.py:270
+#: src/djangoplicity/products/options.py:292
+#: src/djangoplicity/products/options.py:309
+#: src/djangoplicity/products/options.py:326
+#: src/djangoplicity/products/options.py:343
+#: src/djangoplicity/products/options.py:400
+#: src/djangoplicity/products/options.py:417
+#: src/djangoplicity/science/options.py:60
+#: templates/archives/imagecomparison/detail.html:33
+#: templates/images/embedded_list.html:3
+msgid "Images"
+msgstr "Зображення"
+
+#: src/djangoplicity/announcements/options.py:106
+msgid "Downloads"
+msgstr "Завантаження"
+
+#: src/djangoplicity/announcements/options.py:117
+#: src/djangoplicity/science/options.py:66
+msgid "Announcements"
+msgstr "Оголошення"
+
+#: src/djangoplicity/announcements/options.py:118
+msgid "Featured Announcements"
+msgstr "Спеціальні сповіщення"
+
+#: src/djangoplicity/announcements/options.py:119
+#: src/djangoplicity/science/options.py:67
+msgid "Embargoed Announcements"
+msgstr "Заборонені сповіщення"
+
+#: src/djangoplicity/announcements/options.py:120
+#: src/djangoplicity/science/options.py:68
+msgid "Announcements (Staging)"
+msgstr "Сповіщення (постановка)"
+
+#: src/djangoplicity/announcements/options.py:121
+#, python-format
+msgid "Announcements %d"
+msgstr "Сповіщення %d"
+
+#: src/djangoplicity/archives/base.py:44 src/djangoplicity/archives/base.py:315
+#, python-format
+msgid ""
+"Cannot add model field to Model from Archive - field name %s already exists"
+msgstr ""
+
+#: src/djangoplicity/archives/base.py:50
+#, python-format
+msgid ""
+"Cannot add attribute to Model from Archive - attribute name %s already exists"
+msgstr ""
+
+#: src/djangoplicity/archives/base.py:258
+msgid "Missing Archive class in Model."
+msgstr ""
+
+#: src/djangoplicity/archives/base.py:260
+msgid "Meta class missing in Archive class."
+msgstr ""
+
+#: src/djangoplicity/archives/base.py:270
+#, python-format
+msgid "Archive ID field (%s) is missing from Model."
+msgstr ""
+
+#: src/djangoplicity/archives/base.py:281
+#: src/djangoplicity/archives/contrib/info/defaults.py:150
+#: src/djangoplicity/pages/models.py:149
+msgid "Published"
+msgstr "Опубліковано"
+
+#: src/djangoplicity/archives/base.py:282
+msgid "Last modified"
+msgstr "Змінено"
+
+#: src/djangoplicity/archives/base.py:283
+msgid "Created"
+msgstr "Створено"
+
+#: src/djangoplicity/archives/browsers.py:118
+msgid "Default view mode"
+msgstr ""
+
+#: src/djangoplicity/archives/browsers.py:329
+#, python-format
+msgid "Also see our %(products)s on "
+msgstr ""
+
+#: src/djangoplicity/archives/browsers.py:331
+#: src/djangoplicity/archives/views.py:361
+#, python-format
+msgid "%(products)s on %(website)s"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:88
+#, python-format
+msgid "%(attribute)s state of selected items were toggled."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:124
+msgid "Re-import resources"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:137
+#: src/djangoplicity/archives/contrib/types/images.py:120
+#: src/djangoplicity/media/admin.py:520
+msgid "Thumbnail"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:254
+#: src/djangoplicity/archives/contrib/admin/defaults.py:444
+#: src/djangoplicity/archives/contrib/admin/defaults.py:649
+#: src/djangoplicity/archives/contrib/admin/defaults.py:782
+#: src/djangoplicity/archives/contrib/admin/defaults.py:933
+#, python-format
+msgid "%(name)s object with primary key %(key)r does not exist."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:263
+#, python-format
+msgid "Displays for %s"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:295
+msgid "Get Multiple Displays"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:365
+#: src/djangoplicity/archives/contrib/admin/defaults.py:584
+#: src/djangoplicity/archives/contrib/admin/defaults.py:858
+#, python-format
+msgid "%(label)s %(value)s is the existing %(label)s of the item."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:369
+#: src/djangoplicity/archives/contrib/admin/defaults.py:508
+#: src/djangoplicity/archives/contrib/admin/defaults.py:588
+#, python-format
+msgid "%(label)s %(value)s already exists"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:382
+#, python-format
+msgid "The %(name)s \"%(obj)s\" was duplicated successfully."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:413
+#, python-format
+msgid "Duplicated %s."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:413
+#: src/djangoplicity/archives/contrib/admin/defaults.py:907
+msgid "and"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:415
+msgid "Entry not duplicated."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:467
+#, python-format
+msgid "Duplicate %s"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:499
+#, python-format
+msgid "%(label)s %(value)s does not exist"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:601
+#, python-format
+msgid "The %(name)s \"%(obj)s\" was renamed successfully."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:663
+#, python-brace-format
+msgid "Renamed {old} to {new}"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:672
+#, python-format
+msgid "Rename %s"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:739
+#, python-format
+msgid ""
+"The translations in the same language family as %(name)s \"%(obj)s\" were "
+"updated successfully."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:791
+#, python-format
+msgid "Sync translations %s"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:863
+#, python-format
+msgid "%(label)s %(value)s doesn't exists - cannot move resources."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:876
+#, python-format
+msgid "The resources of %(name)s \"%(obj)s\" was moved successfully."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:907
+#, python-format
+msgid "Moved %s."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:909
+msgid "Resources not moved."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:956
+#, python-format
+msgid "Move %s resources"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:978
+#: src/djangoplicity/pages/admin.py:63 src/djangoplicity/pages/admin.py:279
+msgid "Link"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/admin/defaults.py:991
+msgid "Product"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/browsers/defaults.py:19
+#: src/djangoplicity/archives/contrib/browsers/defaults.py:34
+msgid "Normal"
+msgstr "Нормально"
+
+#: src/djangoplicity/archives/contrib/browsers/defaults.py:45
+msgid "Serialization"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/info/defaults.py:56
+#: templates/product/category_index.html:12
+msgid "Categories"
+msgstr "Категорії"
+
+#: src/djangoplicity/archives/contrib/info/defaults.py:107
+msgid "Edit"
+msgstr "Редагувати"
+
+#: src/djangoplicity/archives/contrib/info/defaults.py:132
+#: templates/admin/announcements/announcement/change_form.html:11
+#: templates/admin/media/image/change_form.html:13
+#: templates/admin/media/imagecomparison/change_form.html:10
+#: templates/admin/media/pictureoftheweek/change_form.html:11
+#: templates/admin/media/video/change_form.html:9
+#: templates/admin/pages/page/change_form.html:9
+#: templates/admin/releases/release/change_form.html:12
+msgid "Add translation"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/info/defaults.py:155
+msgid "featured"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/info/defaults.py:160
+msgid "Priority"
+msgstr "Пріоритет"
+
+#: src/djangoplicity/archives/contrib/info/defaults.py:171
+msgid "Release date"
+msgstr "Дата релізу [date]"
+
+#: src/djangoplicity/archives/contrib/info/defaults.py:203
+#: src/djangoplicity/media/info.py:133
+msgid "Size"
+msgstr "Розмір"
+
+#: src/djangoplicity/archives/contrib/info/defaults.py:212
+msgid "Weight"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/queries/defaults.py:234
+msgid "Relation field name for category model field must be set."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/queries/defaults.py:236
+msgid "URL field name in category model field must be set."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:80
+msgid "Export orders"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:84
+msgid "Export orders (XML)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:109
+msgid "Set Temp"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:113
+msgid "Set Blocked"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:117
+msgid "Set In Process"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:121
+msgid "Set Billed"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:125
+msgid "Set Shipped"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:129
+msgid "Set Complete"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/admin.py:133
+msgid "Set Cancelled"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/esoshipping/officedelivery/shipper.py:27
+msgid "Office delivery for ESO employees"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:35
+msgid "Selected free order applications were updated"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:36
+msgid "Update accepted free order applications"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:42
+msgid "Selected free order applications were accepted"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:43
+msgid "Accept selected free order applications"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:49
+msgid "Selected free order applications were rejected (no reason)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:50
+msgid "Reject selected free order applications (no reason)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:57
+msgid "Selected free order applications were rejected (no stock)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:58
+msgid "Reject selected free order applications (no stock)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:65
+msgid "Selected free order applications were rejected (unqualified)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:66
+msgid "Reject selected free order applications (unqualified)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:73
+msgid "Selected free order applications were rejected (insufficient)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/admin.py:74
+msgid "Reject selected free order applications (insufficient)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/models.py:44
+msgid "Justification"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/models.py:44
+msgid ""
+"Please tell us a few words about yourself/your organisation and provide a "
+"short justification explaining how you intend to use the products."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/freeorder/models.py:56
+msgid "free order application"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/models.py:37
+#, python-format
+msgid "Navision job no. - if left blank, the current default job no %s is used"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/models.py:41
+#, python-format
+msgid "Navision JSP no. - if left blank, the current default JSP no %s is used"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/models.py:45
+#, python-format
+msgid ""
+"Navision account no. - if left blank, the current default account no %s is "
+"used"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/models.py:83
+msgid "For sale - note weight must be provided if product is for sale."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/models.py:86
+msgid "Price (EUR)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/models.py:95
+#: src/djangoplicity/products/models.py:1317
+msgid "JSP"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/models.py:101
+msgid "Available for free."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/satchmo/models.py:103
+msgid "Calculate shipping for this item."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:40
+msgid "containing"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:41
+msgid "greater than or equal to"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:42
+msgid "greater than"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:43
+msgid "less than or equal to"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:44
+msgid "less than"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:45
+msgid "matching"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:71
+msgid "Select..."
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:72
+msgid "180-270° width"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:73
+msgid "270-360° width"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:74
+msgid "360° width"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:75
+msgid "360° width, 180° height"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:76
+msgid "360° width, >= 90° height"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/consts.py:124
+msgid "All"
+msgstr "Всі"
+
+#: src/djangoplicity/archives/contrib/search/consts.py:125
+msgid "Highest only"
+msgstr "Тільки найкращі"
+
+#: src/djangoplicity/archives/contrib/search/consts.py:126
+msgid "Good or better"
+msgstr "Добрі або краще"
+
+#: src/djangoplicity/archives/contrib/search/consts.py:127
+msgid "Average or better"
+msgstr "Середні або вище"
+
+#: src/djangoplicity/archives/contrib/search/consts.py:128
+msgid "Fair or better"
+msgstr "Досить добрі"
+
+#: src/djangoplicity/archives/contrib/search/fields.py:113
+#: src/djangoplicity/media/info.py:173
+msgid "Id"
+msgstr "ID"
+
+#: src/djangoplicity/archives/contrib/search/fields.py:114
+msgid "Show only items with ID containing this string. e.g. heic1017"
+msgstr ""
+"Показувати тільки елементи з ID, що містять цей рядок (наприклад heic1017)"
+
+#: src/djangoplicity/archives/contrib/search/fields.py:120
+msgid ""
+"Show only items containing references to Release IDs containing this string. "
+"e.g. heic1017"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/fields.py:121
+msgid "Related ID"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/search/fields.py:328
+#: src/djangoplicity/archives/contrib/search/fields.py:338
+#: src/djangoplicity/archives/contrib/search/fields.py:349
+#: src/djangoplicity/archives/contrib/search/fields.py:360
+msgid "Leave unselected for all results."
+msgstr "Нічого не вибирайте, щоб переглянути всі результати."
+
+#: src/djangoplicity/archives/contrib/search/fields.py:372
+#: src/djangoplicity/archives/contrib/search/fields.py:383
+msgid "Hold Ctrl+click (Command+click on a Mac) for multiple selection."
+msgstr "Утримуйте Ctrl+click (Command+click для Mac) для вибору множини."
+
+#: src/djangoplicity/archives/contrib/search/fields.py:401
+msgid "e.g. M 31"
+msgstr "як М 31"
+
+#: src/djangoplicity/archives/contrib/types/audio.py:20
+msgid "AAC Audio File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/audio.py:26
+msgid "MP3 Audio File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/audio.py:31
+msgid "WAV Audio File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:33
+msgid "Directory"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:38
+msgid "InDesign Document File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:43
+#: src/djangoplicity/archives/contrib/types/documents.py:78
+msgid "Powerpoint Presentation"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:48
+#: src/djangoplicity/archives/contrib/types/documents.py:83
+msgid "Powerpoint Slideshow"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:53
+#: src/djangoplicity/media/models/images.py:817
+#: src/djangoplicity/products/models.py:326
+#: src/djangoplicity/products/models.py:360
+msgid "PDF File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:58
+msgid "EPUB File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:63
+msgid "PostScript File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:68
+msgid "ZIP File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:73
+msgid "Word File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:88
+msgid "Text File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:93
+msgid "Illustrator File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:98
+msgid "EPS File"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:103
+msgid "Wavefront (.obj)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/documents.py:108
+msgid "Maxon Cinema 4D (.c4d)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:14
+msgid "Fullsize Original"
+msgstr "Повний розмір"
+
+#: src/djangoplicity/archives/contrib/types/images.py:26
+msgid "Publication TIFF 40K"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:32
+msgid "Publication TIFF 25K"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:38
+msgid "Publication TIFF 10K"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:44
+msgid "Publication TIFF 4K"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:50
+#: src/djangoplicity/media/info.py:309
+#: src/djangoplicity/media/models/images.py:598
+#: src/djangoplicity/media/options/images.py:99
+msgid "Zoomable"
+msgstr "Масштаб"
+
+#: src/djangoplicity/archives/contrib/types/images.py:55
+msgid "PNG"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:61
+msgid "BMP"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:67
+msgid "JPEG"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:74
+msgid "Large JPEG"
+msgstr "Великий JPEG"
+
+#: src/djangoplicity/archives/contrib/types/images.py:81
+msgid "Publication JPEG"
+msgstr "Публікація JPEG"
+
+#: src/djangoplicity/archives/contrib/types/images.py:88
+msgid "Screensize JPEG"
+msgstr "Екранний JPEG"
+
+#: src/djangoplicity/archives/contrib/types/images.py:96
+msgid "Screen 640"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:105
+msgid "Medium JPEG"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:113
+msgid "News JPEG"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:127
+msgid "Wallpaper Thumbnail"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:135
+msgid "News Mini JPEG"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:142
+msgid "News Feature JPEG"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:151
+#: src/djangoplicity/archives/contrib/types/images.py:157
+msgid "1024x768"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:166
+#: src/djangoplicity/archives/contrib/types/images.py:202
+msgid "1280x1024"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:175
+#: src/djangoplicity/archives/contrib/types/images.py:208
+msgid "1600x1200"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:184
+msgid "1920x1200"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:193
+msgid "2048x1536"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:214
+msgid "Virtual Tour"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:219
+msgid "POTW Medium"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:227
+#: src/djangoplicity/archives/contrib/types/images.py:234
+msgid "Thumbnail 300y"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:242
+msgid "Thumbnail 300x PNG"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:249
+msgid "Thumbnail 700x"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:257
+msgid "Thumbnail 350x"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:266
+msgid "Banner 1920x900"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:275
+msgid "Video Frame"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:282
+msgid "Portrait 1080"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/images.py:291
+msgid "Poster 400y"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:14
+#: src/djangoplicity/media/models/videos.py:310
+msgid "Legacy Video"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:20
+#: src/djangoplicity/archives/contrib/types/videos.py:108
+#: src/djangoplicity/media/models/videos.py:263
+msgid "Video Podcast"
+msgstr "ВІдео Podcast"
+
+#: src/djangoplicity/archives/contrib/types/videos.py:25
+msgid "Flash Video"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:30
+msgid "Flash"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:35
+msgid "HD 720p"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:40
+msgid "HD 1080p"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:45
+msgid "H.264 MPEG-4"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:50
+msgid "M4V"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:55
+msgid "MP4"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:60
+msgid "MPEG"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:65
+msgid "Quicktime"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:70
+#: src/djangoplicity/products/models.py:419
+msgid "Broadcast"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:80
+#: src/djangoplicity/media/models/videos.py:286
+msgid "Fulldome 1.5k mov"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:87
+#: src/djangoplicity/media/models/videos.py:285
+msgid "Fulldome 2k Master"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:94
+#: src/djangoplicity/media/models/videos.py:284
+msgid "Fulldome 4k Master"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:101
+#: src/djangoplicity/media/models/videos.py:283
+msgid "Fulldome 8k Master"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:113
+#: src/djangoplicity/media/models/videos.py:287
+#: src/djangoplicity/media/options/videos.py:125
+msgid "Fulldome Preview"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:120
+#: src/djangoplicity/media/models/videos.py:296
+msgid "8k VR"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:127
+#: src/djangoplicity/media/models/videos.py:297
+msgid "4k VR"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:134
+#: src/djangoplicity/media/models/videos.py:290
+msgid "Cylindrical VR Preview"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:139
+#: src/djangoplicity/media/models/videos.py:291
+msgid "4k Cylindrical VR Master"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:144
+#: src/djangoplicity/media/models/videos.py:292
+msgid "8k Cylindrical VR Master"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:149
+#: src/djangoplicity/media/models/videos.py:293
+msgid "16k Cylindrical VR Master"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:154
+#: src/djangoplicity/archives/contrib/types/videos.py:166
+msgid "Ultra HD (4k/2160p)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:171
+msgid "Ultra HD Broadcast (4k/2160p)"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:176
+msgid "Brodcast SD"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:181
+msgid "Subtitle"
+msgstr ""
+
+#: src/djangoplicity/archives/contrib/types/videos.py:186
+#: src/djangoplicity/media/models/videos.py:778
+msgid "Audio Track"
+msgstr ""
+
+#: src/djangoplicity/archives/fields.py:38
+msgid ""
+"Ids are only allowed to contain letters, numbers, underscores or hyphens. "
+"They are used in URLs for the archive item."
+msgstr ""
+
+#: src/djangoplicity/archives/fields.py:65
+msgid ""
+"Priority of product (100 highest, 0 lowest) - high priority products are "
+"ranked higher in search results than low priority products."
+msgstr ""
+
+#: src/djangoplicity/archives/fields.py:91
+#: src/djangoplicity/pages/models.py:105
+#: src/djangoplicity/releases/models.py:118
+msgid ""
+"Title is shown in browser window. Use a good informative title, since search "
+"engines normally display the title on their result pages."
+msgstr ""
+
+#: src/djangoplicity/archives/fields.py:313
+msgid "Choice."
+msgstr ""
+
+#: src/djangoplicity/archives/queries.py:75
+msgid "At least one browser must be specified for an archive query."
+msgstr ""
+
+#: src/djangoplicity/archives/resources.py:50
+msgid ""
+"Instance has no archive id. This may be because the instance has not been "
+"saved yet."
+msgstr ""
+
+#: src/djangoplicity/archives/resources.py:76
+msgid "File"
+msgstr ""
+
+#: src/djangoplicity/archives/resources.py:87
+#: src/djangoplicity/media/admin.py:504
+msgid "Image"
+msgstr ""
+
+#: src/djangoplicity/archives/resources.py:188
+msgid "Argument type for Resource must be FileType class or subclass thereof."
+msgstr ""
+
+#: src/djangoplicity/archives/resources.py:198
+msgid "Resource"
+msgstr ""
+
+#: src/djangoplicity/archives/resources.py:299
+msgid ""
+"Argument type for ImageResourceManager must be ImageFileType class or "
+"subclass thereof. If not type is given, ImageFileType will be used."
+msgstr ""
+
+#: src/djangoplicity/cache/templates/admin/cache/clear.html:6
+#: src/djangoplicity/cache/templates/admin/cache/index.html:6
+#: src/djangoplicity/cache/templates/admin/cache/memcache_info.html:6
+#: src/djangoplicity/cutter/templates/admin/cutter/crop_form.html:6
+#: src/djangoplicity/reports/templates/reports/csverror.html:5
+#: src/djangoplicity/reports/templates/reports/report_view.html:11
+#: templates/admin/archives/importer.html:21
+#: templates/admin/archives/upload_success.html:17
+#: templates/admin/duplicate_form.html:6
+#: templates/admin/media/image/avm_review.html:22
+#: templates/admin/move_form.html:6
+#: templates/admin/product/category/orders_for_category.html:23
+#: templates/admin/product/product/orders_for_product.html:23
+#: templates/admin/releases/releaseproxy/duplicate_form.html:6
+#: templates/admin/rename_form.html:6
+#: templates/admin/synctranslation_form.html:6 templates/error.html:5
+#: templates/product/admin/inventory_form.html:67
+#: templates/product/admin/product_export_form.html:51
+#: templates/product/category_index.html:7
+#: templates/relationeditor/list_editor_view.html:9
+#: templates/relationeditor/select_relations.html:17
+msgid "Home"
+msgstr ""
+
+#: src/djangoplicity/cache/templates/admin/cache/clear.html:7
+#: src/djangoplicity/cache/templates/admin/cache/index.html:7
+#: src/djangoplicity/cache/templates/admin/cache/memcache_info.html:7
+msgid "Cache Administration"
+msgstr ""
+
+#: src/djangoplicity/cache/templates/admin/cache/clear.html:8
+msgid "Clear"
+msgstr ""
+
+#: src/djangoplicity/cache/templates/admin/cache/memcache_info.html:8
+msgid "Memcached statistics"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:7
+msgid "Concardis Payment Module Settings"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:14
+msgid "Currency Code"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:15
+msgid "Currency code for Concardis transactions."
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:20
+msgid "SHA-IN pass phrase"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:21
+msgid "The SHA-IN pass phrase used to hash the parameters."
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:26
+msgid "SHA-OUT pass phrase"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:27
+msgid "The SHA-OUT pass phrase used to hash the parameters."
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:32
+msgid "Post URL"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:33
+msgid "The Concardis URL for real transaction posting."
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:38
+msgid "Test Post URL"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:39
+msgid "The Concardis URL for test transaction posting."
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:44
+msgid "Concardis PSPID"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:45
+msgid "The PSPID for your Concardis account"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:50
+msgid "Return URL"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:51
+msgid ""
+"Where Concardis will return the customer after the purchase is complete.  "
+"This can be a named url and defaults to the standard checkout success."
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:56
+#: src/djangoplicity/coposweb/config.py:59
+msgid "Accept real payments"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:57
+#: src/djangoplicity/coposweb/config.py:60
+msgid "False if you want to be in test mode"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:62
+#: src/djangoplicity/coposweb/config.py:65
+msgid "Implementation module"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:68
+#: src/djangoplicity/coposweb/config.py:71
+msgid "Module key"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:74
+#: src/djangoplicity/coposweb/config.py:77
+msgid "English name for this group on the checkout screens"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:76
+msgid "Concardis"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:77
+#: src/djangoplicity/coposweb/config.py:79
+msgid "This will be passed to the translation utility"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:81
+#: src/djangoplicity/coposweb/config.py:83
+msgid ""
+"The url base used for constructing urlpatterns which will use this module"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:86
+#: src/djangoplicity/coposweb/config.py:103
+msgid "Verbose logs"
+msgstr ""
+
+#: src/djangoplicity/concardis/config.py:87
+#: src/djangoplicity/coposweb/config.py:104
+msgid "Add extensive logs during post."
+msgstr ""
+
+#: src/djangoplicity/concardis/views.py:157
+msgid ""
+"Unexpected parameters when processing request, please contact epodweb@eso."
+"org."
+msgstr ""
+
+#: src/djangoplicity/concardis/views.py:177
+msgid "Paid through Concardis"
+msgstr ""
+
+#: src/djangoplicity/concardis/views.py:235
+msgid "Your order is no longer valid."
+msgstr ""
+
+#: src/djangoplicity/concardis/views.py:334
+#: src/djangoplicity/concardis/views.py:358
+msgid "Your order has already been processed."
+msgstr ""
+
+#: src/djangoplicity/contentserver/admin.py:41
+msgid "Re-sync resources with content server"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:47
+msgid "COPOSweb Payment Module Settings"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:54
+msgid "Use SSL for the module checkout pages?"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:88
+msgid "Available credit cards"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:97
+msgid "Capture Payment immediately?"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:99
+msgid ""
+"IMPORTANT: If false, a capture attempt will be made when the order is marked "
+"as shipped.\""
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:109
+msgid "Path to live configuration file."
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:110
+msgid ""
+"Full path to the coposweb.ini configuration file containing web service URL, "
+"credentials and more."
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:115
+msgid "Submit to Test URL"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:116
+msgid "This is the address to submit test transactions."
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:121
+msgid "Your COPOSweb service test username"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:126
+msgid "Your COPOSweb service test password"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:131
+msgid "Your COPOSweb service test HTTP authentication realm"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:136
+msgid "Your COPOSweb service test HTTP authentication URL"
+msgstr ""
+
+#: src/djangoplicity/coposweb/config.py:141
+msgid "Your COPOSweb service test currency."
+msgstr ""
+
+#: src/djangoplicity/coposweb/processor.py:146
+msgid "Approved and completed successfully"
+msgstr ""
+
+#: src/djangoplicity/coposweb/processor.py:149
+msgid "Approved"
+msgstr ""
+
+#: src/djangoplicity/coposweb/processor.py:152
+msgid "Capture completed successfully"
+msgstr ""
+
+#: src/djangoplicity/coposweb/processor.py:201
+msgid "No charge needed, paid in full."
+msgstr ""
+
+#: src/djangoplicity/coposweb/processor.py:225
+#: src/djangoplicity/coposweb/processor.py:272
+msgid "An unexpected error occurred."
+msgstr ""
+
+#: src/djangoplicity/coposweb/processor.py:254
+msgid "Already complete"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:94
+#, python-format
+msgid "Also see our images on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:95
+#, python-format
+msgid "Also see our videos on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:96
+#, python-format
+msgid "Also see our press releases on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:97
+#, python-format
+msgid "Also see our technical documents on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:98
+#, python-format
+msgid "Also see our exhibitions on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:99
+#, python-format
+msgid "Also see our announcements on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:100
+#, python-format
+msgid "Also see our postcards on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:101
+#, python-format
+msgid "Also see our books on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:102
+#, python-format
+msgid "Also see our brochures on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:103
+#, python-format
+msgid "Also see our dvds on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:104
+#, python-format
+msgid "Also see our newsletters on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:105
+#, python-format
+msgid "Also see our posters on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:106
+#, python-format
+msgid "Also see our pictures of the week on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:107
+#, python-format
+msgid "Also see our calendars on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:108
+#, python-format
+msgid "Also see our conference posters on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:110
+#, python-format
+msgid "images on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:111
+#, python-format
+msgid "videos on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:112
+#, python-format
+msgid "press releases on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:113
+#, python-format
+msgid "technical documents on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:114
+#, python-format
+msgid "exhibitions on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:115
+#, python-format
+msgid "announcements on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:116
+#, python-format
+msgid "postcards on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:117
+#, python-format
+msgid "books on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:118
+#, python-format
+msgid "brochures on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:119
+#, python-format
+msgid "dvds on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:120
+#, python-format
+msgid "newsletters on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:121
+#, python-format
+msgid "posters on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:122
+#, python-format
+msgid "pictures of the week on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:123
+#, python-format
+msgid "calendars on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/crosslinks/__init__.py:124
+#, python-format
+msgid "conference posters on %(websites)s"
+msgstr ""
+
+#: src/djangoplicity/cutter/templates/admin/cutter/crop_form.html:10
+#: templates/admin/media/image/change_form.html:15
+msgid "Crop"
+msgstr ""
+
+#: src/djangoplicity/cutter/templates/admin/cutter/crop_form.html:56
+#: templates/admin/duplicate_form.html:21 templates/admin/login.html:29
+#: templates/admin/move_form.html:21
+#: templates/admin/releases/releaseproxy/duplicate_form.html:21
+#: templates/admin/rename_form.html:21
+#: templates/product/admin/inventory_form.html:75
+#: templates/product/admin/product_export_form.html:61
+#: templates/product/admin/product_export_form.html:72
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/djangoplicity/cutter/templates/admin/cutter/crop_form.html:62
+#: templates/admin/duplicate_form.html:38 templates/admin/move_form.html:38
+#: templates/admin/releases/releaseproxy/duplicate_form.html:38
+#: templates/admin/rename_form.html:38
+msgid "Save"
+msgstr ""
+
+#: src/djangoplicity/cutter/views.py:77
+#: src/djangoplicity/eventcalendar/views.py:62
+#: src/djangoplicity/simplearchives/views/category.py:81
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/admin.py:69
+msgid "Publishing"
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/admin.py:70
+msgid "Date and time"
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/admin.py:71
+msgid "Content"
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/admin.py:72
+#: src/djangoplicity/products/info.py:103
+msgid "Location"
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/models.py:59
+#: src/djangoplicity/pages/models.py:132
+msgid "OpenGraph Image"
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/models.py:60
+#: src/djangoplicity/pages/models.py:133
+msgid ""
+"Example: 'http://www.eso.org/public/archives/imagecomparisons/newsfeature/"
+"potw1413a.jpg'. If given: full path to an image that will be used when "
+"sharing the page on social media. Must be larger than 200x200px and smaller "
+"than 5MB."
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/models.py:82
+msgid "Event types translation"
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/models.py:92
+msgid "event countries"
+msgstr ""
+
+#: src/djangoplicity/eventcalendar/templates/eventcalendar/includes/index.html:9
+msgid "Ongoing"
+msgstr "Поточні заходи"
+
+#: src/djangoplicity/media/admin.py:159 src/djangoplicity/media/admin.py:289
+#: src/djangoplicity/media/admin.py:487 src/djangoplicity/media/admin.py:574
+#: src/djangoplicity/media/info.py:188
+#: src/djangoplicity/media/models/videos.py:637
+#: src/djangoplicity/media/models/videos.py:750
+#: src/djangoplicity/media/models/videos.py:795
+#: src/djangoplicity/media/models/videos.py:841
+#: src/djangoplicity/translation/admin.py:34
+#: src/djangoplicity/translation/models.py:147
+msgid "Language"
+msgstr "Мова"
+
+#: src/djangoplicity/media/admin.py:160 src/djangoplicity/media/admin.py:290
+msgid "Status"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:161 src/djangoplicity/media/admin.py:291
+msgid "Content Metadata"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:162
+msgid "Coordinate Metadata"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:164 src/djangoplicity/media/admin.py:292
+msgid "Creator Metadata"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:165 src/djangoplicity/media/admin.py:293
+msgid "Publisher Metadata"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:166 src/djangoplicity/media/admin.py:294
+msgid "File Metadata"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:167
+msgid "Observation Metadata"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:168
+msgid "External References"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:169 src/djangoplicity/media/admin.py:297
+msgid "Publishing (advanced)"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:170 src/djangoplicity/media/admin.py:296
+msgid "Content Delivery"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:192
+msgid "Writing AVM to selected images."
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:194
+#, python-format
+msgid ""
+"This djangoplicity installation does not support writing AVM to images (%s)."
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:195
+msgid "Write AVM to images"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:198 src/djangoplicity/media/admin.py:199
+#: templates/admin/media/image/avm_review.html:25
+msgid "AVM Content Review"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:202 src/djangoplicity/media/admin.py:203
+msgid "AVM Observation Review"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:206 src/djangoplicity/media/admin.py:207
+msgid "AVM Coordinate Review"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:295
+msgid "Audio Metadata"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:319
+msgid "Updating subtitles for selected videos."
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:321
+msgid "Error while updating subtitles."
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:330
+msgid "Updating metadata from file for selected videos"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:342
+msgid "Uploading video to YouTube"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:500
+#: src/djangoplicity/media/options/images.py:152
+#: src/djangoplicity/media/options/videos.py:223
+#: src/djangoplicity/releases/options.py:153
+msgid "Title"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:506
+msgid "Video"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:508
+msgid "Comparison"
+msgstr ""
+
+#: src/djangoplicity/media/admin.py:511 src/djangoplicity/media/info.py:180
+#: src/djangoplicity/media/options/images.py:156
+#: src/djangoplicity/media/options/videos.py:227
+#: src/djangoplicity/metadata/archives/fields.py:626
+#: src/djangoplicity/metadata/archives/info.py:90
+msgid "Type"
+msgstr "Тип"
+
+#: src/djangoplicity/media/collections/models.py:39
+msgid "Part of the URL"
+msgstr ""
+
+#: src/djangoplicity/media/collections/models.py:40
+msgid "Title of collection"
+msgstr ""
+
+#: src/djangoplicity/media/consts.py:49 src/djangoplicity/metadata/consts.py:21
+msgid "Purple"
+msgstr "Фіолетовий"
+
+#: src/djangoplicity/media/consts.py:50 src/djangoplicity/metadata/consts.py:22
+msgid "Blue"
+msgstr "Блакитний"
+
+#: src/djangoplicity/media/consts.py:51 src/djangoplicity/metadata/consts.py:23
+msgid "Cyan"
+msgstr "Синій"
+
+#: src/djangoplicity/media/consts.py:52 src/djangoplicity/metadata/consts.py:24
+msgid "Green"
+msgstr "Зелений"
+
+#: src/djangoplicity/media/consts.py:53 src/djangoplicity/metadata/consts.py:25
+msgid "Yellow"
+msgstr "Жовтий"
+
+#: src/djangoplicity/media/consts.py:54 src/djangoplicity/metadata/consts.py:26
+msgid "Orange"
+msgstr "Помаранчевий"
+
+#: src/djangoplicity/media/consts.py:55 src/djangoplicity/metadata/consts.py:27
+msgid "Red"
+msgstr "Червоний"
+
+#: src/djangoplicity/media/consts.py:56 src/djangoplicity/metadata/consts.py:28
+msgid "Magenta"
+msgstr "Пурпуровий"
+
+#: src/djangoplicity/media/consts.py:57
+msgid "Black"
+msgstr "Чорний"
+
+#: src/djangoplicity/media/consts.py:58
+msgid "White"
+msgstr "Білий"
+
+#: src/djangoplicity/media/info.py:103
+msgid "million"
+msgstr "мільйонів"
+
+#: src/djangoplicity/media/info.py:106
+msgid "billion"
+msgstr "мільярдів"
+
+#: src/djangoplicity/media/info.py:109
+msgid "trillion"
+msgstr "трильйонів"
+
+#: src/djangoplicity/media/info.py:148
+#: src/djangoplicity/media/options/images.py:161
+msgid "Field of View"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:154
+msgid "Related releases"
+msgstr "Пов'язані релізи"
+
+#: src/djangoplicity/media/info.py:160
+msgid "Related announcements"
+msgstr "Пов'язані оголошення"
+
+#: src/djangoplicity/media/info.py:166
+msgid "Related science announcements"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:199
+#: src/djangoplicity/media/templatetags/media_audio.py:64
+#, python-format
+msgid "%(hours)s h %(minutes)s m %(seconds)s s"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:202
+#: src/djangoplicity/media/templatetags/media_audio.py:66
+#, python-format
+msgid "%(minutes)s m %(seconds)s s"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:205
+#: src/djangoplicity/media/templatetags/media_audio.py:68
+#, python-format
+msgid "%(seconds)s s"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:207
+msgid "Duration"
+msgstr "Тривалість"
+
+#: src/djangoplicity/media/info.py:212
+msgid "{} fps"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:215
+msgid "Frame rate"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:240 src/djangoplicity/media/info.py:242
+#: src/djangoplicity/metadata/archives/forms.py:92
+msgid "light years"
+msgstr "світлових років"
+
+#: src/djangoplicity/media/info.py:246
+#: src/djangoplicity/metadata/archives/forms.py:93
+msgid "redshift"
+msgstr "зсув"
+
+#: src/djangoplicity/media/info.py:292 src/djangoplicity/products/info.py:51
+#, python-format
+msgid "<img src=\"%sicons/icon_shop.png\" /> Buy in shop"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:322
+msgid "Magnet Fullsize Original"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:335
+msgid "Magnet Hd & Apple TV"
+msgstr ""
+
+#: src/djangoplicity/media/info.py:345
+#: templates/archives/image/object_astrometry.html:44
+msgid "View in WorldWide Telescope"
+msgstr "Зображення від WorldWide Telescope"
+
+#: src/djangoplicity/media/info.py:381
+#: src/djangoplicity/media/options/images.py:157
+#: src/djangoplicity/media/options/videos.py:228
+#: src/djangoplicity/releases/options.py:155
+msgid "Category"
+msgstr "Категорія"
+
+#: src/djangoplicity/media/models/comparisons.py:57
+msgid ""
+"Assessment of the quality of the image comparison (100 highest, 0 lowest). "
+"Higher priority images are ranked higher in search results than lower "
+"priority images."
+msgstr ""
+
+#: src/djangoplicity/media/models/comparisons.py:151
+msgid "Image comparison translation"
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:98
+msgid "Name of this color"
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:99
+msgid ""
+"Hue value (range 0-1) for the HSV model for the upper boundary of this "
+"colour."
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:337
+#: src/djangoplicity/media/models/images.py:886
+msgid "Exposure"
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:352
+#: src/djangoplicity/media/models/videos.py:96
+msgid ""
+"Assessment of the quality of the image (100 highest, 0 lowest). Higher "
+"priority images are ranked higher in search results than lower priority "
+"images."
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:413
+msgid "Distance in ly is accurate"
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:421
+msgid ""
+"Id of image - used in the URL for the image as well as the filename for the "
+"different formats."
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:511
+#: src/djangoplicity/media/models/images.py:516
+msgid "right"
+msgstr "права"
+
+#: src/djangoplicity/media/models/images.py:514
+#: src/djangoplicity/media/models/images.py:519
+msgid "left"
+msgstr "ліва"
+
+#: src/djangoplicity/media/models/images.py:520
+#, python-format
+msgid "North is %(degree).1f&deg; %(direction)s of vertical"
+msgstr "Північ на %(degree).1f&deg; %(direction)s від вертикалі"
+
+#: src/djangoplicity/media/models/images.py:599
+#: src/djangoplicity/media/options/images.py:102
+#: src/djangoplicity/media/options/images.py:121
+msgid "Wallpapers"
+msgstr "Шпалери"
+
+#: src/djangoplicity/media/models/images.py:600
+#: src/djangoplicity/media/options/images.py:98
+msgid "Print Layout"
+msgstr "Розмітка"
+
+#: src/djangoplicity/media/models/images.py:601
+msgid "Use zoomable as main"
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:606
+msgid "Disable News Feature Auto-Overwite"
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:615
+msgid "External link to non-local press releases."
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:619
+msgid "External link to a longer image caption located elsewhere."
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:631
+#: src/djangoplicity/media/options/images.py:160
+msgid "Colours"
+msgstr "Кольори"
+
+#: src/djangoplicity/media/models/images.py:819
+msgid "Illustrator File (traced text)"
+msgstr "Файл Illustrator (векторний)"
+
+#: src/djangoplicity/media/models/images.py:897
+#: src/djangoplicity/media/models/videos.py:888
+msgid "Contact"
+msgstr ""
+
+#: src/djangoplicity/media/models/images.py:924
+msgid "Image translation"
+msgstr ""
+
+#: src/djangoplicity/media/models/potws.py:180
+msgid "Pictures of the Week"
+msgstr "Зображення Тижня"
+
+#: src/djangoplicity/media/models/potws.py:230
+msgid "Picture of the Week translation"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:127
+msgid ""
+"Id of video - used in the URL for the image as well as the filename for the "
+"different formats."
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:195
+msgid "YouTube VideoID"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:196
+msgid "Use YouTube player"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:256
+#: src/djangoplicity/media/options/videos.py:179
+#: templates/scripts/embedded_list.html:4
+msgid "Script"
+msgstr "Сценарій"
+
+#: src/djangoplicity/media/models/videos.py:259
+msgid "Small Flash"
+msgstr "Мале Flash"
+
+#: src/djangoplicity/media/models/videos.py:260
+#: src/djangoplicity/products/models.py:414
+msgid "Small QT"
+msgstr "Мале QT"
+
+#: src/djangoplicity/media/models/videos.py:264
+msgid "Medium MPEG-1"
+msgstr "Якісне MPEG-1"
+
+#: src/djangoplicity/media/models/videos.py:265
+msgid "Medium Flash"
+msgstr "Якісне Flash"
+
+#: src/djangoplicity/media/models/videos.py:268
+msgid "Large QT"
+msgstr "Високоякісне QT"
+
+#: src/djangoplicity/media/models/videos.py:269
+msgid "Broadcast SD"
+msgstr "Трансляція SD"
+
+#: src/djangoplicity/media/models/videos.py:272
+msgid "HD & Apple TV Preview"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:273
+msgid "HD Broadcast 720p/50"
+msgstr "HD Трансляція 720p/50"
+
+#: src/djangoplicity/media/models/videos.py:274
+msgid "Full HD Preview 1080p"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:275
+msgid "Full HD Broadcast 1080p"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:278
+msgid "4K Ultra HD Preview H.264"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:279
+msgid "4K Ultra HD Preview H.265"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:280
+msgid "4K Ultra HD Broadcast"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:300
+msgid "HD Broadcast 720p/25"
+msgstr "HD трансляція 720/25"
+
+#: src/djangoplicity/media/models/videos.py:303
+msgid "Highres"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:304
+msgid "Playback"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:307
+#: src/djangoplicity/media/options/videos.py:183
+msgid "QuickTime VR"
+msgstr "QuickTime VR"
+
+#: src/djangoplicity/media/models/videos.py:729
+msgid "Video Subtitle"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:733
+msgid "Subtitle (srt)"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:774
+msgid "Video Audio Track"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:796
+msgid "Audio track type"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:820
+msgid "Video Broadcast Audio Track"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:824
+#: src/djangoplicity/media/models/videos.py:870
+msgid "Broadcast Audio Track"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:866
+msgid "Video Script"
+msgstr ""
+
+#: src/djangoplicity/media/models/videos.py:915
+msgid "Video translation"
+msgstr ""
+
+#: src/djangoplicity/media/options/comparisons.py:70
+msgid "About the Image Comparison"
+msgstr "Про Порівняння Зображень"
+
+#: src/djangoplicity/media/options/comparisons.py:89
+#: templates/archives/imagecomparison/embedded_list.html:3
+msgid "Image Comparisons"
+msgstr "Порівняльне зображення"
+
+#: src/djangoplicity/media/options/comparisons.py:90
+msgid "Image Comparisons (embargoed)"
+msgstr "Порівняння Зображень (заборонено)"
+
+#: src/djangoplicity/media/options/comparisons.py:91
+msgid "Image Comparisons (staging)"
+msgstr "Порівняння Зображень (постановка)"
+
+#: src/djangoplicity/media/options/comparisons.py:92
+#, python-format
+msgid "Image Comparisons %d"
+msgstr "Порівняння Зображень %d"
+
+#: src/djangoplicity/media/options/images.py:80
+msgid "About the Image"
+msgstr "Про зображення"
+
+#: src/djangoplicity/media/options/images.py:80
+msgid "NASA press release"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:80
+msgid "NASA caption"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:81
+#: src/djangoplicity/media/options/videos.py:82
+msgid "About the Object"
+msgstr "Про об’єкт"
+
+#: src/djangoplicity/media/options/images.py:82
+msgid "Mounted Image"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:97
+msgid "Image Formats"
+msgstr "Формати зображень"
+
+#: src/djangoplicity/media/options/images.py:100
+#: src/djangoplicity/media/options/videos.py:145
+msgid "BitTorrent Download"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:101
+msgid "Logos"
+msgstr "Логотип"
+
+#: src/djangoplicity/media/options/images.py:103
+#: src/djangoplicity/products/models.py:1091
+msgid "PDF"
+msgstr "PDF"
+
+#: src/djangoplicity/media/options/images.py:117
+#, python-format
+msgid "Image Archive: %(title)s"
+msgstr "Архів зображень: %(title)s"
+
+#: src/djangoplicity/media/options/images.py:118
+msgid "Top 100 Images"
+msgstr "100 найкращих зображень"
+
+#: src/djangoplicity/media/options/images.py:119
+msgid "Hall Of Fame"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:120
+msgid "Zoomable Images"
+msgstr "Масштабовані зображення"
+
+#: src/djangoplicity/media/options/images.py:122
+msgid "WorldWide Telescope"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:123
+msgid "Print Layouts"
+msgstr "Макети для друку"
+
+#: src/djangoplicity/media/options/images.py:124
+#: src/djangoplicity/media/options/images.py:164
+msgid "Advanced Image Search"
+msgstr "Розширений пошук зображень"
+
+#: src/djangoplicity/media/options/images.py:125
+msgid "Images (staging)"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:126
+msgid "Images (embargoed)"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:143
+#: src/djangoplicity/media/options/videos.py:216
+msgid "Minimum size"
+msgstr "Мінімальний розмір"
+
+#: src/djangoplicity/media/options/images.py:144
+#: src/djangoplicity/media/options/videos.py:217
+msgid "Ranking"
+msgstr "Ранжування"
+
+#: src/djangoplicity/media/options/images.py:145
+msgid "Instrument used"
+msgstr "Інструмент"
+
+#: src/djangoplicity/media/options/images.py:146
+#: src/djangoplicity/releases/options.py:147
+msgid "Facility used"
+msgstr "Телескоп"
+
+#: src/djangoplicity/media/options/images.py:147
+#: src/djangoplicity/media/options/videos.py:218
+#: src/djangoplicity/releases/options.py:149
+msgid "Additional search terms"
+msgstr "Додаткові умови пошуку"
+
+#: src/djangoplicity/media/options/images.py:148
+#: src/djangoplicity/media/options/videos.py:219
+msgid "Image ID"
+msgstr "ID зображення"
+
+#: src/djangoplicity/media/options/images.py:149
+#: src/djangoplicity/media/options/videos.py:220
+#: src/djangoplicity/releases/options.py:150
+msgid "Release ID"
+msgstr "ID релізу"
+
+#: src/djangoplicity/media/options/images.py:150
+#: src/djangoplicity/media/options/videos.py:221
+#: src/djangoplicity/releases/options.py:151
+msgid "Published since"
+msgstr "Опубліковано від"
+
+#: src/djangoplicity/media/options/images.py:151
+#: src/djangoplicity/media/options/videos.py:222
+#: src/djangoplicity/releases/options.py:152
+msgid "Published until"
+msgstr "Опубліковано до"
+
+#: src/djangoplicity/media/options/images.py:153
+#: src/djangoplicity/media/options/videos.py:224
+#: src/djangoplicity/releases/options.py:154
+msgid "Subject name"
+msgstr "Назва теми"
+
+#: src/djangoplicity/media/options/images.py:154
+#: src/djangoplicity/media/options/videos.py:225
+#: src/djangoplicity/releases/options.py:156
+msgid "Description"
+msgstr ""
+
+#: src/djangoplicity/media/options/images.py:155
+#: src/djangoplicity/media/options/videos.py:226
+#: templates/archives/credit.html:1
+#: templates/archives/image/index_top100.html:16
+#: templates/archives/image/object_description.html:18
+#: templates/archives/imagecomparison/detail.html:22
+#: templates/archives/video/object_description.html:20
+msgid "Credit"
+msgstr "Припис"
+
+#: src/djangoplicity/media/options/images.py:158
+msgid "Zoomable available"
+msgstr "Збільшення доступне"
+
+#: src/djangoplicity/media/options/images.py:159
+msgid "Wallpaper available"
+msgstr "Шпалери доступні"
+
+#: src/djangoplicity/media/options/potws.py:60
+msgid "Picture of the Week"
+msgstr "Зображення Тижня"
+
+#: src/djangoplicity/media/options/potws.py:61
+msgid "Picture of the Week (embargoed)"
+msgstr "Зображення Тижня (заборонено)"
+
+#: src/djangoplicity/media/options/potws.py:62
+msgid "Picture of the Week (staging)"
+msgstr "Зображення Тижня (постановка)"
+
+#: src/djangoplicity/media/options/potws.py:63
+#, python-format
+msgid "Picture of the Week %d"
+msgstr "Зображення Тижня %d"
+
+#: src/djangoplicity/media/options/videos.py:75
+#: src/djangoplicity/products/options.py:354
+msgid "About the Video"
+msgstr "Про відео"
+
+#: src/djangoplicity/media/options/videos.py:101
+msgid "Fulldome"
+msgstr "Повнокупольне"
+
+#: src/djangoplicity/media/options/videos.py:110
+msgid "Cylindrical"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:118
+msgid "VR"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:131
+msgid "Ultra HD"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:138
+msgid "HD"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:149
+msgid "Large"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:153
+#: src/djangoplicity/products/models.py:530
+msgid "Medium"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:161
+msgid "Small"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:168
+msgid "For Broadcasters"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:187
+msgid "Legacy Videos"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:209
+#: src/djangoplicity/products/options.py:358
+#: templates/videos/embedded_list.html:2
+msgid "Videos"
+msgstr "Відео"
+
+#: src/djangoplicity/media/options/videos.py:210
+#, python-format
+msgid "Video Archive: %(title)s"
+msgstr "Архів відео: %(title)s"
+
+#: src/djangoplicity/media/options/videos.py:211
+#: src/djangoplicity/media/options/videos.py:231
+msgid "Advanced Video Search"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:212
+msgid "Videos (staging)"
+msgstr ""
+
+#: src/djangoplicity/media/options/videos.py:213
+msgid "Videos (embargoed)"
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:47
+msgid "Same window"
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:48
+msgid "New window"
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:67
+msgid ""
+"Defines if the root menu item should be hidden (a menu always have exactly "
+"one root menu item)."
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:72
+msgid ""
+"Defines the default expansion level of the menu. Use e.g. 2 to show the "
+"first two levels in the menu. A value of 0 shows the entire menu. This field "
+"can be overridden by the template."
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:76
+msgid ""
+"Defines the maximum number of levels allowed in the menu. A value of 0 means "
+"no limits. This field can be overridden by the template."
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:96
+msgid ""
+"Use lower-case letters only. Local links should start with forward slash, "
+"and normally ends with slash - eg /science/. Remote links should be full "
+"URLs - eg http://www.cnn.com/. The field can be left empty, in which case "
+"the menu item won't be linked."
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:105
+msgid "This field only have effect for the root menu item"
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:107
+msgid ""
+"Moving a node to a new parent, will place it as the last node. When moving a "
+"menu item, all of it sub-items will be moved as well."
+msgstr ""
+
+#: src/djangoplicity/menus/models.py:114
+msgid ""
+"In case a menu contains several items with the same link, set this field to "
+"true and the others menu items field to false, to control which item is used "
+"for item highlighting and breadcrumb generation."
+msgstr ""
+
+#: src/djangoplicity/menus/templatetags/menus.py:90
+#: src/djangoplicity/menus/templatetags/menus.py:207
+#, python-format
+msgid "Couldn't resolve menu variable: %s"
+msgstr ""
+
+#: src/djangoplicity/menus/templatetags/menus.py:205
+msgid "The menu does not exists"
+msgstr ""
+
+#: src/djangoplicity/menus/templatetags/menus.py:209
+#, python-format
+msgid "The template %(tpl)s does not exists: %(msg)s"
+msgstr ""
+
+#: src/djangoplicity/menus/templatetags/menus.py:211
+#, python-format
+msgid "The template %(tpl)s had syntax errors: %(msg)s"
+msgstr ""
+
+#: src/djangoplicity/menus/templatetags/menus.py:213
+#: src/djangoplicity/pages/templatetags/pages.py:58
+msgid "An unknown error occurred."
+msgstr ""
+
+#: src/djangoplicity/menus/templatetags/menus.py:271
+#: src/djangoplicity/menus/templatetags/menus.py:319
+#, python-format
+msgid "'%r' tag requires 1 or 2 arguments."
+msgstr ""
+
+#: src/djangoplicity/menus/templatetags/menus.py:344
+#, python-format
+msgid "%r tag requires arguments"
+msgstr ""
+
+#: src/djangoplicity/menus/templatetags/menus.py:347
+#, python-format
+msgid "%r tag had invalid arguments"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:40
+msgid "Enter a valid number."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:83
+msgid "Original creator of the resource at the organizational level."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:91
+msgid "Creator"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:108
+msgid ""
+"A simple URL pointing to the (top level) outreach webpage for the original "
+"creator."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:116
+msgid "Creator URL"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:133
+msgid "Street address of the primary contact for the resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:141
+msgid "Contact Address"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:158
+msgid "City of the primary contact for the resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:166
+msgid "Contact City"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:183
+msgid "State or province of the primary contact for the resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:191
+msgid "Contact State/Province"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:208
+msgid "Zip or postal code of the primary contact for the resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:216
+msgid "Contact Postalcode"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:233
+msgid "Country of the primary contact for the resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:241
+msgid "Contact Country"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:258
+msgid "Copyright and related intellectual property rights description."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:265
+msgid "Rights"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:282
+msgid "General descriptive title given to the image resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:305
+msgid "Short description of the full caption."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:341
+msgid "Full caption and related description text for the image resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:383
+msgid ""
+"The type(s) of object or objects in the resource, or general subject matter "
+"of an image, taken from a controlled vocabulary taxonomy."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:389
+msgid "Subject Category"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:414
+msgid ""
+"Proper names/catalog numbers for key objects/subjects in the image field."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:420
+msgid "Subject Name"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:449
+msgid ""
+"The distance to the object, measured in light years (list element 1) and/or "
+"redshift (list element 2)."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:456
+msgid "Distance"
+msgstr "Відстань"
+
+#: src/djangoplicity/metadata/archives/fields.py:489
+msgid "The distance to the object, measured in light years."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:495
+msgid "Distance (in ly)"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:515
+msgid "The distance to the object, measured in redshift."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:523
+msgid "Distance  (redshift)"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:541
+msgid "Comment about the contents of the Distance tag."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:547
+msgid "Distance Notes"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:565
+msgid ""
+"The minimum information that the Publisher would like to see mentioned when "
+"the resource is used."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:596
+msgid "This is an identifier for the resource that is unique to the creator."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:618
+msgid "The type of image/media resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:649
+#: src/djangoplicity/metadata/archives/fields.py:715
+msgid "Telescopes or observatories used for the observations."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:655
+#: src/djangoplicity/metadata/archives/fields.py:722
+#: src/djangoplicity/metadata/archives/info.py:58
+msgid "Facility"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:681
+#: src/djangoplicity/metadata/archives/fields.py:749
+msgid "Instrument used to collect the data. One Instrument entry per exposure."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:687
+#: src/djangoplicity/metadata/archives/fields.py:756
+msgid "Instrument"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:781
+msgid ""
+"The output color that is assigned to an exposure. One Spectral."
+"ColorAssignment entry per exposure."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:790
+msgid "Spectral Color Assignment"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:807
+msgid ""
+"Waveband of the component exposure from a pre-defined list defining the "
+"general part of the spectrum covered. One Spectral.Band entry per exposure."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:816
+msgid "Spectral Band"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:833
+msgid ""
+"Bandpass of the individual exposure. One Spectral.Bandpass entry per "
+"exposure."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:841
+msgid "Spectral Bandpass"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:858
+msgid ""
+"Central wavelength of the filter used for the individual exposure measured "
+"in nanometers. One Spectral.CentralWavelength entry per exposure."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:865
+msgid "Spectral Central Wavelength"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:882
+msgid ""
+"Free-text field to allow for more detailed discussions of bandpasses and "
+"color mappings."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:889
+msgid "Spectral Notes"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:906
+msgid ""
+"Start time of the exposure in ISO 8601 format 'yyyy-mm-ddThh:mm' (UT; time "
+"portion is optional). One Temporal.StartTime entry per exposure."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:913
+msgid "Temporal Start Time"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:930
+msgid ""
+"The exposure time in seconds. One Temporal.IntegrationTime entry per "
+"exposure."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:937
+msgid "Temporal Integration Time"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:954
+msgid ""
+"Identifier for the source FITS dataset for each exposure in the image. If "
+"available, this can be a VO-compliant reference to the dataset [ivo://"
+"AuthorityID/ResourceKey]. One DatasetID entry per exposure."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:962
+msgid "Dataset ID"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:979
+msgid ""
+"Coordinate system reference frame. Spatial.CoordinateFrame should be chosen "
+"from a pre-defined list."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:988
+msgid "Coordinate Frame"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1006
+msgid "Equinox for Spatial.CoordinateFrame in decimal years."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1015
+msgid "Equinox"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1032
+msgid ""
+"Reference coordinates (RA and Dec) for the image (2 element list in decimal "
+"degrees)."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1039
+msgid "Reference Value"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1061
+msgid "Size of the image in pixels (2 element list)."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1068
+msgid "Reference Dimension"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1090
+msgid ""
+"X,Y coordinates of the pixel in the image to which the reference coordinate "
+"(Spatial.ReferenceValue) refers (2 element list)."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1097
+msgid "Reference Pixel"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1119
+msgid "Spatial scale of the image in number of degrees/pixel (2 element list)."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1126
+msgid "Scale"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1144
+msgid "Position angle of the Y axis in degrees measured east from north."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1151
+msgid "Rotation"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1168
+msgid "A combination of the coordinate system and the projection of the image."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1177
+msgid "Coordinate System Projection"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1194
+msgid ""
+"This qualitatively describes the reliability of the spatial coordinate "
+"information in this metadata."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1203
+msgid "Quality"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1220
+msgid ""
+"Free-text description to expand further on coordinates/geometry of image."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1227
+#: templates/archives/image/object_observation.html:30
+#: templates/archives/release/object_description.html:29
+msgid "Notes"
+msgstr "Примітки"
+
+#: src/djangoplicity/metadata/archives/fields.py:1244
+msgid ""
+"Free-text representation of the FITS header from which the AVM spatial tags "
+"were derived."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1251
+msgid "FITS Header"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1268
+msgid "Publisher of the resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1276
+msgid "Publisher"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1293
+msgid "ID of publisher registered as VAMP providers."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1301
+msgid "Publisher ID"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1320
+msgid ""
+"The format of the file. For images this would include TIFF, JPEG, PNG, GIF, "
+"PSD, PDF."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1329
+msgid "File Type"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1346
+msgid "Width in pixels of the image resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1353
+msgid "Width"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1370
+msgid "Height in pixels of the image resource."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1377
+msgid "Height"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1395
+msgid "Size of the image resource, measured in kilobytes."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1402
+msgid "File Size"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1423
+msgid "The duration of the file in the format hh:mm:ss:frames."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1431
+msgid "File Duration"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1453
+msgid "The aspect ratio of the file."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1462
+msgid "File Aspect Ratio"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1479
+msgid "The surround sound format of the audio."
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1488
+msgid "Surround Sound Format"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1509
+msgid "ADS Bibliographic Code"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1515
+msgid "Publication"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/fields.py:1547
+msgid "Observation Proposal/Program ID"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/forms.py:75
+msgid "RA"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/forms.py:76
+msgid "Dec"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/forms.py:81
+#: src/djangoplicity/metadata/archives/forms.py:86
+#: src/djangoplicity/metadata/archives/forms.py:87
+msgid "px"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/forms.py:116
+msgid "hours"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/forms.py:117
+msgid "mins"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/forms.py:118
+msgid "secs"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/forms.py:119
+msgid "frames"
+msgstr ""
+
+#: src/djangoplicity/metadata/archives/info.py:34
+#: src/djangoplicity/products/info.py:95
+#: templates/product/admin/inventory_form.html:83
+#: templates/product/admin/product_export_form.html:81
+msgid "Name"
+msgstr "Назва"
+
+#: src/djangoplicity/metadata/archives/info.py:75
+#: src/djangoplicity/releases/options.py:148
+msgid "Instruments"
+msgstr ""
+
+#: src/djangoplicity/metadata/consts.py:5
+msgid "Observation"
+msgstr "Спостереження"
+
+#: src/djangoplicity/metadata/consts.py:6
+msgid "Artwork"
+msgstr "Художнє"
+
+#: src/djangoplicity/metadata/consts.py:7
+msgid "Photographic"
+msgstr "Фотографічне"
+
+#: src/djangoplicity/metadata/consts.py:8
+msgid "Planetary"
+msgstr "Планетарна"
+
+#: src/djangoplicity/metadata/consts.py:9
+msgid "Simulation"
+msgstr "Моделювання"
+
+#: src/djangoplicity/metadata/consts.py:10
+msgid "Collage"
+msgstr "Колаж"
+
+#: src/djangoplicity/metadata/consts.py:11
+msgid "Chart"
+msgstr "Мапа"
+
+#: src/djangoplicity/metadata/consts.py:15
+msgid "Good"
+msgstr ""
+
+#: src/djangoplicity/metadata/consts.py:16
+msgid "Moderate"
+msgstr ""
+
+#: src/djangoplicity/metadata/consts.py:17
+msgid "Poor"
+msgstr ""
+
+#: src/djangoplicity/metadata/consts.py:29
+msgid "Grayscale"
+msgstr "Чорно-біле"
+
+#: src/djangoplicity/metadata/consts.py:30
+msgid "Pseudocolor"
+msgstr "Псевдоколір"
+
+#: src/djangoplicity/metadata/consts.py:31
+msgid "Luminosity"
+msgstr "Світність"
+
+#: src/djangoplicity/metadata/consts.py:35
+msgid "Radio"
+msgstr "Радіо"
+
+#: src/djangoplicity/metadata/consts.py:36
+msgid "Millimeter"
+msgstr "Міліметровий"
+
+#: src/djangoplicity/metadata/consts.py:37
+msgid "Infrared"
+msgstr "Інфрачервоний"
+
+#: src/djangoplicity/metadata/consts.py:38
+msgid "Optical"
+msgstr "Оптичний"
+
+#: src/djangoplicity/metadata/consts.py:39
+msgid "Ultraviolet"
+msgstr "Ультрафіолетовий"
+
+#: src/djangoplicity/metadata/consts.py:40
+msgid "X-ray"
+msgstr "Рентгенівський"
+
+#: src/djangoplicity/metadata/consts.py:41
+msgid "Gamma-ray"
+msgstr "Гамма"
+
+#: src/djangoplicity/metadata/consts.py:68
+msgid "Full"
+msgstr ""
+
+#: src/djangoplicity/metadata/consts.py:69
+msgid "Position"
+msgstr ""
+
+#: src/djangoplicity/metadata/consts.py:78
+msgid "Solar System"
+msgstr "Сонячна система"
+
+#: src/djangoplicity/metadata/consts.py:79
+msgid "Milky Way"
+msgstr "Чумацький Шлях"
+
+#: src/djangoplicity/metadata/consts.py:80
+msgid "Local Universe"
+msgstr "Ближній Всесвіт"
+
+#: src/djangoplicity/metadata/consts.py:81
+msgid "Early Universe"
+msgstr "Ранній Всесвіт"
+
+#: src/djangoplicity/metadata/consts.py:82
+msgid "Unspecified"
+msgstr "Невизначений"
+
+#: src/djangoplicity/metadata/fields.py:45
+msgid "This field cannot be null."
+msgstr ""
+
+#: src/djangoplicity/metadata/fields.py:100
+msgid "Enter a number."
+msgstr ""
+
+#: src/djangoplicity/metadata/fields.py:149
+msgid "Enter only alphanumeric characters separated by semicolons."
+msgstr ""
+
+#: src/djangoplicity/metadata/fields.py:164
+msgid "Enter only numbers separated by semicolons."
+msgstr ""
+
+#: src/djangoplicity/metadata/fields.py:179
+msgid ""
+"Enter datetime values in the format yyyy-mm-ddThh:mm:ss separated by "
+"semicolons."
+msgstr ""
+
+#: src/djangoplicity/metadata/fields.py:590
+msgid ""
+"Enter only values from the controlled vocabulary: Purple, Blue, Cyan, Green, "
+"Yellow, Orange, Red, Magenta, Grayscale, Pseudocolor"
+msgstr ""
+
+#: src/djangoplicity/metadata/fields.py:615
+msgid ""
+"Enter only values from the controlled vocabulary: Radio, Millimeter, "
+"Infrared, Optical, Ultraviolet, X-ray, Gamma-ray"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:111
+msgid "Top Level Hierarchy"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:194
+msgid "AVM Code"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:208
+msgid "Can be a single name, or a list of names, separated by \";\"."
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:209
+msgid ""
+"Alternative names, separated by \";\". These names will not be shown, but "
+"used to enable search."
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:210
+msgid ""
+"If \"name\" is a list, only the first item will be used to link to Simbad."
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:233
+#: src/djangoplicity/metadata/models.py:243
+msgid "Include in listings"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:261
+msgid "Bibliographic Code"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:261
+msgid ""
+"ADS Bibliographic Code - see http://adsdoc.harvard.edu/abs_doc/help_pages/"
+"data.html#bibcodes"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:278
+msgid "Program/Proposal ID"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:278
+msgid "The observation proposal ID from the specific observatory."
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:301
+#: src/djangoplicity/pages/models.py:70
+msgid "URL"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:302
+msgid "Defines to which archive this query applies."
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:303
+msgid "Title of query to be displayed to the user."
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:319
+msgid "Web Category"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:320
+msgid "Web Categories"
+msgstr ""
+
+#: src/djangoplicity/metadata/models.py:335
+msgid "tagging statuses"
+msgstr ""
+
+#: src/djangoplicity/pages/admin.py:80
+msgid "Published state of selected items were toggled."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:71
+msgid ""
+"Example: '/about/contact/'. Make sure to have leading and trailing slashes. "
+"Good and descriptive URLs are important for good user experience and search "
+"engine ranking."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:82
+msgid "Name of the group"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:83
+msgid "Description of group"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:84
+msgid "Groups which have to access to this page group"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:85
+msgid "If checked members of this group have access to all pages"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:98
+msgid "ID of page"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:100
+msgid ""
+"If checked, the page cannot be viewed through the URL. Used for pages that "
+"are embedded into complex pages like the frontpage."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:122
+msgid ""
+"The metadata description is normally shown in search engine results, making "
+"the description an effective way of capturing users attention. Description "
+"should be a clear description of the content and less the 200 characters "
+"long. Also used when sharing page on social media"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:127
+msgid ""
+"Comma-separated list of keywords for this page. Mainly used internally as "
+"search engines rarely use keywords to rank pages."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:149
+msgid ""
+"If this is unchecked, the page will not be viewable online. Timed publishing "
+"of published pages, can be controlled by the start/end publishing fields."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:154
+msgid ""
+"Leave blank to publish immediately. The field only has effect for published "
+"pages (see above)."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:157
+msgid ""
+"Leave blank for open-ended publishing. The field only has effect for "
+"published pages (see above)."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:163
+msgid "Determines e.g. which templates to use for rendering the template."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:166
+msgid "Override the template specified by the section."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:180
+msgid "If checked, only logged-in users will be able to view the page."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:189
+msgid "If checked, page will not be cached. Use with care!"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:195
+msgid ""
+"If checked the WYSIWYG editor will be disabled, useful for editing pages "
+"with javascript."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:196
+msgid "Allow Live edit (only if the page doesn't use javascript, embed, etc.)"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:198
+msgid "Redirect URL"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:199
+msgid ""
+"Example: 'http://www.eso.org/public/'. Used if the page has been permanently "
+"moved. If given, access to the page will trigger a HTTP 301 redirection to "
+"the given URL."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:202
+msgid "PageGroup the Page belongs to, used for access restriction."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:222
+msgid "Is Online"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:294
+msgid "Meaningful title for embedded "
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:297
+msgid ""
+"Description of where the page is being embedded and if there is any special "
+"considerations to take - e.g. page length etc."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:304
+msgid ""
+"Select page that you want to use for the specific key. Note, only pages "
+"marked as embedded pages can be selected."
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:314
+msgid "Page Embedding"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:342
+msgid "Page translation"
+msgstr ""
+
+#: src/djangoplicity/pages/models.py:358
+#, python-format
+msgid ""
+"Application %(app)s failed to register page key \"%(key)s\". The key has "
+"already been registered by the application %(otherapp)s."
+msgstr ""
+
+#: src/djangoplicity/pages/templatetags/pages.py:45
+msgid "Context must be of type RequestContext."
+msgstr ""
+
+#: src/djangoplicity/pages/templatetags/pages.py:52
+msgid "The embedded page could not be found."
+msgstr ""
+
+#: src/djangoplicity/pages/templatetags/pages.py:54
+msgid "User not authorized to view page."
+msgstr ""
+
+#: src/djangoplicity/pages/templatetags/pages.py:56
+#, python-format
+msgid "Couldn't resolve request variable: %s"
+msgstr ""
+
+#: src/djangoplicity/pages/templatetags/pages.py:84
+msgid "embed_page tag requires one argument"
+msgstr ""
+
+#: src/djangoplicity/products/admin.py:295
+msgid ""
+"In case title, description or credit is not provided, the image's title, "
+"description or credit will be used."
+msgstr ""
+
+#: src/djangoplicity/products/base/consts.py:231
+msgid "Files"
+msgstr ""
+
+#: src/djangoplicity/products/base/models.py:98
+#: src/djangoplicity/products/base/models.py:99
+#: src/djangoplicity/products/base/models.py:100
+msgid "(cm)"
+msgstr ""
+
+#: src/djangoplicity/products/base/models.py:101
+msgid "(g)"
+msgstr ""
+
+#: src/djangoplicity/products/base/models.py:130
+msgid "Number of pages"
+msgstr ""
+
+#: src/djangoplicity/products/base/models.py:131
+msgid "Type of cover"
+msgstr ""
+
+#: src/djangoplicity/products/base/models.py:143
+msgid "Resolution (DPI)"
+msgstr ""
+
+#: src/djangoplicity/products/base/models.py:144
+msgid "X size (px)"
+msgstr ""
+
+#: src/djangoplicity/products/base/models.py:145
+msgid "Y size (px)"
+msgstr ""
+
+#: src/djangoplicity/products/info.py:76
+msgid "Pixel Size"
+msgstr ""
+
+#: src/djangoplicity/products/info.py:87
+msgid "Resolution"
+msgstr ""
+
+#: src/djangoplicity/products/info.py:111
+#: templates/admin/base_site_base.html:24
+msgid "Website"
+msgstr ""
+
+#: src/djangoplicity/products/info.py:122
+msgid "Related archive image"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:192
+msgid "Kids Drawing"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:204
+#: src/djangoplicity/products/models.py:327
+#: src/djangoplicity/products/models.py:361
+msgid "Small PDF File"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:241
+msgid "Fullsize (RGB)"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:242
+msgid "Fullsize (CMYK)"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:243
+msgid "Fullsize Transparent (RGB)"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:244
+msgid "Fullsize Transparent (CMYK)"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:248
+msgid "Transparent PNG"
+msgstr "Прозорий PNG"
+
+#: src/djangoplicity/products/models.py:334
+msgid "Electronic Card"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:335
+msgid "Electronic Cards"
+msgstr "Електронні листівки"
+
+#: src/djangoplicity/products/models.py:363
+msgid "Adobe Illustrator File"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:364
+msgid "Microsoft Word Document"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:365
+#: src/djangoplicity/products/models.py:553
+#: src/djangoplicity/products/models.py:946
+#: src/djangoplicity/products/models.py:973
+#: src/djangoplicity/products/models.py:1001
+msgid "InDesign file"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:392
+msgid "FITS Liberator Image"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:415
+msgid "Medium QT"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:416
+msgid "Small MPEG"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:417
+msgid "Medium MPEG"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:418
+msgid "Large MPEG"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:426
+msgid "User Video"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:437
+msgid "PDF Presentation"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:463
+#: src/djangoplicity/products/models.py:552
+#: src/djangoplicity/products/models.py:578
+#: src/djangoplicity/products/models.py:631
+#: src/djangoplicity/products/models.py:656
+#: src/djangoplicity/products/models.py:681
+#: src/djangoplicity/products/models.py:774
+#: src/djangoplicity/products/models.py:800
+#: src/djangoplicity/products/models.py:826
+msgid "PDF File (Small)"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:531
+msgid "Media"
+msgstr "Медіа"
+
+#: src/djangoplicity/products/models.py:547
+msgid "ISBN"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:548
+msgid "DOI"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:688
+msgid "Stationery"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:716
+msgid "Merchandise"
+msgstr "Товари"
+
+#: src/djangoplicity/products/models.py:738
+msgid "Apparel"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:756
+msgid "STECF Newsletter"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:782
+msgid "CAPjournal"
+msgstr "CAPjournal"
+
+#: src/djangoplicity/products/models.py:808
+msgid "Messenger"
+msgstr "\"Messenger\""
+
+#: src/djangoplicity/products/models.py:834
+msgid "Science In School"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:858
+msgid "Bulletin"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:880
+msgid "Postcard"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1070
+msgid "(Main Calendar Entry)"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1071
+msgid "January"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1072
+msgid "February"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1073
+msgid "March"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1074
+msgid "April"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1075
+msgid "May"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1076
+msgid "June"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1077
+msgid "July"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1078
+msgid "August"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1079
+msgid "September"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1080
+msgid "October"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1081
+msgid "November"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1082
+msgid "December"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1092
+msgid "Small PDF"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1161
+msgid "ESO supernova activity"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1162
+msgid "ESO supernova activities"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1214
+msgid "ePublication"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1255
+msgid "Conference"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1323
+#: src/djangoplicity/products/models.py:1324
+msgid "conference type"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1345
+msgid "Model ID if uploaded on sketchfab"
+msgstr ""
+
+#: src/djangoplicity/products/models.py:1356
+msgid "3D Model"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:68
+#, python-format
+msgid "About the %s"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:138
+msgid "About the Handout"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:143
+#: src/djangoplicity/products/options.py:177
+#: src/djangoplicity/products/options.py:229
+#: src/djangoplicity/products/options.py:251
+#: src/djangoplicity/products/options.py:310
+#: src/djangoplicity/products/options.py:327
+#: src/djangoplicity/products/options.py:401
+msgid "File Formats"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:156
+#: src/djangoplicity/products/options.py:265
+msgid "Author"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:157
+msgid "About the Drawing"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:172
+msgid "About the Press Kit"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:189
+msgid "About the Music"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:194
+#: templates/audiotracks/embedded_list.html:3
+msgid "Audio"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:224
+msgid "About the Logo"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:246
+msgid "About the Calendar"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:264
+#: src/djangoplicity/products/options.py:288
+msgid "About the Piece"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:305
+msgid "About the Electronic Card"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:322
+msgid "About the Exhibition"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:339
+msgid "About the FITS Image"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:396
+msgid "About the Presentation"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:413
+msgid "About the 3D Model"
+msgstr ""
+
+#: src/djangoplicity/products/options.py:418
+msgid "3D Model Files"
+msgstr ""
+
+#: src/djangoplicity/releases/info.py:45
+msgid "Release No."
+msgstr "Реліз №"
+
+#: src/djangoplicity/releases/info.py:56
+msgid "Legacy ID"
+msgstr ""
+
+#: src/djangoplicity/releases/info.py:71
+msgid "Science data"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:64
+msgid "ISO Code"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:65
+msgid "URL Prefix"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:67
+msgid "Flag URL"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:79
+msgid "countries"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:103
+msgid "Press Release Type"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:110
+msgid "Id of release - e.g. heic0801. The id must be unique."
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:112
+msgid "Old Ids"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:112
+msgid "For backwards compatibility: Historic ids of this press release."
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:123
+msgid "The city of the release - e.g. Paris. Can be left blank."
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:125
+msgid ""
+"HTML code in lead is not allowed. The lead is further more normally shown in "
+"search engine results, making the description an effective way of capturing "
+"users attention."
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:133
+msgid "Help text"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:146
+msgid ""
+"Disclaimer for press release - usually e.g. retractions of previously issued "
+"press releases."
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:156
+msgid "Used to store Meltwater Keywords."
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:156
+msgid "Keywords"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:165
+msgid "Use this to override the default Release image."
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:260
+msgid "Press Release"
+msgstr "Прес-реліз"
+
+#: src/djangoplicity/releases/models.py:261
+#: src/djangoplicity/releases/options.py:71
+#: src/djangoplicity/releases/options.py:100
+msgid "Press Releases"
+msgstr "Прес-релізи"
+
+#: src/djangoplicity/releases/models.py:281
+msgid "Science Papers"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:317
+msgid "Kids Press Release"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:379
+msgid "Press Release Translation"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:400
+msgid "contact"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:412
+msgid "translation contact"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:433
+msgid "Related release"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:448
+#, python-format
+msgid "Archive Item for Release %s"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:457
+msgid "Zoomable if main"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:467
+msgid "Related Stock Image"
+msgstr ""
+
+#: src/djangoplicity/releases/models.py:485
+msgid "URL Suffix"
+msgstr ""
+
+#: src/djangoplicity/releases/options.py:75
+msgid "Text"
+msgstr ""
+
+#: src/djangoplicity/releases/options.py:78
+msgid "About the Release"
+msgstr "Про реліз"
+
+#: src/djangoplicity/releases/options.py:101
+msgid "Embargoed Press Releases"
+msgstr "Заборонені прес-релізи"
+
+#: src/djangoplicity/releases/options.py:102
+msgid "Press Releases (staging)"
+msgstr "Прес-релізи (постановка)"
+
+#: src/djangoplicity/releases/options.py:103
+#, python-format
+msgid "Press Releases %d"
+msgstr "Прес-релізи %d"
+
+#: src/djangoplicity/releases/options.py:104
+#: src/djangoplicity/releases/options.py:159
+msgid "Advanced press release search"
+msgstr ""
+
+#: src/djangoplicity/remotearchives/admin.py:48
+msgid "Fetching latest data for selected remote archives."
+msgstr ""
+
+#: src/djangoplicity/remotearchives/admin.py:49
+msgid "Fetch remote archives data"
+msgstr ""
+
+#: src/djangoplicity/remotearchives/models.py:49
+msgid "ID of the remote Archive"
+msgstr ""
+
+#: src/djangoplicity/remotearchives/models.py:52
+msgid "Last fetch"
+msgstr ""
+
+#: src/djangoplicity/reports/formatters.py:219
+#, python-format
+msgid "The output formatter type \"%s\" is already registered."
+msgstr ""
+
+#: src/djangoplicity/reports/formatters.py:224
+msgid "Ouput formatter must be of type OutputFormatter"
+msgstr ""
+
+#: src/djangoplicity/reports/formatters.py:234
+#, python-format
+msgid "The output formatter type \"%s\" is not registered."
+msgstr ""
+
+#: src/djangoplicity/reports/models.py:55
+msgid "Please write the fields to be displayed in a semi-colon seprated format"
+msgstr ""
+
+#: src/djangoplicity/reports/models.py:58
+msgid "SQL Command"
+msgstr ""
+
+#: src/djangoplicity/reports/templates/reports/report_view.html:7
+#: templates/product/admin/inventory_form.html:64
+#: templates/product/admin/product_export_form.html:48
+msgid "Documentation"
+msgstr ""
+
+#: src/djangoplicity/reports/templates/reports/report_view.html:7
+#: templates/product/admin/inventory_form.html:64
+#: templates/product/admin/product_export_form.html:48
+msgid "Change password"
+msgstr ""
+
+#: src/djangoplicity/reports/templates/reports/report_view.html:7
+#: templates/product/admin/inventory_form.html:64
+#: templates/product/admin/product_export_form.html:48
+msgid "Log out"
+msgstr ""
+
+#: src/djangoplicity/reports/templates/reports/report_view.html:12
+msgid "Reports"
+msgstr ""
+
+#: src/djangoplicity/reports/views.py:73
+#, python-format
+msgid "Report \"%s\" could not be generated"
+msgstr ""
+
+#: src/djangoplicity/science/models.py:126
+msgid "Related science announcement"
+msgstr ""
+
+#: src/djangoplicity/science/models.py:143
+#, python-format
+msgid "Archive Item for Science Announcement %s"
+msgstr ""
+
+#: src/djangoplicity/translation/models.py:148
+msgid "Translation source"
+msgstr ""
+
+#: src/djangoplicity/translation/models.py:149
+msgid ""
+"When you check this box and save this translation, an automatic notification "
+"email will be sent."
+msgstr ""
+
+#: src/djangoplicity/translation/tests.py:81
+#: src/djangoplicity/translation/tests.py:124 templates/shop/cart.html:31
+msgid "Item"
+msgstr ""
+
+#: templates/admin/announcements/announcement/change_form.html:7
+#: templates/admin/media/pictureoftheweek/change_form.html:7
+#: templates/admin/releases/release/change_form.html:8
+msgid "Displays"
+msgstr ""
+
+#: templates/admin/announcements/announcement/change_form.html:8
+#: templates/admin/announcements/announcementproxy/change_form.html:7
+#: templates/admin/announcements/webupdate/change_form.html:7
+#: templates/admin/duplicate_form.html:10
+#: templates/admin/media/image/change_form.html:10
+#: templates/admin/media/imagecomparison/change_form.html:7
+#: templates/admin/media/imagecomparisonproxy/change_form.html:7
+#: templates/admin/media/imageproxy/change_form.html:7
+#: templates/admin/media/pictureoftheweek/change_form.html:8
+#: templates/admin/media/pictureoftheweekproxy/change_form.html:7
+#: templates/admin/media/video/change_form.html:6
+#: templates/admin/media/videoproxy/change_form.html:7
+#: templates/admin/products/change_form.html:7
+#: templates/admin/products/mountedimage/change_form.html:7
+#: templates/admin/releases/release/change_form.html:9
+#: templates/admin/releases/releaseproxy/change_form.html:7
+#: templates/admin/releases/releaseproxy/duplicate_form.html:10
+#: templates/admin/rename_form.html:10
+#: templates/admin/science/scienceannouncement/change_form.html:7
+msgid "Rename"
+msgstr ""
+
+#: templates/admin/announcements/announcement/change_form.html:10
+#: templates/admin/media/image/change_form.html:12
+#: templates/admin/media/imagecomparison/change_form.html:9
+#: templates/admin/media/pictureoftheweek/change_form.html:10
+#: templates/admin/media/video/change_form.html:8
+#: templates/admin/pages/page/change_form.html:8
+#: templates/admin/releases/release/change_form.html:11
+msgid "Translations"
+msgstr "Переклади"
+
+#: templates/admin/announcements/announcement/change_form.html:13
+#: templates/admin/announcements/announcementproxy/change_form.html:11
+#: templates/admin/announcements/webupdate/change_form.html:8
+#: templates/admin/base_site_base.html:30
+#: templates/admin/media/image/change_form.html:16
+#: templates/admin/media/imagecomparison/change_form.html:12
+#: templates/admin/media/imagecomparisonproxy/change_form.html:11
+#: templates/admin/media/imageproxy/change_form.html:11
+#: templates/admin/media/pictureoftheweek/change_form.html:13
+#: templates/admin/media/pictureoftheweekproxy/change_form.html:10
+#: templates/admin/media/video/change_form.html:11
+#: templates/admin/media/videoproxy/change_form.html:11
+#: templates/admin/pages/page/change_form.html:12
+#: templates/admin/pages/pageproxy/change_form.html:12
+#: templates/admin/product/category/change_form.html:10
+#: templates/admin/product/product/change_form.html:10
+#: templates/admin/products/change_form.html:8
+#: templates/admin/products/mountedimage/change_form.html:8
+#: templates/admin/releases/release/change_form.html:14
+#: templates/admin/releases/releaseproxy/change_form.html:11
+#: templates/admin/science/scienceannouncement/change_form.html:8
+#: templates/admin/shop/order/change_form.html:13
+msgid "History"
+msgstr ""
+
+#: templates/admin/announcements/announcement/change_form.html:14
+#: templates/admin/announcements/announcementproxy/change_form.html:12
+#: templates/admin/announcements/webupdate/change_form.html:9
+#: templates/admin/media/image/change_form.html:18
+#: templates/admin/media/image/edit_inline/stacked.html:13
+#: templates/admin/media/imagecomparison/change_form.html:13
+#: templates/admin/media/imagecomparisonproxy/change_form.html:12
+#: templates/admin/media/imageproxy/change_form.html:12
+#: templates/admin/media/pictureoftheweek/change_form.html:14
+#: templates/admin/media/pictureoftheweekproxy/change_form.html:11
+#: templates/admin/media/video/change_form.html:13
+#: templates/admin/media/video/edit_inline/stacked.html:13
+#: templates/admin/media/videoproxy/change_form.html:12
+#: templates/admin/pages/page/change_form.html:13
+#: templates/admin/pages/pageproxy/change_form.html:13
+#: templates/admin/product/category/change_form.html:11
+#: templates/admin/product/product/change_form.html:11
+#: templates/admin/products/change_form.html:9
+#: templates/admin/products/mountedimage/change_form.html:9
+#: templates/admin/releases/release/change_form.html:15
+#: templates/admin/releases/releaseproxy/change_form.html:12
+#: templates/admin/science/scienceannouncement/change_form.html:9
+#: templates/relationeditor/list_editor_view.html:20
+#: templates/relationeditor/select_relations.html:33
+msgid "View on site"
+msgstr ""
+
+#: templates/admin/announcements/announcementproxy/change_form.html:8
+#: templates/admin/media/imagecomparisonproxy/change_form.html:8
+#: templates/admin/media/imageproxy/change_form.html:8
+#: templates/admin/media/pictureoftheweekproxy/change_form.html:8
+#: templates/admin/media/videoproxy/change_form.html:8
+#: templates/admin/pages/pageproxy/change_form.html:8
+#: templates/admin/releases/releaseproxy/change_form.html:8
+msgid "Duplicate"
+msgstr ""
+
+#: templates/admin/announcements/announcementproxy/change_form.html:9
+#: templates/admin/media/imagecomparisonproxy/change_form.html:9
+#: templates/admin/media/imageproxy/change_form.html:9
+#: templates/admin/media/videoproxy/change_form.html:9
+#: templates/admin/pages/page/change_form.html:10
+#: templates/admin/pages/pageproxy/change_form.html:9
+#: templates/admin/releases/releaseproxy/change_form.html:9
+msgid "Sync Translations"
+msgstr ""
+
+#: templates/admin/announcements/announcementproxy/change_form.html:10
+#: templates/admin/media/imagecomparisonproxy/change_form.html:10
+#: templates/admin/media/imageproxy/change_form.html:10
+#: templates/admin/media/pictureoftheweekproxy/change_form.html:9
+#: templates/admin/media/videoproxy/change_form.html:10
+#: templates/admin/pages/pageproxy/change_form.html:10
+#: templates/admin/releases/releaseproxy/change_form.html:10
+msgid "Original"
+msgstr ""
+
+#: templates/admin/archives/importer.html:24
+#: templates/admin/archives/upload_success.html:20
+msgid "Import files"
+msgstr ""
+
+#: templates/admin/archives/importer.html:35
+#: templates/admin/archives/upload_success.html:35
+#: templates/admin/metadata/wtml_metadata_import.html:10
+msgid "error"
+msgid_plural "errors"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/admin/base_site_base.html:4 templates/admin/base_site_base.html:6
+msgid "Djangoplicity administration"
+msgstr ""
+
+#: templates/admin/base_site_base.html:25
+msgid "Site admin"
+msgstr ""
+
+#: templates/admin/base_site_base.html:26
+msgid "System admin"
+msgstr ""
+
+#: templates/admin/base_site_base.html:28
+msgid "Cache"
+msgstr ""
+
+#: templates/admin/base_site_base.html:29
+msgid "Tasks"
+msgstr ""
+
+#: templates/admin/index_base.html:19
+#, python-format
+msgid "Models available in the %(name)s application."
+msgstr ""
+
+#: templates/admin/index_base.html:20
+#, python-format
+msgid "%(name)s"
+msgstr ""
+
+#: templates/admin/index_base.html:30
+msgid "Add"
+msgstr ""
+
+#: templates/admin/index_base.html:36
+msgid "Change"
+msgstr ""
+
+#: templates/admin/index_base.html:46
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: templates/admin/index_base.html:54
+msgid "Recent Actions"
+msgstr ""
+
+#: templates/admin/index_base.html:55
+msgid "My Actions"
+msgstr ""
+
+#: templates/admin/index_base.html:59
+msgid "None available"
+msgstr ""
+
+#: templates/admin/index_base.html:73
+msgid "Unknown content"
+msgstr ""
+
+#: templates/admin/index_base_shop.html:12
+msgid "(show)"
+msgstr ""
+
+#: templates/admin/index_base_shop.html:13
+msgid "(hide)"
+msgstr ""
+
+#: templates/admin/index_base_shop.html:58
+msgid "Admin Tools"
+msgstr ""
+
+#: templates/admin/index_base_shop.html:62
+msgid "Cache Status"
+msgstr ""
+
+#: templates/admin/login.html:45
+msgid "Username:"
+msgstr ""
+
+#: templates/admin/login.html:49
+msgid "Password:"
+msgstr ""
+
+#: templates/admin/login.html:54
+#: templates/registration/password_reset_complete.html:16
+msgid "Log in"
+msgstr ""
+
+#: templates/admin/media/image/change_form.html:8
+msgid "WWT"
+msgstr ""
+
+#: templates/admin/media/image/change_list.html:10
+#: templates/admin/media/imagecomparison/change_list.html:10
+#: templates/admin/media/video/change_list.html:10
+#: templates/admin/media/videosubtitle/change_list.html:10
+#: templates/admin/products/change_list.html:10
+#: templates/admin/products/conference/change_list.html:9
+#: templates/admin/products/exhibitiongroup/change_list.html:9
+#: templates/admin/products/mountedimage/change_list.html:9
+#: templates/admin/products/visit/change_list.html:9
+#, python-format
+msgid "Add %(name)s"
+msgstr ""
+
+#: templates/admin/media/video/change_form.html:12
+msgid "View on YouTube"
+msgstr ""
+
+#: templates/admin/move_form.html:10
+msgid "Move"
+msgstr ""
+
+#: templates/admin/product/category/change_form.html:9
+#: templates/admin/product/product/change_form.html:9
+msgid "List orders"
+msgstr ""
+
+#: templates/admin/product/category/orders_for_category.html:27
+#: templates/admin/product/product/orders_for_product.html:27
+msgid "Orders"
+msgstr ""
+
+#: templates/admin/product/category/orders_for_category.html:48
+#: templates/admin/product/product/orders_for_product.html:56
+msgid "CSV export"
+msgstr ""
+
+#: templates/admin/product/product/change_form.html:19
+msgid "Product Subtypes"
+msgstr ""
+
+#: templates/admin/shop/order/change_form.html:8
+msgid "Check free order"
+msgstr ""
+
+#: templates/admin/shop/order/change_form.html:9
+msgid "Edit contact"
+msgstr ""
+
+#: templates/admin/shop/order/change_form.html:10
+msgid "Shipping label"
+msgstr ""
+
+#: templates/admin/shop/order/change_form.html:11
+msgid "CSV Export"
+msgstr ""
+
+#: templates/admin/shop/order/change_form.html:12
+msgid "XML Export"
+msgstr ""
+
+#: templates/admin/synctranslation_form.html:10
+msgid "Sync translations"
+msgstr ""
+
+#: templates/admin/synctranslation_form.html:23
+msgid "Sync"
+msgstr ""
+
+#: templates/archives/advanced_search.html:4
+#: templates/archives/advanced_search.html:10 templates/archives/list.html:4
+#: templates/archives/list.html:10
+msgid "Archive"
+msgstr ""
+
+#: templates/archives/advanced_search.html:4
+#: templates/archives/advanced_search.html:10
+msgid "Advanced Search"
+msgstr "Розширений пошук"
+
+#: templates/archives/advanced_search.html:18
+#: templates/archives/advanced_search.html:25
+#: templates/archives/searchbox.html:12
+msgid "Search"
+msgstr "Пошук"
+
+#: templates/archives/announcement/index_list.html:3
+msgid "No announcements were found."
+msgstr "Сповіщень не знайдено."
+
+#: templates/archives/announcement/index_list.html:9
+#: templates/archives/announcement/object_description.html:5
+msgid "Announcement"
+msgstr "Сповіщення"
+
+#: templates/archives/announcement/index_list.html:18
+#: templates/archives/pictureoftheweek/index_list.html:20
+#: templates/archives/pictureoftheweek/index_list.html:30
+#: templates/archives/pictureoftheweek/index_list.html:43
+#: templates/archives/release/index_list.html:17
+msgid "Read more"
+msgstr "Читати докладніше"
+
+#: templates/archives/announcement/object_description.html:24
+msgid "Click to Play"
+msgstr ""
+
+#: templates/archives/announcement/object_description.html:26
+#: templates/archives/announcement/object_description.html:32
+#: templates/archives/image/object_description.html:9
+#: templates/archives/pictureoftheweek/index_list.html:18
+#: templates/archives/pictureoftheweek/index_list.html:41
+#: templates/archives/release/object_description.html:20
+#: templates/archives/release/object_description.html:26
+#: templates/archives/visit/index_list.html:17
+msgid "Click to Enlarge"
+msgstr "Натисніть для збільшення"
+
+#: templates/archives/crosslinks.html:4
+msgid "Also see our"
+msgstr "Також дивіться наші"
+
+#: templates/archives/crosslinks.html:13 templates/archives/crosslinks.html:15
+#, python-format
+msgid "%(str)s"
+msgstr ""
+
+#: templates/archives/embargo_notice.html:2
+#, python-format
+msgid "STAGING UNTIL %(datetime)s"
+msgstr "ПОСТАНОВКА НЕ РАНІШЕ %(datetime)s"
+
+#: templates/archives/embargo_notice.html:3
+#, python-format
+msgid "EMBARGOED UNTIL %(datetime)s"
+msgstr "ЗАБОРОНЕНО ДО %(datetime)s"
+
+#: templates/archives/embargo_notice.html:5
+msgid "PREVIEW ONLY - ITEM NOT PUBLISHED"
+msgstr "ТІЛЬКИ ПОПЕРЕДНІЙ ПЕРЕГЛЯД - ПОВІДОМЛЕННЯ НЕ ОПУБЛІКОВАНЕ"
+
+#: templates/archives/image/index_normal.html:3
+#: templates/archives/image/index_top100.html:3
+#: templates/archives/image/index_viewall.html:3
+msgid "No images were found."
+msgstr "Зображення не знайдені."
+
+#: templates/archives/image/list_fbtop100.html:4
+msgid "View all 100 images"
+msgstr "Показати всі 100 зображень"
+
+#: templates/archives/image/object_astrometry.html:2
+msgid "Coordinates"
+msgstr "Координати"
+
+#: templates/archives/image/object_astrometry.html:5
+msgid "Position (RA)"
+msgstr ""
+
+#: templates/archives/image/object_astrometry.html:6
+msgid "Position (Dec)"
+msgstr ""
+
+#: templates/archives/image/object_astrometry.html:8
+msgid "Field of view"
+msgstr ""
+
+#: templates/archives/image/object_astrometry.html:10
+msgid "Orientation"
+msgstr "Орієнтація"
+
+#: templates/archives/image/object_astrometry.html:21
+msgid "View in context with Aladin Live"
+msgstr ""
+
+#: templates/archives/image/object_observation.html:19
+msgid "Colours & filters"
+msgstr "Кольори та фільтри"
+
+#: templates/archives/image/object_observation.html:22
+msgid "Band"
+msgstr "Діапазон"
+
+#: templates/archives/image/object_observation.html:22
+msgid "Wavelength"
+msgstr "Довжина хвилі"
+
+#: templates/archives/image/object_observation.html:22
+msgid "Telescope"
+msgstr "Телескоп"
+
+#: templates/archives/image/object_observation.html:31
+msgid "Exposure time"
+msgstr ""
+
+#: templates/archives/imagecomparison/detail.html:17
+msgid "Drag green handle to reveal images"
+msgstr "Перетягніть зелений маркер, щоб подивитися зображення"
+
+#: templates/archives/imagecomparison/detail.html:38
+#: templates/archives/imagecomparison/detail.html:46
+#: templates/archives/imagecomparison/embedded_list.html:8
+#: templates/images/embedded_list.html:8
+#: templates/images/embedded_stock_list.html:8
+#: templates/videos/embedded_list.html:7
+msgid "in English only"
+msgstr "тільки на англійській"
+
+#: templates/archives/imagecomparison/embedded_list.html:7
+msgid "Image Comparison"
+msgstr "Порівняння Зображень"
+
+#: templates/archives/imagecomparison/index_normal.html:3
+#: templates/archives/imagecomparison/index_viewall.html:3
+#: templates/archives/index_list.html:3 templates/archives/index_normal.html:3
+#: templates/archives/index_viewall.html:3
+msgid "No entries were found."
+msgstr "Записів не знайдено."
+
+#: templates/archives/pictureoftheweek/index_list.html:3
+msgid "No pictures of the week were found."
+msgstr "Зображень Тижня не знайдено."
+
+#: templates/archives/release/detail_kids.html:68
+msgid "Bringing news from across the Universe to children all around the world"
+msgstr ""
+
+#: templates/archives/release/detail_kids.html:89
+msgid "Do you want to learn more about this topic?"
+msgstr "Хочете дізнатися більше на цю тему?"
+
+#: templates/archives/release/detail_kids.html:89
+#, python-format
+msgid ""
+"Visit %(unawelink)s or send us your questions in an email: %(emaillink)s"
+msgstr ""
+"Відвідайте %(unawelink)s або перешліть нам свої питання на адресу: "
+"%(emaillink)s"
+
+#: templates/archives/release/detail_kids.html:91
+#, python-format
+msgid "This is a kids version of ESO Press Release %(source_id)s"
+msgstr "Це дитяча версія прес-релізу ESO %(source_id)s"
+
+#: templates/archives/release/index_list.html:4
+msgid "No press releases were found."
+msgstr "Прес-релізи не знайдено."
+
+#: templates/archives/release/object_description.html:30
+msgid "More information"
+msgstr "Детальніше"
+
+#: templates/archives/release/object_description.html:38
+#: templates/archives/release/object_description.html:47
+msgid "Tel"
+msgstr "Телефон"
+
+#: templates/archives/release/object_description.html:39
+#: templates/archives/release/object_description.html:48
+msgid "Cell"
+msgstr "Стільниковий"
+
+#: templates/archives/release/object_description.html:40
+#: templates/archives/release/object_description.html:49
+msgid "Email"
+msgstr "Email"
+
+#: templates/archives/release/object_description.html:53
+#, python-format
+msgid "This is a translation of ESO Press Release %(source_id)s."
+msgstr "Переклад прес-релізу ESO %(source_id)s."
+
+#: templates/archives/search_results.html:1
+msgid "Search results for"
+msgstr "Результати пошуку для"
+
+#: templates/archives/searchbox.html:13
+msgid "Go"
+msgstr "Перейти"
+
+#: templates/archives/translations.html:5
+msgid "Choose your language"
+msgstr "Виберіть мову"
+
+#: templates/archives/video/embed.html:2
+msgid "download options"
+msgstr ""
+
+#: templates/archives/video/embed.html:6
+msgid "Video Archive"
+msgstr "Архів відео"
+
+#: templates/archives/video/embed.html:10
+#, python-format
+msgid "See our <a href=\"%(videos_url)s\">video archive</a>."
+msgstr ""
+
+#: templates/archives/visit/index_list.html:3
+msgid "No media visits were found."
+msgstr ""
+
+#: templates/archives/visit/index_list.html:17
+msgid "Download and more information"
+msgstr ""
+
+#: templates/archives/webupdate/index_list.html:3
+msgid "No web updates were found."
+msgstr ""
+
+#: templates/broadcastaudiotracks/embedded_list.html:4
+msgid "Broadcast Audio"
+msgstr ""
+
+#: templates/images/embedded_list.html:7
+msgid "PR Image"
+msgstr "PR зображення"
+
+#: templates/images/embedded_stock_list.html:3
+msgid "Stock Visuals"
+msgstr ""
+
+#: templates/images/embedded_stock_list.html:6
+#: templates/images/embedded_stock_list.html:7
+#, python-format
+msgid "Stock Image %(no)s"
+msgstr ""
+
+#: templates/paginator_tag.html:3
+msgid "Previous"
+msgstr "Попередня"
+
+#: templates/paginator_tag.html:15
+msgid "Next"
+msgstr "Наступна"
+
+#: templates/payment/_order_payment_summary.html:23
+msgid "Balance"
+msgstr ""
+
+#: templates/payment/_order_payment_summary.html:33
+msgid "Pay remaining balance"
+msgstr ""
+
+#: templates/privacy/notice.html:4
+msgid ""
+"\n"
+"    By continuing to use this website, you are giving consent to our use of "
+"cookies.<br>\n"
+"    For more information on how ESO uses data and how you can disable "
+"cookies, please view <a href=\"/public/privacy/\"> our privacy policy</a>.\n"
+"    "
+msgstr ""
+
+#: templates/privacy/notice.html:11
+msgid "I accept"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:68
+#: templates/product/admin/product_export_form.html:52
+msgid "Inventory Management"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:82
+#: templates/product/admin/product_export_form.html:80
+msgid "Slug"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:84
+msgid "Inventory"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:85
+msgid "Unit Price"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:86
+msgid "Active"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:87
+msgid "Featured"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:113
+#: templates/product/admin/product_export_form.html:110
+msgid "Helpers"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:114
+msgid "Mark all featured"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:115
+msgid "Clear all featured"
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:116
+msgid "Disable all Products with 0 quantity."
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:117
+msgid "Disable ProductVariations with 0 quantity."
+msgstr ""
+
+#: templates/product/admin/inventory_form.html:121
+msgid "No inventory items."
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:57
+msgid ""
+"WARNING: THIS FUNCTION IS STILL EXPERIMENTAL.  DO NOT USE IN PRODUCTION."
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:58
+#: templates/product/admin/product_export_form.html:66
+msgid "Import"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:65
+msgid "Import from fixture file:"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:69
+#: templates/product/admin/product_export_form.html:108
+msgid "Export"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:79
+msgid "Export?"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:105
+msgid "Include images?"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:106
+msgid "Include categories?"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:107
+msgid "Format?"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:109
+msgid "Reset"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:111
+msgid "Check all"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:112
+msgid "Uncheck all"
+msgstr ""
+
+#: templates/product/admin/product_export_form.html:115
+msgid "No products."
+msgstr ""
+
+#: templates/product/cart_box.html:30
+msgid "View Cart"
+msgstr ""
+
+#: templates/product/cart_box.html:33 templates/shop/cart.html:25
+#: templates/shop/cart.html:79 templates/shop/checkout/concardis/confirm.html:7
+#: templates/shop/checkout/concardis/pay_ship.html:8
+#: templates/shop/checkout/coposweb/confirm.html:7
+#: templates/shop/checkout/coposweb/pay_ship.html:8
+#: templates/shop/checkout/form.html:8
+msgid "Checkout"
+msgstr "Оформити замовлення"
+
+#: templates/product/category_index.html:8
+msgid "Most Popular"
+msgstr ""
+
+#: templates/product/minimum_order.html:9
+#, python-format
+msgid "Please note the minimum order amount is %(value)s."
+msgstr ""
+
+#: templates/product/product.html:72 templates/shop/cart.html:36
+msgid "Price"
+msgstr ""
+
+#: templates/product/product.html:72
+msgid "(incl. tax)"
+msgstr ""
+
+#: templates/product/product.html:78 templates/shop/cart.html:30
+msgid "Quantity"
+msgstr ""
+
+#: templates/product/product.html:80
+msgid "Add to cart"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:8
+#: templates/registration/password_reset_confirm.html:8
+#: templates/registration/password_reset_done.html:8
+#: templates/registration/password_reset_form.html:8
+msgid "Password reset"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:15
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:17
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:22
+msgid "New password:"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:26
+msgid "Confirm password:"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:29
+msgid "Change my password"
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:33
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+
+#: templates/registration/password_reset_done.html:13
+msgid ""
+"We've e-mailed you instructions for setting your password to the e-mail "
+"address you submitted. You should be receiving it shortly."
+msgstr ""
+
+#: templates/registration/password_reset_email.txt:1
+msgid "You're receiving this e-mail because you requested a password reset"
+msgstr ""
+
+#: templates/registration/password_reset_email.txt:2
+#, python-format
+msgid "for your user account at %(site_name)s"
+msgstr ""
+
+#: templates/registration/password_reset_email.txt:4
+msgid "Please go to the following page and choose a new password:"
+msgstr ""
+
+#: templates/registration/password_reset_email.txt:8
+msgid "Your username, in case you've forgotten:"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:13
+msgid ""
+"Forgotten your password? Enter your e-mail address below, and we'll e-mail "
+"instructions for setting a new one."
+msgstr ""
+
+#: templates/registration/password_reset_form.html:22
+msgid "E-mail address:"
+msgstr ""
+
+#: templates/registration/password_reset_form.html:25
+msgid "Reset my password"
+msgstr ""
+
+#: templates/relationeditor/list_editor_view.html:19
+#: templates/relationeditor/select_relations.html:32
+msgid "View "
+msgstr ""
+
+#: templates/shop/_order_details.html:11
+#: templates/shop/_order_tracking_details.html:29
+#: templates/shop/email/order_complete.txt:11
+#: templates/shop/email/order_placed_notice.txt:21
+msgid "Contact Information"
+msgstr "Контактна інформація"
+
+#: templates/shop/_order_details.html:19
+#: templates/shop/_order_tracking_details.html:37
+#: templates/shop/checkout/form.html:44
+#: templates/shop/email/order_complete.txt:17
+#: templates/shop/email/order_placed_notice.txt:27
+msgid "Billing Information"
+msgstr ""
+
+#: templates/shop/_order_details.html:31
+#: templates/shop/_order_tracking_details.html:49
+#: templates/shop/email/order_complete.txt:25
+#: templates/shop/email/order_placed_notice.txt:35
+#: templates/shop/email/order_shipped.txt:28
+msgid "Shipping Address"
+msgstr ""
+
+#: templates/shop/_order_details.html:45
+#: templates/shop/_order_tracking_details.html:64
+#: templates/shop/email/order_complete.txt:7
+#: templates/shop/email/order_placed_notice.txt:17
+msgid "Items Ordered"
+msgstr ""
+
+#: templates/shop/admin/order_sidebar.html:4
+msgid "Webshop Orders"
+msgstr ""
+
+#: templates/shop/admin/order_sidebar.html:6
+msgid "New Orders"
+msgstr ""
+
+#: templates/shop/admin/order_sidebar.html:8
+msgid "Orders in Process"
+msgstr ""
+
+#: templates/shop/admin/order_sidebar.html:10
+msgid "View all Orders"
+msgstr ""
+
+#: templates/shop/cart.html:21
+msgid "You have no items in your shopping cart!"
+msgstr ""
+
+#: templates/shop/cart.html:33
+msgid "Regular Price"
+msgstr ""
+
+#: templates/shop/cart.html:34
+msgid "Sale Price"
+msgstr ""
+
+#: templates/shop/cart.html:38
+msgid "Total<br/>(incl.&nbsp;tax)"
+msgstr ""
+
+#: templates/shop/cart.html:38 templates/shop/email/order_complete.txt:42
+#: templates/shop/email/order_complete.txt:47
+#: templates/shop/email/order_placed_notice.txt:49
+#: templates/shop/email/order_placed_notice.txt:54
+msgid "Total"
+msgstr ""
+
+#: templates/shop/cart.html:50
+msgid "Update"
+msgstr ""
+
+#: templates/shop/cart.html:54
+msgid "Remove"
+msgstr ""
+
+#: templates/shop/checkout/concardis/confirm.html:39
+msgid "Complete free order"
+msgstr ""
+
+#: templates/shop/checkout/concardis/confirm.html:46
+msgid "Place Order"
+msgstr ""
+
+#: templates/shop/checkout/concardis/pay_ship.html:11
+#: templates/shop/checkout/coposweb/pay_ship.html:11
+#: templates/shop/checkout/form.html:10
+msgid ""
+"Please complete the following information in order to submit your order."
+msgstr ""
+
+#: templates/shop/checkout/concardis/pay_ship.html:15
+#: templates/shop/checkout/coposweb/pay_ship.html:16
+msgid "Please correct the error"
+msgid_plural "Please correct the errors"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/shop/checkout/concardis/pay_ship.html:47
+#: templates/shop/checkout/coposweb/pay_ship.html:66
+#: templates/shop/email/order_complete.txt:33
+#: templates/shop/email/order_placed_notice.txt:43
+msgid "Shipping Method"
+msgstr ""
+
+#: templates/shop/checkout/concardis/pay_ship.html:53
+#: templates/shop/checkout/coposweb/pay_ship.html:72
+msgid "The following shipping method will be used"
+msgstr ""
+
+#: templates/shop/checkout/concardis/pay_ship.html:55
+#: templates/shop/checkout/coposweb/pay_ship.html:74
+msgid "Please choose your preferred shipping method:"
+msgstr ""
+
+#: templates/shop/checkout/concardis/pay_ship.html:82
+#: templates/shop/checkout/coposweb/pay_ship.html:89
+msgid "Continue to order review"
+msgstr ""
+
+#: templates/shop/checkout/coposweb/confirm.html:32
+#: templates/shop/email/order_complete.txt:49
+#: templates/shop/email/order_placed_notice.txt:56
+msgid "Payment"
+msgstr "Оплата"
+
+#: templates/shop/checkout/coposweb/confirm.html:34
+#, python-format
+msgid "Your card will be charged <strong>%(order_total)s</strong>."
+msgstr ""
+
+#: templates/shop/checkout/coposweb/confirm.html:44
+msgid "Place order"
+msgstr ""
+
+#: templates/shop/checkout/coposweb/pay_ship.html:24
+msgid "Payment Information"
+msgstr ""
+
+#: templates/shop/checkout/coposweb/pay_ship.html:33
+msgid "Type of credit card"
+msgstr ""
+
+#: templates/shop/checkout/coposweb/pay_ship.html:36
+msgid "Credit card number"
+msgstr ""
+
+#: templates/shop/checkout/coposweb/pay_ship.html:39
+msgid "Expiration date"
+msgstr ""
+
+#: templates/shop/checkout/coposweb/pay_ship.html:42
+msgid "CCV"
+msgstr ""
+
+#: templates/shop/checkout/form.html:12
+msgid "Please correct the following error:"
+msgstr ""
+
+#: templates/shop/checkout/form.html:23
+msgid "How do you want to pay?"
+msgstr ""
+
+#: templates/shop/checkout/form.html:24
+msgid "Payment method"
+msgstr ""
+
+#: templates/shop/checkout/form.html:28
+msgid "Basic Information"
+msgstr ""
+
+#: templates/shop/checkout/form.html:29
+msgid "Email address"
+msgstr ""
+
+#: templates/shop/checkout/form.html:35
+msgid "First name"
+msgstr ""
+
+#: templates/shop/checkout/form.html:35
+msgid "Participant name in case of conference fee payments"
+msgstr ""
+
+#: templates/shop/checkout/form.html:38
+msgid "Last name"
+msgstr ""
+
+#: templates/shop/checkout/form.html:41
+msgid "Phone number"
+msgstr ""
+
+#: templates/shop/checkout/form.html:46
+msgid "Bill To"
+msgstr ""
+
+#: templates/shop/checkout/form.html:46 templates/shop/checkout/form.html:81
+msgid "If different from the first and last names above"
+msgstr ""
+
+#: templates/shop/checkout/form.html:49 templates/shop/checkout/form.html:52
+#: templates/shop/checkout/form.html:84 templates/shop/checkout/form.html:87
+msgid "Street"
+msgstr ""
+
+#: templates/shop/checkout/form.html:55 templates/shop/checkout/form.html:90
+msgid "City"
+msgstr ""
+
+#: templates/shop/checkout/form.html:60 templates/shop/checkout/form.html:63
+#: templates/shop/checkout/form.html:95 templates/shop/checkout/form.html:98
+msgid "State/Province"
+msgstr ""
+
+#: templates/shop/checkout/form.html:67 templates/shop/checkout/form.html:102
+msgid "ZIP code/Postal code"
+msgstr ""
+
+#: templates/shop/checkout/form.html:71 templates/shop/checkout/form.html:106
+msgid "Country"
+msgstr ""
+
+#: templates/shop/checkout/form.html:76
+msgid "Shipping Information"
+msgstr ""
+
+#: templates/shop/checkout/form.html:78
+msgid "Shipping same as billing?"
+msgstr ""
+
+#: templates/shop/checkout/form.html:81
+msgid "Ship To"
+msgstr ""
+
+#: templates/shop/checkout/form.html:115
+msgid "Discounts"
+msgstr ""
+
+#: templates/shop/checkout/form.html:116
+msgid "Discount code"
+msgstr ""
+
+#: templates/shop/checkout/form.html:120
+msgid "Terms & Conditions"
+msgstr ""
+
+#: templates/shop/checkout/form.html:125
+msgid "Continue Checkout"
+msgstr ""
+
+#: templates/shop/checkout/success.html:11
+msgid "Thank you for your order!"
+msgstr ""
+
+#: templates/shop/checkout/success.html:11
+msgid ""
+"Please print out this page as a receipt. You will also receive an email with "
+"this information."
+msgstr ""
+
+#: templates/shop/email/order_complete.txt:1
+#: templates/shop/email/order_shipped.txt:1
+#, python-format
+msgid "Dear %(first_name)s %(last_name)s,"
+msgstr ""
+
+#: templates/shop/email/order_complete.txt:3
+#: templates/shop/email/order_shipped.txt:3
+#, python-format
+msgid "Thank you for ordering with %(shop_name)s."
+msgstr ""
+
+#: templates/shop/email/order_complete.txt:39
+msgid ""
+"Warning: If your order contains posters, please note we send these as a "
+"separate parcel."
+msgstr ""
+
+#: templates/shop/email/order_complete.txt:44
+#: templates/shop/email/order_placed_notice.txt:51
+msgid "Discount"
+msgstr ""
+
+#: templates/shop/email/order_complete.txt:45
+#: templates/shop/email/order_placed_notice.txt:52
+msgid "Shipping"
+msgstr "Доставка"
+
+#: templates/shop/email/order_complete.txt:46
+#: templates/shop/email/order_placed_notice.txt:53
+msgid "Tax"
+msgstr ""
+
+#: templates/shop/email/order_complete.txt:51
+#, python-format
+msgid "Your card will be charged %(order_total)s."
+msgstr ""
+
+#: templates/shop/email/order_complete.txt:53
+msgid "Your order contains products that can be downloaded"
+msgstr ""
+
+#: templates/shop/email/order_complete.txt:54
+msgid "Please click the link to begin the download"
+msgstr ""
+
+#: templates/shop/email/order_placed_notice.txt:1
+#, python-format
+msgid "New order placed on %(shop_name)s by %(customer)s <%(email)s>."
+msgstr ""
+
+#: templates/shop/email/order_placed_notice.txt:12
+msgid "Items Ordered (IDs)"
+msgstr ""
+
+#: templates/shop/email/order_placed_notice.txt:58
+#, python-format
+msgid "The card will be charged %(order_total)s."
+msgstr ""
+
+#: templates/shop/email/order_placed_notice.txt:61
+msgid "This is a downloadable product"
+msgstr ""
+
+#: templates/shop/email/order_shipped.txt:36
+msgid "This completes your order."
+msgstr ""
+
+#: templates/shop/fb_index.html:41 templates/shop/index.html:28
+msgid "Featured Products"
+msgstr ""
+
+#: templates/statusbar.html:1
+#, python-format
+msgid "Showing %(start_index)s to %(end_index)s of %(count)s"
+msgstr "Показ %(count)s від %(start_index)s до %(end_index)s"
+
+#: templates/subtitles/embedded_list.html:3
+msgid "Subtitles"
+msgstr "Субтитри"
+
+#: templates/videos/embedded_list.html:6
+msgid "PR Video"
+msgstr "PR відео"

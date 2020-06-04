@@ -1,0 +1,15 @@
+<html><body><p>Dear {{order.name}},</p>
+
+{%if order.accepted %}{% include "shop/freeorder_email_approved.html" %}{% else %}{% include "shop/freeorder_email_rejected.html" %}{% endif%}
+
+<p>Yours sincerely,</p>
+<p>
+{{shop.store_name}}<br />
+{{shop.street1}}<br />
+{{shop.postal_code}} {{shop.city}}<br />
+{{shop.country}}{% if shop.phone %}<br />
+Tel: {{shop.phone}}{% endif%}{% if shop.store_email %}<br />
+E-mail: {{shop.store_email}}{% endif %}
+</p>
+</body>
+</html>

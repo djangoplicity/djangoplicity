@@ -1,0 +1,21 @@
+{% load i18n %}{% load djangoplicity_utils %}
+{% if not object_list %}
+    <div align="center">{% trans "No entries were found."%}</div>
+{% else %}
+{% include "archives/search_results.html" %}
+<table class="archive_normal" width="100%">
+{% for list in object_list|split_list:"4" %}
+{% block index_row %}
+<tr>{% for item in list %}
+{% block index_image_cell %}<td class="imagerow" width="25%"><a href="{{ item.get_absolute_url }}"><img src="{{ item.resource_thumb.url }}" width="122" alt="{{item.title}}" /></a></td>{% endblock %}{% endfor %}
+</tr>
+<tr>{% for item in list %}
+{% block index_title_cell %}<td class="titlerow">{{item.title}}</td>{% endblock %}{% endfor %}
+</tr>
+{% endblock %}
+{% endfor %}
+</table>
+{% paginator paginator page_obj paginator_url paginator_prefix paginator_params %}
+{% statusbar paginator page_obj browsers searchable search_url search_str  %}
+{% endif %}
+{% include 'archives/extra_footer.html' %}

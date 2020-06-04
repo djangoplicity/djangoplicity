@@ -1,0 +1,21 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls admin_modify %}
+
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+  <ul class="object-tools">
+  {% if DJANGOPLICITY.USE_I18N %}
+    <li><a href="{% url opts|admin_urlname:'duplicate' original.pk|admin_urlquote %}" class="historylink">{% trans "Duplicate" %}</a></li>
+    <li><a href="{% url opts|admin_urlname:'synctranslation' original.pk|admin_urlquote %}" class="historylink">{% trans "Sync Translations" %}</a></li>
+    <li><a href="{% url 'admin:pages_page_change' original.source.id %}" class="historylink">{% trans "Original" %}</a></li>
+  {% endif %}
+    <li><a href="{% url opts|admin_urlname:'cleanhtml' original.pk|admin_urlquote %}" class="historylink">{% trans "Clean HTML" %}</a></li>
+    <li><a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a></li>
+    {% if has_absolute_url %}<li><a href="{{ original.get_absolute_url }}?nolang" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+  </ul>
+{% endif %}{% endif %}
+{% endblock %}
+
+{% block after_field_sets %}
+
+{% endblock %}

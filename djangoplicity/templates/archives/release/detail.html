@@ -1,0 +1,24 @@
+{% extends "base_twocolumn.html" %}
+
+{% block site_title %}{{object.title}} {% if archive_title %}| {{archive_title}} {%endif%}| {{block.super}}{% endblock %}
+
+{% load menus %}
+{% block breadcrumb %}{{ block.super}}{% breadcrumb_append object.title object.get_absolute_url %}{% endblock %}
+
+{% block content %}
+{% include description_template %}
+{% endblock %}
+
+
+{% block rightcolumn %}
+{% include "archives/searchbox.html" %}
+{% include "archives/facebookbox.html" %}
+{% include "archives/addthisbox.html" %}
+{% include admin_template %}
+{% include "images/embedded_list.html" %}
+{% include "videos/embedded_list.html" %}
+{% include "archives/imagecomparison/embedded_list.html" %}
+{% include "images/embedded_pl_list.html" %}
+{% include "images/embedded_stock_list.html" %}
+{% include resources_template %}
+{% endblock %}

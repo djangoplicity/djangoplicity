@@ -1,0 +1,46 @@
+.vPrioritySlider {
+	margin-left: 6px; 
+	margin-right: 6px; 
+	width: 10em; 
+	float: left;
+} 
+
+.vPrioritySliderVal {
+	margin-left: 6px; 
+	width: 3.5em; 
+	text-align: right; 
+	float: left;
+}
+
+.vPrioritySliderContainer {
+	float: left;
+	width: 16.5em;
+}
+
+.cbl {
+	float:left;
+}
+
+.cbr {
+	float:right;
+}
+
+.cbl, .cbr {
+    display:block;
+    width:50%;
+}
+
+.display_entry {
+	clear:both;
+    width:100%;
+	overflow:hidden;
+}
+
+.display_entry h2 {
+	font-size:16px;
+	margin-bottom:16px;
+}
+
+.cbr {
+	font-family: "Courier New", Monospace;
+}

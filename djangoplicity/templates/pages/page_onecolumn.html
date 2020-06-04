@@ -1,0 +1,48 @@
+{% extends "base_onecolumn.html" %}
+
+{% block site_title %} {{page.title}} {{page.section.append_title}} {% endblock %}
+
+{% block extra_header %}
+    <meta property="og:title" content="{{ page.title }}" />{% if page.opengraph_image %}
+    <meta property="og:image" content="{{ page.opengraph_image }}" />{% endif %}{% if page.description %}
+    <meta property="og:description" content="{{ page.description }}" />
+    <meta name="description" content="{{page.description}}" />{% endif %}{% if page.keywords %}
+    <meta name="keywords" content="{{page.keywords}}" />{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if not page.is_online %}
+<div id="preview_text">
+<h3>PREVIEW</h3>
+<p>The following page is not publicly accessible. Reason:</p>
+{% if not page.published %}
+<p>Page is <strong>unpublished</strong>.</p>
+{% elif page.is_translation and not page.translation_ready %}
+<p>Transation is not ready.</p>
+{% else %}
+<p>
+{% if page.start_publishing %}Page goes online {{ page.start_publishing|date }} at {{ page.start_publishing|date:"H:i" }}<br />{% endif %}
+{% if page.end_publishing %}<p>Page goes offline {{ page.end_publishing|date }} at {{ page.end_publishing|date:"H:i" }}{% endif %}
+</p>
+{% endif %}
+</div>
+{% endif %}
+{% load pages %}
+{% user_can_edit user page as can_edit_page %}
+{% if can_edit_page %}<div class="admin_bar"><div id="djnote">Djangoplicity Admin</div><div id="djlinks"><a href="{% url 'admin_site:pages_page_change' page.id %}">Edit</a></div></div>{% endif %}
+<div class='page_content'>
+{{ page.content|safe }}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ block.super }}
+
+{% if page.script %}
+    <script type="text/javascript">
+    {{ page.script|safe }}
+    </script>
+{% endif %}
+
+{% endblock %}

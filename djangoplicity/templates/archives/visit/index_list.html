@@ -1,0 +1,30 @@
+{% load i18n %}{% load djangoplicity_utils %}{% load djangoplicity_datetime %}
+{% if not object_list %}
+    <div align="center">{% trans "No media visits were found." %}</div>
+{% else %}
+{% include "archives/search_results.html" %}
+{% for item in object_list %}
+<div class="pr_box">
+
+<strong>{{ item.release_date|datetime:"DATE" }}</strong>
+<h2 class="pr_headline">{{item.title}}</h2>
+<div class="pr_lead">
+{% if item.image %}
+{% if item.image.resource_newsfeature %}
+    <div class="pr_news_feature" style="padding:0; overflow:hidden;">
+        <a href="{{ item.image.resource_screen.url }}" rel="shadowbox[newswheel]" title="{{ item.image.title }}"><img src="{{ item.image.resource_newsfeature.url }}" class="pr_news_feature_img" style="padding:0;" /></a>
+    </div>
+    <div class="pr_news_feature_link" style="color: #777777; padding: 0;"><a style="color: #777777; padding: 0;"  href="{{ item.image.resource_screen.url }}" rel="shadowbox" title="{{ item.image.title }}">{% trans "Click to Enlarge" %}</a> or <a href="{{item.image.get_absolute_url}}">{% trans "Download and more information" %}</a></div>
+{% endif %}
+{% endif %}
+<div class="pr_list_text">{{ item.description|safe }}
+<div class="clear"></div>
+</div>
+</div>
+
+</div>
+{% endfor %}
+{% paginator paginator page_obj paginator_url paginator_prefix paginator_params %}
+{% statusbar paginator page_obj browsers searchable search_url search_str  %}
+{% endif %}
+{% include 'archives/extra_footer.html' %}

@@ -1,0 +1,28 @@
+{% load i18n staticfiles %}{% for resources in resources_groups %}
+{% if resources.downloads %}
+<div{% if resources.name == "Ultra HD" %} style="background-color: #ffe8e8"{% endif %}>
+{% if resources.name %}<h3  class="archivegrouptitle" >{% trans resources.name %}{% if resources.name == "Ultra HD" %} <a style="font-size: 14px" href="/public/videoformats/">(info)</a>{% endif %}</h3>{% endif %}
+{% for thumbnail, link in resources.thumbnails %}
+{% if link %}
+<div class="archive_download_thumbnail"><a href="{{link}}" rel="shadowbox"><img src="{{thumbnail}}" /></div>
+{% else %}
+<div class="archive_download_thumbnail"><img src="{{thumbnail}}" /></div>
+{% endif %}
+{%endfor%}
+{% for r in resources.downloads %}
+<div class="archive_download">
+    <span class="archive_dl_icon"><img src="{% static "icons/icon_"|add:r.icon|add:".png" %}" /></span>
+    <span class="archive_dl_text"><a href="{{ r.url }}"{{r.extra_attrs}}>{% trans r.title %}</a></span>
+    {% if r.size %}<span class="archive_dl_size"><div>
+        {% if r.size > 104857600 %}
+            <span style="color:red">{{r.size|filesizeformat}}</span>
+        {% else %}
+            {{r.size|filesizeformat}}
+        {% endif %}
+    </div></span>{% endif %}
+</div>
+{% endfor %}
+{% if not forloop.last %}<hr class="esohr" />{% endif %}
+</div>
+{% endif %}
+{% endfor %}

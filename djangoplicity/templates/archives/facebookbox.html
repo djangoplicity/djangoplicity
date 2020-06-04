@@ -1,0 +1,13 @@
+{% if not no_social %}
+{% if object %}
+{% if object.published and not is_staging and not is_embargo %}
+<div style="margin-top: 20px;" id="facebook-like">
+<iframe src="http://www.facebook.com/plugins/like.php?href=http://{{ DJANGOPLICITY.SITE_DOMAIN }}{{request.path}}&amp;layout=standard&amp;show_faces=true&amp;width=230&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=30" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:230px; height:30px;" allowTransparency="true"></iframe>
+</div>
+{% endif %}
+{% else %}
+<div style="margin-top: 20px;" id="facebook-like">
+<iframe src="http://www.facebook.com/plugins/like.php?href=http://{{ DJANGOPLICITY.SITE_DOMAIN }}{{request.path}}&amp;layout=standard&amp;show_faces=true&amp;width=230&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=30" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:230px; height:30px;" allowTransparency="true"></iframe>
+</div>
+{% endif %}
+{% endif %}

@@ -1,0 +1,87 @@
+{% extends "site-specific/shop/checkout.html" %}
+{% load i18n %}
+{% load djangoplicity_satchmo %}
+
+{% block site_title %}Checkout | {{ shop_name }}{% endblock%}
+
+{% block content %}
+<h1>{% trans "Checkout" %}</h1>
+<h2>Step 2 of 3: {% block subtitle %}Enter shipping information{% endblock %}</h2>
+
+<p>{% trans "Please complete the following information in order to submit your order." %}</p>
+
+{% if form.errors %}
+<div align="center" class="error">
+    <h2>{% blocktrans count form.errors|length as count %}Please correct the error{% plural %}Please correct the errors{% endblocktrans %}</h2>
+</div>
+{% endif %}
+
+
+<form method="post" action=".">{% csrf_token %}
+    {% block shipping_table %}
+
+    {% if cart.is_shippable and form.shipping_hidden%}
+        <!-- This should not happen as we always display the shipping form, so it
+        means that the shop couldn't calculate the shipping weight or a
+        similar problem. We assume it's a bulk order -->
+        <div class="alert alert-info">
+        {% if form.shipping_description == 'Overweight' %}
+            Your current order ({{ form.weight|floatformat }}kg) is over the maximum shippable weight of 30.5kg, please go back and remove items from your order.
+        {% else %}
+            Unfortunately we are not able to calculate the shipping costs for your shopping cart and process your order. <br />Please contact <a href="mailto:epoddist@eso.org">epoddist@eso.org</a>, instead of the ESO shop.
+        {% endif %}
+        </div>
+        <a class="btn btn-default" href="{% url 'satchmo_cart' %}" role="button">Back to Cart</a>
+    {% elif form.order.ship_country == 'CL' and form.order.total and not form.order.contact|validatecontact and cart.is_shippable %}
+        {% comment %}
+        If order is from chile *and* there is a total price > 0 (i.e.: it is not a free order) *and* the person is not from ESO then we reject the order
+        {% endcomment %}
+        <div class="alert alert-info">Unfortunately we are not able to calculate the shipping costs for your shopping cart and process your order. Due to ESO's diplomatic status in Chile we are not allowed to sell products in Chile.</div>
+    {% else %}
+        {% if cart.is_shippable %}
+        {% if form.shipping_hidden %}
+        {{ form.shipping }}
+        {% else %}
+        <div id="shippinginfo">
+            <h2>{% trans "Shipping Method" %}</h2>
+            <p>Please allow <strong>1-3 business days for handling</strong> your order. As soon as your order is shipped/ready for pickup, you will receive a
+            notification email on the address you have provided.</p>
+            <strong>Select method</strong>
+            <div id="shipping">
+            {% if form.shipping_description or form.shipping.field.choices|length_is:1 %}
+            <p><label for="id_shipping">{% trans "The following shipping method will be used" %}:</label></p>
+            {% else %}
+            <label for="id_shipping">{% trans "Please choose your preferred shipping method:" %}</label>
+            {% endif %}
+            {{ form.shipping }}
+            {% if form.shipping_description %}<p><strong>{{ form.shipping_description }}</strong></p>{% endif %}
+            {% if form.shipping.errors %}*** {{ form.shipping.errors|join:", " }}{% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endif %}
+    {% endblock %}
+
+    {% if not form.shipping_hidden%}
+    {% if form.order.ship_country == 'CL' and form.order.total and not form.order.contact|validatecontact and cart.is_shippable %}
+    {% elif form.order.ship_country != 'CL' and cart.has_chile_only_products %}
+        <div class="alert alert-danger">This ticket can only be bought from Chile.</div>
+        <p>Please purchase the <a href="/public/shop/product/2019_solar_eclipse/">international ticket</a> instead.</p>
+        <br>
+        <a href="{% url 'satchmo_cart' %}">Back to Cart</a>
+    {% elif form.order.ship_country == 'CL' and cart.has_non_chile_products %}
+        <div class="alert alert-danger">This ticket can only be bought outside of Chile.</div>
+        <p>Please purchase the <a href="/public/shop/product/2019_solar_eclipse_chile/">Chile ticket</a> instead.</p>
+        <br>
+        <a href="{% url 'satchmo_cart' %}">Back to Cart</a>
+    {% elif cart.has_inactive_products %}
+        <div class="alert alert-danger">Your cart contains sold out items, please go back and <a href="{% url 'satchmo_cart' %}">update your order</a>.</div>
+    {% else %}
+        <div align="center"><input type="submit" value="{% trans "Continue to order review" %}"/></div>
+    {% endif %}
+    {% endif %}
+
+</form>
+
+{% endblock %}

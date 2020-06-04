@@ -1,0 +1,12 @@
+{% extends "shop/base.html" %}
+{% load i18n satchmo_currency %}
+
+{% block site_title %} Checkout | {{ shop_name }} {% endblock %}
+
+{% block content %}
+<h1>{{shop_name}} Checkout</h1>
+{% with minimum_order|currency as value %}
+<p>{% blocktrans %}Please note the minimum order amount is {{ value }}.{% endblocktrans %}</p>
+</p>
+{% endwith %}
+{% endblock %}

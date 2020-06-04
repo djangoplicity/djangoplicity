@@ -1,0 +1,6 @@
+{% extends "facebook_iframe.html" %}{% load i18n %}
+
+{% block body %}
+<div align="center"><a href="{% url 'images_query_top100' %}" taget="_blank">{% trans "View all 100 images" %}</a></div>
+{% include index_template %}
+{% endblock %}

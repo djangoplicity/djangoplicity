@@ -1,0 +1,41 @@
+{% extends "facebook_iframe.html"%}
+{% load media_video %}
+
+{% block header %}
+    <div class="top">
+        <div class="topl">ESO - Reaching New Heights in Astronomy</div>
+        <div class="but topr"><a href="{{wall_url}}" target="_parent">Wall</a></div>
+        <div class="cl"></div>
+    </div>
+    <a href="https://www.eso.org/public/science/top10/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/tab-discoveries.png"></img></a>
+
+    <div class="top">
+        <div class="topl">&nbsp;</div>
+        <div class="topr">Follow us on:
+        <a href="http://twitter.com/ESO_Observatory"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/twitter-ico.png"></img></a>
+        <a href="http://www.youtube.com/ESOObservatory/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/youtube-ico.png"></img></a>
+        <a href="http://www.vimeo.com/esoastronomy"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/vimeo-ico.png"></img></a>
+        <a href="http://www.flickr.com/photos/esoastronomy/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/flickr-ico.png"></img></a>
+        <a href="https://podcasts.apple.com/us/podcast/esocast-hd/id295471183"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/itunes-ico.png"></img></a>
+
+        </div>
+        <div class="cl"></div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block body %}
+    <p>
+    Among ESO's top discoveries are <a href="https://www.eso.org/public/news/eso0226/">the first image of an exoplanet</a>, showing that <a href="https://www.eso.org/public/news/eso9861/">the expansion of the Universe is accelarating</a>, discovering <a href="https://www.eso.org/public/news/eso0425/">the oldest star known in the Milky Way</a> and the <a href="https://www.eso.org/public/news/eso1035/">richest planetary system</a>. Read more <a href="https://www.eso.org/public/science/top10.html">here</a>.
+    </p>
+
+
+
+{% endblock %}
+
+{% block footer %}
+    <br/>
+    <br/>
+{%endblock%}

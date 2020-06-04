@@ -1,0 +1,16 @@
+{% for info in info_groups %}{% load i18n %}
+{% if info.links or info.metadata %}
+{% if info.name %}<h3 class="archivegrouptitle">{% trans info.name %}</h3>{% endif %}
+<div>
+{% for link in info.links %}{% if link.url %}<a href="{{ link.url }}">{% trans link.title %}</a><br />
+{% endif %}{% endfor %}
+{% if info.metadata %}
+<table class="info_table">
+{% for metadata in info.metadata %}{% if metadata.field_value %}<tr><td><strong>{{metadata.field_name|capfirst}}:</strong></td><td>{{metadata.field_value}}</td></tr>
+{% endif %}{% endfor %}
+</table>
+{% endif %}
+</div>
+{% endif %}
+{% if not forloop.last %}{% if info.name or info.links or info.metadata %}<hr class="esohr" />{% endif %}{% endif %}
+{% endfor %}

@@ -1,0 +1,22 @@
+{% spaceless %}
+<p>For Your Information:</p>
+{# <p><b>{{obj.title|safe}}{% if obj.subtitle %} &mdash; {{obj.subtitle|safe}}{% endif%}</b></p> #}
+<p>{{obj.description|truncatewords_html:100|safe}}</p>
+
+<p>Read more at <a href="{{site_url_prefix}}{{obj.get_absolute_url}}">{{site_url_prefix}}{{obj.get_absolute_url}}</a></p>
+
+{% if obj.contacts %}<p><strong>Contacts</strong></p>
+<p>{{obj.contacts|safe}}</p>
+{% endif%}
+
+{% block greeting %}{% endblock %}
+<p>---<br/>
+If you no longer wish to receive news from us, please send an email to information@eso.org with the subject "No Press Releases".</p>
+<p>
+European Southern Observatory
+Karl-Schwarzschild-Str 2
+D-85748 Garching bei Muenchen
+Germany
+information@eso.org
+</p>
+{% endspaceless %}

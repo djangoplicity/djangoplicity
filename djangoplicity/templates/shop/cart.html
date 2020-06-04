@@ -1,0 +1,83 @@
+{% extends "site-specific/shop/cart.html" %}
+{% load i18n %}
+{% load thumbnail %}
+{% load satchmo_cart %}
+{% load satchmo_currency %}
+{% load satchmo_util %}
+{% load satchmo_product %}
+{% load satchmo_discounts %}
+{% load normalize_decimal %}
+{% load djangoplicity_satchmo %}
+{% load djangoplicity_text_utils %}
+
+{% block site_title %} Shopping Cart | {{ shop_name }}{% endblock %}
+
+{% block content %}
+<h1>Shopping Cart</h1>
+{% if error_message %}
+<div class="error">{{ error_message }}</div>
+{% endif %}
+{% if not cart %}
+    <p>{% trans "You have no items in your shopping cart!" %}</p>
+{% else %}
+    <div class="checkoutdiv">
+    <form action="{% url 'satchmo_checkout-step1' %}" method="get">
+    <input type="submit" value="{% trans 'Checkout' %}" />
+    </form>
+    </div>
+
+    <table class="shoppingcart"><tr><th></th>
+    <th align="center">{% trans "Quantity" %}</th>
+    <th align="left">{% trans "Item" %}</th>
+    {% if sale %}
+        <th>{% trans "Regular Price" %}</th>
+        <th>{% trans "Sale Price" %}
+    {% else %}
+        <th>{% trans "Price" %}</th>
+    {% endif %}
+    <th align="center">{% if default_view_tax %}{% trans "Total<br/>(incl.&nbsp;tax)" %}{% else %}{% trans "Total" %}{% endif %}</th>
+    </tr>
+    {% for cartitem in cart %}
+        {% archiveitem cartitem.product as object %}
+        <tr>
+            <td align="center">
+            {% if object.resource_thumb %}<img src="{{ object.resource_thumb.url}}" width="122px" />{% else %}{% thumbnail cartitem.product.main_image.picture 122x122 as image %}<img src="{{ image }}" width="122px" />{% endthumbnail %}{%endif%}
+            </td>
+            <td align="center" width="10">
+                <form class="qtyform" id="form-{{ cartitem.id }}" action="{% url 'satchmo_cart_set_qty' %}" method="post">
+                    <input type="hidden" name="cartitem" value="{{ cartitem.id }}" />
+                    <input type="text" name="quantity" id="id_quantity" size="4" value="{{ cartitem.quantity|normalize_decimal }}" />
+                    <input type="submit" id="id_update_submit" value="{% trans 'Update' %}" />
+                </form>
+                <form action="{% url 'satchmo_cart_remove' %}" method="post">{% csrf_token %}
+                <input type="hidden" name="cartitem" value="{{ cartitem.id }}" />
+                <input type="submit" value="{% trans 'Remove' %}" />
+            </form>
+            </td>
+            <td><p><a href="{{cartitem.product.get_absolute_url}}">{% if object %}{{ object.title }}{% else %}{{cartitem.product.name}}{%endif%}</a>{% if object.free %}<span class="price"><a href="{% url 'free_order_form' %}"><img src="{{MEDIA_URL}}/educators-small.png" alt="Educators" width="60" /></a><a class="freetext" href="{% url 'free_order_form' %}">Available for free for educators and media</a></span>{% endif%}</p><p>{%if object %}{{object.description|striptags|truncatewords:50}}{%else%}{{cartitem.product.description|striptags|truncatewords:50}}{% endif %}</p></td>
+            {% if sale %}
+                <td align="center">{{ cartitem.product.unit_price|currency|sp2nbsp }}</td>
+                <td align="center">{{ cartitem.product|discount_price:sale|currency|sp2nbsp }}</td>
+            {% else %}
+                <td align="center">{{ cartitem.unit_price|currency|sp2nbsp }}</td>
+            {% endif %}
+            <td align="center">{{ cartitem|discount_line_total:sale|currency|sp2nbsp }}</td>
+        </tr>
+        {% cartitem_custom_details cartitem %}
+        {% cartitem_subscription_details cartitem %}
+        {% endarchiveitem %}
+    {% endfor %}
+    <tr><td colspan="{% if sale %}5{% else %}4{% endif %}" align="right"><strong>Price without Shipping &amp; Handling:</strong>{% block discount_notice %}<div class="price">Note: Discounts are not deducted from the price until you checkout.</div>{% endblock %}</td>
+        <td><strong>{{ cart|discount_cart_total:sale|currency|sp2nbsp }}</strong></td></tr>
+    </table>
+    {% if sale %}
+    {% include "product/some_discount_eligible.html" %}
+    {% endif %}
+
+    <div class="checkoutdiv">
+    <form action="{% url 'satchmo_checkout-step1' %}" method="get">
+    <input type="submit" value="{% trans 'Checkout' %}" />
+    </form>
+    </div>
+{% endif %}
+{% endblock %}

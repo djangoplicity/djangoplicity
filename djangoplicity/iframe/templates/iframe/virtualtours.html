@@ -1,0 +1,74 @@
+{% extends "facebook_iframe.html"%}
+{% load media_video %}
+
+{% block header %}
+    <div class="top">
+
+        <div class="topl">ESO Virtual Tours</div>
+        <div class="but topr"><a href="{{wall_url}}" target="_parent">Wall</a></div>
+        <div class="cl"></div>
+    </div>
+    <a href="https://www.eso.org/public/outreach/products/virtualtours/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/tab-virtualtours.png"></img></a>
+
+    <div class="top">
+        <div class="topl">&nbsp;</div>
+        <div class="topr">Follow us on:
+        <a href="http://twitter.com/ESO_Observatory"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/twitter-ico.png"></img></a>
+        <a href="http://www.youtube.com/ESOObservatory/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/youtube-ico.png"></img></a>
+        <a href="http://www.vimeo.com/esoastronomy"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/vimeo-ico.png"></img></a>
+        <a href="http://www.flickr.com/photos/esoastronomy/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/flickr-ico.png"></img></a>
+        <a href="https://podcasts.apple.com/us/podcast/esocast-hd/id295471183"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/itunes-ico.png"></img></a>
+
+        </div>
+        <div class="cl"></div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block body %}
+
+<p>Now you can visit the ESO observatories and  amazing astronomical landscapes from your armchair. On this page you will find various Virtual Tours. Click on the thumbnails below to enlarge the visuals.</p>
+<p>Once it loads in your screen, you can click on the fullscreen icon to the right to see the tour on a full screen. Click on the dots on the minimap (left) to go directly the panorama of your choice. Click on the hot spots onscreen to go to a new panorama. Press Ctrl or Shift keys to zoom in and out. Enjoy!</p>
+
+
+    <h2><a href="https://www.eso.org/public/outreach/products/virtualtours/armazones.html">Paranal / Armazones Tour</a></h2>
+      <p><a href="https://www.eso.org/public/outreach/products/virtualtours/armazones.html"><img class="nopadding" src="/public/outreach/products/virtualtours/images/armazones_thumb.jpg" border="0" /><br />
+        </a>Credits: ESO/S. Brunier, ESO/H. Heyer and<br />
+        ESO/Jos&eacute; Francisco Salgado (<a href="http://www.josefrancisco.org">josefrancisco.org</a>)</p>
+      <!-- <p><small><a href="zip/armazones_tour.zip">Download zip file</a> (675.6 MB)</small></p>  -->
+
+
+    <h2><a href="https://www.eso.org/public/outreach/products/virtualtours/lasilla.html">La Silla Tour</a></h2>
+      <p><a href="https://www.eso.org/public/outreach/products/virtualtours/lasilla.html"><img class="nopadding" src="/public/outreach/products/virtualtours/images/la_silla_thumb.jpg" width="350" height="175" border="0" /></a><br />
+        Credits: ESO/F. Kamphues, ESO/H.H. Heyer</p>
+      <!--  <p><small><a href="zip/la_silla_tour.zip">Download zip file</a> (635.7 MB)</small></p> -->
+
+    <h2><a href="https://www.eso.org/public/outreach/products/virtualtours/chajnantor.html">Chajnantor Tour </a></h2>
+        <p><a href="https://www.eso.org/public/outreach/products/virtualtours/chajnantor.html"><img class="nopadding" src="/public/outreach/products/virtualtours/images/chajnantor.jpg" width="350" height="175" border="0" /></a><br />
+          Credits: ESO/F. Kamphues, ESO/H.H. Heyer and <br />
+          ESO/Jos&eacute; Francisco Salgado (<a href="http://josefrancisco.org">josefrancisco.org</a>)   </p>
+        <!-- <p><small><a href="zip/chajnantor_tour.zip">Download zip file</a> (577.9 MB)</small></p> -->
+
+    <h2><a href="https://www.eso.org/public/outreach/products/virtualtours/milkyway.html">Milky Way Tour </a></h2>
+      <p><a href="https://www.eso.org/public/outreach/products/virtualtours/milkyway.html"><img class="nopadding" src="/public/outreach/products/virtualtours/images/milkyway_thumb.jpg" width="350" height="175" border="0" /></a><br />
+        Credits: ESO/Nick Risinger (<a href="http://www.skysurvey.org">skysurvey.org</a>)</p>
+      <!-- <p>&nbsp;</p> -->
+
+    <h2><a href="https://www.eso.org/public/outreach/products/virtualtours/hq.html">Headquarters Tour</a></h2>
+        <p><a href="https://www.eso.org/public/outreach/products/virtualtours/hq.html"><img class="nopadding" src="/public/outreach/products/virtualtours/images/hq_thumb.jpg" width="350" height="175" border="0" /></a><br />
+          Credits: ESO/H.H. Heyer</p>
+        <!-- <p><small><a href="zip/hq_tour.zip">Download zip file</a> (577.9 MB)</small></p> -->
+
+<br/>
+
+
+
+
+{% endblock %}
+
+{% block footer %}
+    <br/>
+    <br/>
+{%endblock%}

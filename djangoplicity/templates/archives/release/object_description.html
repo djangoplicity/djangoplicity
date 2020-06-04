@@ -1,0 +1,55 @@
+{% load i18n %}
+{% load djangoplicity_datetime %}
+{% load release_links %}
+{% include 'archives/embargo_notice.html' %}
+{% if object.disclaimer %}<div class="disclaimer">{{ object.disclaimer|safe }}</div>{% endif %}
+{% if object.kids_title and object.kids_description %}<div style="float: right; margin-top: 15px;">
+    <a href="kids/" class="noicon" title="Kids"><img src="{{MEDIA_URL}}/app/djangoplicity/kids/unawe-flag-en.png" alt="Kids" class="nopadding"></a>
+</div>{% endif %}
+
+<h3 class="pr_typeid">{{object.id}} &mdash; {% trans object.release_type.name %}</h3>
+{% include "archives/translations.html" %}
+<h1 class="pr_title">{{object.title}}</h1>
+{% if object.subtitle %}<h3>{{object.subtitle}}</h3>{% endif %}
+<p class="date">{{object.release_date|datetime:"DATE"}}{% if object.release_city %}, {{object.release_city}}{% endif %}</p>
+{% with main_image.releaseimage_set.all.0.zoomable as zoomable %}
+{% if main_image %}{% if main_image.resource_newsfeature %}<div class="pr_news_feature" style="padding:0;">
+<a href="{% if zoomable %}{{ main_image.get_absolute_url }}zoomable/{% else %}{{main_image.resource_screen.url}}{% endif %}" rel="shadowbox[newswheel]" title="{{ main_image.title }}"><img src="{{ main_image.resource_newsfeature.url }}" class="pr_news_feature_img" style="padding:0;" /></a>
+{% if images %}{% for im in images %}{% if main_image != im %}<a href="{{ im.resource_screen.url }}" rel="shadowbox[newswheel]" title="{{ im.title }}" class="hidden"></a>{% endif %}{% endfor %}{% endif %}
+</div>
+<div class="pr_news_feature_link" style="color: #777777; padding: 0;"><a style="color: #777777; padding: 0;"  href="{% if zoomable %}{{ main_image.get_absolute_url }}zoomable/{% else %}{{main_image.resource_screen.url}}{% endif %}" rel="shadowbox" title="{{ main_image.title }}">{% trans "Click to Enlarge" %}</a></div>
+{% endif %}{% endif %}
+{% endwith %}</p>
+<a style="margin: 0; padding: 0;" href="{{ main_image.resource_screen.url }}"></a>
+<p class="text_intro pr_first">{{object.headline|linebreaksbr|description_links|release_ids|safe}}</p>
+{% if main_image %}{% if not main_image.resource_newsfeature %}{% if main_image.resource_news %}
+<div class="inline_image"><a href="{{ main_image.resource_screen.url }}" rel="shadowbox" title="{{ main_image.title }}"><img src="{{ main_image.resource_news.url }}" class="pr_image" /><br/><p>{% trans "Click to Enlarge" %}</p></a></div>
+{% endif %}{%endif%}{%endif%}
+{{object.description|description_links|release_ids|safe}}
+{% if object.notes %}<h3>{% trans "Notes" %}</h3>{{object.notes|notes_links|release_ids|safe}}{%endif%}
+{% if object.more_information %}<h3>{% trans "More information" %}</h3>{{object.more_information|safe}}{%endif%}
+{% if object.links %}<h3>{% trans "Links" %}</h3>{{object.links|safe}}{%endif%}
+{% if object.releasecontact_set.all %}<h3>{% trans "Contacts" %}</h3>
+
+{% for c in object.releasetranslationcontact_set.all %}<p>
+{% if c.name %}{{ c.name }}<br />{% endif %}
+{% if c.affiliation %}{{ c.affiliation }}<br />{% endif %}
+{% if c.city %}{{ c.city }}{% endif %}{% if c.country %}{% if c.city %}, {%endif%}{{ c.country }}<br />{% endif %}
+{% if c.telephone %}{% trans "Tel" %}: {{ c.telephone }}<br />{% endif %}
+{% if c.cellular %}{% trans "Cell" %}: {{ c.cellular }}<br />{% endif %}
+{% if c.email %}{% trans "Email" %}: <a href="mailto:{{ c.email }}">{{ c.email }}</a>{% endif %}</p>
+{% endfor %}
+
+{% for c in object.releasecontact_set.all %}<p>
+{% if c.name %}{{ c.name }}<br />{% endif %}
+{% if c.affiliation %}{{ c.affiliation }}<br />{% endif %}
+{% if c.city %}{{ c.city }}{% endif %}{% if c.country %}{% if c.city %}, {%endif%}{{ c.country }}<br />{% endif %}
+{% if c.telephone %}{% trans "Tel" %}: {{ c.telephone }}<br />{% endif %}
+{% if c.cellular %}{% trans "Cell" %}: {{ c.cellular }}<br />{% endif %}
+{% if c.email %}{% trans "Email" %}: <a href="mailto:{{ c.email }}">{{ c.email }}</a>{% endif %}</p>
+{% endfor %}
+{% endif %}
+
+{% if object.is_translation %}{% blocktrans with object.source.id as source_id %}This is a translation of ESO Press Release {{ source_id }}.{% endblocktrans %}{% endif %}
+
+{% include 'archives/release/extra_footer.html' %}

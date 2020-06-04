@@ -1,0 +1,45 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8">
+    <title>{{ object.title }}</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #000;
+            overflow: hidden;
+        }
+
+        #zoomcontainer {
+            width: 100%;
+            height: 100%;
+        }
+
+        #ViewerDisplay {
+            background-color: #000 !important;
+        }
+    </style>
+</head>
+<body>
+    {% load pipeline %}
+    <script type="text/javascript">var MEDIA_URL = "{{MEDIA_URL}}"</script>
+    {% javascript 'openseadragon' %}
+    <div id="zoom" style="width: 100%; height: 100%;"></div>
+    <script type="text/javascript">
+        var viewer = OpenSeadragon({
+            id: "zoom",
+            prefixUrl: "{% static "djangoplicity/openseadragon/images/" %}",
+			maxZoomPixelRatio: 3,
+            animationTime: 1.2,
+            tileSources: [{
+                type:"zoomifytileservice",
+                width: {{ object.width }},
+                height: {{ object.height }},
+                tilesUrl: "{{ object.resource_zoomable.url }}/",
+            }]
+        });
+    </script>
+</body>
+</html>

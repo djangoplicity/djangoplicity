@@ -1,0 +1,17 @@
+{% extends "base_twocolumn.html" %}
+{% load i18n %}
+
+{% block site_title %}{% if archive_title %}{% trans archive_title %}{% else %}{{ archive|capfirst }} {% trans "Archive" %}{%endif%} | {{block.super}}{% endblock %}
+
+{% load menus %}
+{# block breadcrumb %}{{ block.super}}{% endblock #}
+
+{% block content %}
+<h1>{% if archive_title %}{% trans archive_title %}{% else %}{{ archive|capfirst }} {% trans "Archive" %}{% endif %}{% if listview_feed_url %} <a href="{{ listview_feed_url }}" class="listviewrsslink"><img src="{{MEDIA_URL}}djangoplicity/images/rssicon.png" /></a>{% endif %}</h1>
+{% if crosslinks %} 
+<div class="seealso">{{crosslinks_string|safe}}</div>
+<div class='clear'></div>
+{%endif%}
+{% include index_template %}
+{% endblock %}
+{% include 'archives/extra_footer.html' %}

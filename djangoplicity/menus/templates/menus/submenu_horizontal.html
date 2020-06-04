@@ -1,0 +1,1 @@
+{% load menus %}{% for entry in submenu %}<a href="{{ entry.link }}"{% if entry.on_click %} target="_blank"{% endif %}>{{ entry.title }}</a>{% if not forloop.last %} | {% endif %}{% endfor %}

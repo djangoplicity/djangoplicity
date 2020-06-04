@@ -1,0 +1,16 @@
+{% load menus %}
+
+<ul>
+{% for entry in submenu %}
+<li>
+{% if entry.link %}
+    <a href="{{ entry.link }}">{{ entry.title }}</a>
+{% else %}
+    {{entry.title}}
+{% endif %}
+</li>
+{% if entry.children|length %}
+    {% render_submenu entry.children %}
+{% endif %}
+{% endfor %}
+</ul>

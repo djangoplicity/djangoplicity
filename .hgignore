@@ -1,0 +1,14 @@
+syntax: regexp
+^src/djangoplicity\.egg-info$
+syntax: regexp
+^distribute-0\.6\.14\.tar\.gz$
+syntax: regexp
+^distribute-0\.6\.14-py2\.7\.egg$
+syntax: glob
+*.pyc
+.nfs*
+.sass-cache
+*.css.map
+.cache
+.pytest_cache
+*.swp

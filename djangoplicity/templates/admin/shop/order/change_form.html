@@ -1,0 +1,16 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls admin_modify %}
+{% load djangoplicity_satchmo %}
+
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+  <ul class="object-tools">
+  {% if original.discount_code %}{% if perms.freeorder.change_freeorder %}<li><a href="{% url 'adminshop_site:freeorder_freeorder_changelist' %}?q={{original.discount_code}}&accepted__exact=1" class="historylink">{% trans "Check free order" %}</a></li>{% endif %}{% endif %}
+  {% if perms.contact.change_contact %}<li><a href="{% url 'adminshop_site:contact_contact_change' original.contact_id  %}" class="historylink">{% trans "Edit contact" %}</a></li>{% endif %}
+  {% if perms.shop.change_order %}<li><a href="{% url 'satchmo_print_shipping' "shippinglabel" original.id  %}" class="historylink">{% trans "Shipping label" %}</a></li>{% endif %}
+  {% if perms.shop.change_order %}{% if original|order_variable:"ORDER_ID" %}<li><a href="{% url 'satchmo_order_csv_file' original.pk %}" class="historylink">{% trans "CSV Export" %}</a></li>{% endif %}{% endif %}
+  {% if perms.shop.change_order %}{% if original|order_variable:"ORDER_ID" %}<li><a href="{% url 'satchmo_order_xml_file' original.pk %}" class="historylink">{% trans "XML Export" %}</a></li>{% endif %}{% endif %}
+  <li><a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a></li>
+  </ul>
+{% endif %}{% endif %}
+{% endblock %}

@@ -1,0 +1,5 @@
+{% if object and not no_social %}
+{% if object.published and not is_staging and not is_embargo %}
+<div class="addthis"></div>
+{% endif %}
+{% endif %}

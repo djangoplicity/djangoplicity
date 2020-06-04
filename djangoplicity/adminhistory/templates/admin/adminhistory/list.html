@@ -1,0 +1,96 @@
+{% extends "admin/base_site.html" %}
+{% load admin_list i18n static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}" />
+  {{ media.css }}
+    <style>
+      #changelist table thead th:first-child {width: inherit}
+    </style>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+{{ media.js }}
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+  {% block breadcrumbs %}
+    <div class="breadcrumbs">
+      <a href="../../">
+        {% trans "Home" %}
+      </a>
+      &rsaquo;
+      History
+    </div>
+  {% endblock %}
+
+{% block coltype %}flex{% endblock %}
+{% block site_title %}TEST{% endblock %}
+
+{% block content %}
+ <h1>History</h1>
+  <div id="content-main">
+    {% block object-tools %}
+    {% endblock %}
+    <div class="module{% if filtered %} filtered{% endif %}" id="changelist">
+      {% block search %}
+        <div id="toolbar"><form id="changelist-search" method="get">
+        <div><!-- DIV needed for valid HTML -->
+        <label for="searchbar"><img src="{% static "admin/img/search.svg" %}" alt="Search" /></label>
+        <input type="text" size="40" name="s" value="{{ searchval|escape }}" id="searchbar" />
+        <input type="submit" value="{% trans 'Search' %}" />
+        {% for pair in querydict.items %}
+            {% if pair.0 != 's' %}<input type="hidden" name="{{ pair.0 }}" value="{{ pair.1 }}"/>{% endif %}
+        {% endfor %}
+        </div>
+        </form></div>
+        <script type="text/javascript">document.getElementById("searchbar").focus();</script>
+      {% endblock %}
+      {% block filters %}
+      {% endblock %}
+      <form id="changelist-form" action="" method="post"{% if cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %}>{% csrf_token %}
+      {% block result_list %}
+            {% if objects.object_list %}
+            <table cellspacing="0" id="result_list">
+            <thead>
+            <tr>
+            <th>User</th>
+            <th>Timestamp</th>
+            <th>Action</th>
+            <th>Type</th>
+            <th>ID</th>
+            <th>Object</th>
+            <th>Action description</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for object in objects.object_list %}
+            <tr class="{% cycle 'row1' 'row2' %}">
+            <td><a href="{{querystring}}u={{ object.user.pk}}">{{ object.user}}</a></td>
+            <td>{{ object.action_time }}</td>
+            <td align="center"><a href="{{querystring}}a={{ object.action_flag }}" class="{% if object.is_addition %}addlink{% endif %}{% if object.is_change %}changelink{% endif %}{% if object.is_deletion %}deletelink{% endif %}"></a></td>
+            <td><a href="{{querystring}}ct={{object.content_type.pk}}">{{ object.content_type }}</a></td>
+            <td><a href="{{querystring}}id={{object.object_id}}">{{object.object_id}}</a></td>
+            <td>{% if not object.is_deletion %} (<a href="{{ object.get_admin_url }}">edit</a>){% endif %} {{ object.object_repr|escape }}</td>
+            <td>{{ object.get_change_message }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+            {% endif %}
+
+      {% endblock %}
+        <p class="paginator">
+        {% if objects.has_other_pages %}
+        {% for i in objects.paginator.page_range %}
+        {% if objects.number == i %}<span class="this-page">{{i}}</span>{% else %}<a href="{{ querystring }}p={{i}}">{{i}}</a> {% endif %}
+        {% endfor %}
+        {% endif %}
+        </p>
+      </form>
+    </div>
+  </div>
+{% endblock %}

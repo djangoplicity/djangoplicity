@@ -1,0 +1,31 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls admin_modify %}
+
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+  <ul class="object-tools">
+  <li><a href="{% url opts|admin_urlname:'cleanhtml' original.pk|admin_urlquote %}" class="historylink">{% trans "Clean HTML" %}</a></li>
+  <li><a href="displays/" class="historylink" onclick='window.open( "displays/", "displayWindow", "status = 1, height = 600, width = 800, resizable = 1" );return false;'>{% trans "Displays" %}</a></li>
+  <li><a href="rename/" class="historylink">{% trans "Rename" %}</a></li>
+  {% if DJANGOPLICITY.USE_I18N %}
+    <li><a href="{% url 'admin:announcements_announcementproxy_changelist' %}?source__exact={{original.id}}" class="historylink">{% trans "Translations" %}</a></li>
+    <li><a href="{% url 'admin:announcements_announcementproxy_add' %}?source={{original.id}}" class="historylink">{% trans "Add translation" %}</a></li>
+  {% endif %}
+  <li><a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a></li>
+  {% if has_absolute_url %}<li><a href="{{ original.get_absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+  </ul>
+{% endif %}{% endif %}
+{% endblock %}
+
+{% block form_top %}
+<fieldset style="border: 0; width: 220px; float: right;" class="module aligned">
+<div>
+    <div align="center" style="margin-top: 15px;">
+    {% if original.main_visual %}<a href="{{ original.main_visual.get_absolute_url }}"><img src="{{ original.main_visual.resource_thumbs.url }}" /><br />{{ original.main_visual.id }}</a>
+    {% else %}
+    No preview available
+    {% endif %}
+    </div>
+</div>
+</fieldset>
+{% endblock %}

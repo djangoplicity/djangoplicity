@@ -1,0 +1,77 @@
+[
+    {
+        "pk": 2, 
+        "model": "pages.section", 
+        "fields": {
+            "name": "Default", 
+            "template": "pages/page_onecolumn.html", 
+            "append_title": "ESOshop"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "pages.page", 
+        "fields": {
+            "context_processors": false, 
+            "login_required": false, 
+            "description": "", 
+            "embedded": true, 
+            "title": "ESOshop", 
+            "url": "", 
+            "template_name": "", 
+            "section": 2, 
+            "created": "2010-09-02 18:22:40", 
+            "dynamic": false, 
+            "content": "<p><img src=\"/public/archives/esoshop.jpg\" border=\"0\" alt=\"ESOshop\" /></p>\r\n<p><strong>Dear Customer: </strong><em><strong>Welcome to the ESOshop!</strong></em></p>\r\n<p>The ESOshop is ESO's non-profit webshop. We keep the prices low by&nbsp;only covering the costs we have for production and handling.&nbsp;</p>\r\n<hr />\r\n<p>Payment is only possible with Credit Cards (VISA, Master Card and American Express)<br /><img src=\"/public/archives/credit-cards.gif\" border=\"0\" width=\"212\" height=\"48\" /></p>\r\n<p>ESOshop is <a href=\"/public/shopinfo/payment.html\">safe</a>: You can shop around and put as many items in your cart as you want without any risk. <strong>Only</strong> after entering your credit card info and clicking &ldquo;Place your order&rdquo; the purchase is final.</p>\r\n<p><a href=\"/public/shopinfo/shipping.html\">Shipping costs</a> will be added to the price when you click &ldquo;Proceed to Checkout&rdquo;, just before you pay.</p>\r\n<p>Minimum order quantity is 3 &euro; per purchase.</p>\r\n<p>All printed material can be downloaded as PDF files for free from this <a href=\"/public/outreach/products/\">site</a>.</p>\r\n<p>All material except merchandise and books can also be picked up in person for free (one copy) at  the ESO Headquarters in Garching, Germany.</p>\r\n<p>Educators and bonafide members of the press can order products for free <a href=\"/public/shopinfo/freeorders.html\">here</a>.</p>\r\n<ul>\r\n</ul>\r\n<p>Large discount  by wholesale <a href=\"/public/shopinfo/bulkorders.html\">bulk orders</a> for resellers is available.</p>", 
+            "active": true, 
+            "last_modified": "2010-09-06 18:31:56", 
+            "keywords": "", 
+            "start_publishing": null, 
+            "end_publishing": null
+        }
+    }, 
+    {
+        "pk": "eso.login", 
+        "model": "pages.embeddedpagekey", 
+        "fields": {
+            "application": "eso", 
+            "page": null, 
+            "description": "Displayed above the login form.", 
+            "last_modified": "2010-09-02 18:18:12", 
+            "title": "Login page"
+        }
+    }, 
+    {
+        "pk": "eso.logout", 
+        "model": "pages.embeddedpagekey", 
+        "fields": {
+            "application": "eso", 
+            "page": null, 
+            "description": "Displayed on the logout page.", 
+            "last_modified": "2010-09-02 18:18:12", 
+            "title": "Logout page"
+        }
+    }, 
+    {
+        "pk": "eso.access_denied", 
+        "model": "pages.embeddedpagekey", 
+        "fields": {
+            "application": "eso", 
+            "page": null, 
+            "description": "Displayed when users are denied access to embargoed/staging resources.", 
+            "last_modified": "2010-09-02 18:18:12", 
+            "title": "Access Denied"
+        }
+    }, 
+    {
+        "pk": "djangoplicity.shop_right_column", 
+        "model": "pages.embeddedpagekey", 
+        "fields": {
+            "application": "djangoplicity", 
+            "page": 2, 
+            "description": "Displayed on shop pages.", 
+            "last_modified": "2010-09-02 18:22:52", 
+            "title": "Shop right column"
+        }
+    }
+]

@@ -1,0 +1,11 @@
+<h1>{{ object.title }}</h1>
+{% include 'archives/embargo_notice.html' %}
+<h2></h2>
+{% if object.resource_tour %}
+
+<iframe src="{{ object.resource_tour.url }}/index.html" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0" allowfullscreen></iframe>
+
+{% endif %}
+<p>{{ object.description|safe }}</p>
+{% include 'archives/credit.html' %}
+{% include 'archives/extra_footer.html' %}

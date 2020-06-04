@@ -1,0 +1,54 @@
+{% extends "site-specific/shop/checkout.html" %}
+{% load i18n %}
+{% load satchmo_currency %}
+{% load satchmo_order %}
+
+{% block content %}
+<h1>{% trans "Checkout" %}</h1>
+<h2>Step 3 of 3: Review order</h2>
+
+{% if cart.has_inactive_products %}
+    <div class="alert alert-danger">Your cart contains sold out items, please go back and <a href="{% url 'satchmo_cart' %}">update your order</a>.</div>
+{% else %}
+
+
+{% block error_processing %}
+{% if errors %}
+<div class="pr_box">
+    <h3 class="error">{% block errorheader %}An error was returned while trying to process your card{% endblock %}</h3>
+    <p><span class="error">Reason: {{ errors }}</span>
+    </p>
+    <p>Please go back to <a href="../">Step 2 of 3: Enter credit card information</a> and
+    correct the error given below.</p>
+</div>
+{% else %}
+    <p>Please validate the following information, then submit press "Place order".
+    {% if not order.paid_in_full %}
+    You will be redirected to the page of our payment partner to process the payment.
+    {% endif %}</p>
+{% endif %}
+{% endblock %}
+
+{% block order_details %}
+    {% order_details order default_view_tax %}
+{% endblock %}
+
+{% block payment_display %}
+{% if order.paid_in_full %}
+<form action="{% url 'CONCARDIS_satchmo_checkout_free-confirm' %}">
+    <input type="submit" value="{% trans "Complete free order" %}" />
+</form>
+{% else %}
+<form action="{{ post_url }}" method="post">
+    {% for name, value in params.items %}
+    <input type="hidden" name="{{ name }}" value="{{ value }}" />
+    {% endfor %}
+    <input type="submit" class="btn btn-primary" value="{% trans "Place Order" %}" />
+</form>
+{% endif %}
+
+{% endblock %}
+
+{% endif %}
+
+{% endblock content %}

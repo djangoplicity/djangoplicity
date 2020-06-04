@@ -1,0 +1,59 @@
+{% load djangoplicity_text_utils %}<p style="color:red;">!!! MUST BE EDITED - REMEMBER TO CC PIO (check release spreadsheet) !!!<p>{% load release_links %}{% load djangoplicity_datetime %}Dear Rick, 
+
+Please find enclosed the text and the link to a {%block org_prefix %}{% endblock %}
+{{obj.release_type.name}}: {{obj.title|safe}}
+{% if embargo %}
+This will be for release UNDER EMBARGO today {{obj.embargo_date|date:"d F Y"}} at {{obj.embargo_date|date:"H:i T"}} / {{obj.embargo_date|timezone:"US/Eastern"|date:"H:i T"}} - please
+do not distribute this before then.
+
+The embargo will lift on {{obj.release_date|date:"d F Y"}} at {{obj.release_date|date:"H:i T"}} / {{obj.release_date|timezone:"US/Eastern"|date:"H:i T"}}.
+{% else %}
+This will be for release today {{obj.release_date|date:"d F Y"}} at {{obj.release_date|date:"H:i T"}} / {{obj.release_date|timezone:"US/Eastern"|date:"H:i T"}} with no 
+embargo - please do not distribute this before then.
+{% endif %}
+Many thanks in advance for distributing it.
+
+Best regards,
+{{ request.user.first_name }} 
+----
+PIO Source:
+<span style="color:red;">XXXX</span>
+{%block piosource %}ESO ePOD 
+Garching, Germany 
+Tel: +49 89 3200 <span style="color:red;">XXXX</span> 
+Email: <span style="color:red;">XXXX</span>@eso.org{%endblock%} 
+
+The full text of this press release{%if extra_context.images and extra_context.videos %}, images and videos are {% else %}{% if extra_context.images %} and images are {% else %}{% if extra_context.videos %} and videos are {% else %} is {%endif%}{%endif%}{% endif %}available on:
+{{site_url_prefix}}{{obj.get_absolute_url}}{% if embargo %}
+Login: {{embargo_login.0}}
+Password: {{embargo_login.1}}{% endif %}
+
+
+{{obj.title|upper}}{% if obj.subtitle %}
+{{obj.subtitle|upper}}{% endif %}
+
+{{obj.headline|striptags}}
+
+{{obj.description|html2text}}{% if obj.notes %}
+
+Notes
+
+{{obj.notes|html2text}}{%endif%}{% if obj.more_information %}
+
+More information
+
+{{obj.more_information|html2text}}{%endif%}{% if obj.links %}
+
+Links
+
+{{obj.links|html2text}}{%endif%}{% if obj.releasecontact_set.all %}
+
+Contacts
+{% for c in obj.releasecontact_set.all %}
+{% if c.name %}{{ c.name }}{% endif %}{% if c.affiliation %}
+{{ c.affiliation }}{% endif %}{% if c.city %}
+{{ c.city }}{% endif %}{% if c.country %}{% if c.city %}, {%endif%}{{ c.country }}{% endif %}{% if c.telephone %}
+Tel: {{ c.telephone }}{% endif %}{% if c.cellular %}
+Cell: {{ c.cellular }}{% endif %}{% if c.email %}
+Email: {{ c.email }}{% endif %}
+{% endfor %}{% endif %}

@@ -1,0 +1,102 @@
+{% extends "facebook_iframe.html"%}
+{% load media_video %}
+
+{% block header %}
+    <div class="top">
+        <div class="topl">European Southern Observatory &mdash; <a href="https://www.eso.org">www.eso.org</a> </div>
+        <div class="but topr"><a href="{{wall_url}}" target="_parent">Wall</a></div>
+        <div class="cl"></div>
+    </div>
+    <a href="https://www.eso.org"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/tab1-eso.png"></img></a>
+
+    <div class="top">
+        <div class="topl">&nbsp;</div>
+        <div class="topr">Follow us on:
+        <a href="http://twitter.com/ESO_Observatory"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/twitter-ico.png"></img></a>
+        <a href="http://www.youtube.com/ESOObservatory/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/youtube-ico.png"></img></a>
+        <a href="http://www.vimeo.com/esoastronomy"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/vimeo-ico.png"></img></a>
+        <a href="http://www.flickr.com/photos/esoastronomy/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/flickr-ico.png"></img></a>
+        <a href="https://podcasts.apple.com/us/podcast/esocast-hd/id295471183"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/itunes-ico.png"></img></a>
+
+        </div>
+        <div class="cl"></div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block body %}
+    <p>
+    Welcome to the official page of the <b>European Southern Observatory!</b><br/>
+    If you love discovering the Universe like we do, you'll find here the latest news from ESO - the most productive observatory in the world and a platform for mega science projects in astronomy. New findings, images and videos of the Universe, competitions, events and much more will all be presented here, so keep in touch!
+    </p>
+
+    <div class="box">
+        <div class="lf txttop">
+        Founded in 1962 as an intergovernmental astronomy organisation, ESO has today 15 Member states. Its mission is to encourage and facilitate cooperation in and beyond Europe, allowing people of various cultures to work together to explore the Universe.
+        </div>
+        <div class="rf vid">
+        {% embed_custom_video video1 "medium_flash,medium_podcast,h264" "hd_and_apple,hd720p_screen" "medium_podcast,h264" "240" "160" %}
+        </div>
+        <div class="cl"></div>
+    </div>
+
+    <p>
+    ESO develops and operates world-class observing facilities for ground-based astronomical research in the southern hemisphere. Its telescopes are based in Chile, in the Atacama Desert, one of the best places in the world for observations.
+    </p>
+
+
+    <div class="box">
+        <div class="lf txttop">
+        At the La Silla Observatory, at an altitude of 2400 metres, ESO operates some of the most productive 4-metre class telescopes in the world.
+        </div>
+        <div class="rf vid padr ">
+        <img src="{{ MEDIA_URL}}djangoplicity/images/fb/welcome-1.png"/>
+        </div>
+        <div class="cl"></div>
+    </div>
+
+
+    <div class="box">
+        <div class="lf txttop">
+        The Very Large Telescope (VLT) is the world's most advanced optical instrument, consisting of four Unit Telescopes with main mirrors of 8.2m diameter and four movable 1.8m diameter Auxiliary Telescopes.
+        </div>
+        <div class="rf vid padr ">
+        <img src="{{ MEDIA_URL}}djangoplicity/images/fb/welcome-2.png"/>
+        </div>
+        <div class="cl"></div>
+    </div>
+
+    <div class="box">
+        <div class="lf txttop">
+        Together with its international partners, ESO is building ALMA, the most powerful telescope for observing the cool Universe. Acting as a single telescope, ALMA will be composed initially of 66 high-precision antennas.
+        </div>
+        <div class="rf vid padr ">
+        <img src="{{ MEDIA_URL}}djangoplicity/images/fb/welcome-3.png"/>
+        </div>
+        <div class="cl"></div>
+    </div>
+
+    <div class="box">
+        <div class="lf txttop">
+        With its 40-meter class mirror, the European Extremely Large Telescope will be the biggest eye on the sky, tackling the biggest scientific challenges of our time, including tracking down Earth-like planets around other stars where life could exist.
+        </div>
+        <div class="rf vid padr ">
+        <img src="{{ MEDIA_URL}}djangoplicity/images/fb/welcome-4.png"/>
+        </div>
+        <div class="cl"></div>
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+    &nbsp;
+    <br/>
+
+{% endblock %}
+
+{% block footer %}
+    <br/>
+    <br/>
+{%endblock%}

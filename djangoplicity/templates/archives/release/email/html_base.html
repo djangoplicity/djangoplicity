@@ -1,0 +1,22 @@
+{% spaceless %}
+<p>For Your Information:</p>
+<p><b>{%block org_prefix %}{% endblock %}{{obj.release_type.name}} {{obj.id}} - {{obj.title|safe}}{% if obj.subtitle %} &mdash; {{obj.subtitle|safe}}{% endif%}</b></p>
+{%block embargonotice %}{% if embargo %}<p style="color: red;">EMBARGOED* UNTIL {{obj.release_date|date:"d F Y"}} at {{obj.release_date|date:"H:i T"}}</p>{% else %}<p>FOR IMMEDIATE RELEASE</p>{% endif %}{% endblock %}
+<p>For your convenience the first paragraph of the release is provided below:</p>
+<p>{{obj.headline}}</p>
+<p>The release{%if extra_context.images and extra_context.videos %}, images and videos are {% else %}{% if extra_context.images %} and images are {% else %}{% if extra_context.videos %} and videos are {% else %} is {%endif%}{%endif%}{% endif %}available on:<br/>
+<a href="{{site_url_prefix}}{{obj.get_absolute_url}}">{{site_url_prefix}}{{obj.get_absolute_url}}</a>
+{% if embargo %}<br/>login: {{embargo_login.0}}<br/>password: {{embargo_login.1}}{% endif %}
+</p>
+{% block translations %}{%if extra_context.translations.countries %}<p>Translations are available in: {% for country in extra_context.translations.countries %}{% for t in country %}{% if t.object.translation_ready %}<a href="{{site_url_prefix}}{{t.object.get_absolute_url}}">{{t.name}}</a>{% endif %}{%endfor%}{% if not forloop.last %}, {% endif %}{%endfor%}
+
+
+{% if embargo %}<br/>login: {{embargo_login.0}}<br/>password: {{embargo_login.1}}{%endif%}
+</p>
+{% endif %}{% if obj.kids_title %}<p>Space Scoop - the children's version of this release is available at: <a href="{{site_url_prefix}}{% url 'releases_detail_kids' obj %}">{{site_url_prefix}}{% url 'releases_detail_kids' obj %}</a></p>{% endif %}{% endblock %}
+<p>*************************************************************************<br/>We would also like to direct your attention to the following:</p>
+
+<p></p>
+{% block greeting %}{% endblock %}{% if embargo %}
+<p>* The embargo that ESO Department of Communication uses for its press releases acts as an advanced notice system and it is not meant to “hype” news items. Given the often complex nature of the astronomical discoveries, we prefer to make our press releases and additional materials available about 48 hours in advance of the public release to give media representatives the time to research a topic, gather relevant information or conduct interviews. This ultimately leads to a better and a more accurate coverage of our news and therefore a better informing of the general public. </p>{% endif%}
+{% endspaceless %}

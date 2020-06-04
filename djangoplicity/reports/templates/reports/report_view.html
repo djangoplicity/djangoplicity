@@ -1,0 +1,61 @@
+{% extends "admin/base_site.html" %}
+{% load staticfiles admin_list i18n %}
+{% block extrastyle %}<link rel="stylesheet" type="text/css" href="{% static 'admin/css/changelists.css'  %}/>{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block userlinks %}<a href="../../../doc/">{% trans 'Documentation' %}</a> / <a href="../../../password_change/">{% trans 'Change password' %}</a> / <a href="../../../logout/">{% trans 'Log out' %}</a>{% endblock %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../"> {% trans "Reports" %}</a> &rsaquo;
+     {{ title|truncatewords:"18"|escape }}
+</div>
+{% endif %}{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+<ul class="object-tools">
+    <li><a href="?output=csv" class="csvlink">Download CSV</a></li>
+    <li><a href="?output=xlsx" class="csvlink">Download XLSX</a></li>
+</ul>
+{% endblock %}
+
+<div class="module" id="changelist">
+
+<table cellspacing="0">
+ <thead>
+<tr>
+ {% for field in fields %}
+<th class="sorted ascending">
+{{field}}
+</th>
+{% endfor %}
+</tr>
+</thead>
+
+<tbody>
+{% for result in results %}
+<tr class="{% cycle 'row1' 'row2' %}">
+{% for column in result %}
+<td>
+{{column|safe}}
+</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<p class="paginator">
+
+{{total}}  results
+
+</p>
+</div>
+</div>
+{% endblock %}

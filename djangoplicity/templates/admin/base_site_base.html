@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'Djangoplicity administration' %}{% endblock %}
+
+{% block branding %}<h1 id="site-name">{% trans 'Djangoplicity administration' %}</h1>{% endblock %}
+
+{% block extrahead %}{% block extrahead_djangoplicity %}{% endblock %}{% endblock %}
+
+{% block extrastyle %}
+<style>
+#header {
+    height: initial !important;
+}
+.djangoplicity-tools {
+    clear: both;
+    line-height: initial;
+}
+</style>
+{% block extrastyle_djangoplicity %}{% endblock %}
+{% endblock %}
+
+{% block nav-global %}
+<div class="djangoplicity-tools"><a href="/">{% trans 'Website' %}</a>
+{% if request.user.is_staff %}| <a href="{% url 'admin_site:index' %}">{% trans 'Site admin' %}</a>
+{% if request.user.is_superuser %}| <a href="{% url 'adminlogs_site:index' %}">{% trans 'System admin' %}</a>{% endif %}
+{% block extra_admin_links %}{% endblock %}
+{% if request.user.is_superuser %}| <a href="{% url 'admincache_site:index' %}">{% trans 'Cache' %}</a>{% endif %}
+{% if request.user.is_superuser %}| <a href="{% url 'admin_site:index' %}tasks/">{% trans 'Tasks' %}</a>{% endif %}
+{% if request.user.is_superuser or request.user.username == 'eson' %}| <a href="{% url 'adminhistory_site:index' %}">{% trans 'History' %}</a>{% endif %}
+{% endif %}
+</div>
+{% endblock %}

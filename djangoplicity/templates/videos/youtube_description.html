@@ -1,0 +1,8 @@
+{% load djangoplicity_text_utils %}{% if video.headline %}{{ video.headline }}{% endif %}
+{% if video.description %}
+{{ video.description|html2textnolinks|truncatechars:4000 }}
+{% endif %}
+More information and download options: http://{{ domain }}{{ video.get_absolute_url }}
+{% if video.credit %}
+Credit:
+{{ video.credit|html2textnolinks }}{% endif %}

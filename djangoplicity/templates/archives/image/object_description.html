@@ -1,0 +1,19 @@
+{% load i18n %}
+{% include 'archives/embargo_notice.html' %}
+{% include 'archives/translations.html' %}
+<h1>{{ object.title }}</h1>
+{% if object.resource_medium %}
+<div class="archive_image">
+<div class="image_container">{% if object.resource_screen %}<a href="{% if object.zoomable %}{{ object.get_absolute_url }}zoomable/{% else %}{{ object.resource_screen.url }}{% endif %}" rel="shadowbox" title="{{object.title|safe}}" />
+<img src="{{object.resource_medium.url}}" width="320" border="0" alt="{{object.title|safe}}" />
+<br/><p>{% trans "Click to Enlarge" %}</p></a>
+{% else %}
+<img src="{{object.resource_medium.url}}" width="320" border="0" alt="{{object.title|safe}}" />
+{% endif %}
+</div>
+</div>
+{% endif %}
+{% if object.headline %}<p>{{ object.headline }}</p>{% endif %}
+<p>{{ object.description|safe }}</p>
+<p><strong>{% trans "Credit" %}:</strong><div class="credit"><p>{{ object.credit|safe }}</p></div></p>
+{% include 'archives/extra_footer.html' %}

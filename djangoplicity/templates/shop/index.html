@@ -1,0 +1,46 @@
+{% extends "shop/base.html" %}
+{% load i18n %}
+{% load satchmo_util %}
+{% load pages %}
+{% load thumbnail %}
+{% load djangoplicity_satchmo %}
+{% load djangoplicity_utils %}
+{% load satchmo_price %}
+{% load satchmo_currency satchmo_category %}
+{% load satchmo_util satchmo_discounts %}
+
+{% block site_title %} {{ shop_name }}{% if block.super%} | {{ block.super }}{% endif %}{% endblock %}
+
+{% block content %}{% if not DJANGOPLICITY.SHOP_LIVE %}<div align="center" style="background-color:red; color:white; font-weight: bold;">SHOP IN TEST MODE</div>{% endif %}
+<h1>{{ shop_name }}</h1>
+
+{% if categories %}
+<table class="archive_normal" width="100%">
+{% for list in categories|split_list:"3" %}
+<tr>{% for category in list %}{% if not category.parent %}<td class="imagerow" width="33"><a href="{{ category.get_absolute_url }}"><img src="{{ MEDIA_URL }}images/shopcategories/{{ category.slug }}.png" width="122" alt="{{category.name}}" /></a></td>{%endif%}{% endfor %}</tr>
+<tr>{% for category in list %}{% if not category.parent %}<td class="titlerow" width="33">{{category.name}}</td>{%endif%}{% endfor %}</tr>
+<tr><td colspan='4' class='breaker'></td></tr>
+{% endfor %}
+</table>
+{% endif %}
+
+{% if all_products_list %}
+<h2>{% trans "Featured Products" %}</h2>
+<table class="archive_normal" width="100%">
+{% for list in all_products_list|split_list:"3" %}
+<tr>{% for product in list %}{% archiveitem product as item %}
+<td class="imagerow" width="33">{% if item.resource_thumb %}<a href="{{ product.get_absolute_url }}"><img src="{{ item.resource_thumb.url }}" width="122" alt="{{item.title}}" /></a>{% else %}{% thumbnail product.main_image.picture 122x122 as image %}<a href="{{ product.get_absolute_url }}"><img src="{{image}}" width="122" alt="{{product.name}}" /></a>{% endthumbnail %}{% endif %}</td>{% endarchiveitem %}{% endfor %}
+</tr>
+<tr>{% for product in list %}{% archiveitem product as item %}
+<td class="pricerow" width="33"><span class="price" align="right">Price:&nbsp;{{ item.price|currency }}</span></td>{% endarchiveitem %}{% endfor %}
+</tr>
+<tr>{% for product in list %}{% archiveitem product as item %}
+<td class="titlerow" width="33">{% if item %}{{item.title}}{% else %}{{product.name}}{% endif %}</td>{% endarchiveitem %}{% endfor %}
+</tr>
+<tr><td colspan='3' class='breaker'></td></tr>
+{% endfor %}
+</table>
+{% endif %}
+{% endblock %}
+
+{% block rightcolumn %}{% embed_page djangoplicity.shop_right_column %}{% endblock %}

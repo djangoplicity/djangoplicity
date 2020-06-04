@@ -1,0 +1,18 @@
+{% load i18n %}{% load media_video %}<h1>{{ object.title }}</h1>
+{% include 'archives/embargo_notice.html' %}
+{% if object.resource_flash or object.resource_medium %}
+<div class="archive-image">
+<div class="image_container">{% if object.resource_flash %}<a href="{{object.resource_flash.url}}" rel="" title="{{object}}" />
+<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab" WIDTH="{{object.x_size}}" HEIGHT="{{object.y_size}}" id="{{object}}" ALIGN="">
+<PARAM NAME=movie VALUE="{{object.resource_flash.url}}"> <PARAM NAME=quality VALUE=high>
+<EMBED src="{{object.resource_flash.url}}" quality=high WIDTH="{{object.x_size}}" HEIGHT="{{object.y_size}}" NAME="{{object}}" ALIGN="" TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/go/getflashplayer">
+</EMBED> </OBJECT></a>
+{% else %}
+<img src="{{object.resource_medium.url}}" width="320" border="0" alt="{{object}}" />
+{% endif %}
+</div>
+</div>
+{% endif %}
+<p>{{ object.description|safe }}</p>
+{% include 'archives/credit.html' %}
+{% include 'archives/extra_footer.html' %}

@@ -1,0 +1,14 @@
+{% load i18n %}{% if translations.countries %}
+{% block translation_start %}{% endblock %}
+<div align="left">
+    <div align="left" style="margin-top: 10px; width: 100%;" id="lang_row">
+        <div style="font-size: 12px; margin-bottom:5px;">{% trans "Choose your language" %}:</div>
+        <span>
+        {% for t in translations.languages %}
+            <a href="{{t.object.get_absolute_url}}">{{ t.name }}</a>
+        {% endfor %}
+        </span>
+    </div>
+</div>
+{% block translation_end %}{% endblock %}
+{% endif %}

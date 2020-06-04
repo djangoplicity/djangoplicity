@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block title %}{{ section.title }}{% endblock %}
+
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="../../../">{% trans 'Home' %}</a> &rsaquo; {{ title|escape }}</div>{% endblock %}
+
+{% block content %}
+<h1>Excel Users: CSV-file contains special characters</h1>
+<p>Microsoft Excel will not be able to successfully open this file as a normal
+CSV-file due to special characters in the file.
+To successfully load the file, you must use Excel's import feature.</p>
+<p>First, download the CSV file with special characters linked to below.
+Then in Excel, go to the menu <strong>Data > Get External Data > Import Text
+Fie</strong>. In the window, chose your file type to be <strong>Delimited</strong> and the
+file origin to be <strong>Unicode (UTF-8)</strong>. Choosing the right file origin is
+crucial for correct import of the special characters. Choose <strong>Comma</strong> as
+delimiter when asked. The rest can be specified as desired.</p><p>Note: Other programs
+might also have problems reading this file. Please ensure the file is read as an UTF-8
+encoded file.</p>
+<a href="{{url}}">Download CSV-file with special characters</a>
+{% endblock %}

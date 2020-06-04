@@ -1,0 +1,64 @@
+{% load i18n %}
+{% csrf_token %}
+<div id="privacy-notice" style="display: none">
+    {% block privacy-notice %}
+    <p>
+    {% blocktrans %}
+    By continuing to use this website, you are giving consent to our use of cookies.<br>
+    For more information on how ESO uses data and how you can disable cookies, please view <a href="/public/about-eso/privacy/"> our privacy policy</a>.
+    {% endblocktrans %}
+    </p>
+    {% endblock %}
+    <button type="button" class="btn btn-primary" onclick="accept_privacy_notice()">
+        {% block privacy-button-text %}{% trans 'Accept' %}{% endblock %}
+    </button>
+
+    <script>
+// Display the privacy cookie if the cookie is not set
+if (!has_privacy_cookie()) {
+    document.getElementById('privacy-notice').style.display = 'block'
+}
+
+function has_privacy_cookie() {
+    return document.cookie.split(';').filter(function(item) {
+        return item.indexOf('privacy_notice_accepted=True') >= 0
+    }).length > 0
+}
+
+function accept_privacy_notice() {
+    let data = {
+        LANGUAGE_CODE: '{{ LANGUAGE_CODE }}'
+    }
+
+	let csrftoken = getCookie('csrftoken');
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json; charset=utf-8');
+    headers.append('X-CSRFToken', csrftoken);
+
+    fetch('{% url 'accept_privacy_notice' %}', {
+        method: 'post',
+        headers: headers,
+        credentials: 'include',
+        body: JSON.stringify(data)
+    }).then(
+        document.getElementById('privacy-notice').style.display = 'none'
+    )
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+    </script>
+</div>

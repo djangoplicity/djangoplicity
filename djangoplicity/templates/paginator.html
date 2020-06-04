@@ -1,0 +1,15 @@
+{%spaceless%}
+<div class="paginator">
+<span class="paginator_previous">{% if page_obj.has_previous %} <a href="{{ paginator_url }}list/{{ page_obj.previous_page_number }}/{% if paginator_params %}?{{paginator_params}}{% endif %}">&laquo; Previous</a>{% endif %}&nbsp;</span>
+<span class="paginator_pages">{% for page_num in paginator.page_range %}
+
+{% if page_obj.number == page_num %}
+    {{ page_num }}
+{% else %}
+    <a href="{{ paginator_url }}list/{{ page_num }}/{% if paginator_params %}?{{paginator_params}}{% endif %}">{{ page_num }}</a>
+{% endif %}{% if not forloop.last %} | {% endif %}{% endfor %}</span>
+<span class="paginator_next">&nbsp;{% if page_obj.has_next %}<a href="{{ paginator_url }}list/{{ page_obj.next_page_number }}/{% if paginator_params %}?{{paginator_params}}{% endif %}">Next &raquo;</a>{% endif %}</span>
+
+</div>
+<div class="paginator_details">Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ paginator.count }}</div>
+{% endspaceless %}

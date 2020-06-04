@@ -1,0 +1,18 @@
+<p>Thank you for your request and interest in our outreach products. Unfortunately we were not able 
+to fulfil your application for free materials{% if order.reject_reason %} for the following reason:{%else%}.{% endif %}</p>
+{% if order.reject_reason == "NOSTOCK" %}
+<p><strong>The product(s) is/are not available on stock.</strong></p>
+
+<p>We apologise for this inconvenience and hope we can help you on another occasion. Please follow our
+online shop for a status on available products and feel free to submit another application in some months.</p>
+{% else %}{% if order.reject_reason == "UNQUALIFIED" %}
+<p><strong>You did not qualify for receiving free orders at this occasion.</strong></p>
+
+<p>As much as we would like to send free outreach products worldwide our stocks are limited and therefore we 
+are forced to limit their distribution and make an evaluation of which orders we can fulfil at any given time. 
+To read the criteria for free orders please visit the following page http://{{site_url}}{% url 'free_order_form' %}.
+
+<p>Thank you for your understanding and we hope that we will be able to help you on another occasion.</p>
+{% else %}{% if order.reject_reason == "INSUFFICIENT" %}
+<p>Your justification is not sufficient to evaluate the request.</p>
+{% else %}<p>{{order.get_reject_reason_display}}</p>{% endif %}{% endif %}{% endif %}

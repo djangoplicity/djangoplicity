@@ -1,0 +1,18 @@
+{% if crosslinks %}{% load i18n %}
+
+<div class="clear"></div>
+<h3 class="archivegrouptitle">{% trans "Also see our" %}</h3>
+{% comment %}
+Mon Jul  8 17:53:15 CEST 2013 - Mathias Andre
+Rein Warmels asked to adn an extra link in the crosslinks section,
+however this link should only be visible for the science newsletter.
+As the crosslinks module is not flexible enough we hardcode it here, 
+not very clean, I know...
+{% endcomment %}
+{% if archive == 'newsletter' and archive_title == 'Science Newsletter' %}
+<ul><li><a href="/sci/publications/newsletter/enews.html">Archive of the ESO Enews</a></li>{%for str,url in crosslinks%}<li><a href="{{url}}">{% blocktrans %}{{str}}{%endblocktrans%}</a></li>{%endfor%}</ul>  
+{% else %}
+<ul>{%for str,url in crosslinks%}<li><a href="{{url}}">{% blocktrans %}{{str}}{%endblocktrans%}</a></li>{%endfor%}</ul> 
+{% endif %}
+<hr class="esohr" />
+{%endif%}

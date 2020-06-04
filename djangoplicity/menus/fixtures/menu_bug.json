@@ -1,0 +1,97 @@
+[
+    {
+        "pk": 1, 
+        "model": "menus.menu", 
+        "fields": {
+            "max_depth": 0, 
+            "expansion_depth": 1, 
+            "name": "Main menu", 
+            "hide_menu_root": 1
+        }
+    },
+    {
+        "pk": 8, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 10, 
+            "is_primary": 1, 
+            "parent": null, 
+            "title": "Main menu", 
+            "menu": 1, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 1, 
+            "link": "", 
+            "published": 1, 
+            "level": 0
+        }
+    }, 
+    {
+        "pk": 214, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 7, 
+            "is_primary": 1, 
+            "parent": 8, 
+            "title": "Test", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 2, 
+            "link": "", 
+            "published": 1, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 215, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 6, 
+            "is_primary": 1, 
+            "parent": 214, 
+            "title": "Test 2", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 3, 
+            "link": "", 
+            "published": 1, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 216, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 5, 
+            "is_primary": 1, 
+            "parent": 215, 
+            "title": "Test 3", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 4, 
+            "link": "", 
+            "published": 1, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 217, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 9, 
+            "is_primary": 1, 
+            "parent": 8, 
+            "title": "Test 4", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 8, 
+            "link": "", 
+            "published": 1, 
+            "level": 1
+        }
+    }
+]

@@ -1,0 +1,21 @@
+{% load i18n %}{% if searchable %}
+<div class='archive_list_search'>
+<form action="{{ search_url }}" method="GET">
+{% comment %}
+If search_str_verbose is set then the result comes from an advanced search in
+which case the search_str cannot be used in the search box as it is meant for
+the advanced search page, for example:
+    ?adv=&instrument=17
+instead of:
+    ?vlt+orion
+{% endcomment %}
+<input id="id_archivesearch" type="text" value="{% if search_str and not search_str_verbose %}{{search_str}}{% endif %}" placeholder="{% trans "Search" %}..." name="search" class="archivesearch" />
+<input class="archivesearch_submit" type="submit" value="{% trans "Go" %}" />
+</form>
+{% if archive == 'image' %}
+<div class="advanced_search"><a href="{% url 'images_search' %}">Advanced Search</a></div>
+{% elif archive == 'video' %}
+<div class="advanced_search"><a href="{% url 'videos_search' %}">Advanced Search</a></div>
+{% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,17 @@
+{% load i18n %}{% load humanize %}{% load djangoplicity_datetime %}Dear ESON,
+
+The {% block release_description %}release{% endblock %} of <strong>"{{ obj.id }} - {{ obj.title|safe }}{% if obj.subtitle %} - {{ obj.subtitle|safe }}{% endif %}"</strong> is planned for <strong>{% block release_datetime %}{{obj.release_date|time4lang:"en"|naturalday}} at {{obj.release_date|time4lang:"en"|datetime:"TIME"}}{% endblock %}</strong>. The following translations are available in the system:
+{%if extra_context.translations.countries %}{% for country in extra_context.translations.countries %}{% for t in country %}{% if t.object.translation_ready %}
+{{t.name}}{% endif %}{%endfor%}{%endfor%}{% endif %}
+
+{%if obj.get_missing_translations %}
+
+The following translations are missing:
+{% for code, name in obj.get_missing_translations %}
+{{name}}{%endfor%}{% endif %}
+
+If you provided your translation but it is listed as missing above, please check whether you clicked the box "Translation ready" in your translation page. Otherwise, contact us at epodweb@eso.org.
+{% block release_description_extras %}{% endblock %}
+Kind regards,
+The ESO Department of Communication
+

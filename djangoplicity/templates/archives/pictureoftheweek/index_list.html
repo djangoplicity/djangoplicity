@@ -1,0 +1,52 @@
+{% load i18n %}{% load djangoplicity_utils %}{% load djangoplicity_datetime %}
+{% if not object_list %}
+    <div align="center">{% trans "No pictures of the week were found." %}</div>
+{% else %}
+{% include "archives/search_results.html" %}
+{% for item in object_list %}
+<div class="pr_box">
+
+<strong>{{ item.release_date|datetime:"DATE" }}</strong>
+
+{% if item.image %}
+<h2 class="pr_headline"><a href="{{ item.image.get_absolute_url }}">{{item.image.title}}</a></h2>
+<div class="pr_lead">
+{% if item.image.resource_newsfeature %}
+    <div class="pr_news_feature" style="padding:0; overflow:hidden;">
+        <a href="{{ item.image.resource_screen.url }}" rel="shadowbox[newswheel]" title="{{ item.image.title }}"><img src="{{ item.image.resource_newsfeature.url }}" class="pr_news_feature_img" style="padding:0;" /></a>
+    </div>
+    <div class="pr_news_feature_link" style="color: #777777; padding: 0;"><a style="color: #777777; padding: 0;"  href="{{ item.image.resource_screen.url }}" rel="shadowbox" title="{{ item.image.title }}">{% trans "Click to Enlarge" %}</a></div>
+{% endif %}
+<div class="pr_list_text">{{ item.image.description|safe }}<br /><div align="right"><a href="{{ item.image.get_absolute_url }}">{% trans "Read more" %}</a></div></div>
+</div>
+{% endif %}
+
+{% if item.video %}
+<h2 class="pr_headline"><a href="{{ item.video.get_absolute_url }}">{{item.video.title}}</a></h2>
+<div class="pr_lead">
+{% if item.video.resource_thumb %}
+<div style="pr_list_video"><a href="{{ item.video.get_absolute_url }}"><img src="{{ item.video.resource_thumb.url }}" width="122" /></a></div>
+{% endif %}
+<div class="pr_list_text">{{ item.video.description|safe }}<br /><div align="right"><a href="{{ item.video.get_absolute_url }}">{% trans "Read more" %}</a></div></div>
+</div>
+{% endif %}
+
+{% if item.comparison %}
+<h2 class="pr_headline"><a href="{{ item.comparison.get_absolute_url }}">{{item.comparison.title}}</a></h2>
+<div class="pr_lead">
+{% if item.comparison %}{# .resource_newsfeature #}
+    <div class="pr_news_feature" style="padding:0; overflow:hidden;">
+        <a href="{% if item.comparison.source %}{% url 'imagecomparisons_detail_fullscreen' item.comparison.source.id %}{% else %}{% url 'imagecomparisons_detail_fullscreen' item.comparison.id %}{%endif %}" rel="shadowbox[newswheel];width=1280;height={{item.comparison.height_1280}}" title="{{ item.comparison.title }}"><img src="{{ item.comparison.resource_newsfeature.url }}" class="pr_news_feature_img" style="padding:0;" /></a>
+    </div>
+    <div class="pr_news_feature_link" style="color: #777777; padding: 0;"><a style="color: #777777; padding: 0;"  href="{% if item.comparison.source %}{% url 'imagecomparisons_detail_fullscreen' item.comparison.source.id %}{% else %}{% url 'imagecomparisons_detail_fullscreen' item.comparison.id %}{% endif %}" rel="shadowbox;width=1280;height={{item.comparison.height_1280}}" title="{{ item.comparison.title }}">{% trans "Click to Enlarge" %}</a></div>
+{% endif %}
+<div class="pr_list_text">{{ item.comparison.description|safe }}<br /><div align="right"><a href="{{ item.comparison.get_absolute_url }}">{% trans "Read more" %}</a></div></div>
+</div>
+{% endif %}
+
+</div>
+{% endfor %}
+{% paginator paginator page_obj paginator_url paginator_prefix paginator_params %}
+{% statusbar paginator page_obj browsers searchable search_url search_str  %}
+{% endif %}
+{% include 'archives/extra_footer.html' %}

@@ -1,0 +1,32 @@
+{% extends "base_twocolumn.html" %}{% load pages %}
+
+{% block site_title %}{{object.title}} | {{block.super}}{% endblock %}
+
+{% load menus %}
+{% block breadcrumb %}{{ block.super}}{% breadcrumb_append object.title object.get_absolute_url %}{% endblock %}
+
+{% block content %}
+{% include description_template  %}
+{% endblock %}
+
+
+{% block rightcolumn %}
+{% include "archives/searchbox.html" %}
+{% include "archives/facebookbox.html" %}
+{% include "archives/addthisbox.html" %}
+{% include admin_template %}
+{% include info_template %}
+{% include "archives/image/object_observation.html" %}
+{# include "archives/image/object_astrometry.html" #}
+<hr />
+{% include "images/embedded_list.html" %}
+{% include "videos/embedded_list.html" %}
+{% include resources_template %}
+{% include "scripts/embedded_list.html" %}
+{% include "audiotracks/embedded_list.html" %}
+{% include "broadcastaudiotracks/embedded_list.html" %}
+{% include "subtitles/embedded_list.html" %}
+{{ right_column_page }}
+{% include "archives/crosslinks.html" %}
+
+{% endblock %}

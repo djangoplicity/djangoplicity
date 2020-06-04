@@ -1,0 +1,26 @@
+{% load staticfiles %}
+{% spaceless %}
+{% if url %}
+{% with config="config_"|add:archive_id %}
+<div id="audioplayer-{{ archive.id }}">
+
+<script type="text/javascript">
+
+var {{ config }} = {
+    width: '100%',
+    height: 40,
+    skin: 'glow',
+    primary: 'html5',
+    html5player: '{% static "djangoplicity/jwplayer/jwplayer.html5.js" %}',
+    flashplayer: '{% static "djangoplicity/jwplayer/jwplayer.flash.swf" %}',
+    autostart: false,
+    ga: {
+        idstring: "{{ GA_ID }}"
+    },
+    file: '{{ url }}'
+};
+</script>
+</div>
+{% endwith %}
+{% endif %}
+{% endspaceless %}

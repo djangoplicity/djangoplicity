@@ -1,0 +1,5 @@
+{% load menus %}
+{% spaceless %}
+{% for entry in breadcrumb %} &raquo; {% if entry.link %} <a href="{{ entry.link }}"{% if entry.on_click %} target="_blank"{% endif %}>{{ entry.title }}</a> {% else %} {{ entry.title }} {% endif %} {% endfor %}
+{% if breadcrumb_extra %} {% for entry in breadcrumb_extra %} &raquo; {% if entry.link %} <a href="{{ entry.link }}"{% if entry.on_click %} target="_blank"{% endif %}>{{ entry.title }}</a>{% else %} {{ entry.title }} {% endif %} {% endfor %}{% endif %}
+{% endspaceless %}

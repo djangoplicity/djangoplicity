@@ -1,0 +1,3262 @@
+[
+    {
+        "pk": 1, 
+        "model": "menus.menu", 
+        "fields": {
+            "max_depth": 0, 
+            "expansion_depth": 1, 
+            "name": "Main menu", 
+            "hide_menu_root": true
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "menus.menu", 
+        "fields": {
+            "max_depth": 1, 
+            "expansion_depth": 1, 
+            "name": "Top menu", 
+            "hide_menu_root": true
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "menus.menu", 
+        "fields": {
+            "max_depth": 1, 
+            "expansion_depth": 1, 
+            "name": "Footer menu", 
+            "hide_menu_root": true
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 358, 
+            "is_primary": true, 
+            "parent": null, 
+            "title": "Main menu", 
+            "menu": 1, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 1, 
+            "link": "", 
+            "published": true, 
+            "level": 0
+        }
+    }, 
+    {
+        "pk": 296, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 17, 
+            "is_primary": true, 
+            "parent": 8, 
+            "title": "XXVIII IAU GA", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 2, 
+            "link": "", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 304, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 8, 
+            "is_primary": true, 
+            "parent": 296, 
+            "title": "Scientific programme & business meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 3, 
+            "link": "", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 297, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 5, 
+            "is_primary": true, 
+            "parent": 304, 
+            "title": "XXVIII GA Scientific Programme (doc file)", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 4, 
+            "link": "http://www.iau.org/static/scientific_meetings/iau_ga_2012/ga_meetings.doc", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 305, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 7, 
+            "is_primary": true, 
+            "parent": 304, 
+            "title": "Session Rooms & Times (pdf file)", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 6, 
+            "link": "http://www.iau.org/static/scientific_meetings/iau_ga_2012/session_rooms_times.pdf", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 302, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 12, 
+            "is_primary": true, 
+            "parent": 296, 
+            "title": "Special Events", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 9, 
+            "link": "", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 301, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 11, 
+            "is_primary": true, 
+            "parent": 302, 
+            "title": "Workshop for Journal Authors and Referees", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 10, 
+            "link": "/scientific_meetings/iau_ga_2012/special_events/workshop_for_journal_authors_and_referees/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 298, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 16, 
+            "is_primary": true, 
+            "parent": 296, 
+            "title": "Grants for IAU XXVIII GA", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 13, 
+            "link": "/grants_prizes/iau_grants/ga_events/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 299, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 15, 
+            "is_primary": true, 
+            "parent": 298, 
+            "title": "Application Form", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 14, 
+            "link": "/grants_prizes/iau_grants/ga_events/ga_application_form/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 149, 
+            "is_primary": true, 
+            "parent": 8, 
+            "title": "Science", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 18, 
+            "link": "", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 20, 
+            "is_primary": true, 
+            "parent": 9, 
+            "title": "News", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 19, 
+            "link": "/science/news/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 26, 
+            "is_primary": true, 
+            "parent": 9, 
+            "title": "Scientific Dates & Deadlines", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 21, 
+            "link": "/science/events/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 222, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 23, 
+            "is_primary": true, 
+            "parent": 15, 
+            "title": "Future Dates & Deadlines", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 22, 
+            "link": "/science/events/future/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 223, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 25, 
+            "is_primary": true, 
+            "parent": 15, 
+            "title": "Past Dates & Deadlines", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 24, 
+            "link": "/science/events/past/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 40, 
+            "is_primary": true, 
+            "parent": 9, 
+            "title": "Scientific Bodies", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 27, 
+            "link": "/science/scientific_bodies/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 29, 
+            "is_primary": true, 
+            "parent": 17, 
+            "title": "Divisions", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 28, 
+            "link": "/science/scientific_bodies/divisions/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 31, 
+            "is_primary": true, 
+            "parent": 17, 
+            "title": "Commissions", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 30, 
+            "link": "/science/scientific_bodies/commissions/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 33, 
+            "is_primary": true, 
+            "parent": 17, 
+            "title": "Working Groups", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 32, 
+            "link": "/science/scientific_bodies/working_groups/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 35, 
+            "is_primary": true, 
+            "parent": 17, 
+            "title": "Program Groups", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 34, 
+            "link": "/science/scientific_bodies/program_groups/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 292, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 37, 
+            "is_primary": true, 
+            "parent": 17, 
+            "title": "Committees", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 36, 
+            "link": "/science/scientific_bodies/committees/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 39, 
+            "is_primary": true, 
+            "parent": 17, 
+            "title": "Centres", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 38, 
+            "link": "/science/scientific_bodies/centres/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 84, 
+            "is_primary": true, 
+            "parent": 9, 
+            "title": "Scientific Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 41, 
+            "link": "/science/meetings/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 43, 
+            "is_primary": true, 
+            "parent": 18, 
+            "title": "Rules & Guidelines", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 42, 
+            "link": "/science/meetings/rules/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 57, 
+            "is_primary": true, 
+            "parent": 18, 
+            "title": "Future IAU Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 44, 
+            "link": "/science/meetings/future/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 46, 
+            "is_primary": true, 
+            "parent": 52, 
+            "title": "Symposia", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 45, 
+            "link": "/science/meetings/future/symposia/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 48, 
+            "is_primary": true, 
+            "parent": 52, 
+            "title": "Joint Discussions (GA)", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 47, 
+            "link": "/science/meetings/future/joint_discussions/", 
+            "published": false, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 50, 
+            "is_primary": true, 
+            "parent": 52, 
+            "title": "Special Sessions (GA)", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 49, 
+            "link": "/science/meetings/future/special_sessions/", 
+            "published": false, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 52, 
+            "is_primary": true, 
+            "parent": 52, 
+            "title": "Regional Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 51, 
+            "link": "/science/meetings/future/regional/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 211, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 54, 
+            "is_primary": true, 
+            "parent": 52, 
+            "title": "General Assemblies", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 53, 
+            "link": "/science/meetings/future/general_assemblies/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 286, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 56, 
+            "is_primary": true, 
+            "parent": 52, 
+            "title": "Letters of Intent for 2012", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 55, 
+            "link": "/science/meetings/future/loi_2012/", 
+            "published": false, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 205, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 71, 
+            "is_primary": true, 
+            "parent": 18, 
+            "title": "Past IAU Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 58, 
+            "link": "/science/meetings/past/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 206, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 60, 
+            "is_primary": true, 
+            "parent": 205, 
+            "title": "Symposia", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 59, 
+            "link": "/science/meetings/past/symposia/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 207, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 62, 
+            "is_primary": true, 
+            "parent": 205, 
+            "title": "Joint Discussions (GA)", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 61, 
+            "link": "/science/meetings/past/joint_discussions/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 208, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 64, 
+            "is_primary": true, 
+            "parent": 205, 
+            "title": "Special Sessions (GA)", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 63, 
+            "link": "/science/meetings/past/special_sessions/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 209, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 66, 
+            "is_primary": true, 
+            "parent": 205, 
+            "title": "Regional Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 65, 
+            "link": "/science/meetings/past/regional/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 212, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 68, 
+            "is_primary": true, 
+            "parent": 205, 
+            "title": "General Assemblies", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 67, 
+            "link": "/science/meetings/past/general_assemblies/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 70, 
+            "is_primary": true, 
+            "parent": 205, 
+            "title": "Post Meeting Reports", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 69, 
+            "link": "/science/meetings/past/meeting_report/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 73, 
+            "is_primary": true, 
+            "parent": 18, 
+            "title": "Proposed Meetings 2009", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 72, 
+            "link": "/science/meetings/proposed/2009/", 
+            "published": false, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 81, 
+            "is_primary": true, 
+            "parent": 18, 
+            "title": "Proposal Submissions", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 74, 
+            "link": "/science/meetings/proposals/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 78, 
+            "is_primary": true, 
+            "parent": 57, 
+            "title": "Letters of Intent", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 75, 
+            "link": "/science/meetings/proposals/loi/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 295, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 77, 
+            "is_primary": true, 
+            "parent": 62, 
+            "title": "Letters of Intent for 2013", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 76, 
+            "link": "/science/meetings/proposals/loi/2013/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 80, 
+            "is_primary": true, 
+            "parent": 57, 
+            "title": "Proposal Submission", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 79, 
+            "link": "/science/meetings/proposals/lop/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 83, 
+            "is_primary": true, 
+            "parent": 18, 
+            "title": "Other Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 1, 
+            "lft": 82, 
+            "link": "http://www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cadcbin/meetings/getMeetings.pl?month=this", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 148, 
+            "is_primary": true, 
+            "parent": 9, 
+            "title": "Publications", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 85, 
+            "link": "/science/publications/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 139, 
+            "is_primary": true, 
+            "parent": 19, 
+            "title": "IAU Publications", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 86, 
+            "link": "/science/publications/iau/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 136, 
+            "is_primary": true, 
+            "parent": 65, 
+            "title": "E-Newsletters", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 87, 
+            "link": "/science/publications/iau/newsletters/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 303, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 89, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2012 n\u00b01", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 88, 
+            "link": "/science/publications/iau/newsletters/2012_01/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 294, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 91, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2011 n\u00b02", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 90, 
+            "link": "/science/publications/iau/newsletters/2011_02/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 293, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 93, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2011 n\u00b01", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 92, 
+            "link": "/science/publications/iau/newsletters/2011_01/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 285, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 95, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2010 n\u00b02", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 94, 
+            "link": "/science/publications/iau/newsletters/2010_02/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 283, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 97, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2010 n\u00b01", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 96, 
+            "link": "/science/publications/iau/newsletters/2010_01/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 255, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 99, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2009 n\u00b03", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 98, 
+            "link": "/science/publications/iau/newsletters/2009_03/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 242, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 101, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2009 n\u00b02", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 100, 
+            "link": "/science/publications/iau/newsletters/2009_02/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 238, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 103, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2009 n\u00b01", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 102, 
+            "link": "/science/publications/iau/newsletters/2009_01/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 234, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 105, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2008 n\u00b04", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 104, 
+            "link": "/science/publications/iau/newsletters/2008_04/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 230, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 107, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2008 n\u00b03", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 106, 
+            "link": "/science/publications/iau/newsletters/2008_03/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 229, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 109, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2008 n\u00b02", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 108, 
+            "link": "/science/publications/iau/newsletters/2008_02/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 228, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 111, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2008 n\u00b01", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 110, 
+            "link": "/science/publications/iau/newsletters/2008_01/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 227, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 113, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2007  n\u00b04", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 112, 
+            "link": "/science/publications/iau/newsletters/2007_04/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 226, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 115, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2007  n\u00b03", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 114, 
+            "link": "/science/publications/iau/newsletters/2007_03/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 172, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 117, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2007 n\u00b02", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 116, 
+            "link": "/science/publications/iau/newsletters/2007_02/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 173, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 119, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2007 n\u00b01", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 118, 
+            "link": "/science/publications/iau/newsletters/2007_01/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 174, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 121, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2006 n\u00b08", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 120, 
+            "link": "/science/publications/iau/newsletters/2006_08/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 175, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 123, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2006 n\u00b07", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 122, 
+            "link": "/science/publications/iau/newsletters/2006_07/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 176, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 125, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2006 n\u00b06", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 124, 
+            "link": "/science/publications/iau/newsletters/2006_06/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 178, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 127, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2006 n\u00b04", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 126, 
+            "link": "/science/publications/iau/newsletters/2006_04/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 177, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 129, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2006 n\u00b05", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 128, 
+            "link": "/science/publications/iau/newsletters/2006_05/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 179, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 131, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2006 n\u00b03", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 130, 
+            "link": "/science/publications/iau/newsletters/2006_03/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 180, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 133, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2006 n\u00b02", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 132, 
+            "link": "/science/publications/iau/newsletters/2006_02/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 181, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 135, 
+            "is_primary": true, 
+            "parent": 73, 
+            "title": "2006 n\u00b01", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 134, 
+            "link": "/science/publications/iau/newsletters/2006_01/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 138, 
+            "is_primary": true, 
+            "parent": 65, 
+            "title": "Commissions Circulars, Newsletters & Journals", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 137, 
+            "link": "/science/publications/iau/newsletters/circulars/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 141, 
+            "is_primary": true, 
+            "parent": 19, 
+            "title": "Publishers", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 140, 
+            "link": "/science/publications/publishers/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 86, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 147, 
+            "is_primary": true, 
+            "parent": 19, 
+            "title": "Rules, Guidelines and Instructions for Proceedings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 142, 
+            "link": "/science/publications/proceedings_rules/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 87, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 144, 
+            "is_primary": true, 
+            "parent": 86, 
+            "title": "Abbreviations in references to Serial Publications", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 143, 
+            "link": "/science/publications/proceedings_rules/abbreviations/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 88, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 146, 
+            "is_primary": true, 
+            "parent": 86, 
+            "title": "International System (SI) of Units", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 145, 
+            "link": "/science/publications/proceedings_rules/units/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 171, 
+            "is_primary": true, 
+            "parent": 8, 
+            "title": "Education and Capacity Building", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 150, 
+            "link": "", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 166, 
+            "is_primary": true, 
+            "parent": 10, 
+            "title": "Commission 46", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 151, 
+            "link": "/education/commission46/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 98, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 153, 
+            "is_primary": true, 
+            "parent": 35, 
+            "title": "The Worldwide Development of Astronomy", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 152, 
+            "link": "/education/commission46/worldwide_astronomy/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 99, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 155, 
+            "is_primary": true, 
+            "parent": 35, 
+            "title": "Teaching Astronomy for Development", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 154, 
+            "link": "/education/commission46/teaching/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 100, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 161, 
+            "is_primary": true, 
+            "parent": 35, 
+            "title": "International School for Young Astronomers", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 156, 
+            "link": "/education/commission46/international_school/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 287, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 158, 
+            "is_primary": true, 
+            "parent": 100, 
+            "title": "Future", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 157, 
+            "link": "/education/commission46/international_school/future/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 288, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 160, 
+            "is_primary": true, 
+            "parent": 100, 
+            "title": "Past", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 159, 
+            "link": "/education/commission46/international_school/past/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 267, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 163, 
+            "is_primary": true, 
+            "parent": 35, 
+            "title": "Network for Astronomy School Education", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 162, 
+            "link": "/education/commission46/nase/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 101, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 165, 
+            "is_primary": true, 
+            "parent": 35, 
+            "title": "Commission Newsletter & National Liaisons", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 164, 
+            "link": "/education/commission46/national_liaison/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 168, 
+            "is_primary": true, 
+            "parent": 10, 
+            "title": "Co-Sponsored Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 167, 
+            "link": "/education/meetings/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 264, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 170, 
+            "is_primary": true, 
+            "parent": 10, 
+            "title": "Office of Astronomy for Development", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 169, 
+            "link": "/education/oad/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 213, 
+            "is_primary": true, 
+            "parent": 8, 
+            "title": "Grants & Prizes", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 172, 
+            "link": "", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 188, 
+            "is_primary": true, 
+            "parent": 11, 
+            "title": "IAU Grants", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 173, 
+            "link": "/grants_prizes/iau_grants/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 103, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 175, 
+            "is_primary": true, 
+            "parent": 37, 
+            "title": "Grants to IAU Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 174, 
+            "link": "/science/meetings/rules/#23", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 104, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 179, 
+            "is_primary": true, 
+            "parent": 37, 
+            "title": "Grants for the IAU XXVII GA", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 176, 
+            "link": "/grants_prizes/iau_grants/ga_events/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 109, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 178, 
+            "is_primary": true, 
+            "parent": 104, 
+            "title": "Application Form (GA)", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 177, 
+            "link": "/grants_prizes/iau_grants/ga_events/ga_application_form/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 105, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 183, 
+            "is_primary": true, 
+            "parent": 37, 
+            "title": "Grants for IAU Symposia and Regional Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 180, 
+            "link": "/grants_prizes/iau_grants/symposia_regional/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 110, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 182, 
+            "is_primary": true, 
+            "parent": 105, 
+            "title": "Application Form", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 181, 
+            "link": "/grants_prizes/iau_grants/ga_events/ga_application_form/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 107, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 185, 
+            "is_primary": true, 
+            "parent": 37, 
+            "title": "International School for Young Astronomers", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 184, 
+            "link": "/education/commission46/international_school/future/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 108, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 187, 
+            "is_primary": false, 
+            "parent": 37, 
+            "title": "Teaching Astronomy for Development", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 186, 
+            "link": "/education/commission46/teaching/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 210, 
+            "is_primary": true, 
+            "parent": 11, 
+            "title": "IAU & the Peter and Patricia Gruber Foundation", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 189, 
+            "link": "/grants_prizes/gruber_foundation/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 111, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 207, 
+            "is_primary": true, 
+            "parent": 38, 
+            "title": "Fellowships", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 190, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 112, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 192, 
+            "is_primary": true, 
+            "parent": 111, 
+            "title": "Application Procedure", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 191, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/procedure/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 113, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 204, 
+            "is_primary": true, 
+            "parent": 111, 
+            "title": "Recipients", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 193, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/recipients/fellow2011/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 290, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 195, 
+            "is_primary": true, 
+            "parent": 113, 
+            "title": "Fellow 2011", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 194, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/recipients/fellow2011/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 284, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 197, 
+            "is_primary": true, 
+            "parent": 113, 
+            "title": "Fellow 2010", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 196, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/recipients/fellow2010/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 249, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 199, 
+            "is_primary": true, 
+            "parent": 113, 
+            "title": "Fellow 2009", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 198, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/recipients/fellow2009/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 248, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 201, 
+            "is_primary": true, 
+            "parent": 113, 
+            "title": "Fellow 2008", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 200, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/recipients/fellow2008/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 187, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 203, 
+            "is_primary": true, 
+            "parent": 113, 
+            "title": "Fellow 2007", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 202, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/recipients/fellow2007/", 
+            "published": true, 
+            "level": 5
+        }
+    }, 
+    {
+        "pk": 114, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 206, 
+            "is_primary": true, 
+            "parent": 111, 
+            "title": "IAU PPGF Fellowship Selection Committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 205, 
+            "link": "/grants_prizes/gruber_foundation/fellowships/selection_committee/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 214, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 209, 
+            "is_primary": true, 
+            "parent": 38, 
+            "title": "PPGF Cosmology Prize Advisory Board", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 208, 
+            "link": "/grants_prizes/gruber_foundation/cosmology_prize/advisory_board/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 215, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 212, 
+            "is_primary": true, 
+            "parent": 11, 
+            "title": "IAU, NASL and the KAVLI Prize", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 211, 
+            "link": "/grants_prizes/kavli_prize/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 287, 
+            "is_primary": true, 
+            "parent": 8, 
+            "title": "Administration", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 214, 
+            "link": "", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 220, 
+            "is_primary": true, 
+            "parent": 12, 
+            "title": "Administrative Dates & Deadlines", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 215, 
+            "link": "/administration/events/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 224, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 217, 
+            "is_primary": true, 
+            "parent": 39, 
+            "title": "Future Dates & Deadlines", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 216, 
+            "link": "/administration/events/future/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 225, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 219, 
+            "is_primary": true, 
+            "parent": 39, 
+            "title": "Past Dates & Deadlines", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 218, 
+            "link": "/administration/events/past/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 236, 
+            "is_primary": true, 
+            "parent": 12, 
+            "title": "IAU Membership", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 221, 
+            "link": "/administration/membership/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 134, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 227, 
+            "is_primary": true, 
+            "parent": 40, 
+            "title": "National Members", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 222, 
+            "link": "/administration/membership/national/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 136, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 224, 
+            "is_primary": true, 
+            "parent": 134, 
+            "title": "Qualification & Application Procedure", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 223, 
+            "link": "/administration/membership/national/qualification/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 138, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 226, 
+            "is_primary": true, 
+            "parent": 134, 
+            "title": "List of National Committees for Astronomy", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 225, 
+            "link": "/administration/membership/national/nca/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 142, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 229, 
+            "is_primary": true, 
+            "parent": 40, 
+            "title": "Geographical Distribution", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 228, 
+            "link": "/administration/membership/individual/distribution/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 135, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 233, 
+            "is_primary": true, 
+            "parent": 40, 
+            "title": "Individual Members", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 230, 
+            "link": "/administration/membership/individual/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 140, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 232, 
+            "is_primary": true, 
+            "parent": 135, 
+            "title": "Qualification & Application Procedure", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 231, 
+            "link": "/administration/membership/individual/qualification/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 266, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 235, 
+            "is_primary": true, 
+            "parent": 40, 
+            "title": "Nominating Sub-Committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 234, 
+            "link": "/administration/membership/nsc/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 240, 
+            "is_primary": true, 
+            "parent": 12, 
+            "title": "General Assembly & Administrative Meetings", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 237, 
+            "link": "/administration/meetings/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 146, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 239, 
+            "is_primary": true, 
+            "parent": 41, 
+            "title": "Hosting General Assemblies", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 238, 
+            "link": "/administration/meetings/hosting_ga/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 246, 
+            "is_primary": true, 
+            "parent": 12, 
+            "title": "Resolutions", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 241, 
+            "link": "/administration/resolutions/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 151, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 243, 
+            "is_primary": true, 
+            "parent": 42, 
+            "title": "Resolutions Guidelines", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 242, 
+            "link": "/administration/resolutions/guidelines/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 198, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 245, 
+            "is_primary": true, 
+            "parent": 42, 
+            "title": "Resolutions During General Assemblies", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 244, 
+            "link": "/administration/resolutions/general_assemblies/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 272, 
+            "is_primary": true, 
+            "parent": 12, 
+            "title": "IAU Executive Bodies", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 247, 
+            "link": "/administration/executive_bodies/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 152, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 249, 
+            "is_primary": true, 
+            "parent": 43, 
+            "title": "Executive Committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 248, 
+            "link": "/administration/executive_bodies/executive_committee/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 153, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 251, 
+            "is_primary": true, 
+            "parent": 43, 
+            "title": "Special Nominating Committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 250, 
+            "link": "/administration/executive_bodies/nominating_committees/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 154, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 253, 
+            "is_primary": true, 
+            "parent": 43, 
+            "title": "Finance Sub-committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 252, 
+            "link": "/administration/executive_bodies/finance_committee/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 155, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 255, 
+            "is_primary": true, 
+            "parent": 43, 
+            "title": "Resolutions Committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 254, 
+            "link": "/administration/executive_bodies/resolutions_committee/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 156, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 257, 
+            "is_primary": true, 
+            "parent": 43, 
+            "title": "Editorial Board", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 256, 
+            "link": "/administration/executive_bodies/editorial_board/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 157, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 259, 
+            "is_primary": true, 
+            "parent": 43, 
+            "title": "IAU Representatives to Other Organizations", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 258, 
+            "link": "/administration/executive_bodies/other_organizations/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 158, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 271, 
+            "is_primary": true, 
+            "parent": 43, 
+            "title": "Past Committees", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 260, 
+            "link": "/administration/executive_bodies/past_committees/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 159, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 262, 
+            "is_primary": true, 
+            "parent": 158, 
+            "title": "Executive Committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 261, 
+            "link": "/administration/executive_bodies/past_committees/executive_committee/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 160, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 264, 
+            "is_primary": true, 
+            "parent": 158, 
+            "title": "Special Nominating Committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 263, 
+            "link": "/administration/executive_bodies/past_committees/nominating_committees/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 161, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 266, 
+            "is_primary": true, 
+            "parent": 158, 
+            "title": "Finance Sub-committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 265, 
+            "link": "/administration/executive_bodies/past_committees/finance_committee/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 162, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 268, 
+            "is_primary": true, 
+            "parent": 158, 
+            "title": "Resolutions Committee", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 267, 
+            "link": "/administration/executive_bodies/past_committees/resolutions_committee/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 163, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 270, 
+            "is_primary": true, 
+            "parent": 158, 
+            "title": "Editorial Boards", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 269, 
+            "link": "/administration/executive_bodies/past_committees/editorial_boards/", 
+            "published": true, 
+            "level": 4
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 274, 
+            "is_primary": true, 
+            "parent": 12, 
+            "title": "IAU Secretariat", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 273, 
+            "link": "/administration/secretariat/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 282, 
+            "is_primary": true, 
+            "parent": 12, 
+            "title": "Statutes & Rules", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 275, 
+            "link": "/administration/statutes_rules/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 131, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 277, 
+            "is_primary": true, 
+            "parent": 45, 
+            "title": "Statutes", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 276, 
+            "link": "/administration/statutes_rules/statutes/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 132, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 279, 
+            "is_primary": true, 
+            "parent": 45, 
+            "title": "Bye-Laws", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 278, 
+            "link": "/administration/statutes_rules/bye_laws/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 133, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 281, 
+            "is_primary": true, 
+            "parent": 45, 
+            "title": "Working Rules", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 280, 
+            "link": "/administration/statutes_rules/working_rules/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 102, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 286, 
+            "is_primary": true, 
+            "parent": 12, 
+            "title": "Collaborative Programs", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 283, 
+            "link": "/administration/collaborative_programs/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 220, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 285, 
+            "is_primary": true, 
+            "parent": 102, 
+            "title": "UNESCO and AWHI", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 284, 
+            "link": "/administration/collaborative_programs/unesco_awhi/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 269, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 311, 
+            "is_primary": true, 
+            "parent": 8, 
+            "title": "Astronomy for the Public", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 288, 
+            "link": "", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 270, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 290, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Careers in Astronomy", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 289, 
+            "link": "/public/careers/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 271, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 292, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Defining our Place in Cosmos", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 291, 
+            "link": "/public/place_in_cosmos/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 272, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 294, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "The Constellations", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 293, 
+            "link": "/public/constellations/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 273, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 296, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Light Pollution", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 295, 
+            "link": "/public/light_pollution/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 274, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 298, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Measuring the Universe", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 297, 
+            "link": "/public/measuring/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 275, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 300, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Near Earth Objects", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 299, 
+            "link": "/public/neo/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 281, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 302, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Near Earth Asteroids Milestones", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 301, 
+            "link": "http://www.iau.org/public/nea/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 276, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 304, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Naming of Astronomical Objects", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 303, 
+            "link": "/public/naming/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 277, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 306, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Buying Star Names", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 305, 
+            "link": "/public/buying_star_names/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 278, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 308, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Extrasolar Planets", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 307, 
+            "link": "/public/extrasolar_planets/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 279, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 310, 
+            "is_primary": true, 
+            "parent": 269, 
+            "title": "Pluto and the Solar System", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 309, 
+            "link": "/public/pluto/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 357, 
+            "is_primary": true, 
+            "parent": 8, 
+            "title": "Press & Media", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 312, 
+            "link": "", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 328, 
+            "is_primary": true, 
+            "parent": 13, 
+            "title": "Press Releases", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 313, 
+            "link": "/public_press/news/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 300, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 315, 
+            "is_primary": true, 
+            "parent": 46, 
+            "title": "2012", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 314, 
+            "link": "/public_press/news/archive/year/2012/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 289, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 317, 
+            "is_primary": true, 
+            "parent": 46, 
+            "title": "2011", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 316, 
+            "link": "/public_press/news/archive/year/2011/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 265, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 319, 
+            "is_primary": true, 
+            "parent": 46, 
+            "title": "2010", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 318, 
+            "link": "/public_press/news/archive/year/2010/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 257, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 321, 
+            "is_primary": true, 
+            "parent": 46, 
+            "title": "2009", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 320, 
+            "link": "/public_press/news/archive/year/2009/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 258, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 323, 
+            "is_primary": true, 
+            "parent": 46, 
+            "title": "2008", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 322, 
+            "link": "/public_press/news/archive/year/2008/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 259, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 325, 
+            "is_primary": true, 
+            "parent": 46, 
+            "title": "2007", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 324, 
+            "link": "/public_press/news/archive/year/2007/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 260, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 327, 
+            "is_primary": true, 
+            "parent": 46, 
+            "title": "2006", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 326, 
+            "link": "/public_press/news/archive/year/2006/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 166, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 330, 
+            "is_primary": true, 
+            "parent": 13, 
+            "title": "IAU in the Media", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 329, 
+            "link": "/public_press/iau_media/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 344, 
+            "is_primary": true, 
+            "parent": 13, 
+            "title": "Image Archive", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 331, 
+            "link": "/public_press/images/intro/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 127, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 333, 
+            "is_primary": true, 
+            "parent": 47, 
+            "title": "People", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 332, 
+            "link": "/public_press/images/archive/category/people/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 262, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 335, 
+            "is_primary": true, 
+            "parent": 47, 
+            "title": "General Assembly 2009", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 334, 
+            "link": "/public_press/images/archive/category/general_assembly_2009/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 128, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 337, 
+            "is_primary": true, 
+            "parent": 47, 
+            "title": "General Assembly 2006", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 336, 
+            "link": "/public_press/images/archive/category/general_assembly_2006/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 129, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 339, 
+            "is_primary": true, 
+            "parent": 47, 
+            "title": "Press Release Images", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 338, 
+            "link": "/public_press/images/archive/category/press_releases/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 130, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 341, 
+            "is_primary": true, 
+            "parent": 47, 
+            "title": "IAU Logos", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 340, 
+            "link": "/public_press/images/archive/category/logos/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 170, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 343, 
+            "is_primary": true, 
+            "parent": 47, 
+            "title": "View all", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 342, 
+            "link": "/public_press/images/", 
+            "published": true, 
+            "level": 3
+        }
+    }, 
+    {
+        "pk": 291, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 346, 
+            "is_primary": true, 
+            "parent": 13, 
+            "title": "Video Archive", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 345, 
+            "link": "/public_press/videos/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 348, 
+            "is_primary": true, 
+            "parent": 13, 
+            "title": "Press Office", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 347, 
+            "link": "/public_press/press_office/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 350, 
+            "is_primary": true, 
+            "parent": 13, 
+            "title": "The International Year of Astronomy 2009", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 349, 
+            "link": "/public_press/iya/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 210, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 352, 
+            "is_primary": true, 
+            "parent": 13, 
+            "title": "Planetary Surface Feature News", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 351, 
+            "link": "/public_press/planetary_surface_feature_news/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 250, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 354, 
+            "is_primary": true, 
+            "parent": 13, 
+            "title": "Read More", 
+            "menu": null, 
+            "tree_id": 1, 
+            "on_click": 0, 
+            "lft": 353, 
+            "link": "/public_press/read_more/", 
+            "published": true, 
+            "level": 2
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 16, 
+            "is_primary": true, 
+            "parent": null, 
+            "title": "Top menu", 
+            "menu": 2, 
+            "tree_id": 2, 
+            "on_click": 0, 
+            "lft": 1, 
+            "link": "", 
+            "published": true, 
+            "level": 0
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 3, 
+            "is_primary": true, 
+            "parent": 28, 
+            "title": "Home", 
+            "menu": null, 
+            "tree_id": 2, 
+            "on_click": 0, 
+            "lft": 2, 
+            "link": "/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 5, 
+            "is_primary": true, 
+            "parent": 28, 
+            "title": "About IAU", 
+            "menu": null, 
+            "tree_id": 2, 
+            "on_click": 0, 
+            "lft": 4, 
+            "link": "/about/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 280, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 7, 
+            "is_primary": true, 
+            "parent": 28, 
+            "title": "Astronomy for the Public", 
+            "menu": null, 
+            "tree_id": 2, 
+            "on_click": 0, 
+            "lft": 6, 
+            "link": "/public/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 9, 
+            "is_primary": true, 
+            "parent": 28, 
+            "title": "Member Directory", 
+            "menu": null, 
+            "tree_id": 2, 
+            "on_click": 0, 
+            "lft": 8, 
+            "link": "/administration/membership/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 11, 
+            "is_primary": true, 
+            "parent": 28, 
+            "title": "Site Map", 
+            "menu": null, 
+            "tree_id": 2, 
+            "on_click": 0, 
+            "lft": 10, 
+            "link": "/sitemap/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 13, 
+            "is_primary": true, 
+            "parent": 28, 
+            "title": "Contact Us", 
+            "menu": null, 
+            "tree_id": 2, 
+            "on_click": 0, 
+            "lft": 12, 
+            "link": "/administration/secretariat/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 203, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 15, 
+            "is_primary": true, 
+            "parent": 28, 
+            "title": "Login", 
+            "menu": null, 
+            "tree_id": 2, 
+            "on_click": 0, 
+            "lft": 14, 
+            "link": "/auth/login/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 199, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 8, 
+            "is_primary": true, 
+            "parent": null, 
+            "title": "Footer menu", 
+            "menu": 3, 
+            "tree_id": 3, 
+            "on_click": 0, 
+            "lft": 1, 
+            "link": "/", 
+            "published": true, 
+            "level": 0
+        }
+    }, 
+    {
+        "pk": 200, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 3, 
+            "is_primary": true, 
+            "parent": 199, 
+            "title": "Copyright", 
+            "menu": null, 
+            "tree_id": 3, 
+            "on_click": 0, 
+            "lft": 2, 
+            "link": "/copyright/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 201, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 5, 
+            "is_primary": true, 
+            "parent": 199, 
+            "title": "Credit", 
+            "menu": null, 
+            "tree_id": 3, 
+            "on_click": 0, 
+            "lft": 4, 
+            "link": "/credit/", 
+            "published": true, 
+            "level": 1
+        }
+    }, 
+    {
+        "pk": 202, 
+        "model": "menus.menuitem", 
+        "fields": {
+            "rght": 7, 
+            "is_primary": true, 
+            "parent": 199, 
+            "title": "Technology", 
+            "menu": null, 
+            "tree_id": 3, 
+            "on_click": 0, 
+            "lft": 6, 
+            "link": "/technology/", 
+            "published": true, 
+            "level": 1
+        }
+    }
+]

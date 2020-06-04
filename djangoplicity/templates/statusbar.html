@@ -1,0 +1,2 @@
+{% load i18n %}<div class="paginator_details"><div class="left">{% blocktrans with page_obj.start_index as start_index and page_obj.end_index as end_index and paginator.count as count %}Showing {{ start_index }} to {{ end_index }} of {{ count }}{% endblocktrans %}</div>
+<div class="middle">{% for browser in browsers %}<a href="{{ browser.url }}{% if browser.params %}?{{ browser.params }}{% endif %}">{% trans browser.name %}</a>{% if not forloop.last %}<br />{% endif %}{% endfor %}</div><div class="right"></div></div>

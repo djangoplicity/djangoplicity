@@ -1,0 +1,97 @@
+{% extends "admin/base_site.html" %}
+{% load admin_list i18n %}
+{% block extrastyle %}<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/changelists.css" />{% endblock %}
+{% block extrahead %}{{ block.super }}
+<script type="text/javascript" src="../../../../../jsi18n/"></script>
+<script type="text/javascript" src="{{STATIC_URL}}admin/js/core.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery-1.2.1.pack.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/RelationLookup.js"></script>
+
+{{ media }}
+{% endblock %}
+{% block bodyclass %}change-list{% endblock %}
+{% block coltype %}flex{% endblock %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../../">{{ model_name|capfirst }}</a> &rsaquo;
+     {% if selector_object %} {{ selector_model_opts.verbose_name|capfirst }}: {{ selector_object }} {% endif %}
+</div>
+{% endif %}{% endblock %}
+
+
+{% block content %}
+
+
+
+<div id="content-main">
+
+{% block object-tools %}
+<ul class="object-tools">
+    <li><a href="../../../../../{{selector_model_opts.app_label}}/{{selector_model_opts.model_name}}/{{selector_object.id}}/" class="viewsitelink">{% trans "View " %} {{selector_model_opts.verbose_name}}</a></li>
+    {% if selector_object.get_absolute_url %}<li><a href="{{selector_object.get_absolute_url}}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif %}
+    
+    {% if is_correct %}
+    <li><a href="../../../../../{{relation_model_opts.app_label}}/{{relation_model_opts.model_name}}/" class="addlink" onclick="return showRelatedObjectLookupPopup(this);">Pick {{ relation_model_opts.verbose_name_plural }}</a></li>
+    {% endif %}
+</ul>
+
+{% endblock %}
+
+
+
+{% if empty_formset.forms %}
+<a id="remove_button" href="" style="display:none"><img  src="{{STATIC_URL}}admin/img/icon-no.gif" /></a>
+
+{% if is_correct %}
+<table style="display:none">
+<tr class="row2" style="" id="blank_form"><td>{{ empty_formset.forms.0.form_title }}</td>
+{% for field in empty_formset.forms.0 %}{% if field.is_hidden%}<td style='display:none'>{{ field }}</td>{% else %}<td>{{ field }}</td>{% endif %}
+{% endfor %}
+
+
+</tr>
+</table>
+
+{% endif %}
+
+
+<div class="module" id="changelist">
+<form action="" method="POST">{% csrf_token %}
+{{ formset.management_form }}
+<table cellspacing="0" id = "rel_table">
+<thead>
+<tr>
+<th class="sorted ascending">{{ relation_model_opts.verbose_name|capfirst }}</th>
+{% for field in formset.forms.0 %}
+{% if not field.is_hidden %}
+<th class="sorted ascending">
+{{field.label}}
+</th>
+{% endif %}
+{% endfor %}
+</tr>
+</thead>
+<tbody id="form_body">
+{% if formset.errors %}
+    {% for form in formset.forms %}
+    <tr class="row2"><td>{{ form.form_title }}</td>{% for field in form %}{% if field.is_hidden%}{{ field }}{% else %}<td>{{ field }}{%if field.errors%}{{field.errors}}{%endif%}</td>{% endif %}{% endfor %}
+    
+    </tr>
+    {% endfor %}
+{% endif %}
+</tbody>
+</table>
+<p class="paginator">
+<input type="submit" value="Save changes" class="default" style="float: right;" onclick="cleanUp()"/>
+Please choose {{ relation_model_opts.verbose_name_plural }} to add from the top right button.
+</p>
+</form>
+</div>
+{% else %}
+No {{ relation_model_opts.verbose_name_plural }} available for this {{ selector_model_opts.verbose_name }}.
+{% endif %}
+
+</div>
+{% endblock %}

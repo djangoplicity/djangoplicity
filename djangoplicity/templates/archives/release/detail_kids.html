@@ -1,0 +1,97 @@
+{% load i18n %}{% load djangoplicity_datetime %}<html>
+<body>
+<style>
+body, html {
+    font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+    font-size: 18px;
+    color: #888888;
+    background-color:#D3752B;
+}
+
+
+
+#kids_content {
+    width: 840px;
+    padding:20px;
+    margin-left:auto;
+    margin-right:auto;
+    background-color:white;
+}
+
+#kids_textblock {
+    margin:20px;
+}
+
+.pr_news_feature {
+    width: 100%;
+    text-align: center
+}
+
+#kidsvers {
+    font-size:12px;
+}
+
+#footer {
+    margin:20px;
+    height:103px;
+    width:800px;
+    background-repeat:no-repeat;
+    background-image: url('{{MEDIA_URL}}djangoplicity/kids/footer.png');
+    display:block;
+    padding-top:90px;
+}
+
+
+#footer p {
+    font-size:13px;
+    padding:0px;
+    text-align:right;
+    margin:0px;
+}
+
+#footer strong {
+    font-size:18px;
+}
+
+.embargo {
+    color:red;
+    text-align:center;
+}
+
+</style>
+
+<div id="kids_content">
+<div class="embargo">
+{% include 'archives/embargo_notice.html' %}
+</div>
+{% include "archives/translations_kids.html" %}
+<div align="center"><div style="float: left;"><div><img src="{{MEDIA_URL}}djangoplicity/kids/header-left.png"></div><div style="font-size: 14px; color: black; text-align: left; padding-left: 20px;">{% trans "Bringing news from across the Universe to children all around the world" %}</div></div><div style="float: right;"><img src="{{MEDIA_URL}}djangoplicity/kids/header-right.png"></div><div style="clear: both;"></div></div>
+<div id="kids_textblock">
+<h1>{{object.kids_title}}</h1>
+<p class="date">{{object.release_date|datetime:"DATE"}}</p>
+
+{% if object.kids_image %}{% if object.kids_image.resource_newsfeature %}<div class="pr_news_feature" style="padding:0;">
+<a href="{{ object.kids_image.resource_screen.url }}" title="{{ object.kids_image.title }}">
+<img src="{{ object.kids_image.resource_newsfeature.url }}" class="pr_news_feature_img" style="padding:0;" />
+</a>
+</div>
+{%endif%}
+{%else %}{% if main_image %}{% if main_image.resource_newsfeature %}<div class="pr_news_feature" style="padding:0;">
+<a href="{{ main_image.resource_screen.url }}" title="{{ main_image.title }}">
+<img src="{{ main_image.resource_newsfeature.url }}" class="pr_news_feature_img" style="padding:0;" />
+</a>
+</div>
+{% endif %}{% endif %}{%endif%}
+
+
+<p>{{object.kids_description|safe}}</p>
+</div>
+<div align="center" id='footer'><p><strong>{% trans "Do you want to learn more about this topic?" %}</strong></p><p class="small">{% blocktrans with unawelink="<a href='http://www.eu-unawe.org'>eu-unawe.org</a>" emaillink="<a href='mailto:news@unawe.org'>news@unawe.org</a>" %}Visit {{unawelink}} or send us your questions in an email: {{emaillink}}{% endblocktrans %}</p></div>
+<div align="center" id='kidsvers'>
+<p><a href="{{ object.get_absolute_url}}">{% blocktrans with source_id=object.source.id|default:object.id %}This is a kids version of ESO Press Release {{ source_id }}{% endblocktrans %}.</a></p>
+</div>
+
+</div>
+
+</body>
+</html>

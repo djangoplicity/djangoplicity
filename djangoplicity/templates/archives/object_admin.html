@@ -1,0 +1,16 @@
+{% load i18n %}{% for admin in admin_groups %}
+{% if admin.name %}<h3 class="archivegrouptitle">{% trans admin.name %}</h3>{% endif %}
+{% if admin.links or admin.metadata %}
+<div>
+{% for link in admin.links %}{% if link.url %}<a href="{{ link.url }}">{% trans link.title %}</a><br />
+{% endif %}{% endfor %}
+{% if admin.metadata %}
+<table class="admin_table">
+{% for metadata in admin.metadata %}{% if metadata.field_value %}<tr><td><strong>{{metadata.field_name|capfirst}}:</strong></td><td>{{metadata.field_value}}</td></tr>
+{% endif %}{% endfor %}
+</table>
+{% endif %}
+</div>
+{% endif %}
+{% endfor %}
+{% if admin_groups %}<hr class="esohr" />{% endif %}

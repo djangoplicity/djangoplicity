@@ -1,0 +1,28 @@
+{% load i18n %}{% load humanize %}{% load djangoplicity_datetime %}{% if DJANGOPLICITY.USE_I18N %}Dear ESON,
+
+The next ESO <strong>announcement "{{ obj.id }} - {{ obj.title|safe }}{% if obj.subtitle %} - {{ obj.subtitle|safe }}{% endif %}"</strong> is now available for translation.
+If you want it published together with the English version, please submit your translations{% if obj.embargo_date %} until <strong>{{ obj.embargo_date|timesub:1|time4lang:"en"|naturalday }} at {{obj.embargo_date|timesub:1|time4lang:"en"|datetime:"TIME"}}</strong>{% endif %}.
+The English page is:
+<a href="{{site_url_prefix}}{{obj.get_absolute_url}}">{{site_url_prefix}}{{obj.get_absolute_url}}</a>
+
+You can add your translation on:
+<a href="{{site_url_prefix}}{% url 'admin:announcements_announcementproxy_add' %}?source={{ obj.id }}">{{site_url_prefix}}/public/djangoplicity/admin/announcements/announcementproxy/add/?source={{ obj.id }}</a>
+
+{% if extra_context.images %}
+The related images and direct links for translation are:
+<ul> {% for image in extra_context.images %}
+<li><strong>{{ image.id }}: {{ image }}</strong> (<a href="{{site_url_prefix}}{{image.get_absolute_url}}">English source</a>)
+<a href="{{site_url_prefix}}{% url 'admin:media_imageproxy_add' %}?source={{ image.id }}">{{site_url_prefix}}{% url 'admin:media_imageproxy_add' %}?source={{ image.id }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+{% if extra_context.videos %}
+The related videos and direct links for translation are:
+<ul> {% for video in extra_context.videos %}
+<li><strong>{{ video.id }}: {{ video }}</strong> (<a href="{{site_url_prefix}}{{video.get_absolute_url}}">English source</a>)
+<a href="{{site_url_prefix}}{% url 'admin:media_videoproxy_add' %}?source={{ video.id }}">{{site_url_prefix}}{% url 'admin:media_videoproxy_add' %}?source={{ video.id }}</a></li>
+{% endfor %}</ul>{% endif %}
+Once the translation is done, don't forget to click on the &quot;Translation ready&quot; box. If you have problems, please contact <a href=mailto:epodweb@eso.org">epodweb@eso.org</a>
+
+Kind regards,
+ESO Department of Communication{% endif %}

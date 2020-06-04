@@ -1,0 +1,19 @@
+{% load i18n %}
+{% load media_audio %}
+{% spaceless %}
+{% include 'archives/embargo_notice.html' %}
+<h1>{{ object.title }}</h1>
+
+{% if object.resource_aac %}
+    {% embedaudio object 'aac' %}
+{% elif object.resource_mp3 %}
+    {% embedaudio object 'mp3' %}
+{% endif %}
+
+<br>
+<p>{{ object.description|safe }}</p>
+
+{% include 'archives/extra_description.html' %}
+{% include 'archives/credit.html' %}
+{% include 'archives/extra_footer.html' %}
+{% endspaceless %}

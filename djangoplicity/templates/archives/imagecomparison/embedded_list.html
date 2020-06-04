@@ -1,0 +1,12 @@
+{% load i18n %}
+{% if comparisons %}
+<h3 class="archivegrouptitle">{% trans "Image Comparisons" %}</h3>
+{% for i in comparisons %}
+<div class="pr_image_list">
+<a href="{{ i.get_absolute_url }}"><img src="{{ i.resource_thumbs.url }}" width="122" alt="{{ i.title }}" /></a><br />
+<div class="pr_image_list_id"><a href="{{i.get_absolute_url}}">{% trans  "Image Comparison" %} {{ i.source.id|default:i.id }}</a></div>
+<div class="pr_image_list_title">{{ i.title }} {% if not i.in_original_language %}<span class="langnote"><br />{% trans "in English only" %}</span>{% endif %}</div>
+</div>
+{% endfor %}
+<hr class="esohr" />
+{% endif %}

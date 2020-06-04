@@ -1,0 +1,15 @@
+<div class="youtube-frame"{% if legend or credit %} style="margin-bottom: 10px"{% endif %}>
+    <iframe src="https://www.youtube.com/embed/{{ youtube_id }}?rel=0{% if autoplay %}&autoplay=1{% endif %}{% if mute %}&mute=1{% endif %}" frameborder="0" allowfullscreen></iframe>
+</div>
+{% if legend or credit %}
+    <div class="youtube-frame-legend">
+        <div class="legend-wrapper">
+        {% if legend %}
+            <div class="legend">{{ legend }}</div>
+        {% endif %}
+        {% if credit %}
+            <div class="credit"><strong>Credit:</strong> {{ credit|striptags }}</div>
+        {% endif %}
+        </div>
+    </div>
+{% endif %}

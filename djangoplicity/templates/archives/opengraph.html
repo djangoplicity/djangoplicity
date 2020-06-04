@@ -1,0 +1,39 @@
+{% load djangoplicity_opengraph %}
+{% spaceless %}
+{% if object %}
+    <meta property="fb:app_id" content="{{ DJANGOPLICITY.FACEBOOK_APP_ID }}" />
+    {% if object.resource_medium_podcast or object.resource_medium_flash %}
+        <meta property="og:type" content="video.other" />
+    {% else %}
+        <meta property="og:type" content="website" />
+    {% endif %}
+    {% if object.og_title %}
+        <meta property="og:title" content="{{ object.og_title }}" />
+    {% elif object.title %}
+        <meta property="og:title" content="{{ object.title }}{% if object.subtitle %} - {{ object.subtitle }} {% endif %}" />
+    {% elif object.subject %}
+        <meta property="og:title" content="{{ object.subject }}" />
+    {% endif %}
+    {{ object|opengraph_image|safe }}
+    <meta name="twitter:card" content="photo" />
+    <meta property="og:url" content="https://{{ DJANGOPLICITY.SITE_DOMAIN }}{{ object.get_absolute_url }}" />
+    <meta property="og:site_name" content="{{ DJANGOPLICITY.SITE_DOMAIN }}" />
+    {% if LANGUAGE_CODE|opengraph_locale %}
+        <meta property="og:locale" content="{{ LANGUAGE_CODE|opengraph_locale }}" />
+    {% endif %}
+    {% if object.headline %}
+        <meta property="og:description" content="{{ object.headline }}" />
+    {% elif object.title %}
+        <meta property="og:description" content="{{ object.title }}" />
+    {% endif %}
+    {% if object.resource_medium_podcast %}
+        <meta property="og:video:secure_url" content="{{ object.resource_medium_podcast.absolute_url }}" />
+        <meta property="og:video:type" content="video/x-m4v" />
+    {% elif object.resource_medium_flash %}
+        <meta property="og:video:secure_url" content="{{ object.resource_medium_flash.absolute_url }}" />
+        <meta property="og:video:type" content="video/x-flv" />
+    {% endif %}
+{% else %}
+    <meta name="twitter:card" content="summary" />
+{% endif %}
+{% endspaceless %}

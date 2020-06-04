@@ -1,0 +1,131 @@
+{% extends "admin/base_site.html" %}
+{% load admin_list i18n %}
+{% load staticfiles i18n %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" type="text/css" href="{% static "admin/css/changelists.css" %}" />
+  {% if formset %}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+    <script type="text/javascript" src="../../jsi18n/"></script>
+  {% endif %}
+  {{ formset.media }}
+  <script type="text/javascript" src="{% static "admin/js/actions.min.js" %}"></script>
+
+{% endblock %}
+
+{% block bodyclass %}change-list{% endblock %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="{% url 'admin_site:index' %}">{% trans "Home" %}</a> &rsaquo;
+     <a href="{% url 'admin_site:app_list' app_label %}">{{ app_label|capfirst|escape }}</a> &rsaquo;
+     <a href="{% with changelist_view="admin_site:"|add:opts.app_label|add:"_"|add:opts.model_name|add:"_changelist" %}{% url changelist_view %}{% endwith %}">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
+     {% trans "Import files" %}
+</div>
+{% endif %}{% endblock %}
+
+{% block coltype %}flex{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    {% if formset.errors %}
+        <p class="errornote">
+            Please correct the {% blocktrans count formset.errors|length as counter %}error{% plural %}errors{% endblocktrans %} below.
+        </p>
+        <ul class="errorlist">{% for error in formset.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    {% endif %}
+
+    <p><div class="description">Files may be imported by placing them in {{ import_root }}, respecting the {{ opts.model_name }} archive folder structure.</div></p>
+    <div class="module " id="changelist">
+    <h2>Import files</h2>
+    {% if formset.forms %}
+        <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+        <table cellspacing="0">
+        <thead>
+            <tr>
+                <th>Import</th>
+                {% for field in formset.forms.0 %}
+                    {% if not forloop.last %}
+                        <th>{{ field.label_tag }}</th>
+                    {%endif%}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for form in formset.forms %}
+            <tr class="{% cycle 'row1' 'row2' %}">
+                <td>
+                    {{ form.import }}
+                </td>
+                {% for field in form %}
+                    {% if not forloop.last %}
+                    <td class="fieldWrapper">
+                        {{ field.errors }}
+                        {{ field }}
+                    </td>
+                    {%endif%}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+
+        {{ formset.management_form }}
+
+        <div class="paginator" style='display:block;'>
+            <div style="float:left;font-weight:bold;margin-left:17px">
+                <input type="checkbox" id="action-toggle" style="display: inline-block;">
+                <label for="action-toggle">Select All</label>
+            </div>
+            <div style="float:right;margin-right:10px">
+                <input type="submit" value="Import" />
+            </div>
+        </div>
+        </form>
+    {% else %}
+        <p style="padding-top: 10px;" class="help">No files available for import.</p>
+    {% endif %}
+    </div>
+
+    {% if invalid %}
+    <h1>Invalid files</h1>
+    <p>The following files were found in the import folder but have invalid filenames and should be deleted:</p>
+    <table>
+        {% for file in invalid %}
+        <tr><td>{{ file }}</td></tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if upload_form %}
+        <br>
+        <h1>Upload</h1>
+        <p>You can upload a new file to the import folder through this dialog.</p>
+        <div class="module">
+            <h2>Upload new file</h2>
+
+            <form action="upload/" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <table cellspacing="0">
+            <tbody>
+                <tr>
+                    <td>{{ upload_form.files }} {{ upload_form.format }}</td>
+                    <td align="right"><input type="submit" value="Upload" /></td>
+                </tr>
+            </tbody>
+            </table>
+            </form>
+        </div>
+    {% endif %}
+    </div>
+
+<script type="text/javascript">
+$(document).ready( function() {
+    $("#action-toggle").change(function() {
+        $(".action-select").prop('checked', $(this).prop('checked'));
+    });
+} );
+</script>
+</div>
+{% endblock %}

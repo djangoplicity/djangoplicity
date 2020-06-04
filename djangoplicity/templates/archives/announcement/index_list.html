@@ -1,0 +1,28 @@
+{% load i18n %}{% load djangoplicity_utils %}{% load djangoplicity_datetime %}
+{% if not object_list %}
+    <div align="center">{% trans "No announcements were found." %}</div>
+{% else %}
+{% include "archives/search_results.html" %}
+{% for item in object_list %}
+<div class="pr_box">
+
+<div class="pr_idtype">{{ item.id }} &mdash; {% trans "Announcement" %}</div>
+<h2 class="pr_headline"><a href="{{ item.get_absolute_url }}">{{item.title}}</a></h2>
+<div class="pr_lead">
+{% if item.main_visual.resource_wallpaperthumbs %}
+<div class="pr_list_image"><a href="{{ item.get_absolute_url }}"><img src="{{ item.main_visual.resource_wallpaperthumbs.url }}" width="122" height="92" /></a></div>
+{% else %}{% if item.main_visual.resource_thumb %}
+<div class="pr_list_image"><a href="{{ item.get_absolute_url }}"><img src="{{ item.main_visual.resource_thumb.url }}" width="122" /></a></div>
+{% endif %}{% endif %}
+<div class="pr_list_text"><strong>{{ item.release_date|datetime:"DATE" }}</strong>: <a class="teasertext" href="{{ item.get_absolute_url }}">{{ item.description|striptags|truncatewords:50|safe }}</a>
+<br /><div class="read_more_link" align="right"><a href="{{ item.get_absolute_url }}" >{% trans "Read more" %}</a></div>
+<div class="clear"></div>
+</div>
+</div>
+
+</div>
+{% endfor %}
+{% paginator paginator page_obj paginator_url paginator_prefix paginator_params %}
+{% statusbar paginator page_obj browsers searchable search_url search_str  %}
+{% endif %}
+{% include 'archives/extra_footer.html' %}

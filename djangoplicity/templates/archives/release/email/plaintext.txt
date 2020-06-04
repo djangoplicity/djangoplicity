@@ -1,0 +1,28 @@
+For Your Information:
+
+{%block org_prefix %}{% endblock %}{{obj.release_type.name}} {{obj.id}} - {{obj.title|safe}}
+{% if embargo and state.is_embargo %}EMBARGOED UNTIL {{obj.embargo_date}}
+{% endif %}
+For your convenience the first paragraph of the release is provided below:
+{{obj.headline|striptags}}
+
+The release{%if extra_context.images and extra_context.videos %}, images and videos are {% else %}{% if extra_context.images %} and images are {% else %}{% if extra_context.videos %} and videos are {% else %} is {%endif%}{%endif%}{% endif %}available on:
+{{site_url_prefix}}{{obj.get_absolute_url}}
+{% if embargo and state.is_embargo %}login: {{embargo_login.0}}
+password: {{embargo_login.1}}{% endif %}
+{%if extra_context.translations.countries %}Translations are available in:
+{% for country in extra_context.translations.countries %}{% for t in country %}{% if t.object.translation_ready %}
+{{t.name}} - {{site_url_prefix}}{{t.object.get_absolute_url}}{% endif %}{%endfor%}{%endfor%}{% endif %}
+{% if embargo and state.is_embargo %}
+login: {{embargo_login.0}}
+password: {{embargo_login.1}}{%endif%}
+
+*************************************************************************
+We would also like to direct your attention to the following:
+
+
+Kind regards,
+The ESO Department of Communication
+08 November 2010
+
+

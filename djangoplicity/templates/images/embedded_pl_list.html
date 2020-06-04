@@ -1,0 +1,15 @@
+{% load djangoplicity_utils %}
+{%if images%}{% if images|any_arg:'print_layout' %}
+<h3 class="archivegrouptitle">Print Layouts</h3>
+{% for i in images %}
+{% if i.print_layout %}
+<div class="pr_image_list">
+<a href="{{ i.get_absolute_url }}"><img src="{{ i.resource_pl_thumbs.url }}" width="122" alt="{{ i.title }}" /></a><br />
+<div class="pr_image_list_id"><a href="{{i.get_absolute_url}}">PR Print Layout {%if i.override_id%}{{i.override_id}}{%else%}{{ i.id }}{%endif%}</a></div>
+<div class="pr_image_list_title">{{ i.title }}</div>
+</div>
+{% endif %}
+{% endfor %}
+<hr class="esohr" />
+{% endif %}
+{%endif%}

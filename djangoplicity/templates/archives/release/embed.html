@@ -1,0 +1,13 @@
+<div>
+<span class="boxheadline"><a href="/feeds/news/pressreleases/"><img src="{{ MEDIA_URL }}images/feed.png" /></a> Press Releases</span><span class="boxrightlink">(<a href="{% url 'releases_defaultquery' %}">view all</a>)</span>
+<hr />
+{% for object in pressreleases %}
+<div class="front_prel">
+    <div class="front_prel_img"><a href="{{ object.get_absolute_url }}"><img src="{{ object.main_image.resource_newsmini.url}}" /></a></div>
+    <div class="front_prel_txt">
+    <strong>{{object.release_date|date}}</strong>: {{object.title}}
+    <div class="readmore"><a href="{{ object.get_absolute_url }}">Read more...</a></div>
+    </div>
+</div>
+{% endfor %}
+</div>

@@ -1,0 +1,1 @@
+from djangoplicity.archives.contrib.serialization.serializers import * 

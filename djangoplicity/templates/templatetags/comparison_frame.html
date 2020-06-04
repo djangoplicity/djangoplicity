@@ -1,0 +1,23 @@
+{% if object %}
+<div
+    class="comparison-frame{% if position %} {{ position }}{% endif %}"
+    {% if width %} style="width: {{ width }}"{% endif %}
+>
+    <div id="before_after_container_{{ object.pk }}">
+        <div><img id="{{ object.image_before.pk }}" src="{{ object.image_before.resource_screen.url }}"></div>
+        <div><img id="{{ object.image_after.pk }}" src="{{ object.image_after.resource_screen.url }}"></div>
+    </div>
+    {% if legend or credit %}
+        <div class="legend-wrapper">
+        {% if legend %}
+            <div class="legend">{{ legend }}</div>
+        {% endif %}
+        {% if credit %}
+            <div class="credit"><strong>Credit:</strong> {{ credit|striptags }}</div>
+        {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% else %}
+    <div class="alert alert-danger" role="alert">Missing 'id' in {% templatetag openblock %} comparison_frame {% templatetag closeblock %}</div>
+{% endif %}

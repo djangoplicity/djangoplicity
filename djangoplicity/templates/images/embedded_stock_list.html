@@ -1,0 +1,12 @@
+{% load i18n %}
+{% if stock_images %}
+<h3 class="archivegrouptitle">{% trans "Stock Visuals" %}</h3>
+{% for i in stock_images %}
+<div class="pr_image_list">
+<a href="{{ i.get_absolute_url }}"><img src="{{ i.resource_thumbs.url }}" width="122" alt="{% blocktrans with no=forloop.counter %}Stock Image {{no}}{% endblocktrans %}" /></a><br />
+<div class="pr_image_list_id"><a href="{{i.get_absolute_url}}">{% blocktrans with no=forloop.counter %}Stock Image {{no}}{% endblocktrans %}</a></div>
+<div class="pr_image_list_title">{{ i.title }} {% if not i.in_original_language %}<span class="langnote"><br />{% trans "in English only" %}</span>{% endif %}</div>
+</div>
+{% endfor %}
+<hr class="esohr" />
+{% endif %}

@@ -1,0 +1,2 @@
+{% load djangoplicity_utils %}
+{% if obj.resource_news %}<img src="{{ obj.resource_news.absolute url }}" border="0" align="left" />{% endif %}{% if obj.resource_thumb %}<img src="{{ obj.resource_thumb.url }}" border="0" align="left" />{%endif%}{{ obj.description|safe }}

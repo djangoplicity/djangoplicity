@@ -1,0 +1,3 @@
+{% load menus %}
+{% if not hide_root %}<div class="menu_level"><a href="{{root.link}}"{%if root.on_click %} target="_blank"{% endif %}>{{root.title}}</a></div>{% endif %}
+{% render_submenu root.children %}

@@ -1,0 +1,12 @@
+{% if featuredvideo %}{% load i18n %}
+<span class="boxheadline">{{ featuredvideo.title }}</span><span class="boxrightlink">(<a href="{{ featuredvideo.get_absolute_url }}">{% trans "download options" %}</a>)</span><div style="clear: both;"></div>
+<div class="videoplaceholder" id="featuredvideobox" style="background-image: url('{{featuredvideo.resource_frontpagethumb.url}}'); background-repeat: no-repeat;">
+</div>
+{% else %}
+<span class="boxheadline">{% trans "Video Archive" %}</span><span class="boxrightlink"></span><div style="clear: both;"></div>
+<div class="videoplaceholder">
+<br /><br /><br />
+{% url 'videos_defaultquery' as videos_url %}
+{% blocktrans %}See our <a href="{{videos_url}}">video archive</a>.{% endblocktrans %}
+</div>
+{% endif %}

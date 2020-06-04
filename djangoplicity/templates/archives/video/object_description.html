@@ -1,0 +1,21 @@
+{% load i18n %}{% load media_video %}<style>
+.c75l {
+min-width: 640px;
+}
+
+.subcolumns{
+min-width: 860px;
+}
+</style>
+{% include 'archives/embargo_notice.html' %}
+{% include 'archives/translations.html' %}
+<h1 style="min-width:640px;">{{ object.title }}</h1>
+{%if object.videosubtitle_set.all %}
+{% embedvideo_subs object "medium_flash,medium_podcast,h264" "hd_and_apple,hd720p_screen,dome_preview" "medium_podcast,h264" object.videosubtitle_set.all %}
+{%else %}
+{% embedvideo object "medium_flash,medium_podcast,h264" "hd_and_apple,hd720p_screen,dome_preview" "medium_podcast,h264" %}
+{%endif%}
+{% if object.headline %}<p>{{ object.headline }}</p>{% endif %}
+<p>{{ object.description|safe }}</p>
+<p><strong>{% trans "Credit" %}:</strong><div class="credit"><p>{{ object.credit|safe }}</p></div></p>
+{% include 'archives/extra_footer.html' %}

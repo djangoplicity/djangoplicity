@@ -1,0 +1,94 @@
+{% extends "site-specific/shop/checkout.html" %}
+{% load i18n %}
+{% load djangoplicity_satchmo %}
+
+{% block site_title %}Checkout | {{ shop_name }}{% endblock%}
+
+{% block content %}
+<h1>{% trans "Checkout" %}</h1>
+<h2>Step 2 of 3: {% block subtitle %}Enter credit card and shipping information{% endblock %}</h2>
+
+<p>{% trans "Please complete the following information in order to submit your order." %} {% block charge_note %}Note, your credit card will not be charged before you have
+reviewed the complete order in step 3.{% endblock %}</p>
+
+{% if form.errors %}
+<div align="center" class="error">
+    <h2>{% blocktrans count form.errors|length as count %}Please correct the error{% plural %}Please correct the errors{% endblocktrans %}</h2>
+</div>
+{% endif %}
+
+
+<form method="post" action=".">{% csrf_token %}
+    {% block payment_table %}
+    <table>
+    <tr><td><h2>{% trans "Payment Information" %}</h2></td></tr>
+
+    {% if form.errors %}
+    {% if form.non_field_errors %}
+    <tr><td colspan="2"><strong>Errors:</strong><br />
+    <p>{{ form.non_field_errors }}</p>
+    </td></tr>{% endif %}
+    {% endif %}
+
+    <tr><td><label for="id_credit_type">{% trans "Type of credit card" %}</label></td> <td>{{ form.credit_type }}</td></tr>
+    {% if form.credit_type.errors %}<tr><td></td><td class="error">*** {{ form.credit_type.errors|join:", " }}</td></tr>{% endif %}
+
+    <tr><td><label for="id_credit_number">{% trans "Credit card number" %}</label></td><td> {{ form.credit_number }}</td></tr>
+    {% if form.credit_number.errors %}<tr><td></td><td class="error">*** {{ form.credit_number.errors|join:", " }}</td></tr>{% endif %}
+
+    <tr><td><label for="id_month_expires">{% trans "Expiration date" %}</label><label for="id_year_expires"></label></td><td> {{ form.month_expires }} {{form.year_expires}}</td></tr>
+    {% if form.year_expires.errors %}<tr><td></td><td class="error">*** {{ form.year_expires.errors|join:", " }}</td></tr>{% endif %}
+
+    <tr><td><label for="id_ccv">{% trans "CCV" %}</label></span></td><td> {{ form.ccv}}<span class="small">What is <a href="{% url 'shop_ccv' %}">CCV</a>?</td></tr>
+    {% if form.ccv.errors %}<tr><td></td><td class="error">*** {{ form.ccv.errors|join:", " }}</td></tr>{% endif %}
+    </table>
+    {% endblock %}
+
+    {% block shipping_table %}
+
+    {% if cart.is_shippable and form.shipping_hidden%}
+        <!-- This should not happen as we always display the shipping form, so it
+        means that the shop couldn't calculate the shipping weight or a
+        similar problem. We assume it's a bulk order -->
+        <div class="beware">Unfortunately we are not able to calculate the shipping costs for your shopping cart and process your order. Due to ESO's diplomatic status in Chile we are not allowed to sell products in Chile.<br />Outside Chile, please place your order via an email to <a href="mailto:epoddist@eso.org">epoddist@eso.org</a>, instead of the ESO shop.</div>
+    {% elif form.order.ship_country == 'CL' and form.order.total and not form.order.contact|validatecontact and cart.is_shippable %}
+        {% comment %}
+        If order is from chile *and* there is a total price > 0 (i.e.: it is not a free order) *and* the person is not from ESO then we reject the order
+        {% endcomment %}
+        <div class="beware">Unfortunately we are not able to calculate the shipping costs for your shopping cart and process your order. Due to ESO's diplomatic status in Chile we are not allowed to sell products in Chile.</div>
+    {% else %}
+        {% if cart.is_shippable %}
+        {% if form.shipping_hidden %}
+        {{ form.shipping }}
+        {% else %}
+        <div id="shippinginfo">
+            <h2>{% trans "Shipping Method" %}</h2>
+            <p>Please allow <strong>1-3 business days for handling</strong> your order. As soon as your order is shipped/ready for pickup, you will receive a
+            notification email on the address you have provided.</p>
+            <strong>Select method</strong>
+            <div id="shipping">
+            {% if form.shipping_description or form.shipping.field.choices|length_is:1 %}
+            <p><label for="id_shipping">{% trans "The following shipping method will be used" %}:</label></p>
+            {% else %}
+            <label for="id_shipping">{% trans "Please choose your preferred shipping method:" %}</label>
+            {% endif %}
+            {{ form.shipping }}
+            {% if form.shipping_description %}<p><strong>{{ form.shipping_description }}</strong></p>{% endif %}
+            {% if form.shipping.errors %}*** {{ form.shipping.errors|join:", " }}{% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% endif %}
+    {% endblock %}
+
+    {% if not form.shipping_hidden%}
+    {% if form.order.ship_country == 'CL' and form.order.total and not form.order.contact|validatecontact and cart.is_shippable %}
+    {% else %}
+        <div align="center"><input type="submit" value="{% trans "Continue to order review" %}"/></div>
+    {% endif %}
+    {% endif %}
+
+</form>
+
+{% endblock %}

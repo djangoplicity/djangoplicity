@@ -1,0 +1,17 @@
+{% load i18n %}{% if paginator and page_obj %}{%spaceless%}
+<div class="paginator">
+<span class="paginator_previous">{% if page_obj.has_previous %} <a href="{{ paginator_url }}{{paginator_prefix}}/{{ page_obj.previous_page_number }}/{% if paginator_params %}?{{paginator_params}}{% endif %}">&laquo; {% trans "Previous" %}</a>{% endif %}&nbsp;</span>
+<span class="paginator_pages">{% for page_num in adj_range %}
+
+{% if page_obj.number == page_num %}
+    {{ page_num }}
+{% else %}
+{% if page_num == 0 %}
+ ...
+{% else %}
+    <a href="{{ paginator_url }}{{paginator_prefix}}/{{ page_num }}/{% if paginator_params %}?{{paginator_params}}{% endif %}">{{ page_num }}</a>
+{% endif %}
+{% endif %}{% if not forloop.last %} | {% endif %}{% endfor %}</span>
+<span class="paginator_next">&nbsp;{% if page_obj.has_next %}<a href="{{ paginator_url }}{{paginator_prefix}}/{{ page_obj.next_page_number }}/{% if paginator_params %}?{{paginator_params}}{% endif %}">{% trans "Next" %} &raquo;</a>{% endif %}</span>
+</div>
+{% endspaceless %}{% endif %}

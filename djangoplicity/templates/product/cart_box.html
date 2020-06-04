@@ -1,0 +1,38 @@
+{% if cart %}
+{% load satchmo_currency satchmo_category %}
+{% load normalize_decimal %}
+{% load satchmo_util satchmo_discounts %}
+{% load menus %}
+{% load i18n %}
+{% load djangoplicity_text_utils %}
+<div class="rightbox">
+<h3>Shopping Cart</h3>
+<table width="100%" style="margin-top: 10px; line-height: 15px;" class="shoppingcart">
+<tr>
+<td colspan="2"><strong>Items</strong></td>
+<td><strong>Price</strong></td>
+</tr>
+{% for cartitem in cart %}
+<tr>
+<td>{{ cartitem.quantity|normalize_decimal }}&nbsp;x&nbsp;</td>
+<td><a href="{{cartitem.product.get_absolute_url}}">{{ cartitem.description }}</a></td>
+<td align="right">{{ cartitem|discount_line_total:sale|currency|sp2nbsp }}</td>
+</tr>
+{% endfor %}
+<tr>
+<td colspan="2"><strong>Price without Shipping &amp; Handling</strong>{% block discount_notice %}<div class="price">Note: Discounts are not deducted from the price until you checkout.</div>{% endblock %}</td>
+<td align="right"><strong>{{ cart|discount_cart_total:sale|currency|sp2nbsp }}</strong></td>
+</tr>
+</table>
+<table width="100%" style="margin-top: 10px; line-height: 15px; text-align: center;">
+<tr>
+<td><form action="{% url 'satchmo_cart' %}" method="get">
+    <input type="submit" value="{% trans 'View Cart' %}" />
+    </form></td>
+<td><form action="{% url 'satchmo_checkout-step1' %}" method="get">
+    <input type="submit" value="{% trans 'Checkout' %}" />
+    </form></td>
+</tr>
+</table>
+</div>
+{% endif %}

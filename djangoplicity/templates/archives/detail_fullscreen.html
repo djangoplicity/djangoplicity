@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>{{object.title}}</title>
+    <style>
+    html,body {
+        height: 100%;
+        margin: 0;
+        background: #000000;
+        overflow: hidden;
+    }
+
+    #before_after_container { margin: 0 auto; }
+    #before_after_container img { padding: 0; }
+    </style>
+</head>
+<body>
+    <style> </style>
+    <div id="before_after_container">
+        <div><img id="img1" src="{{object.image_before.resource_screen.url}}" alt="{{ object.image_before.title }}" width="1280px" /></div>
+        <div><img id="img2" src="{{object.image_after.resource_screen.url}}" alt="{{ object.image_after.title }}" width="1280px" /></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}media/beforeafter/jquery.beforeafter-1.4.min.js"></script>
+    <script type="text/javascript">
+    var ratio = {{object.height_ratio|default:"1"}};
+    var height = parseInt( Math.round(1280*ratio) );
+
+    $(document).ready(function() {
+        $('#before_after_container').beforeAfter( {
+            animateIntro : true,
+            introDelay : 1000,
+            introDuration : 500,
+            showFullLinks : false,
+            imagePath : '{{STATIC_URL}}media/beforeafter/',
+            enableKeyboard : true
+        });
+    });
+
+    </script>
+</body>
+</html>

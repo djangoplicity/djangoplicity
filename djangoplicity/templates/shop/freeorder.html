@@ -1,0 +1,93 @@
+{% extends "site-specific/shop/freeorder_base.html" %}
+{%load pages%}
+{% load i18n %}
+{% load djangoplicity_utils %}
+
+{% block site_title %} Free order application | {{ shop_name }}{% endblock %}
+
+{% block content %}
+
+<style type="text/css">
+ul.errorlist li {
+    color: red;
+}
+td.error, .beware {
+    color: red;
+}
+form textarea {
+    width: 475px;
+}
+</style>
+
+    <form action="." method="POST">{% csrf_token %}
+    {% embed_page djangoplicity.free_order_form %}
+    {% if form.errors %}
+        <p class="beware">Your request could not be validated, please verify the fields marked in red below:</p>
+    {% endif %}
+    {% if form.non_field_errors %}
+        <p class="beware">{{ form.non_field_errors }}</p>
+    {% endif %}
+    <div id="freeorderform">
+        <table>
+            <div>
+            <tr>
+                <td colspan="2"><p>Fields marked with <span class="required">*</span> a required.</p></td>
+            </tr>
+
+            <tr>
+                <td><label for="id_name">{{ form.name.label }}<span class="required">*</span></label><br /></td><td>{{ form.name }}</td>
+            </tr>
+            {% if form.name.errors %}
+                <tr>
+                    <td>&nbsp;</td><td class="error">*** {{ form.name.errors|join:", " }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td><label for="id_email">{{ form.email.label }}<span class="required">*</span></label></td> <td>{{ form.email }}</td>
+            </tr>
+            {% if form.email.errors %}
+                <tr>
+                    <td>&nbsp;</td><td class="error">*** {{ form.email.errors|join:", " }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td></td>
+                <td>{{ form.newsletter }} {{ form.newsletter.label}}</td>
+            </tr>
+            {% if form.newsletter.errors %}
+                <tr>
+                    <td>&nbsp;</td><td class="error">*** {{ form.newsletter.errors|join:", " }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td><label for="id_country">{{ form.country.label }}<span class="required">*</span></label></td><td> {{ form.country }}</td>
+            </tr>
+            {% if form.country.errors %}
+                <tr>
+                    <td>&nbsp;</td><td class="error">*** {{ form.country.errors|join:", " }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td><label for="id_justification">{{ form.justification.label }}<span class="required">*</span></label></td><td>{{ form.justification }}<br /><span class="helptext">{{ form.justification.help_text }}</span></td>
+            </tr>
+            {% if form.justification.errors %}
+                <tr>
+                    <td>&nbsp;</td><td class="error">*** {{ form.justification.errors|join:", " }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td></td>
+                <td>
+                    <script src='https://www.google.com/recaptcha/api.js'></script>
+                    <br>
+                    <div class="g-recaptcha" data-sitekey="{{ captcha_public_key }}"></div>
+                    <br>
+                </td>
+            </tr>
+            </div>
+        </table>
+
+        <div class="submit"><input type="submit" value="Submit application"></div>
+    </div>
+</form>
+{%endblock%}

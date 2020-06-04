@@ -1,0 +1,52 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_modify %}
+
+{% block extrastyle %}
+<style>
+.wrapper {
+    float: left;
+    width: 50%;
+}
+.before {
+    margin-right: 1em;
+}
+.after {
+    margin-left: 1em;
+}
+hr.separator{
+    margin-top: 2em;
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <h1>Clean HTML fields</h1>
+    <p>
+    The fields below will be cleaned (only fields that need cleaning are shown):
+    </p>
+    {% for name, before, after in fields %}
+        {% if before and before != after %}
+        <h2>{{ name|capfirst }}</h2>
+        <div class="wrapper">
+            <div class="before">
+                <h3>Before</h3>
+                {{ before|safe }}
+            </div>
+        </div>
+        <div class="wrapper">
+            <div class="after">
+                <h3>After</h3>
+                {{ after|safe }}
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    <form action="" method="post">{% csrf_token %}
+    <div class="submit-row" {% if is_popup %}style="overflow: auto;"{% endif %}>
+        <input type="submit" value="{% trans 'Clean HTML and save' %}" class="default" name="_save"/>
+    </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% load i18n %}{% load staticfiles %}{% if object.spatial_quality %}
+<h3 class="archivegrouptitle">{% trans "Coordinates" %}</h3>
+<div>
+<table class="info_table">
+{% if object.get_ra_verbose %}<tr><td><strong>{% trans "Position (RA)" %}:</strong></td><td>{{object.get_ra_verbose}}</td></tr>{% endif %}
+{% if object.get_dec_verbose %}<tr><td><strong>{% trans "Position (Dec)" %}:</strong></td><td>{{object.get_dec_verbose|safe}}</td></tr>{% endif %}
+{% if object.spatial_quality == 'Full' %}
+    <tr><td><strong>{% trans "Field of view" %}:</strong></td><td>{{object.get_fov_verbose}}</td></tr>
+    {% if object.spatial_rotation %}
+        <tr><td><strong>{% trans "Orientation" %}:</strong></td><td>{{object.get_spatial_rotation_verbose|safe}}</td></tr>
+    {% endif %}
+    </table>
+    {% if object.spatial_rotation %}
+        <script type="text/javascript">
+        compass_src = "{% static 'djangoplicity/images/widgets/compassm.png' %}"
+        spatial_rotation = {{ object.spatial_rotation }};
+        </script>
+        <canvas id="compass_canvas" width="240" height="140"></canvas>
+    {% endif %}
+<!-- Disabled for now
+    <h3 class="archivegrouptitle">{% trans "View in context with Aladin Live" %}</h3>
+    <link rel="stylesheet" href="http://aladin.u-strasbg.fr/AladinLite/api/v2/latest/aladin.min.css" />
+    <div id="aladin-lite-div" style="width: 200px; height: 200px;"></div>
+    <script type="text/javascript">
+        var aladin_params = {
+            survey: "P/DSS2/color",
+            fov: 60,
+        {% for key, val in object.get_aladinlite_params %}
+            {{ key }}: "{{ value }}",
+        {% endfor %}
+            zoom:0.5,
+            target: 'IC 2944',  !FIXME
+            cooFrame: 'equatorial',
+            showFrame: false,
+            showReticle: false,
+            showZoomControl: false,
+            showLayersControl: false,
+            showGotoControl: false
+        };
+        var aladin_jpg_url = 'https://www.eso.org/~ohainaut/TMP/eso1322as.jpg';
+    </script>
+-->
+    {% with wwtlink=object.get_wwt_url %}{% if wwtlink %}
+    <div>{% trans "View in WorldWide Telescope" %}:</div><div align="center"><a href="{{wwtlink}}" title="View in WorldWide Telescope"><img src="{% static 'djangoplicity/images/wwt.png' %}" alt="View in WorldWide Telescope" /></a></div>
+    {% endif %}{% endwith %}
+{% else %}
+    </table>
+{% endif %}
+</div>
+{% endif %}

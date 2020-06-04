@@ -1,0 +1,118 @@
+{# this text is placed by the satchmo_order template tag "order_tracking_details" #}
+{% load i18n %}
+{% load djangoplicity_satchmo %}
+{% load djangoplicity_text_utils %}
+{% load satchmo_currency %}
+{% load satchmo_checkout %}
+{% load satchmo_util normalize_decimal %}
+{% load djangoplicity_satchmo %}
+<div class="pr_box">
+<table width="25%">
+<tr><td><strong>Order ID</strong></td><td>{{ order|order_variable:"ORDER_ID" }}</td></tr>
+</table>
+</div>
+
+<div class="pr_box">
+<h3>Order Status</h3>
+<table width="100%">
+<tr style="font-weight: bold;"><td>Date/time</td><td>Status</td></tr>
+{% for status in order.orderstatus_set.all %}
+<tr><td>{{status.time_stamp|date:"j F Y H:i" }}</td><td>{{ status.status|status_label }}{% if status.notes %} ({{ status.notes }}){% endif %}</td></tr>
+{% endfor %}
+</table>
+</div>
+
+{% order_payment_summary order paylink %}
+
+<div class="pr_box shop_contact_info_box">
+<div class="orderbox">
+<h3>{% trans "Contact Information" %}</h3>
+<p>
+{{ order.contact.full_name }}<br/>
+{{ order.contact.email }}<br/>
+{{ order.contact.primary_phone.phone }}<br/>
+</p>
+</div>
+<div class="orderbox" style="float: left; width: 50%">
+<h3>{% trans "Billing Information" %}</h3>
+<p>
+{{ order.contact.billing_address.addressee }}<br/>
+{{ order.full_bill_street|linebreaksbr }}<br/>
+{{ order.bill_postal_code }} {{ order.bill_city }}<br/>
+{% if order.bill_state %}{{ order.bill_state }}<br/>{% endif %}
+{{ order.bill_country|isocode2country }}<br/>
+</p>
+</div>
+
+{% if order.is_shippable %}
+<div class="orderbox" style="float: left; width: 50%">
+<h3>{% trans "Shipping Address" %}</h3>
+<p>
+{{ order.contact.shipping_address.addressee }}<br/>
+{{ order.full_ship_street|linebreaksbr }}<br/>
+{{ order.ship_postal_code }} {{ order.ship_city }}<br/>
+{% if order.ship_state %}{{ order.ship_state }}<br/>{% endif %}
+{{ order.ship_country|isocode2country }}<br/>
+</p>
+</div>
+{% endif %}
+<div class="clear"></div>
+</div>
+
+
+<div class="pr_box">
+<h3>{% trans "Items Ordered" %}</h3>
+<table width="100%" style="line-height: 15px;">
+<tr style="font-weight: bold;">
+<td>Item</td><td>Unit Price</td><td></td><td>Quantity</td><td>{% if order.item_discount %}Item Discount{% endif %}</td><td></td><td>Price</td>
+</tr>
+{% for item in order.orderitem_set.all %}
+<tr>
+{% if default_view_tax %}
+{{ item }} - {{item.unit_price_with_tax|currency}} x {{item.quantity|normalize_decimal}}{% if item.discount %} - {{ item.discount|currency }}{% endif %} = {{item.total_with_tax|currency}}<br/>
+{% else %}
+<td>{{ item }}<div class="small">&nbsp;&nbsp;&nbsp;ID: {{item.product.sku}}</div></td><td align="">{{item.unit_price|currency}}</td><td>x</td><td>{{item.quantity|normalize_decimal}}</td><td>{% if item.discount %} - {{ item.discount|currency }}{% endif %}</td><td>=</td><td>{{item.sub_total|currency|sp2nbsp}}</td>
+{% endif %}
+{% endfor %}
+</tr>
+
+<tr><td colspan="7">&nbsp;</td></tr>
+<tr>
+<td colspan="5" style="font-weight: bold;">Subtotal{% if order.discount %} (without discount){% endif %}</td><td>=</td><td>{% if default_view_tax %}{{ order.sub_total_with_tax|currency }}{% else %}{{ order.sub_total|currency|sp2nbsp }}{% endif %}</td>
+</tr>
+
+{% if order.discount %}
+<tr><td colspan="7">&nbsp;</td></tr>
+<tr>
+<td colspan="5">Discount ({{order.discount_code}})</td><td>-</td><td>{{order.item_discount|currency|sp2nbsp}}</td>
+</tr>
+{% endif %}
+
+{% if order.shipping_method %}
+<tr><td colspan="7">&nbsp;</td></tr>
+<tr style="font-weight: bold;">
+<td colspan="7">Shipping &amp; Handling</td>
+</tr>
+
+{% if order.shipping_discount %}
+<tr>
+<td>{{ order.shipping_description }}</td><td></td><td></td><td></td><td></td><td>+</td><td>{{order.shipping_cost|currency|sp2nbsp}}</td>
+</tr>
+<tr>
+<td>Shipping Discount</td><td></td><td></td><td></td><td></td><td>-</td><td>{{order.shipping_discount|currency|sp2nbsp}}</td>
+</tr>
+{% else %}
+<tr>
+<td>{{ order.shipping_description }}</td><td></td><td></td><td></td><td></td><td>+</td><td>{% if default_view_tax %}{{ order.shipping_with_tax|currency }}{% else %}{{ order.shipping_sub_total|currency|sp2nbsp }}{% endif %}</td>
+</tr>
+{% endif %}
+{% endif %}
+
+<tr><td colspan="7">&nbsp;</td></tr>
+<tr style="font-weight: bold; background-color: #dddddd;">
+<td colspan="5">TOTAL</td><td>=</td><td>{{order.total|currency|sp2nbsp}}</td>
+</tr>
+
+</table>
+</div>
+</div>

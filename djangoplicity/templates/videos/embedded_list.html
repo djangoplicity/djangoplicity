@@ -1,0 +1,11 @@
+{% load i18n %}{% if videos %}
+<h3 class="archivegrouptitle">{% trans "Videos" %}</h3>
+{% for v in videos %}
+<div class="pr_image_list">
+<a href="{{ v.get_absolute_url }}"><img src="{{ v.resource_thumb.url }}" width="122" alt="{{ v.title }}" /></a><br />
+<div class="pr_image_list_id"><a href="{{v.get_absolute_url}}">{% trans "PR Video" %} {%if v.override_id%}{{v.override_id}}{%else%}{{ v.source.id|default:v.id }}{%endif%}</a></div>
+<div class="pr_image_list_title">{{ v.title }} {% if not v.in_original_language %}<span class="langnote"><br />{% trans "in English only" %}</span>{% endif %}</div>
+</div>
+{% endfor %}
+<hr class="esohr" />
+{% endif %}

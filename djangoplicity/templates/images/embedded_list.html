@@ -1,0 +1,12 @@
+{% load i18n %}
+{% if images %}
+<h3 class="archivegrouptitle">{% trans "Images" %}</h3>
+{% for i in images %}
+<div class="pr_image_list">
+<a href="{{ i.get_absolute_url }}"><img src="{{ i.resource_thumbs.url }}" width="122" alt="{{ i.title }}" /></a><br />
+<div class="pr_image_list_id"><a href="{{i.get_absolute_url}}">{% trans  "PR Image" %} {%if i.override_id%}{{i.override_id}}{%else%}{{ i.source.id|default:i.id }}{%endif%}</a></div>
+<div class="pr_image_list_title">{{ i.title }} {% if not i.in_original_language %}<span class="langnote"><br />{% trans "in English only" %}</span>{% endif %}</div>
+</div>
+{% endfor %}
+<hr class="esohr" />
+{% endif %}

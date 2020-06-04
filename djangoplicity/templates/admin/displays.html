@@ -1,0 +1,21 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_modify %}
+
+{% block content %}
+<div id="content-main" class="module">
+{% for disp in displays %}
+<div class="display_entry">
+<h2>{{disp.name}}</h2>
+<div class="code_box cbl" id="code_box_{{forloop.counter0}}_l">
+{%for item in disp.display%}<p>{{item|linebreaksbr}}</p>{%endfor%}
+</div>
+<div class="code_box cbr" id="code_box_{{forloop.counter0}}_r">
+{%for item in disp.display%}<p>{{item|force_escape}}</p>{%endfor%}
+</div>
+</div>
+
+
+{%endfor%}
+
+</div>
+{% endblock %}

@@ -1,0 +1,1 @@
+{% extends 'archives/release/email/aas_base.txt' %}{%block org_prefix %}ESO {% endblock %} 

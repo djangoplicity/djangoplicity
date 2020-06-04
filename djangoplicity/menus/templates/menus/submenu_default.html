@@ -1,0 +1,5 @@
+{% load menus %}
+
+<ul class='level{{ level }}'>{% for entry in submenu %}
+<li><a href="{{ entry.link }}"{% if entry.on_click %} target="_blank"{% endif %}>{{ entry.title }}</a></li>{% if entry.children|length %}{% render_submenu entry.children %}{% endif %}{% endfor %}
+</ul>

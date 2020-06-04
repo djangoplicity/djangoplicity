@@ -1,0 +1,44 @@
+{% extends "admin/media/image/avm_review.html" %}
+
+{% block result_list %}
+{% if objects %}
+<table cellspacing="0" id="result_list">
+<thead>
+<tr>
+<th>ID</th>
+<th>Thumbnail</th>
+<th>Spatial.CoordinateFrame</th>
+<th>Spatial.Equinox</th>
+<th>Spatial.ReferenceValue</th>
+<th>Spatial.ReferenceDimension</th>
+<th>Spatial.ReferencePixel</th>
+<th>Spatial.Scale</th>
+<th>Spatial.Rotation</th>
+<th>Spatial.CoordinatesystemProjection</th>
+<th>Spatial.Quality</th>
+<th>Spatial.Notes</th>
+<th>Spatial.FITSHeader</th>
+</tr>
+</thead>
+<tbody>
+{% for object in objects %}
+<tr class="{% cycle 'row1' 'row2' %}">
+<td><a href="{% url 'admin_site:media_image_change' object.pk %}">{{ object.id }}</a></td>
+<td>{% if object.resource_thumbs %}<img src="{{object.resource_thumbs.url}}" />{{ object.id }}{%else%}N/A{% endif %}</td>
+<td>{{ object.spatial_coordinate_frame|default:"" }}</td>
+<td>{{ object.spatial_equinox|default:"" }}</td>
+<td>{{ object.spatial_reference_value|default:"" }}</td>
+<td>{{ object.spatial_reference_dimension|default:"" }}</td>
+<td>{{ object.spatial_reference_pixel|default:"" }}</td>
+<td>{{ object.spatial_scale|default:"" }}</td>
+<td>{{ object.spatial_rotation|default:"" }}</td>
+<td>{{ object.spatial_coordsystem_projection|default:"" }}</td>
+<td>{{ object.spatial_quality|default:"" }}</td>
+<td>{{ object.spatial_notes|default:"" }}</td>
+<td>{{ object.spatial_fits_header|default:"" }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% endif %}
+{% endblock %}

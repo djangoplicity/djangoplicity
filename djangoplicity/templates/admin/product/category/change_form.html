@@ -1,0 +1,14 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+{% load i18n admin_urls admin_modify %}
+{% load satchmo_product_admin %}
+
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+  <ul class="object-tools">
+  {% if perms.shop.change_order%}<li><a href="{% url 'satchmo_orders_for_category' original.id %}" class="historylink">{% trans "List orders" %}</a></li>{% endif %}
+  <li><a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a></li>
+  {% if has_absolute_url %}<li><a href="{{ original.get_absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+  </ul>
+{% endif %}{% endif %}
+{% endblock %}

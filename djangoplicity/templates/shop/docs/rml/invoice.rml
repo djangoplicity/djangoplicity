@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+{% load i18n satchmo_currency djangoplicity_satchmo %}
+<document filename="{{ filename }}">
+<template pageSize="(21.5cm, 28cm)" leftMargin="1.0cm" rightMargin="1.0cm" topMargin="1.0cm" bottomMargin="1.0cm" title="{% trans "Store Invoice" %}" author="{{ shopDetails.store_name }}" allowSplitting="20">
+    <pageTemplate id="first">
+        <pageGraphics>
+
+            <image x="5mm" y="240mm" width="65mm" height="30mm" file="{{ iconURI }}" />
+
+            <setFont name="Helvetica" size="10"/>
+            <fill color="(0,0,0)"/>
+
+            <drawString x="13cm" y="270mm">{% trans "Invoice for Order" %}: </drawString>
+            <drawString x="13cm" y="266mm">{% trans "Date" %}: </drawString>
+
+            <drawRightString x="18cm" y="270mm">{{ order|order_variable:'ORDER_ID' }}</drawRightString>
+            <drawRightString x="18cm" y="266mm">{% now "N j, Y" %}</drawRightString>
+
+            <setFont name="Helvetica" size="16"/>
+            <drawCentredString x="11cm" y="172mm">{% trans "INVOICE" %}</drawCentredString>
+
+            <setFont name="Helvetica" size="14"/>
+            <drawString x="7.5cm" y="24cm">{% trans "Billing Address" %}</drawString>
+            <drawString x="14.5cm" y="24cm">{% trans "Shipping Address" %}</drawString>
+
+            <setFont name="Helvetica" size="12"/>
+            <drawString x="1cm" y="235mm">{{shopDetails.street1}}</drawString>
+	    {% if shopDetails.street2 %}
+            <drawString x="1cm" y="230mm">{{shopDetails.street2}}</drawString>
+            <drawString x="1cm" y="225mm">{{shopDetails.city}}, {{shopDetails.state}} {{shopDetails.postal_code}}</drawString>
+            <drawString x="1cm" y="220mm">{{shopDetails.phone}}</drawString>
+            <drawString x="1cm" y="215mm">{{shopDetails.store_email}}</drawString>
+	    {% else %}
+            <drawString x="1cm" y="230mm">{{shopDetails.city}} {{shopDetails.state}}, {{shopDetails.postal_code}}</drawString>
+            <drawString x="1cm" y="225mm">{{shopDetails.phone}}</drawString>
+            <drawString x="1cm" y="220mm">{{shopDetails.store_email}}</drawString>
+	    {% endif %}
+            <rect x="12.5cm" y="26.2cm" width="6cm" height="1.3cm" fill="no" stroke="yes" round="5mm" />
+
+            <rect x="7.1cm" y="18.8cm" width="6cm" height="5cm" fill="no" stroke="yes" round="5mm" />
+            <rect x="14.1cm" y="18.8cm" width="6cm" height="5cm" fill="no" stroke="yes" round="5mm" />
+
+        </pageGraphics>
+        <frame id="billaddress" x1="7cm" y1="17.9cm" width="6cm" height="6cm" />
+        <frame id="shipaddress" x1="14cm" y1="17.9cm" width="6cm" height="6cm"/>
+        <frame id="column" x1="1.0cm" y1="2cm" width="19cm" height="15.5cm"/>
+    </pageTemplate>
+    <pageTemplate id="others">
+        <pageGraphics>
+            <image x="5mm" y="240mm" width="65mm" height="30mm" file="{{ iconURI }}"/>
+
+            <setFont name="Helvetica" size="8"/>
+            <fill color="(0,0,0)"/>
+
+            <drawString x="14cm" y="270mm">{% trans "Invoice for Order" %}: </drawString>
+            <drawString x="14cm" y="266mm">{% trans "Date" %}: </drawString>
+
+            <drawRightString x="20cm" y="270mm">{{ order|order_variable:'ORDER_ID' }}</drawRightString>
+            <drawRightString x="20cm" y="266mm">{% now "N j, Y" %}</drawRightString>
+
+            <setFont name="Helvetica" size="18"/>
+            <drawString x="13cm" y="230mm">{% trans "INVOICE" %}, {% trans "Page" %} 2</drawString>
+            <rect x="13.5cm" y="26cm" width="7.5cm" height="1.5cm" fill="no" stroke="yes" round="5mm" />
+        </pageGraphics>
+        <frame id="column" x1="2.0cm" y1="1.5cm" width="18cm" height="17cm"/>
+    </pageTemplate>
+</template>
+<stylesheet>
+    <blockTableStyle id="accounts">
+        <blockAlignment value="RIGHT" start="-1,0" stop="-1,-1"/>
+        <lineStyle kind="LINEABOVE" start="-1,-2" stop="-1,-2"/>
+    </blockTableStyle>
+
+    <paraStyle name="conditions" fontName="Helvetica" fontSize="8" alignment="justify"/>
+    <paraStyle name="name" fontName="Helvetica-Bold" fontSize="12"/>
+    <paraStyle name="payment" fontName="Helvetica" fontSize="14"/>
+    <blockTableStyle id="products">
+         <blockFont name="Helvetica-BoldOblique" size="12" start="0,0" stop="-1,0"/>
+         <blockBackground colorName="grey" start="0,0" stop="-1,0"/>
+         <blockTextColor colorName="white" start="0,0" stop="-1,0"/>
+         <blockValign value="TOP"/>
+         <blockAlignment value="RIGHT" start="1,0" stop="-1,-1"/>
+         <lineStyle kind="LINEBELOW" colorName="black" start="0,0" stop="-1,0"/>
+    </blockTableStyle>
+    <blockTableStyle id="products2">
+         <blockValign value="TOP"/>
+         <blockAlignment value="RIGHT" start="1,0" stop="-1,-1"/>
+         {% if order.shipping_discount %}
+         <lineStyle kind="LINEABOVE" colorName="black" start="-1,-6" stop="-1,-6"/>
+	 {% else %}
+         <lineStyle kind="LINEABOVE" colorName="black" start="-1,-5" stop="-1,-5"/>
+         {% endif %}
+         <lineStyle kind="LINEABOVE" colorName="black" start="-1,-1" stop="-1,-1"/>
+         <lineStyle kind="LINEBELOW" colorName="black" start="-1,-1" stop="-1,-1"/>
+         <lineStyle kind="LINEBEFORE" colorName="black" start="-1,-1" stop="-1,-1"/>
+         <lineStyle kind="LINEAFTER" colorName="black" start="-1,-1" stop="-1,-1"/>
+         <blockBackground colorName="(0.85,0.85,0.85)" start="-1,-1" stop="-1,-1"/>
+    </blockTableStyle>
+</stylesheet>
+<story>
+
+    <para style="name">{{order.bill_addressee}}</para>
+    <para>{{order.bill_street1}}</para>
+    {% if order.bill_street2 %}
+    <para>{{order.bill_street2}}</para>
+    {% endif %}
+    <para>{{order.bill_city}}, {{order.bill_state}}</para>
+    <para>{{order.bill_postal_code}}</para>
+    <para>{{order.bill_country.name}}</para>
+    <para>{{ order.bill_country|isocode2country }}</para>
+    <spacer length="0.5cm" width="1mm"/>
+    <para>{% trans "Phone" %}: {{order.contact.primary_phone.phone}}</para>
+    <para>{% trans "Email" %}: {{order.contact.email|lower}}</para>
+
+    <nextFrame/>
+
+    <para style="name">{{order.ship_addressee}}</para>
+    <para>{{order.ship_street1}}</para>
+    {% if order.ship_street2 %}
+    <para>{{order.ship_street2}}</para>
+    {% endif %}
+    <para>{{order.ship_city}}, {{order.ship_state}}</para>
+    <para>{{order.ship_postal_code}}</para>
+    <para>{{ order.ship_country|isocode2country }}</para>
+    <spacer length="0.8cm" width="1mm"/>
+    <nextFrame/>
+
+    <setNextTemplate name="others"/>
+    <spacer length="0.5cm" width="1mm"/>
+    <blockTable colWidths="7cm, 3.0cm, 3.0cm, 3.0cm, 3.0cm" style="products">
+    <tr>
+        <td>{% trans "Description" %}</td>
+        <td>{% trans "Quantity" %}</td>
+        <td>{% trans "Unit Price" %}</td>
+	<td>{% trans "Discount" %}</td>
+        <td>{% trans "Total" %}</td>
+    </tr>
+    {% for item in order.orderitem_set.all %}
+    <tr>
+        <td><para>{{ item.product.name }}<br />ID: {{ item.product.slug }}</para></td>
+        <td>{{ item.quantity }} </td>
+        <td>{{ item.unit_price|currency }}</td>
+	<td>{{ item.discount|currency }}</td>
+        <td>{{ item.sub_total|currency }} </td>
+    </tr>
+    {% endfor %}
+    <tr><td></td></tr>
+    <tr><td></td></tr>
+    <tr><td></td></tr>
+    <tr><td></td></tr>
+    <tr><td></td></tr>
+    </blockTable>
+    <blockTable colWidths="7cm, 3.0cm, 3.0cm, 3.0cm, 3.0cm" style="products2">
+    <tr>
+        <td></td><td></td><td></td>
+        <td>{% trans "Subtotal" %}:</td><td>{{order.sub_total|currency}}</td>
+    </tr>
+    {% if order.discount %}
+    <tr>
+	<td></td><td></td><td></td>
+	<td>{% trans "Discount" %}:</td><td>- {{order.item_discount|currency}}</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td></td><td></td>
+        <td></td><td>{{order.shipping_method}} - {{order.shipping_description}}</td><td>{{order.shipping_cost|currency}}</td>
+    </tr>
+    {% if order.shipping_discount %}
+    <tr>
+        <td></td><td></td><td></td>
+        <td>{% trans "Shipping Discount" %}</td><td>- {{ order.shipping_discount|currency }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+        <td></td><td></td><td></td>
+        <td>{% trans "Tax" %}:</td><td>{{order.tax|currency}}</td>
+    </tr><tr>
+        <td></td><td></td><td></td>
+        <td>{% trans "Total" %}:</td><td>{{order.total|currency}}</td>
+    </tr>
+    <tr>
+	<td></td><td></td><td></td>
+	<td>{% trans "Payments Made" %}</td><td>- {{ order.balance_paid|currency }}</td>
+    </tr>
+    <tr>
+	<td></td><td></td><td></td>
+        <td>{% trans "Balance Due" %}</td><td>{{ order.balance|currency }}</td>
+    </tr>
+    </blockTable>
+    <spacer length="2cm" width="1mm"/>
+    {% if order.balance %}
+        <para style="payment">
+            {% with order.total|currency as order_total %}
+            {% blocktrans %}Payment total {{order_total}} due to:{% endblocktrans %}
+            {% endwith %}
+        </para>
+        <spacer length="0.5cm" width="1mm"/>
+        <para style="payment">
+            {% trans "Accounts Receivable" %}
+        </para><para style="payment">
+            {{shopDetails.street1}}
+        {% if shopDetails.street2 %}
+            </para><para style="payment">
+            {{shopDetails.street2}}
+        {% endif %}
+        </para><para style="payment">
+            {{shopDetails.city}} {{shopDetails.state}}, {{shopDetails.postal_code}}
+        </para>
+    {% else %}
+        {% if order.credit_card %}
+        {% with order.total|currency as order_total %}
+        {% with order.credit_card.credit_type as credit_card_type %}
+        {% with order.credit_card.display_cc as credit_card_number %}
+        <para style="payment">{% blocktrans with order.time_stamp|date:"F j, Y" as order_date %}{{ order_total }} was charged to your {{ credit_card_type }} card (x{{ credit_card_number }}) on {{ order_date }}.{% endblocktrans %}</para>
+        {% endwith %}{% endwith %}{% endwith %}
+        {% endif %}
+        <para style="payment">{% blocktrans %}This invoice has been paid in full. Thank you for your business!{% endblocktrans %}</para>
+    {% endif %}
+</story>
+</document>

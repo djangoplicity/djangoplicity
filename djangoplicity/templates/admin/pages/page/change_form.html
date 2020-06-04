@@ -1,0 +1,33 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls admin_modify %}
+
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+  <ul class="object-tools">
+  {% if DJANGOPLICITY.USE_I18N %}
+    <li><a href="{% url 'admin:pages_pageproxy_changelist' %}?source__exact={{original.id}}" class="historylink">{% trans "Translations" %}</a></li>
+    <li><a href="{% url 'admin:pages_pageproxy_add' %}?source={{original.id}}" class="historylink">{% trans "Add translation" %}</a></li>
+    <li><a href="{% url opts|admin_urlname:'synctranslation' original.pk|admin_urlquote %}" class="historylink">{% trans "Sync Translations" %}</a></li>
+  {% endif %}
+    <li><a href="{% url opts|admin_urlname:'cleanhtml' original.pk|admin_urlquote %}" class="historylink">{% trans "Clean HTML" %}</a></li>
+    <li><a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a></li>
+  {% if has_absolute_url %}<li><a href="{{ original.get_absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+  </ul>
+{% endif %}{% endif %}
+{% endblock %}
+
+{% block field_sets %}
+{% with original.test_render_errors as rendering_error %}
+{% if rendering_error %}
+<div style="padding: 15px; margin-bottom: 10px; color: #a94442; background-color: #f2dede; border: 1px solid #ebccd1;" role="alert">
+    <p><strong>Template Syntax Error</strong> at line {{ rendering_error.line }} of the Content ({{ rendering_error.message }}):</p>
+    <p>{{ rendering_error.during }}</p>
+</div>
+{% endif %}
+{% endwith %}
+{{ block.super }}
+{% endblock %}
+
+{% block after_field_sets %}
+
+{% endblock %}

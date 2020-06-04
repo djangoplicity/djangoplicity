@@ -1,0 +1,6 @@
+{% load i18n %}
+{% load satchmo_currency %}
+{% if default_view_tax %}{% load satchmo_tax %}{% endif %}
+<span class="shipdesc">{% if default_view_tax %}{{ taxed_shipping_price }} {{ shipping_tax }}{% else %}{{amount|currency}}{% endif %} : {{ description }}</span><br />
+<span class="shipmethod">{{ method }} {{ expected_delivery }}</span>
+<hr>

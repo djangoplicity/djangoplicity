@@ -1,0 +1,66 @@
+{% extends "facebook_iframe.html"%}
+{% load media_video %}
+{% load i18n %}
+{% load satchmo_util %}
+{% load pages %}
+{% load thumbnail %}
+{% load djangoplicity_satchmo %}
+{% load djangoplicity_utils %}
+{% load satchmo_price %}
+{% load satchmo_currency satchmo_category %}
+{% load satchmo_util satchmo_discounts %}
+
+{% block header %}
+    <div class="top">
+        <div class="topl">ESO Shop</div>
+        <div class="but topr"><a href="{{wall_url}}" target="_parent">Wall</a></div>
+        <div class="cl"></div>
+    </div>
+    <a href="https://www.eso.org/public/shop/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/tab-esoshop-blank.png"></img></a>
+
+    <div class="top">
+        <div class="topl">&nbsp;</div>
+        <div class="topr">Follow us on:
+        <a href="http://twitter.com/ESO_Observatory"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/twitter-ico.png"></img></a>
+        <a href="http://www.youtube.com/ESOObservatory/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/youtube-ico.png"></img></a>
+        <a href="http://www.vimeo.com/esoastronomy"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/vimeo-ico.png"></img></a>
+        <a href="http://www.flickr.com/photos/esoastronomy/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/flickr-ico.png"></img></a>
+        <a href="https://podcasts.apple.com/us/podcast/esocast-hd/id295471183"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/itunes-ico.png"></img></a>
+
+        </div>
+        <div class="cl"></div>
+    </div>
+
+
+{% endblock %}
+
+
+{% block body %}
+
+{% if all_products_list %}
+<h2 class="h2">{% trans "Featured Products" %}</h2>
+<table class="archive_normal" width="100%">
+{% for list in all_products_list|split_list:"3" %}
+<tr>{% for product in list %}{% archiveitem product as item %}
+<td class="imagerow" width="33">{% if item.resource_thumb %}<a href="{{ product.get_absolute_url }}"><img src="{{ item.resource_thumb.url }}" width="122" alt="{{item.title}}" /></a>{% else %}{% thumbnail product.main_image.picture 122x122 as image %}<a href="{{ product.get_absolute_url }}"><img src="{{image}}" width="122" alt="{{product.name}}" /></a>{% endthumbnail %}{% endif %}</td>{% endarchiveitem %}{% endfor %}
+</tr>
+<tr>{% for product in list %}
+<td class="pricerow" width="33"><span class="price" align="right">Price:&nbsp;{{ product.unit_price|currency }}</span></td>{% endfor %}
+</tr>
+<tr>{% for product in list %}{% archiveitem product as item %}
+<td class="titlerow" width="33">{% if item %}{{item.title}}{% else %}{{product.name}}{% endif %}</td>{% endarchiveitem %}{% endfor %}
+</tr>
+<tr><td colspan='3' class='breaker'></td></tr>
+{% endfor %}
+</table>
+
+<p>See all products from the ESO Shop <a href="https://www.eso.org/public/shop/">here</a>.</p>
+{% endif %}
+
+
+{% endblock %}
+
+{% block footer %}
+    <br/>
+    <br/>
+{%endblock%}

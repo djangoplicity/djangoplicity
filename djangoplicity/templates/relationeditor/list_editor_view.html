@@ -1,0 +1,59 @@
+{% extends "admin/base_site.html" %}
+{% load admin_list i18n %}
+{% block extrastyle %}<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}admin/css/changelists.css" />{% endblock %}
+{% block bodyclass %}change-list{% endblock %}
+{% block coltype %}flex{% endblock %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../">{{ model_name|capfirst }}</a> &rsaquo;
+     {% if selector_object %} {{ selector_model_opts.verbose_name|capfirst }}: {{ selector_object }} {% endif %}
+</div>
+{% endif %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+<ul class="object-tools">
+    <li><a href="../../../../{{selector_model_opts.app_label}}/{{selector_model_opts.model_name}}/{{selector_object.id}}/" class="viewsitelink">{% trans "View " %} {{selector_model_opts.verbose_name}}</a></li>
+    {% if selector_object.get_absolute_url %}<li><a href="{{selector_object.get_absolute_url}}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif %}
+    <li><a href="add_many/" class="addlink">Add {{ relation_model_opts.verbose_name_plural }}</a></li>
+</ul>
+{% endblock %}
+{% if formset.forms %}
+<div class="module" id="changelist">
+<form action="" method="post">{% csrf_token %}
+{{ formset.management_form }}
+<table cellspacing="0">
+<thead>
+<tr>
+<th class="sorted ascending">{{ relation_model_opts.verbose_name|capfirst }}</th>
+{% for field in formset.forms.0 %}
+{% if not field.is_hidden %}
+<th class="sorted ascending">
+{{field.label}}
+</th>
+{% endif %}
+{% endfor %}
+</tr>
+</thead>
+<tbody>
+{% for form in formset.forms %}
+<tr class="{% cycle 'row1' 'row2' %}"><td>{{ form.form_title }}</td>{% for field in form %}{% if field.is_hidden%}<td style="display:none">{{ field }}</td>{% else %}<td>{{ field }}{%if field.errors%}{{field.errors}}{%endif%}</td>{% endif %}{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+<p class="paginator">
+<input type="submit" value="Save changes" class="default" style="float: right;" />
+Note, all entries marked for deletion will be removed immediately!
+</p>
+</form>
+</div>
+{% else %}
+No {{ relation_model_opts.verbose_name_plural }} available for this {{ selector_model_opts.verbose_name }}.
+{% endif %}
+
+</div>
+{% endblock %}

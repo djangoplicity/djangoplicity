@@ -1,0 +1,37 @@
+{% if sd_resource or hd_resource %}
+<div style="width:100%;padding-top:10px;padding-bottom:10px;"><div align="center"><div id="flashplayer">Loading player...</div></div></div>
+<script type="text/javascript">
+function fix_protocol( link ) {
+    protocol = document.location.protocol;
+    link_protocol = link.substr( 0, 5);
+    if ( link_protocol == "http:" && protocol == "https:" ) {
+        return "https:" + link.substr( 5 );
+    }
+    return link
+}
+
+var sdfile = fix_protocol("{% if sd_resource %}{{sd_resource}}{% else %}{{ hd_resource }}{% endif %}");
+var imagefile = {% if videoframe %}fix_protocol("{{ videoframe }}");{% else %}false;{% endif %}
+var flashsrc = fix_protocol("{{SITE_URL}}{{MEDIA_URL}}djangoplicity/shadowbox3/libraries/mediaplayer5/player.swf"); 
+var sharelink = fix_protocol("{{SITE_URL}}{{video.get_absolute_url}}");
+var sharecode = "<div id='flashplayer'>Loading player...</div><"+"script type='text/javascript' src='{{SITE_URL}}{{MEDIA_URL}}djangoplicity/shadowbox3/libraries/mediaplayer5/jwplayer.js'></"+"script><"+"script type='text/javascript'>var sdfile = '{% if sd_resource %}{{sd_resource}}{% else %}{{ hd_resource }}{% endif %}';var imagefile = {% if videoframe %}'{{ videoframe }}';{% else %}false;{% endif %}var flashsrc = '{{SITE_URL}}{{MEDIA_URL}}djangoplicity/shadowbox3/libraries/mediaplayer5/player.swf';var sharelink = '{{SITE_URL}}{{video.get_absolute_url}}';var sharecode = '';var gaid = '{{ GA_ID }}';var ipadfile = '{{ ipad_resource }}';var mobilefile = '{{ mobile_resource }}';var hdfile = {% if hd_resource and sd_resource %}'{{hd_resource}}';{% else %}false;{%endif%};</"+"script><"+"script type='text/javascript' src='{{SITE_URL}}{{MEDIA_URL}}djangoplicity/js/videoembed.js'></"+"script>";
+var gaid = "{{ GA_ID }}";
+var ipadfile = fix_protocol("{{ ipad_resource }}"); 
+var mobilefile = fix_protocol("{{ mobile_resource }}");
+var hdfile = {% if hd_resource and sd_resource %}fix_protocol("{{hd_resource}}");{% else %}false;{%endif%};
+var width = "{{ width }}";
+var height = "{{ height }}";
+
+var subs = []
+var labels = []
+
+{% for sub in subs %}
+subs.push( fix_protocol("{{SITE_URL}}{{sub.resource_srt.url}}") );
+labels.push("{{sub}}");
+{% endfor %}
+</script>
+<script type="text/javascript" src="{{MEDIA_URL}}djangoplicity/shadowbox3/libraries/mediaplayer5/jwplayer.js"></script>
+<script type="text/javascript" src="{{MEDIA_URL}}djangoplicity/js/videoembed_custom.js"></script>
+{% else %}{% if videoframe %}
+<div class="archive_image"><div class="image_container"><img src="{{videoframe}}" width="{{width}}" border="0" alt="{{video}}" /></div></div>
+{% endif %}{% endif %}

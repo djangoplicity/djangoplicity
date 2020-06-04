@@ -1,0 +1,53 @@
+{% load djangoplicity_satchmo %}<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="{{filename}}">
+<docinit>
+	<registerFont fontName="HelveticaNeue" fontFile="HelveticaNeue.ttf" /> 
+	<registerFont fontName="HelveticaNeueLight" fontFile="HelveticaNeueLight.ttf" /> 
+</docinit>
+<template pageSize="(21.59cm, 27.94cm)">
+          <!-- Avery multi-use label Item#5444                              -->
+          <!-- showBoundary means that we will be able to see the            -->
+          <!-- limits of frames                                              -->
+    <pageTemplate>
+        
+	    <frame id="returnto" x1="3cm" y1="24.05cm" width="6.4cm" height="2cm" />
+	    <frame id="sendto" x1="1cm" y1="21cm" width="8.4cm" height="3.2cm"/>
+        <frame id="order" x1="1cm" y1="20.4cm" width="8.4cm" height="0.9cm"/>
+        <pageGraphics>
+           <image file="{{iconURI}}" x="1.2cm" y="24.2cm" height="2cm" />
+        </pageGraphics>
+    </pageTemplate>
+</template>
+<stylesheet>
+    <paraStyle name="returnto"
+    fontName="HelveticaNeueLight"
+    fontSize="9"
+    textColor="#2f76c0"
+     />
+     <paraStyle name="sendto"
+     fontName="HelveticaNeueLight"
+     fontSize="11"
+     spaceBefore="0.1cm"
+     />
+     <paraStyle name="order"
+     fontName="HelveticaNeueLight"
+     fontSize="9"
+     />
+</stylesheet>
+<story>    
+     <para style="returnto">European Southern Observatory</para>
+     <para style="returnto">Karl-Schwarzschild-Str. 2</para>
+     <para style="returnto">D-85748 Garching, Germany</para>
+	 <nextFrame />
+     <para style="sendto">{{order.ship_addressee}}</para>
+     <para style="sendto">{{order.ship_street1}}</para>
+     {% if order.ship_street2 %}
+     <para style="sendto">{{order.ship_street2}}</para>
+     {% endif %}
+     <para style="sendto">{{ order.ship_postal_code }} {{ order.ship_city }}{% if order.ship_state %}, {{ order.ship_state }}{% endif %}</para>
+     <para style="sendto">{{ order.ship_country|isocode2country }}</para>
+     <nextFrame />
+     <para style="order">{{shopDetails.store_name}} Order {{ order|order_variable:"ORDER_ID" }}</para>
+</story>
+</document>

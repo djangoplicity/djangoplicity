@@ -1,0 +1,19 @@
+{% load i18n %}{% load djangoplicity_utils %}{% load djangoplicity_datetime %}
+{% if not object_list %}
+    <div align="center">{% trans "No web updates were found." %}</div>
+{% else %}
+{% include "archives/search_results.html" %}
+{% for item in object_list %}
+<div class="pr_box">
+<div class="pr_idtype">{{ item.id }} &mdash; {{ item.release_date|datetime:"DATE" }}</div>
+<h2 class="pr_headline">{% if item.link %}<a href="{{ item.link }}">{{item.title}}</a></h2>{% else %}{{ item.title }}{% endif %}
+{% if item.description %}
+{{ item.description|safe }}
+
+{% endif %}
+</div>
+{% endfor %}
+{% paginator paginator page_obj paginator_url paginator_prefix paginator_params %}
+{% statusbar paginator page_obj browsers searchable search_url search_str  %}
+{% endif %}
+{% include 'archives/extra_footer.html' %}

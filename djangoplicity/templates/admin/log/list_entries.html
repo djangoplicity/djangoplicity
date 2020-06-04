@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+{% block content %}
+
+
+Showing {{limits.0}} to {{limits.1}} of {{total}} entries.<br/>
+{% if prev %}<a href="/admin/log/list/{{prev}}/">Previous Page</a>{%endif%} - {% if next %}<a href="/admin/log/list/{{next}}/">Next Page</a>{% endif %}
+
+<hr/>
+<br/>
+<table>
+    <ul>
+            {% for entry in entries %}
+            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}"><b>{{entry.user}}</b> - {{entry.action_time}}<br/>{% if not entry.is_deletion %}<a href="{{ entry.get_admin_url }}">{% endif %}{{ entry.object_repr|escape }}{% if not entry.is_deletion %}</a>{% endif %}<br /><span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span></li>
+            {% endfor %}
+
+    </ul>
+
+</table>
+
+
+
+{% endblock %}
+
+
+
+
+
+

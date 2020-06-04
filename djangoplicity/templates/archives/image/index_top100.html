@@ -1,0 +1,26 @@
+{% load djangoplicity_utils i18n %}
+{% if not object_list %}
+    <div align="center">{% trans "No images were found." %}</div>
+{% else %}
+{% include "archives/search_results.html" %}
+<div class='bestof'>
+
+{% for item in object_list %}
+    <span class='entry' href="{{ item.get_absolute_url }}">
+        <div class='image'>
+            <a href="{{ item.get_absolute_url }}"><img src="{{ item.resource_medium.url }}"  alt="{{item.title}}" /></a>
+        </div>
+        <div class='descr'>
+            <div class='number'><a href="{{ item.get_absolute_url }}">{{forloop.counter}}</a></div>
+            <div class='title'><a href="{{ item.get_absolute_url }}">{{item.title}}</a></div>
+            {% if item.credit %}<div class='credit'><strong>{% trans "Credit" %}:</strong> {{item.credit|safe}}</div>{% endif %}
+        </div>
+    <div class='clear'></div>
+    </span>
+
+{%endfor%}
+</div>
+{% endif %}
+<div class="bestof_footer">
+{% include 'archives/extra_footer.html' %}
+</div>
