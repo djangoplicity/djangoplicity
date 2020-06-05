@@ -74,7 +74,7 @@ def move_resources( src, dst, overwrite=True, archive_id=None, exclude=[], sendt
         raise Exception( "Source %s is not a directory" % src )
 
     if not os.path.exists( dst ):
-        raise Exception( "Destination %s does not exist" % dst )
+        _create_dir( dst )
 
     if not os.path.isdir( dst ):
         raise Exception( "Destination %s is not a directory" % dst )
@@ -148,6 +148,12 @@ def delete_resources( app_label, module_name, object_id, resources, sendtask_cal
         args, kwargs = sendtask_callback  # pylint: disable=W0633
         current_app.send_task( *args, **str_keys( kwargs ) )
 
+
+def _create_dir( path ):
+    try:
+        os.makedirs( path )
+    except Exception, e:
+        raise e
 
 def _get_dirs( path ):
     """ Get all subdirectories in path """
