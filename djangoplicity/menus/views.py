@@ -29,39 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
-
-from django.contrib.admin.views.decorators import staff_member_required
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.views.decorators.cache import never_cache
-from djangoplicity.menus.models import MenuItem, invalidate_menu_item_cache
-
+from django.shortcuts import render
 
 def sitemap( request ):
     """ Render a sitemap """
     return render(request, 'menus/sitemap.html')
-
-
-@staff_member_required
-@never_cache
-def moveup(request, menuitem ):
-    """ TODO: quite big hack """
-    item = get_object_or_404( MenuItem, id=menuitem )
-    #if item.get_previous_sibling():
-    item.move_to(item.get_previous_sibling(), 'left' )
-    invalidate_menu_item_cache( None, item, None )
-
-    return HttpResponseRedirect(reverse('admin:menus_menuitem_changelist', current_app='admin_site'))
-
-
-@staff_member_required
-@never_cache
-def movedown(request, menuitem ):
-    """ TODO: quite big hack """
-    item = get_object_or_404( MenuItem, id=menuitem )
-    #if item.get_next_sibling():
-    item.move_to(item.get_next_sibling(), 'right' )
-    invalidate_menu_item_cache( None, item, None )
-
-    return HttpResponseRedirect(reverse('admin:menus_menuitem_changelist', current_app='admin_site'))

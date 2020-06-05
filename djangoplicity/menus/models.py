@@ -113,22 +113,6 @@ class MenuItem( MPTTModel ):
     # generation.
     is_primary = models.BooleanField( default=True, help_text=_( u'In case a menu contains several items with the same link, set this field to true and the others menu items field to false, to control which item is used for item highlighting and breadcrumb generation.') )
 
-    def move_up(self):
-        """ TODO: quite big hack """
-        if self.get_previous_sibling():
-            return mark_safe(u'<a href="up/' + str(self.id) + '/">Up</a>')
-        else:
-            return ''
-    move_up.allow_tags = True
-
-    def move_down(self):
-        """ TODO: quite big hack """
-        if self.get_next_sibling():
-            return mark_safe(u'<a href="down/' + str(self.id) + '/">Down</a>')
-        else:
-            return ''
-    move_down.allow_tags = True
-
     def __unicode__( self ):
         return self.title
 
