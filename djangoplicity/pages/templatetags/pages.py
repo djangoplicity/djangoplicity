@@ -14,12 +14,12 @@ from djangoplicity.pages.models import PageGroup
 register = template.Library()
 
 
-def node_error( e ):
+def node_error( e , show_error=True ):
     """
     Helper function to output an error message when
     rendering a template tag.
     """
-    if settings.DEBUG:
+    if settings.DEBUG and show_error:
         return u'[%s]' % e
     else:
         return u''  # Fail silently if DEBUG is not on.
@@ -49,7 +49,7 @@ class EmbeddedPageNode( template.Node ):
                 key += self.page_key_variable.resolve(context)
             return embed_page_key( context['request'], key, no_unpublished=self.no_unpublished )
         except PageNotFoundError, e:
-            return node_error( _(u"The embedded page could not be found.") )
+            return node_error( _(u"The embedded page could not be found."), show_error=False )
         except PageAuthorizationError, e:
             return node_error( _(u"User not authorized to view page.") )
         except template.VariableDoesNotExist, e:
