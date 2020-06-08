@@ -12,8 +12,18 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+# We can't use ugettext from django.utils.translation as it will itself
+# load the settings resulting in a ImproperlyConfigured error
+ugettext = lambda s: s
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+#############################
+# ENVIRONMENT CONFIGURATION #
+#############################
+SHORT_NAME = 'djangoplicity'
+TMP_DIR = os.path.join(BASE_DIR, 'tmp')
 
 
 # Quick-start development settings - unsuitable for production
@@ -30,14 +40,26 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites'
 ]
+
+DJANGOPLICITY_APPS = [
+    'djangoplicity.metadata',
+    'djangoplicity.releases',
+    'djangoplicity.media',
+    'djangoplicity.announcements'
+]
+
+INSTALLED_APPS = DJANGO_APPS + DJANGOPLICITY_APPS
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -92,7 +114,15 @@ JQUERY_UI_JS = "jquery-ui-1.12.1/jquery-ui.min.js"
 JQUERY_UI_CSS = "jquery-ui-1.12.1/jquery-ui.min.css"
 DJANGOPLICITY_ADMIN_JS = "djangoplicity/js/admin.js"
 DJANGOPLICITY_ADMIN_CSS = "djangoplicity/css/admin.css"
+SUBJECT_CATEGORY_CSS = "djangoplicity/css/widgets.css"
 
+
+###########
+# ARCHIVE #
+###########
+IMAGES_ARCHIVE_ROOT = 'archives/images/'
+VIDEOS_ARCHIVE_ROOT = 'archives/videos/'
+RELEASE_ARCHIVE_ROOT = 'archives/releases/'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -117,6 +147,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = (
+    ( 'en', ugettext( 'English' ) ),
+)
 
 TIME_ZONE = 'UTC'
 
