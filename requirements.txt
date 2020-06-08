@@ -31,6 +31,8 @@ django-tinymce4-lite == 1.7.2
 # PostgreSQL python client
 psycopg2-binary==2.7.7
 
+# Asynchronous Task Queue
+celery==4.3.0
 
 #############################
 ### Testing dependencies ###
