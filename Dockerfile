@@ -18,3 +18,4 @@ COPY scripts/ scripts/
 COPY manage.py manage.py
 COPY djangoplicity/ djangoplicity/
 COPY tests/ tests/
+COPY setup.cfg .
