@@ -28,6 +28,9 @@ pika
 openpyxl
 django-tinymce4-lite == 1.7.2
 
+# PostgreSQL python client
+psycopg2-binary==2.7.7
+
 
 #############################
 ### Testing dependencies ###
@@ -35,4 +38,4 @@ django-tinymce4-lite == 1.7.2
 
 pytest>=4.6.1,<4.7 # 4.6 is the last version to support python 2.7
 pytest-django==3.9.0
-pytest-cov==2.9.0
+pytest-cov==2.9.0 # coverage report
