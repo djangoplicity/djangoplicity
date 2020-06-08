@@ -6,21 +6,15 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libxslt-dev
 
-# Create and user user
-RUN useradd --create-home djangoplicityadm
-ENV USER_HOME=/home/djangoplicityadm
-WORKDIR $USER_HOME
-USER djangoplicityadm
+RUN mkdir /app
+WORKDIR /app
 
 # Cache requirements and install them
 COPY requirements.txt .
-RUN pip install --user -r requirements.txt
-
-# scripts installed by pip can be used
-ENV PATH=$USER_HOME/.local/bin:$PATH
+RUN pip install -r requirements.txt
 
 # final steps
-COPY --chown=djangoplicityadm scripts/ scripts/
-COPY --chown=djangoplicityadm manage.py manage.py
-COPY --chown=djangoplicityadm djangoplicity/ djangoplicity/
-COPY --chown=djangoplicityadm tests/ tests/
+COPY scripts/ scripts/
+COPY manage.py manage.py
+COPY djangoplicity/ djangoplicity/
+COPY tests/ tests/
