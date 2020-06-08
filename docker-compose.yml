@@ -2,21 +2,23 @@
 
   services:
     db:
-      image: mysql
+      image: postgres:10.5
       container_name: djangoplicity-db
+      restart: always
       environment:
-        - MYSQL_DATABASE='db'
-        - MYSQL_USER='mysql'
-        - MYSQL_PASSWORD='mysql'
-        - MYSQL_ROOT_PASSWORD='mysql'
+        POSTGRES_DB: djangoplicity
+        POSTGRES_USER: djangoplicity
+        POSTGRES_PASSWORD: djangoplicity
+      ports:
+        - "50001:5432"
 
     web:
       build: .
       container_name: djangoplicity-web
-      command: python manage.py runserver 0.0.0.0:8001
+      command: python manage.py runserver 0.0.0.0:8000
       volumes:
       - ./djangoplicity:/home/djangoplicityadm/djangoplicity
       ports:
-        - "8001:8001"
+        - "8001:8000"
       depends_on:
         - db
