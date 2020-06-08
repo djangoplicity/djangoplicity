@@ -15,7 +15,6 @@ Pillow
 pycountry == 1.16
 ephem == 3.7.6.0
 pysftp               # Used for contentserver
-pytest-django
 python-dateutil
 python-memcached == 1.59
 python-xmp-toolkit == 1.0.2
@@ -28,3 +27,12 @@ piexif
 pika
 openpyxl
 django-tinymce4-lite == 1.7.2
+
+
+#############################
+### Testing dependencies ###
+############################
+
+pytest>=4.6.1,<4.7 # 4.6 is the last version to support python 2.7
+pytest-django==3.9.0
+pytest-cov==2.9.0
