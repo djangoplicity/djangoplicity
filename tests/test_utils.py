@@ -10,7 +10,6 @@ from djangoplicity.utils import datetimes
 from datetime import datetime
 
 from django.conf import settings
-settings.configure()
 
 class TestDatetimes:
     def test_timestring_to_seconds(self):

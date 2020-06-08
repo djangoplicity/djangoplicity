@@ -84,6 +84,15 @@ DATABASES = {
     }
 }
 
+##############
+# JavaScript #
+##############
+JQUERY_JS = "jquery/jquery-1.11.1.min.js"
+JQUERY_UI_JS = "jquery-ui-1.12.1/jquery-ui.min.js"
+JQUERY_UI_CSS = "jquery-ui-1.12.1/jquery-ui.min.css"
+DJANGOPLICITY_ADMIN_JS = "djangoplicity/js/admin.js"
+DJANGOPLICITY_ADMIN_CSS = "djangoplicity/css/admin.css"
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
