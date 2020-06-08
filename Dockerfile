@@ -23,3 +23,4 @@ ENV PATH=$USER_HOME/.local/bin:$PATH
 COPY --chown=djangoplicityadm scripts/ scripts/
 COPY --chown=djangoplicityadm manage.py manage.py
 COPY --chown=djangoplicityadm djangoplicity/ djangoplicity/
+COPY --chown=djangoplicityadm tests/ tests/
