@@ -15,7 +15,7 @@
     web:
       build: .
       container_name: djangoplicity-web
-      command: python manage.py runserver 0.0.0.0:8000
+      command: ["./scripts/command-dev.sh"]
       volumes:
       - ./djangoplicity:/app/djangoplicity
       - ./tests:/app/tests
