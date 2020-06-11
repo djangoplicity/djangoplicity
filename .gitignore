@@ -6,3 +6,5 @@
 /*.egg-info/
 .tox/
 .env/
+htmlcov/
+.coverage
