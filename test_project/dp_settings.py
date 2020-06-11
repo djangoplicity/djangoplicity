@@ -13,6 +13,7 @@ INSTALLED_APPS += [
     'djangoplicity.releases',
     'djangoplicity.media',
     'djangoplicity.announcements',
+    'djangoplicity.reports',
 ]
 
 # JAVASCRIPT CUSTOM CONFIG
