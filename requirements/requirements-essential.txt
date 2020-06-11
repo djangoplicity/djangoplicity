@@ -6,7 +6,6 @@ djangorestframework == 3.8.2  # Used for pages fixed version as 3.6 causes confl
 django-signals-ahoy  # Used by satchmo/models.py
 django-redis
 google-api-python-client == 1.7.4
-oauth2client
 html2text == 3.200.3
 htmllaundry
 icalendar == 2.1
@@ -28,16 +27,11 @@ pika
 openpyxl
 django-tinymce4-lite == 1.7.2
 
+# Last version that has dependencies that support python 2.7
+oauth2client==1.4.11
+
 # PostgreSQL python client
 psycopg2-binary==2.7.7
 
 # Asynchronous Task Queue
 celery==4.3.0
-
-#############################
-### Testing dependencies ###
-############################
-
-pytest>=4.6.1,<4.7 # 4.6 is the last version to support python 2.7
-pytest-django==3.9.0
-pytest-cov==2.9.0 # coverage report
