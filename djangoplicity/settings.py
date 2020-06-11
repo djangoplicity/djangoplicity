@@ -97,12 +97,8 @@ WSGI_APPLICATION = 'djangoplicity.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'djangoplicity',
-        'USER': 'djangoplicity',
-        'PASSWORD': 'djangoplicity',
-        'HOST': 'djangoplicity-db',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
