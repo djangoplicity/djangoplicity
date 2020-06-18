@@ -102,9 +102,7 @@ class ReportViewTestCase(AdminTestCase):
         self.assertContains(response, report.name)
     
     def test_report_csv_error_template(self):
-        non_unicode_report = Report.objects.get(pk=7)
-
-        response = self.client.get('/reports/report/1/?output=csv')
+        response = self.client.get('/reports/report/7/?output=csv')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'reports/csverror.html')
 
