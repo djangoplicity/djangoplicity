@@ -7,15 +7,27 @@ TMP_DIR = os.path.join(BASE_DIR, 'tmp')
 # DP APPS
 INSTALLED_APPS += [
     'django.contrib.sites',
+    'djangoplicity',
     'djangoplicity.menus',
     'djangoplicity.pages',
     'djangoplicity.metadata',
+    'djangoplicity.archives',
     'djangoplicity.releases',
     'djangoplicity.media',
     'djangoplicity.announcements',
     'djangoplicity.reports',
     'djangoplicity.utils',
 ]
+
+if USE_I18N:
+    INSTALLED_APPS += [
+        'djangoplicity.translation',
+    ]
+
+    MIDDLEWARE += [
+        # Sets local for request based on URL prefix.
+        'djangoplicity.translation.middleware.LocaleMiddleware',  # Request/Response
+    ]
 
 # JAVASCRIPT CUSTOM CONFIG
 JQUERY_JS = "jquery/jquery-1.11.1.min.js"
