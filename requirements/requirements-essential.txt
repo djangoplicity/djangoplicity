@@ -15,7 +15,7 @@ ephem == 3.7.6.0
 pysftp               # Used for contentserver
 python-dateutil
 python-memcached == 1.59
-python-xmp-toolkit == 1.0.2
+python-xmp-toolkit == 2.0.1
 pytz
 requests
 ndg-httpsclient  # Extra for requests
