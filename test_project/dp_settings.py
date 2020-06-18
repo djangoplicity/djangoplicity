@@ -14,6 +14,7 @@ INSTALLED_APPS += [
     'djangoplicity.media',
     'djangoplicity.announcements',
     'djangoplicity.reports',
+    'djangoplicity.utils',
 ]
 
 # JAVASCRIPT CUSTOM CONFIG

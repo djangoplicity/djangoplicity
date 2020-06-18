@@ -8,10 +8,10 @@
 
 from djangoplicity.utils import datetimes
 from datetime import datetime
-
+from django.test import TestCase
 from django.conf import settings
 
-class TestDatetimes:
+class TestDatetimes(TestCase):
     def test_timestring_to_seconds(self):
         """ test correct conversion of H:m:s:f to seconds """
         time = '10:30:40:0'
@@ -32,7 +32,7 @@ class TestDatetimes:
         cest = datetime(2011, 3, 30, 12, 00 ) # Central European Summer Time
 
 
-        assert timezone(est, 'Europe/Berlin').isoformat() == '2011-06-10T12:00:00+01:00'
+        assert timezone(est, 'Europe/Berlin').isoformat() == '2011-03-10T12:00:00+01:00'
         assert timezone(edt, 'Europe/Berlin').isoformat() == '2011-03-15T12:00:00+01:00'
         assert timezone(cet, 'Europe/Berlin').isoformat() == '2011-03-24T12:00:00+01:00'
         assert timezone(cest, 'Europe/Berlin').isoformat() == '2011-03-30T12:00:00+02:00'
