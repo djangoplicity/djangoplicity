@@ -8,7 +8,7 @@
 from django.db import connection
 
 
-class ReportExecutionError( StandardError ):
+class ReportExecutionError(StandardError):
     """
     An error indicating the execution of a report. This can be eg
     error in the SQL query or in the definition of the report.
@@ -22,7 +22,7 @@ class ReportResult:
     and the result.
     """
 
-    def __init__( self, rep, res ):
+    def __init__(self, rep, res):
         self.report = rep
         self.rows = res
 
@@ -34,36 +34,43 @@ class ReportEngine:
     """
 
     @staticmethod
-    def run_report( report ):
+    def run_report(report):
         """
-        Execute the report. Throws ReportExecutionError if anything goes wrong.
+        Executes the report. Throws ReportExecutionError in the following cases:
+        - Database Error.
+        - No rows.
+        - Report without fields
+        - More fields than columns
+
+        TODO: check fields are not empty before fetching db.
         """
 
         try:
             cursor = connection.cursor()
-            cursor.execute( report.sql_command )
+            cursor.execute(report.sql_command)
 
             rows = cursor.fetchall()
             fields = report.fields
-        # Catch all database errors and re-raise an ReportExecutionException
         except Exception, e:
-            raise ReportExecutionError( 'Cannot generate report - error in report commands: %s' % e )
+            # Catch all database errors and re-raise an ReportExecutionException
+            raise ReportExecutionError(
+                'Cannot generate report - error in report commands: %s' % e)
 
         if not rows:
-            raise ReportExecutionError( 'Report result was empty.' )
+            raise ReportExecutionError('Report result was empty.')
 
         # Ensure number of columns in data match number of fields
-        count_fields = len( fields )
-        count_rows = len( rows[0] )
+        fields_count = len(fields)
+        columns_count = len(rows[0])
 
-        if count_fields == ():
-            raise ReportExecutionError( 'No fields defined in report.' )
+        if fields == ['']:
+            raise ReportExecutionError('No fields defined in report.')
 
-        if count_fields > count_rows:
+        if fields_count > columns_count:
             # More fields than columns in data - raise error
-            raise ReportExecutionError( 'Cannot generate report' )
-        elif count_fields < count_rows:
-            # More columns in data than fields - strip columns to no. of fields.
-            rows = map( lambda x: x[0:count_fields], rows )
+            raise ReportExecutionError('Cannot generate report')
+        elif fields_count < columns_count:
+            # More columns in data than fields: strip columns to number of fields.
+            rows = map(lambda x: x[0:count_fields], rows)
 
-        return ReportResult( report, rows )
+        return ReportResult(report, rows)
