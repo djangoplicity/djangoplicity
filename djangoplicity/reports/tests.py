@@ -13,7 +13,6 @@ class ReportsAdminTestCase(AdminTestCase):
     fixtures = ['reports.json']
 
     def test_report(self):
-        self.settings(DEBUG=false)
         response = self.client.get('/admin/reports/report/')
         assert response.status_code == 200
         response = self.client.get('/admin/reports/report/1')
