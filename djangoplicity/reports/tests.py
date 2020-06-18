@@ -7,6 +7,7 @@
 #
 from django.test import TestCase
 from djangoplicity.test.testcases import AdminTestCase
+from django.http import Http404
 
 from models import Report, ReportGroup
 from engine import ReportEngine, ReportExecutionError, ReportResult
@@ -20,19 +21,6 @@ class ReportsAdminTestCase(AdminTestCase):
         self.assertEqual(response.status_code, 200)
         response = self.client.get('/admin/reports/report/1/')
         self.assertEqual(response.status_code, 302)
-
-    def test_report_existance(self):
-        response = self.client.get('/admin/reports/report/1/', follow=True)
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get('/admin/reports/report/404/', follow=True)
-        self.assertEqual(response.status_code, 404)
-
-    def test_report_redirect(self):
-        """
-        Tests that the redirection is actually triggering report view
-        """
-        response = self.client.get('/admin/reports/report/1/', follow=True)
-        # TODO: Finish
 
     def test_reportgroup_access(self):
         response = self.client.get('/admin/reports/reportgroup/')
@@ -50,14 +38,14 @@ class ReportEngineTestCase(TestCase):
         report_bad_sql = Report.objects.get(pk=4)
         report_too_many_fields = Report.objects.get(pk=5)
 
-        self.failUnlessRaises(ReportExecutionError,
-                              ReportEngine.run_report, report_empty)
-        self.failUnlessRaises(ReportExecutionError,
-                              ReportEngine.run_report, report_empty_fields)
-        self.failUnlessRaises(ReportExecutionError,
-                              ReportEngine.run_report, report_bad_sql)
-        self.failUnlessRaises(ReportExecutionError,
-                              ReportEngine.run_report, report_too_many_fields)
+        self.assertRaises(ReportExecutionError,
+                          ReportEngine.run_report, report_empty)
+        self.assertRaises(ReportExecutionError,
+                          ReportEngine.run_report, report_empty_fields)
+        self.assertRaises(ReportExecutionError,
+                          ReportEngine.run_report, report_bad_sql)
+        self.assertRaises(ReportExecutionError,
+                          ReportEngine.run_report, report_too_many_fields)
 
     def test_column_trimming(self):
         report_few_fields = Report.objects.get(pk=6)
@@ -79,6 +67,29 @@ class ReportEngineTestCase(TestCase):
         result = ReportEngine.run_report(report)
 
         self.assertEqual(result.report, report)
-        
+
         all_reports = [(u'Statistics',), (u'Grouped Reports',)]
         self.assertEqual(result.rows, all_reports)
+
+
+class ReportViewTestCase(AdminTestCase):
+    fixtures = ['reports.json']
+
+    def test_report_existance(self):
+        response = self.client.get('/reports/report/1/')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/reports/report/404')
+        # redirects to a 404 page
+        self.assertEqual(response.status_code, 301)
+
+    def test_report_with_different_formats(self):
+        response = self.client.get('/reports/report/1/?output=html')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/reports/report/1/?output=csv')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/reports/report/1/?output=xlsx')
+        self.assertEqual(response.status_code, 200)
+
