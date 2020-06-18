@@ -12,21 +12,18 @@ from djangoplicity.test.testcases import AdminTestCase
 class ReportsAdminTestCase(AdminTestCase):
     fixtures = ['reports.json']
 
-    def test_report(self):
+    def test_report_access(self):
         response = self.client.get('/admin/reports/report/')
-        assert response.status_code == 200
+        self.assertEqual(response.status_code, 200)
         response = self.client.get('/admin/reports/report/1')
-        assert response.status_code == 200
-        response = self.client.get('/admin/reports/report/404')
-        assert response.status_code == 404
+        self.assertEqual(response.status_code, 301)
 
-    def test_reportgroup(self):
+    def test_reportgroup_access(self):
         response = self.client.get('/admin/reports/reportgroup/')
-        assert response.status_code == 200
+        self.assertEqual(response.status_code, 200)
         response = self.client.get('/admin/reports/reportgroup/1')
-        assert response.status_code == 200
-        response = self.client.get('/admin/reports/reportgroup/404')
-        assert response.status_code == 404
+        self.assertEqual(response.status_code, 301)
+
 
 
 class ReportEngineTestCase(TestCase):
