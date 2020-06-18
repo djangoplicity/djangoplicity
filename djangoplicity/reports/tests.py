@@ -90,6 +90,14 @@ class ReportViewTestCase(AdminTestCase):
         response = self.client.get('/reports/report/1/?output=xlsx')
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get('/reports/report/1/?output=html', follow=True)
+        response = self.client.get('/reports/report/1/?output=html')
         self.assertEqual(response.status_code, 200)
+
+    def test_report_html_template(self):
+        report = Report.objects.get(pk=1)
+
+        response = self.client.get('/reports/report/1/?output=html')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'reports/report_view.html')
+        self.assertContains(response, report.name)
 
