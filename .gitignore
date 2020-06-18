@@ -6,5 +6,8 @@
 /*.egg-info/
 .tox/
 .env/
-htmlcov/
+db/*
+!db/.keep
+htmlcov/*
+!htmlcov/.keep
 .coverage

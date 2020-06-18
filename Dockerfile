@@ -10,12 +10,15 @@ RUN mkdir /app
 WORKDIR /app
 
 # Cache requirements and install them
+COPY requirements/ requirements/
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # final steps
 COPY scripts/ scripts/
-COPY manage.py manage.py
 COPY djangoplicity/ djangoplicity/
+COPY test_project/ test_project/
 COPY tests/ tests/
 COPY setup.cfg .
+COPY coveragerc .
+COPY manage.py .
