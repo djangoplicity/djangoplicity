@@ -8,7 +8,7 @@
 from django import template
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import stringfilter
-from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+from bs4 import BeautifulSoup, BeautifulStoneSoup
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 

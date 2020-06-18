@@ -14,7 +14,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'BeautifulSoup',
+        'BeautifulSoup4',
         'django-ace == 1.0.4',
         'django-mptt == 0.9.1',
         'django-recaptcha == 1.4.0',
