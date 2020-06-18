@@ -1,4 +1,4 @@
-name: Django CI
+name: Djangoplicity CI
 
 on:
   push:
@@ -29,4 +29,11 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test
+        coverage run --source='.' manage.py test
+        coverage xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        env_vars: OS,PYTHON
