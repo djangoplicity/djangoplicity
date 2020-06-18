@@ -19,6 +19,8 @@ INSTALLED_APPS += [
     'djangoplicity.utils',
 ]
 
+SITE_ID=1
+
 if USE_I18N:
     INSTALLED_APPS += [
         'djangoplicity.translation',
@@ -36,6 +38,12 @@ JQUERY_UI_CSS = "jquery-ui-1.12.1/jquery-ui.min.css"
 DJANGOPLICITY_ADMIN_CSS = "djangoplicity/css/admin.css"
 DJANGOPLICITY_ADMIN_JS = "djangoplicity/js/admin.js"
 SUBJECT_CATEGORY_CSS = "djangoplicity/css/widgets.css"
+
+############
+# REPORTS  #
+############
+REPORTS_DEFAULT_FORMATTER = 'html'
+REPORT_REGISTER_FORMATTERS = True
 
 
 USE_TZ = False
