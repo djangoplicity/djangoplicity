@@ -22,8 +22,8 @@
     "pk": 2,
     "model": "reports.report",
     "fields": {
-      "sql_command": "SELECT * FROM countries_country",
-      "displayed_fields": "Field 1; Field 2",
+      "sql_command": "SELECT * FROM reports_report WHERE id > 666",
+      "displayed_fields": "Name; Description",
       "is_mailable": 0,
       "group": 1,
       "name": "Empty Report",
