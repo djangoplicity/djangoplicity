@@ -1,5 +1,11 @@
-testCoverage:
-	docker exec -it djangoplicity-web pytest tests --cov=djangoplicity
+bash:
+	docker exec -it djangoplicity bash
 
-testPython27:
+test:
+	docker exec -it djangoplicity coverage run --source='.' manage.py test
+
+coverage-html:
+	docker exec -it djangoplicity pytest tests --cov=djangoplicity
+
+test-python27:
 	tox -e py27-django111
