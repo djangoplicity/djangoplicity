@@ -58,3 +58,6 @@ ARCHIVE_ROOT = 'archives/'
 IMAGES_ARCHIVE_ROOT = 'archives/images/'
 VIDEOS_ARCHIVE_ROOT = 'archives/videos/'
 RELEASE_ARCHIVE_ROOT = 'archives/releases/'
+
+# Allows templates coverage
+TEMPLATES[0]['OPTIONS']['debug'] = True
