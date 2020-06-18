@@ -90,6 +90,6 @@ class ReportViewTestCase(AdminTestCase):
         response = self.client.get('/reports/report/1/?output=csv')
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get('/reports/report/1/?output=xlsx')
+        response = self.client.get('/reports/report/1/?output=xlsx', follow=True)
         self.assertEqual(response.status_code, 200)
 
