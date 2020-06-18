@@ -14,11 +14,10 @@ COPY requirements/ requirements/
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# final steps
+# Final required files
 COPY scripts/ scripts/
 COPY djangoplicity/ djangoplicity/
 COPY test_project/ test_project/
-COPY tests/ tests/
 COPY setup.cfg .
-COPY coveragerc .
+COPY .coveragerc .
 COPY manage.py .
