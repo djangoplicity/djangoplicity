@@ -13,4 +13,4 @@ from djangoplicity.reports.views import *
 
 urlpatterns = [
     url(r'^report/(?P<report_id>\d+)/$', report_detail, name='report-detail'),
- ]
+]
