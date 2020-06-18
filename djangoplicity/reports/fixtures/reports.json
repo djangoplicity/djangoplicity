@@ -65,5 +65,17 @@
       "name": "Bad Report 3",
       "description": "Report with more displayed fields than fetched fields"
     }
+  },
+  {
+    "pk": 6,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FROM reports_report",
+      "displayed_fields": "Name",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Bad Report 3",
+      "description": "Report with less displayed fields than fetched fields"
+    }
   }
 ]

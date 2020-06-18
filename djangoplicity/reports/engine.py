@@ -56,7 +56,7 @@ class ReportEngine:
             raise ReportExecutionError(
                 'Cannot generate report - error in report commands: %s' % e)
 
-        if not rows:
+        if rows == []:
             raise ReportExecutionError('Report result was empty.')
 
         # Ensure number of columns in data match number of fields
@@ -71,6 +71,6 @@ class ReportEngine:
             raise ReportExecutionError('Cannot generate report')
         elif fields_count < columns_count:
             # More columns in data than fields: strip columns to number of fields.
-            rows = map(lambda x: x[0:count_fields], rows)
+            rows = map(lambda x: x[0:fields_count], rows)
 
         return ReportResult(report, rows)

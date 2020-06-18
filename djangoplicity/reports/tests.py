@@ -21,6 +21,12 @@ class ReportsAdminTestCase(AdminTestCase):
         response = self.client.get('/admin/reports/report/1/')
         self.assertEqual(response.status_code, 302)
 
+    def test_report_existance(self):
+        response = self.client.get('/admin/reports/report/1/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/admin/reports/report/404/', follow=True)
+        self.assertEqual(response.status_code, 404)
+
     def test_report_redirect(self):
         """
         Tests that the redirection is actually triggering report view
@@ -52,6 +58,13 @@ class ReportEngineTestCase(TestCase):
                               ReportEngine.run_report, report_bad_sql)
         self.failUnlessRaises(ReportExecutionError,
                               ReportEngine.run_report, report_too_many_fields)
+
+    def test_column_trimming(self):
+        report_few_fields = Report.objects.get(pk=6)
+        result = ReportEngine.run_report(report_few_fields)
+        first_result = result.rows[0]
+
+        self.assertEqual(len(report_few_fields.fields), len(first_result))
 
     def test_report_engine(self):
         group = ReportGroup.objects.create(name='Grouped Reports')
