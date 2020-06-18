@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: djangoplicity
+    command: ["./scripts/command-dev.sh"]
+    volumes:
+    - ./djangoplicity:/app/djangoplicity
+    - ./test_project:/app/test_project
+    - ./htmlcov:/app/htmlcov
+    - ./.coveragerc:/app/.coveragerc
+    - ./db:/app/db
+    ports:
+      - "8001:8000"
+  
+  # TODO: Currently not being used, configure test_project to use this database
+  # db:
+  #   image: postgres:10.5
+  #   container_name: djangoplicity-db
+  #   restart: always
+  #   environment:
+  #     POSTGRES_DB: djangoplicity
+  #     POSTGRES_USER: djangoplicity
+  #     POSTGRES_PASSWORD: djangoplicity
+  #   ports:
+  #     - "50001:5432"
