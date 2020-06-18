@@ -1,3 +1,4 @@
+from __future__ import print_function
 from django.conf import settings
 from django.apps import apps
 from djangoplicity.archives.base import ArchiveModel
@@ -70,7 +71,7 @@ def clean_resource( model, res, f, backupdir=None ):
         try:
             shutil.rmtree( f, ignore_errors=True )
         except Exception:
-            print "ERROR - couldn't delete %s" % f
+            print("ERROR - couldn't delete %s" % f)
         return
     else:
         try:
@@ -83,7 +84,7 @@ def clean_resource( model, res, f, backupdir=None ):
             shutil.move( f, resource_dir )
             return
         except Exception:
-            print "ERROR - couldn't backup %s" % f
+            print("ERROR - couldn't backup %s" % f)
 
 
 def clean_archive( model, cls=None, dryrun=False, backup=None ):
@@ -94,10 +95,10 @@ def clean_archive( model, cls=None, dryrun=False, backup=None ):
     objects = model.objects.all()
 
     for r in resources:
-        print "Removing unreferenced files from %s (%s)" % (model.__name__, r[0])
+        print("Removing unreferenced files from %s (%s)" % (model.__name__, r[0]))
         unreffiles = get_unreferenced_files( objects, *r )
 
         for f in unreffiles:
-            print "Removing %s%s" % (f, ' (dry-run mode)' if dryrun else '')
+            print("Removing %s%s" % (f, ' (dry-run mode)' if dryrun else ''))
             if not dryrun:
                 clean_resource( model, r[0], f, backupdir=backup )

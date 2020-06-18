@@ -18,6 +18,7 @@ from django.shortcuts import redirect
 from djangoplicity.archives.contrib.search.queryparser import \
     AstronomyQueryParser
 from djangoplicity.archives.views import archive_detail
+from functools import reduce
 #from django.db.models.query import QuerySet
 #from django.utils.text import smart_split
 

@@ -51,7 +51,7 @@ def move_file( src, dst, overwrite=True, sendtask_callback=None, sendtask_taskse
                 os.makedirs( dirname )
 
         shutil.move( src, dst )
-    except Exception, e:
+    except Exception as e:
         logger.warning( unicode( e ) )
 
     # send_task callback
@@ -90,7 +90,7 @@ def move_resources( src, dst, overwrite=True, archive_id=None, exclude=[], sendt
         if s not in exclude:
             try:
                 _move_resource( os.path.join( src, s ), os.path.join( dst, s ), archive_id )
-            except Exception, e:
+            except Exception as e:
                 error = e
                 logger.exception( "Error moving format %s" % s )
         else:
@@ -199,7 +199,7 @@ def _move_resource( srcpath, dstpath, archive_id ):
             # Move source to dst
 
             shutil.move( fsrcpath, fdstpath )
-    except Exception, e:
+    except Exception as e:
         raise e
 
 

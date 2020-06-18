@@ -38,6 +38,7 @@ from django.http import Http404
 from django.shortcuts import render
 from django.utils.http import urlencode
 import operator
+from functools import reduce
 
 # Fields to search through
 _fields = ['user__username', 'object_repr', 'object_id', 'change_message']

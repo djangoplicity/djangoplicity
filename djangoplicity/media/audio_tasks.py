@@ -159,7 +159,7 @@ def get_audio_duration(app_label, module_name, pk):
     args = ['/usr/bin/mplayer', '-noconfig', 'all', '-cache-min', '0', '-vo', 'null', '-ao', 'null', '-frames', '0', '-identify', path]
     try:
         output = Popen(args, stdout=PIPE, stderr=PIPE).communicate()[0].split('\n')
-    except OSError, e:
+    except OSError as e:
         logger.error('Can\'t run mplayer identify command: "%s"', ' '.join(args))
         raise e
     output_d = dict([data.split('=') for data in output if data.startswith('ID_')])

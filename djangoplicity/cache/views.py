@@ -123,7 +123,7 @@ def memcache_info( request ):
             'has_memcache': True,
             'stats': table,
         })
-    except InvalidCacheBackendError, e:
+    except InvalidCacheBackendError as e:
         return render(request, 'admin/cache/memcache_info.html', {
             'title': 'Memcached statistics',
             'has_memcache': False,

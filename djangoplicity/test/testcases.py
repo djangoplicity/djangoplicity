@@ -63,7 +63,7 @@ class RedirectTestCase( unittest.TestCase ):
                 self.assertRedirect( old, new )
             except AssertionError:
                 failures.append( old )
-            except urllib2.HTTPError, e:
+            except urllib2.HTTPError as e:
                 httperrors.append( (str(e), old) )
 
         if httperrors:

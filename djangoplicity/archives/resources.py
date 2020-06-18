@@ -47,7 +47,7 @@ def _archive_instance_id( instance ):
             instance = instance.source
         return getattr( instance, instance.Archive.Meta.idfield )
     except AttributeError:
-        raise StandardError( _('Instance has no archive id. This may be because the instance has not been saved yet.') )
+        raise Exception( _('Instance has no archive id. This may be because the instance has not been saved yet.') )
 
 
 def get_instance_resource( obj, resource_name ):

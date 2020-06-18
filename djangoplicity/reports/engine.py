@@ -8,7 +8,7 @@
 from django.db import connection
 
 
-class ReportExecutionError( StandardError ):
+class ReportExecutionError( Exception ):
     """
     An error indicating the execution of a report. This can be eg
     error in the SQL query or in the definition of the report.
@@ -46,7 +46,7 @@ class ReportEngine:
             rows = cursor.fetchall()
             fields = report.fields
         # Catch all database errors and re-raise an ReportExecutionException
-        except Exception, e:
+        except Exception as e:
             raise ReportExecutionError( 'Cannot generate report - error in report commands: %s' % e )
 
         if not rows:

@@ -298,7 +298,7 @@ class CoposWebTransaction(object):
             f = opener.open( self.conf['url'], self._post_data() )
             response = f.read()
             f.close()
-        except ( urllib2.URLError, urllib2.HTTPError ), e:
+        except ( urllib2.URLError, urllib2.HTTPError ) as e:
             raise CoposWebError( "A communication problem with our credit card payment provider has occurred. Please come back later. Your card has not been charged.", exception=e )
         finally:
             socket.setdefaulttimeout( old_timeout )
@@ -323,7 +323,7 @@ class CoposWebTransaction(object):
             posherr = self.response.posherr
             if posherr != "0":
                 raise CoposWebTransactionError( self.response )
-        except AttributeError, e:
+        except AttributeError as e:
             raise CoposWebError( "A communication problem with our credit card payment provider has occurred. Please come back later. Your card has not been charged.", exception=e )
 
 

@@ -34,10 +34,12 @@ Satchmo payment processor - http://www.satchmoproject.com/docs/rel/0.9.1/custom-
 
 Basically it's an bridge between Satchmo and the manager.CoposWebManager.
 """
+from __future__ import print_function
+from __future__ import absolute_import
 
 from django.utils.translation import ugettext_lazy as _
 from payment.modules.base import BasePaymentProcessor, ProcessorResult
-from manager import CoposWebManager, CoposWebError, CoposWebTransactionError
+from .manager import CoposWebManager, CoposWebError, CoposWebTransactionError
 from django.conf import settings as djsettings
 from decimal import Decimal
 import os
@@ -152,7 +154,7 @@ class PaymentProcessor( BasePaymentProcessor ):
                 msg = _("Capture completed successfully") 
             
             return ProcessorResult( self.key, True, msg, record )
-        except CoposWebTransactionError, e:
+        except CoposWebTransactionError as e:
             # Handle remote errors
             self.log.error( "COPOSweb remote error: %s (posherr: %s, rc: %s) " % ( e.system_message, e.posherr, e.rc ) )
             
@@ -166,7 +168,7 @@ class PaymentProcessor( BasePaymentProcessor ):
                                     )
             
             return ProcessorResult( self.key, False, _( unicode( e ) ) )
-        except CoposWebError, e:
+        except CoposWebError as e:
             # Handle local errors
             self.log.error( "COPOSweb local error: %s", unicode( e.triggered_exception ) if e.triggered_exception else "no additional information" )
             
@@ -218,10 +220,10 @@ class PaymentProcessor( BasePaymentProcessor ):
             
             # Run transaction and return result
             return self.coposweb_run_transaction( transaction, order, amount  )
-        except Exception, e:
+        except Exception as e:
             import traceback
             self.log.error( "Satchmo error traceback: %s", unicode( traceback.format_exc( e ) ) )
-            print traceback.format_exc( e )
+            print(traceback.format_exc( e ))
             return ProcessorResult( self.key, False, _( "An unexpected error occurred." ) )
 
     def capture_payment( self, testing = False, amount = None, order=None ):
@@ -266,7 +268,7 @@ class PaymentProcessor( BasePaymentProcessor ):
             
             # Run transaction and return result
             return self.coposweb_run_transaction( transaction, order, amount, authorization=authorization  )
-        except Exception, e:
+        except Exception as e:
             import traceback
             self.log.error( "Satchmo capture error traceback: %s", unicode( traceback.format_exc( e ) ) )
             return ProcessorResult( self.key, False, _( "An unexpected error occurred." ) )
