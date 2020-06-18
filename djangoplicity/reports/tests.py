@@ -106,3 +106,15 @@ class ReportViewTestCase(AdminTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'reports/csverror.html')
 
+
+class ReportModelTestCase(TestCase):
+    fixtures = ['reports.json']
+    
+    def test_email_checking(self):
+        report_with_email = Report.objects.get(pk=8)
+        self.assertEqual(report_with_email.has_email_field(), True)
+        self.assertNotEqual(report_with_email.get_email_position(), -1)
+
+        report_without_email = Report.objects.get(pk=1)
+        self.assertEqual(report_without_email.has_email_field(), False)
+        self.assertEqual(report_without_email.get_email_position(), -1)

@@ -89,5 +89,17 @@
       "name": "ä名文♡♥💕❤😘",
       "description": "Report with non unicode chars"
     }
+  },
+  {
+    "pk": 8,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FROM reports_report",
+      "displayed_fields": "Name; Email",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Report with an pseudo-email field",
+      "description": "Did you know you could breath lava? (but just once)"
+    }
   }
 ]
