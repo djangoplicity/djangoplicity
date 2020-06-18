@@ -9,6 +9,7 @@ services:
     - ./djangoplicity:/app/djangoplicity
     - ./test_project:/app/test_project
     - ./htmlcov:/app/htmlcov
+    - ./.coveragerc:/app/.coveragerc
     - ./db:/app/db
     ports:
       - "8001:8000"

@@ -6,7 +6,7 @@ test:
 
 coverage-html:
 	docker exec -it djangoplicity coverage html
-	open .htmlcov/index.html
+	open ./htmlcov/index.html
 
 test-python27:
 	tox -e py27-django111
