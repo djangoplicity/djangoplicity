@@ -1,6 +1,7 @@
 from .settings import *
 
 # ENVIRONMENT CONFIG
+SITE_ENVIRONMENT = os.environ.get('ENVIRONMENT', 'dev')
 SHORT_NAME = 'Djangoplicity'
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')
 
@@ -54,6 +55,12 @@ if USE_I18N:
         'djangoplicity.translation.middleware.LocaleMiddleware',  # Request/Response
     ]
 
+
+# MEDIA
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+
+
 # JAVASCRIPT CUSTOM CONFIG
 JQUERY_JS = "jquery/jquery-1.11.1.min.js"
 JQUERY_UI_JS = "jquery-ui-1.12.1/jquery-ui.min.js"
@@ -61,6 +68,7 @@ JQUERY_UI_CSS = "jquery-ui-1.12.1/jquery-ui.min.css"
 DJANGOPLICITY_ADMIN_CSS = "djangoplicity/css/admin.css"
 DJANGOPLICITY_ADMIN_JS = "djangoplicity/js/admin.js"
 SUBJECT_CATEGORY_CSS = "djangoplicity/css/widgets.css"
+
 
 ############
 # REPORTS  #
@@ -95,6 +103,10 @@ ARCHIVES = (
 TEMPLATES[0]['OPTIONS']['debug'] = True
 
 # CELERY
+CELERY_IMPORTS = [
+    "djangoplicity.archives.contrib.security.tasks",
+    "djangoplicity.celery.tasks",
+]
 # Task result backend
 CELERY_RESULT_BACKEND = "amqp"
 CELERY_BROKER_URL = 'amqp://guest:guest@broker:5672/'
@@ -105,3 +117,9 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {
     'interval_step': 0.2,
     'interval_max': 0.2,
 }
+# AMQP backend settings - Required for flower to work as intended
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_RESULT_EXPIRES = 3600
+# File to save revoked tasks across workers restart
+CELERY_WORKER_STATE_DB = os.path.join(TMP_DIR, 'celery_states')
+CELERY_BEAT_SCHEDULE_FILENAME = os.path.join(TMP_DIR, 'celerybeat_schedule')
