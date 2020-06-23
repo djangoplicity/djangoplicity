@@ -24,6 +24,9 @@ COPY requirements/ requirements/
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
+# Create app required directories
+RUN mkdir -p tmp
+
 # Final required files
 COPY scripts/ scripts/
 COPY djangoplicity/ djangoplicity/
