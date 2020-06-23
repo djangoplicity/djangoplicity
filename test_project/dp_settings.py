@@ -43,6 +43,9 @@ DJANGOPLICITY_APPS = [
 THIRD_PARTY_APPS = [
     # WYSIWYG HTML Editor (Used for example in pages editing)
     'tinymce',
+    # Utility for implementing a modified pre-order traversal tree in django, used in menu items
+    # See: https://www.caktusgroup.com/blog/2016/01/04/modified-preorder-tree-traversal-django/
+    'mptt',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + DJANGOPLICITY_APPS + THIRD_PARTY_APPS
