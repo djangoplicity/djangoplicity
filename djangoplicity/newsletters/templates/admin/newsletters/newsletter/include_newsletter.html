@@ -1,0 +1,28 @@
+<fieldset class="module">
+<h2>Recepients</h2>
+{% for m in original.type.mailers.all %}
+<div class="form-row">{{ m }}</div>{% empty %}
+<div class="form-row"><i>No recepients defined</i></div>
+{% endfor %}
+</fieldset>
+
+<fieldset class="module aligned">
+<h2>Header</h2>
+<div class="form-row"><label>From</label><span>{{original.from_name}} &lt;{{original.from_email}}&gt;</span></div>
+<div class="form-row"><label>Subject</label><span>{{original.subject|safe}}</span></div>
+</fieldset>
+
+<fieldset class="module">
+<h2>HTML version</h2>
+<div class="form-row">
+<iframe src="../html/" frameborder="0" width="100%"  height="500"></iframe>
+</div>
+</fieldset>
+
+
+<fieldset class="module">
+<h2>Text version</h2>
+<div class="form-row">
+<iframe src="../text/" width="100%"  height="500"></iframe>
+</div>
+</fieldset>

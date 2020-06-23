@@ -1,0 +1,11 @@
+{% load i18n %}
+{% if industry_days %}
+<h3 class="h3" style="color: #285A97;display: block;font-family: Helvetica, Arial;font-size: 12px;font-weight: bold;line-height: 100%;margin-top: 10px;margin-right: 0;margin-bottom: 10px;margin-left: 0;text-align: left;">
+    <a style="color: #285A97;font-size: 12px;font-weight: bold; text-decoration:none;" href="{{events_url}}">{% trans "Upcoming Industry Days" %}</a>
+</h3> 
+<div style="font-family: Helvetica, Arial;font-size: 12px;color:#505050;">
+{% for obj in industry_days %}
+<p><strong>{{ obj.get_dates|safe }}</strong>: {% if obj.webpage_url %}<a href="{{obj.webpage_url}}">{{obj.title|safe}}</a>{% else %}{{obj.title|safe}}{% endif %}</p>
+{% endfor %}
+</div>
+{% endif %}

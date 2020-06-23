@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load djangoplicity_text_utils djangoplicity_datetime %}========================
+{{org}} {% trans "Announcements" %}
+========================
+{% for obj in announcements %}
+*{{ obj.title|safe }}{% if obj.subtitle%} - {{ obj.subtitle|safe }}{% endif %}*
+
+{{ obj.release_date|date }}: {{ obj.description|striptags|truncatewords:50|unescape|safe }} [read more on {{base_url}}{{ obj.get_absolute_url }}]
+{% endfor %}
+{% blocktrans %}See latest {{org}} announcements on{% endblocktrans %} {{base_url}}{% url 'announcements_defaultquery' %}

@@ -1,0 +1,82 @@
+{% extends "admin/newsletters/newsletter/change_form.html" %}{% load i18n %}
+
+{% block extrahead %}{{ block.super }}
+{{ media }}
+{{ adminform.media }}
+{% endblock %}
+
+
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../../">{{ app_label|capfirst|escape }}</a> &rsaquo;
+     <a href="../../">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
+     <a href="../">{{ original }}</a> &rsaquo;
+     {% trans "Send now" %}
+</div>
+{% endif %}{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+{% if original.send %}
+    <fieldset class="module" style="background-color: #FFC; ">
+        <div class="form-row">
+            <p>Newsletter have already been sent.</p>
+        </div>
+    </fieldset>
+{% elif original.scheduled_status != 'OFF' %}
+    <fieldset class="module" style="background-color: #FFC; ">
+        <div class="form-row">
+            <p>Newsletter is already scheduled for sending on {{original.release_date}}.</p>
+            <p>Reschedule newsletter to a different time? Please first <a href="../unschedule/">cancel the current schedule</a> for this newsletter.</p>
+        </div>
+    </fieldset>
+{% elif is_past %}
+    <p class="errornote">Release date {{original.release_date}} is in the past. Please change to a future date, or alternatively <a href="../send_now/">send now</a>.</p>
+{% elif original.subject == '' %}
+    <p class="errornote">The newsletter cannot be sent without a subject, please <a href="../">add a subject and try again</a>.</p>
+{% else %}
+    <form action="." method="post" id="{{ opts.model_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
+    <div>
+        {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
+        {% if adminform.errors %}
+            <p class="errornote">
+            {% blocktrans count adminform.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+            </p>
+            {{ adminform.non_field_errors }}
+        {% endif %}
+
+        <fieldset class="module" style="background-color: #FFC; ">
+            <div class="form-row">
+                <p>You are about to <strong>schedule</strong> the newsletter shown below for sending. Please check carefully before sending.</p>
+            </div>
+        </fieldset>
+
+        <fieldset class="module">
+            <h2>Schedule</h2>
+            <div class="form-row">Newsletter will be sent on: <h3 align="center">{{ original.release_date }}</h3></div>
+        </fieldset>
+
+        {% include "admin/newsletters/newsletter/include_newsletter.html" %}
+
+        <fieldset class="module aligned">
+            {% for f in adminform %}
+            <div class="form-row">
+                {{f.label_tag}}
+                {{f}}
+                {{f.errors}}
+            </div>
+            {% endfor %}
+        </fieldset>
+
+        <div class="submit-row" {% if is_popup %}style="overflow: auto;"{% endif %}>
+            <input type="submit" value="{% trans 'Schedule newsletter' %}" class="default" name="_generate" {{ onclick_attrib }}/>
+        </div>
+
+    </div>
+    </form>
+{% endif %}
+</div>
+{% endblock %}

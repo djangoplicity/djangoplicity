@@ -1,0 +1,20 @@
+{% load i18n %}
+{% if ongoing_events or special_events %}
+<h3 class="h3" style="color: #285A97;display: block;font-family: Helvetica, Arial;font-size: 12px;font-weight: bold;line-height: 100%;margin-top: 10px;margin-right: 0;margin-bottom: 10px;margin-left: 0;text-align: left;">
+    <a style="color: #285A97;font-size: 12px;font-weight: bold; text-decoration:none;" href="{{events_url}}">{% trans "Upcoming Events" %}</a>
+</h3> 
+<div style="font-family: Helvetica, Arial;font-size: 12px;color:#505050;">
+{% if ongoing_events %}
+<p><strong>{% trans "Ongoing" %}</strong><br> 
+<ul> 
+{% for obj in ongoing_events %}
+<li>{% if obj.link %}<a href="{{obj.link}}">{{obj.title|safe}}</a>{% else %}{{obj.title|safe}}{% endif %}</li>
+{% endfor %}
+</ul> 
+</p>
+{% endif %} 
+{% for obj in special_events %}
+<p><strong>{{ obj.get_dates|safe }}</strong>: {% if obj.link %}<a href="{{obj.link}}">{{obj.title|safe}}</a>{% else %}{{obj.title|safe}}{% endif %}</p>
+{% endfor %}
+</div>
+{% endif %}

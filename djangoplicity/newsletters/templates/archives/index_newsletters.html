@@ -1,0 +1,46 @@
+{% load djangoplicity_utils %}
+
+{% comment %}
+Due to an unknown bug the shadowbox doesn't load properly and 
+display a "Cancel" dive at the bootom of the page. As we don't
+care about shadowbox on these pages we just hide the div
+We also include mediaarchive.css as it's not otherwise included for 
+some pages outside /public (e.g. for the science newsletter)
+{% endcomment %}
+<style type="text/css">
+    td.titlerow a {
+        color: black;
+    }
+    #sb-container {display:none} 
+</style>
+<link href="{{MEDIA_URL}}css/mediaarchive.css" rel="stylesheet" type="text/css" />
+
+{% if object_list %}
+{% with nl_type=object_list.0.type %}
+{% if nl_type.subscribe_text %}
+<p>{{ nl_type.subscribe_text|safe }}</p>
+{% endif %}
+{% endwith %}
+{% endif %}
+
+{% load i18n %}{% load djangoplicity_utils %}
+{% if not object_list %}
+    <div align="center">{% trans "No entries were found."%}</div>
+{% else %}
+{% include "archives/search_results.html" %}
+<table class="archive_normal" width="100%">
+{% for list in object_list|split_list:"4" %}
+{% block index_row %}
+<tr>{% for item in list %}
+{% block index_image_cell %}<td class="imagerow" width="25%"><a href="{{ item.get_absolute_url }}"><img src="{{ item.resource_thumbs.url }}" width="122" alt="{{ item.subject }}" /></a></td>{% endblock %}{% endfor %}
+</tr>
+<tr>{% for item in list %}
+    {% block index_title_cell %}<td class="titlerow"><a href="{{ item.get_absolute_url }}">{{ item.subject }}</a></td>{% endblock %}{% endfor %}
+</tr>
+{% endblock %}
+{% endfor %}
+</table>
+{% paginator paginator page_obj paginator_url paginator_prefix paginator_params %}
+{% statusbar paginator page_obj browsers searchable search_url search_str  %}
+{% endif %}
+{% include 'archives/extra_footer.html' %}

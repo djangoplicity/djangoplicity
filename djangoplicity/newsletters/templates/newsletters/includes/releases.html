@@ -1,0 +1,14 @@
+{# ############### PRESS RELEASES ############### #}
+{% load djangoplicity_datetime %}
+{% if data.releases %}
+<hr style="{{hr_style}}"/>
+
+<h3 class="h3" style="color: #285A97;display: block;font-family: Helvetica, Arial;font-size: 12px;font-weight: bold;line-height: 100%;margin-top: 10px;margin-right: 0;margin-bottom: 10px;margin-left: 0;text-align: left;">
+<a href="http://feeds.feedburner.com/EsoTopNews"><img border="0"  src="http://www.eso.org/public/archives/djangoplicity/images/rssicon.png"></a>&nbsp;<a style="color: #285A97;font-size: 12px;font-weight: bold; text-decoration:none;" href="http://www.eso.org/public/news/">ESO Press Releases</a>
+</h3>
+
+<div style="font-family: Helvetica, Arial;font-size: 12px;color:#505050;">
+{% for obj in data.releases %}<p style="margin-bottom: 20px;"><a href="http://www.eso.org{{obj.get_absolute_url}}"><img border="0" src="http://www.eso.org/public/archives/images/news/{{obj.main_image.id}}.jpg" style="margin-bottom: 5px;"></img></a><br><strong>{{obj.release_date|datetime:"DATE"}}:</strong> <a href="http://www.eso.org{{obj.get_absolute_url}}">{{ obj.title }}{% if obj.subtitle%} &mdash; {{ obj.subtitle }}{% endif%}</a></p>
+{% endfor %}
+</div>
+{% endif %}

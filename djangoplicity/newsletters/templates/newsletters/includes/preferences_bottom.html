@@ -1,0 +1,9 @@
+{% load i18n %}
+{% if unsubscribe_link %}<p style="font-size: 11px;">{% blocktrans%}You are receiving this newsletter because {{reason}}{% endblocktrans %}</p>{% endif %}
+{% if unsubscribe_link or preferences_link or browser_link or enable_archive and use_local_archive %}
+<p style="font-size: 11px; text-align:center;">
+{% if preferences_link %}<a href="{{preferences_link}}" style="color:white">{% trans "Subscription preferences"%}</a>{% endif %}
+{% if unsubscribe_link %}{% if preferences_link %} | {%endif%}<a href="{{unsubscribe_link}}" style="color:white">{% trans "Unsubscribe"%}</a>{% endif %}
+{% if browser_link and enable_sharing or use_local_archive %}{% if unsubscribe_link or preferences_link %} | {%endif%} <a href="{% if use_local_archive and not newsletter_type.internal_archive %}{{ base_url }}{{ newsletter.get_absolute_url }}{% else %}{{ browser_link }}{% endif %}" style="color:white">{% trans "View in browser"%}</a>{% endif %}
+</p>
+{% endif %}

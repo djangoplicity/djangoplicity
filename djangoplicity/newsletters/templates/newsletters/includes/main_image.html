@@ -1,0 +1,46 @@
+{% load djangoplicity_datetime i18n %}
+{% with image_url="download/"|add:main_image.newsfeature_image_token|add:"/newsfeature/"|add:main_image.id|add:".jpg" %}
+<tr>
+    {% if "internalimage" in main_image.Archive.Meta.root  %}
+    <td colspan="2" class="headerContent" height="{{height}}px"  background="{{base_url}}{% url 'internalimages_defaultquery' %}{{image_url}}" style="color: #202020;font-family: Helvetica, Arial;font-size: 24px;font-weight: bold;line-height: 100%;padding: 0;vertical-align: bottom;background-color:black;text-align:{% if titlesize == "small" %}right{% else %}left{% endif %}; background-repeat: no-repeat">
+    {% else %}
+    <td colspan="2" class="headerContent" height="{{height}}px"  background="{{base_url}}{% url 'images_defaultquery' %}{{image_url}}" style="color: #202020;font-family: Helvetica, Arial;font-size: 24px;font-weight: bold;line-height: 100%;padding: 0;vertical-align: bottom;background-color:black;text-align:{% if titlesize == "small" %}right{% else %}left{% endif %}; background-repeat: no-repeat">
+    {% endif %}
+<!-- Outlook 2007 only -->
+<!--[if gte mso 9]>
+<img src="{{base_url}}{% url 'images_defaultquery' %}{{image_url}}" width="{{width}}" height="{{height}}" />
+<![endif]-->
+{% if title %}
+    {% if titlesize == "small" %}
+            <style type="text/css">
+                #rotate {
+                        color:white;
+                        background:black;
+                        white-space:nowrap;
+                        font-weight:bold;
+                        text-decoration:none;
+                        font-family:Helvetica, Arial;
+                        font-size: 12px;
+                        bottom: 40px;
+                        right: 0px;
+                        padding: 2px;
+                        margin-right: 2px;
+                }
+            </style>
+            <a id="rotate" href="{{link_url}}?lang">{{title}}{% if subtitle %}&mdash; {{subtitle}}{% endif %}</a>
+    {% else %}
+        <div style="padding:20px;color:white;font-size:22px;">
+            <div style="font-size:14px;">
+            <span style="background:black;padding:2px;">
+                <a style="color:white; font-size:14px; text-decoration: none; font-weight: bold;" href="{{link_url}}?lang">{% if release_date %}{{release_date|datetime:"DATE"}}{% endif %}{% if release_date and pretitle %} &mdash; {% endif %}{% if pretitle %}{{ pretitle }}{% endif %}{% if embargo %} &mdash; <span style="color: #f4c819;">{% trans "UNDER EMBARGO"%}</span>{% endif %}</a>
+            </span>
+            </div>
+            <span style="background:black;padding:2px;">
+                <a style="color:white;font-size:22px; line-height: 29px; text-decoration: none; font-weight: bold;" href="{{link_url}}?lang">{{title}}{% if subtitle %}&mdash; {{subtitle}}{% endif %}</a>
+            </span>
+        </div>
+    {% endif %}
+{% endif %}
+</td>
+</tr>
+{% endwith %}

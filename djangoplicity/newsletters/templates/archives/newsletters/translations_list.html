@@ -1,0 +1,4 @@
+{% load djangoplicity_utils %}
+{% for n in obj.translations.all|dictsort:"id" %}
+{{ n.lang|code_to_country }}: 
+<a href="{{ site_url_prefix }}{% url 'admin:newsletters_newsletterproxy_change' n.id %}">{{ site_url_prefix }}{% url 'admin:newsletters_newsletterproxy_change' n.id %}</a> {% endfor %}

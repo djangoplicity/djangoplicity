@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load djangoplicity_text_utils %}{% if ongoing_events %}==============
+{% trans "Ongoing events" %}
+==============
+{% for obj in ongoing_events %}
+*{{ obj.title|safe }}*
+{{ obj.link }}
+{% endfor %}
+{% endif %}{% if special_events %}===============
+{% trans "Upcoming events" %}
+===============
+{% for obj in special_events %}
+* {{ obj.get_dates|unescape|safe }}: {{ obj.title|striptags|unescape|safe }}
+{% endfor %}
+{% trans "See more on" %} {{base_url}}{{events_url}}
+{% endif %}

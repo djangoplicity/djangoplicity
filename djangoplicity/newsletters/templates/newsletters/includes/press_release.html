@@ -1,0 +1,33 @@
+{% load i18n %}
+{% if release %}{% load release_links djangoplicity_datetime djangoplicity_utils  %}
+{% if embargo %}
+<div style="padding: 10px; font-size: 18px; background-color: #f4c819; text-align: center; font-weight: bold;">
+{% trans "EMBARGOED* UNTIL"%} {{release.release_date|time4lang:"en"|datetime:"DATETIME" }}
+</div>
+<div style="padding: 10px; font-size: 12px; background-color: #eeeeee;">
+{% endif %}
+<p>{{release.headline|linebreaksbr|description_links|release_ids|safe}}</p>
+
+<p>{% trans "The release, images and videos are available on:" %}<br/>
+<a href="{{base_url}}{{release.get_absolute_url}}?lang">{{base_url}}{{release.get_absolute_url}}</a>{% if embargo %} (login: <strong>{{release.get_embargo_login.0}}</strong> password: <strong>{{release.get_embargo_login.1}}</strong>){% endif %}</p>
+
+
+{% block translations %}
+{% if release.kids_title and release.kids_description %}<p>{% trans "Space Scoop - the children's version of this release is available at:" %} <a href="{{base_url}}{{ release.get_absolute_url }}kids/?lang">{{base_url}}{{ release.get_absolute_url }}kids/</a></p>{% endif %}{% endblock %}
+
+{% if signature %}
+<p>
+{% comment %}
+We only show the "signature" if there is no editorial
+{% endcomment %}
+{% if not editorial %}
+{% trans "Kind regards" %},<br />
+{% trans signature|safe %}<br />
+{% if signature_date %}{{signature_date|datetime:"DATE"}}{% endif %}
+{% endif %}
+</p>
+{% endif %}
+
+{% if embargo %}
+</div>
+{% endif %}{% endif %}

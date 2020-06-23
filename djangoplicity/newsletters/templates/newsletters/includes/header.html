@@ -1,0 +1,20 @@
+<!-- // Begin Template Header \\ -->
+<table border="0" cellpadding="0" cellspacing="0" width="{{width}}" id="templateHeader" style="background-color: {{ color }}">
+    <tr style="color:white;"> 
+    <td style="padding:15px;" width="{{logo_width}}"> 
+        <table border="0" cellpadding="0" cellspacing="0"> 
+        <tr> 
+        <td><a href="{{base_url}}"><img src="{{logo_url}}" width="{{logo_width}}" border="0"/></a></td> 
+        </tr> 
+        </table> 
+    </td> 
+    <td style="text-align:right; padding:20px; font-family: Helvetica,Arial; font-size: 26px; color: {% if text_color %}{{text_color}}{% else %}#ffffff{% endif %}" width="542">{{ header_title }}<div style="font-size:13px; color: #ffffff;">{{ header_subtitle }}</div></td> 
+</tr>
+{% if main_image %}
+    {% include "newsletters/includes/main_image.html" %}
+{% endif %}
+{% if main_comparison %}
+    {% include "newsletters/includes/main_comparison.html" %}
+{% endif %} 
+</table>
+<!-- // End Template Header \\ -->

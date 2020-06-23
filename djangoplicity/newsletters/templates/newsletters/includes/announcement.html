@@ -1,0 +1,29 @@
+{% load i18n %}
+{% if announcement %}{% load release_links djangoplicity_datetime djangoplicity_utils  %}
+{% if embargo %}
+<div style="padding: 10px; font-size: 18px; background-color: #f4c819; text-align: center; font-weight: bold;">
+{% trans "EMBARGOED* UNTIL"%} {{ announcement.release_date|time4lang:"en"|datetime:"DATETIME" }}
+</div>
+<div style="padding: 10px; font-size: 12px; background-color: #eeeeee;">
+{% endif %}
+<p>{{ announcement.description|truncatewords_html:100|description_links|release_ids|safe }}</p>
+
+<p>{% trans "The announcement, images and videos are available on:" %}<br/>
+<a href="{{ base_url }}{{ announcement.get_absolute_url }}?lang">{{ base_url }}{{ announcement.get_absolute_url }}</a>{% if embargo %} (login: <strong>{{ announcement.get_embargo_login.0 }}</strong> password: <strong>{{ announcement.get_embargo_login.1 }}</strong>){% endif %}</p>
+
+{% if signature %}
+<p>
+{% comment %}
+We only show the "signature" if there is no editorial
+{% endcomment %}
+{% if not editorial %}
+{% trans "Kind regards" %},<br />
+{% trans signature|safe %}<br />
+{% if signature_date %}{{ signature_date|datetime:"DATE" }}{% endif %}
+{% endif %}
+</p>
+{% endif %}
+
+{% if embargo %}
+</div>
+{% endif %}{% endif %}

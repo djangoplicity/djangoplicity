@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<style type="text/css">
+    #nl_detail_header {
+        padding: 10px 0 10px 0;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    div.embargo_notice {
+        background-color: #f4c819;
+        font-weight: bold;
+        font-size: 18px;
+        text-align: center;
+        padding: 10px;
+        width: 700px;
+        margin: 0 auto;
+    }
+</style>
+
+<div id="nl_detail_header">
+{% if not newsletter.published %}
+    <div class="embargo_notice">PREVIEW ONLY - ITEM NOT PUBLISHED</div>
+{% endif %}
+    <p><a href="../../">Back to {{ newsletter_type }} index</a> </p>
+</div>
+<iframe src="{% url 'newsletters_embed_html' newsletter_type.slug object.pk %}" width="100%" scrolling="no" frameBorder="0" onload='javascript:resizeIframe(this);'></iframe>
+
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+}
+</script>
+{% endblock %}

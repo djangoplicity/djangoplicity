@@ -1,0 +1,73 @@
+{% extends "admin/newsletters/newsletter/change_form.html" %}{% load i18n %}
+
+{% block extrahead %}{{ block.super }}
+{{ media }}
+{{ adminform.media }}
+{% endblock %}
+
+
+
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../../">{{ app_label|capfirst|escape }}</a> &rsaquo;
+     <a href="../../">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
+     <a href="../">{{ original }}</a> &rsaquo;
+     {% trans "Send now" %}
+</div>
+{% endif %}{% endblock %}
+
+
+{% block content %}<div id="content-main">
+{% if original.send %}
+<fieldset class="module" style="background-color: #FFC; ">
+<div class="form-row">
+<p>Newsletter have already been sent.</p>
+</div>
+</fieldset>
+{% else %}{% if original.scheduled_status == 'OFF' %}
+<fieldset class="module" style="background-color: #FFC; ">
+<div class="form-row">
+<p>Newsletter is not already unscheduled</p>
+</div>
+</fieldset>
+{% else %}
+<form action="." method="post" id="{{ opts.model_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
+<div>
+{% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
+{% if adminform.errors %}
+    <p class="errornote">
+    {% blocktrans count adminform.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
+    </p>
+    {{ adminform.non_field_errors }}
+{% endif %}
+
+<fieldset class="module">
+<h2>Current schedule</h2>
+<div class="form-row">Newsletter is scheduled to be sent in {{ original.release_date|timeuntil }} on: <h3 align="center">{{ original.release_date }}</h3></div>
+</fieldset>
+
+<fieldset class="module aligned">
+<h2>Newsletter</h2>
+<div class="form-row"><label>From</label><span>{{original.from_name}} &lt;{{original.from_email}}&gt;</span></div>
+<div class="form-row"><label>Subject</label><span>{{original.subject|safe}}</span></div>
+</fieldset>
+
+<fieldset class="module aligned">
+{% for f in adminform %}
+<div class="form-row">
+    {{f.label_tag}}
+    {{f}}
+    {{f.errors}}
+</div>
+{% endfor %}
+</fieldset>
+
+{% load i18n %}
+<div class="submit-row" {% if is_popup %}style="overflow: auto;"{% endif %}>
+<input type="submit" value="{% trans 'Cancel schedule' %}" class="default" name="_generate" {{ onclick_attrib }}/>
+</div>
+
+</div>
+</form></div>
+{% endif %}{% endif %}{% endblock %}

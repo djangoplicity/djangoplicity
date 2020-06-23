@@ -1,0 +1,2 @@
+{% load i18n %}
+{% load release_links  djangoplicity_datetime %}{{org}} {% blocktrans %}{{data.release.release_type}}{% endblocktrans %} {{data.release.id}}{% block text_only_embargo %} (EMBARGOED* UNTIL {{data.release.release_date|time4lang:"en"|datetime:"DATETIME" }}){% endblock %}:  {{data.release.title}}{% if data.release.subtitle %} &mdash; {{data.release.subtitle}}{% endif %}. {{data.release.headline|striptags|truncatewords:40|safe}}<br /><br />

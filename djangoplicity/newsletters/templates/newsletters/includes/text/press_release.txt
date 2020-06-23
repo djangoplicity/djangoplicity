@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load djangoplicity_text_utils release_links djangoplicity_datetime %}{% trans "For Your Information" %}:
+
+{{org}} {% trans data.release.release_type.name %} {{data.release.id}}{% if embargo and data.release.release_date > now %} *{% trans "UNDER EMBARGO" %}*{% endif %} - {{data.release.title|safe}}{% if data.release.subtitle %} — {{data.release.subtitle|safe}}{% endif %}
+{% if embargo and data.release.release_date > now %}
+{% trans "EMBARGOED* UNTIL" %} {{data.release.release_date|time4lang:"en"|datetime:"DATETIME" }}
+{% endif %}
+{% trans "For your convenience the first paragraph of the release is provided below:" %}
+
+{{data.release.headline|striptags|unescape|safe }}
+
+{%if data.release.related_images and data.release.related_videos %}{% trans "The release, images and videos are available on:" %}{% else %}{% if data.release.related_images %}{% trans "The release and images are available on:" %}{% else %}{% if data.release.related_videos %}{% trans "The release and videos are available on:" %}{% else %}{% trans "The release is available on:" %}{% endif %}{% endif %}{%endif%}
+http://www.eso.org{{data.release.get_absolute_url}}{% if embargo and data.release.release_date > now %}
+login: {{data.release.get_embargo_login.0}}
+password: {{data.release.get_embargo_login.1}}{% endif %}
+{% if data.release.kids_title and data.release.kids_description %}
+{% trans "Space Scoop - the children's version of this release is available at:" %}
+http://www.eso.org{% url 'releases_detail_kids' data.release.id %}
+{% endif%}
+
+{% if editorial_text %}
+{{ editorial_text }}
+{% else %}
+{% trans "Kind regards" %},
+{% if signature1 %}{% trans signature1|striptags %}{% endif %}{% if signature2 %}
+{% trans signature2|striptags %}{% endif %}
+
+{% endif %}{% if signature_date %}{% if embargo and data.release.release_date > now %}{{ data.release.embargo_date|date }}{% else %}{{ data.release.release_date|date }}{% endif %}{% endif %}

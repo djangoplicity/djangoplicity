@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% load i18n %}
+{% load staticfiles %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>{% block site_title %}ESO{% endblock %}</title>
+
+{% load djangoplicity_utils %}
+{% load pipeline %}
+
+{% stylesheet 'newscienceannouncements_embed' %}
+
+<!-- Google Analytics -->
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1965004-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+<!-- End Google Analytics -->
+
+{% block extra_header %}
+{% endblock %}
+</head>
+
+<body>
+
+<div id="content" class="container">
+
+{% block content_area %}
+{% endblock %}
+
+{% block extra_scripts %}
+{% endblock %}
+
+</div> <!-- content -->
+
+{% javascript 'events_embed' %}
+
+</body>
+
+</html>

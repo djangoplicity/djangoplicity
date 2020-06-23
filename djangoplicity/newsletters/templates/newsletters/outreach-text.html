@@ -1,0 +1,98 @@
+{% load djangoplicity_text_utils %}{{editorial_text|safe}}
+
+=================
+ESO ANNOUNCEMENTS
+=================
+{% for obj in data.announcements %}
+*{{ obj.title|safe }}{% if obj.subtitle%} - {{ obj.subtitle|safe }}{% endif %}*
+
+{{ obj.release_date|date }}: {{ obj.description|striptags|truncatewords:50|unescape|safe }} [read more on http://www.eso.org{{ obj.get_absolute_url }}]
+{% endfor %}
+See latest ESO announcements on http://www.eso.org/public/announcements/
+
+=========
+STARS@ESO
+=========
+{% for obj in data.starsateso reversed %}
+*{{ obj.title|safe }}*
+
+{{ obj.release_date|date }}: {{ obj.description|striptags|truncatewords:50|unescape|safe }} [read more on http://www.eso.org{{ obj.get_absolute_url }}]
+{% endfor %}
+See latest Stars@ESO on http://www.eso.org/public/events/starsateso/
+
+=======
+ESOCAST
+=======
+{% for obj in data.esocasts %}
+*{{ obj.title|safe }}*
+
+{{ obj.release_date|date }}: {{ obj.headline|striptags|truncatewords:50|unescape|safe }} [view it on http://www.eso.org{{ obj.get_absolute_url }}]
+{% endfor %}
+View more ESOcasts on http://www.eso.org/public/videos/archive/category/esocast/
+
+==================
+ESO PRESS RELEASES
+==================
+{% for obj in data.releases %}
+*{{ obj.title|safe }}{% if obj.subtitle%} - {{ obj.subtitle|safe }}{% endif %}*
+{{ obj.release_date|date }}, read more on http://www.eso.org{{ obj.get_absolute_url }}
+{% endfor %}
+More news available on http://www.eso.org/public/news/, including translations into 18 different languages.
+
+==============
+NEW ON ESO.ORG
+==============
+{% for obj in data.newoneso %}
+*{{ obj.title|safe }}*
+{{ obj.link }}
+{% endfor %}
+==============
+ONGOING EVENTS
+==============
+{% for obj in data.ongoing_events %}
+*{{ obj.title|safe }}*
+{{ obj.link }}
+{% endfor %}
+===============
+UPCOMING EVENTS
+===============
+{% for obj in data.special_events.all %}
+* {{ obj.get_dates|unescape|safe }}: {{ obj.title|striptags|unescape|safe }}
+{% endfor %}
+See more on http://www.eso.org/public/events/special-evt/
+
+====================
+UPCOMING EXHIBITIONS
+====================
+{% for obj in data.exhibitions.all %}
+* {{ obj.get_dates|unescape|safe }}: {{ obj.title|striptags|unescape|safe }}{% if obj.get_location %}. {{ obj.get_location }}.{%endif%}
+{% endfor %}
+See more on http://www.eso.org/public/events/exhibitions/
+
+========================
+ESO PICTURES OF THE WEEK 
+========================
+
+* {{ data.potw.release_date|date }}: {% if data.potw.image %}{{ data.potw.image.title|safe }}{% endif %}{% if data.potw.comparison %}{{ data.potw.comparison.title|safe }}{% endif %}
+http://www.eso.org{{ data.potw.get_absolute_url }}
+{% for obj in data.footer_potws.all %}
+* {{ obj.release_date|date }}: {% if obj.image %}{{ obj.image.title|safe }}{% endif %}{% if obj.comparison %}{{ obj.comparison.title|safe }}{% endif %}
+http://www.eso.org{{ obj.get_absolute_url }}
+{% endfor %}
+See more on http://www.eso.org/public/images/potw/
+
+---{% if unsubscribe_link %}
+You are receiving this newsletter because you subscribed to the ESO Outreach Community Newsletter.
+
+{% endif %}{% if unsubscribe_link %}Unsubscribe at {{unsubscribe_link}}
+{% endif %}{% if preferences_link %}Change subscription preferences at {{preferences_link}}
+{% endif%}{% if enable_sharing %}{% if browser_link %}View newsletter in browser at {{browser_link}}{% endif %}{% endif %}
+
+European Southern Observatory
+Karl-Schwarzschild-Str 2
+D-85748 Garching bei Muenchen
+Germany
+
+Tel: +49 89 3200 6291
+Fax: +49 89 3200 6703
+Email: information@eso.org

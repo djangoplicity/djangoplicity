@@ -1,0 +1,53 @@
+{% load i18n %}
+{% load djangoplicity_utils %}
+{% load djangoplicity_text_utils %}
+
+<style type="text/css">
+    td.titlerow a {
+        color: black;
+    }
+    #sb-container {display:none} 
+</style>
+<link href="{{MEDIA_URL}}css/mediaarchive.css" rel="stylesheet" type="text/css" />
+
+{% spaceless %}
+
+<div class="row">
+    <div class="col-sm-9">
+        {% if not object_list %}
+            <div align="center">{% trans "No science newsletters were found." %}</div>
+        {% else %}
+            {% include "archives/search_results.html" %}
+            {% block body %}
+                {% for nl in object_list %}
+                    <div class="row pr_box">
+                        <div class="col-sm-3">
+                            <div class="pr_lead">
+                                <a href="{{ nl.get_absolute_url }}"><img class="img-responsive" src="{{ nl.resource_thumbs.url }}" alt="{{ nl.subject }}" /></a>
+                            </div>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="pr_lead">
+                                <h2><a href="{{ nl.get_absolute_url }}">{{ nl.subject }}</a></h2>
+                                <p><strong>Published: {{ nl.release_date|date:"j M Y" }}</strong></p>
+                                <div class="text-right"><a href="{{ nl.get_absolute_url }}">Go to Newsletter</a></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% paginator paginator page_obj paginator_url paginator_prefix paginator_params %}
+                {% statusbar paginator page_obj browsers searchable search_url search_str  %}
+            {% endblock %}
+        {% endif %}
+    </div>
+    <div class="col-sm-3">
+        {% block archive_search %}
+        {% with archive_search_position="outside" %}
+            {% include "archives/searchbox.html" %}
+        {% endwith %}
+        {% endblock %}
+    </div>
+</div>
+
+{% endspaceless %}
+

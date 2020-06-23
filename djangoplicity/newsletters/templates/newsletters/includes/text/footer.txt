@@ -1,0 +1,19 @@
+{% load i18n %}
+---{% if unsubscribe_link %}
+{% blocktrans %}You are receiving this newsletter because {{reason}}{% endblocktrans %}.
+
+{% endif %}{% if unsubscribe_link %}{% trans "Unsubscribe at" %} {{unsubscribe_link}}
+{% endif %}{% if preferences_link %}{% trans "Change subscription preferences at" %} {{preferences_link}}
+{% endif%}{% if enable_sharing %}{% if browser_link %}{% trans "View newsletter in browser at" %} {{browser_link}}
+{% endif %}{% endif %}
+European Southern Observatory
+Karl-Schwarzschild-Str 2
+D-85748 Garching bei Muenchen
+Germany
+
+Tel: +49 89 3200 6291
+Fax: +49 89 3200 6703
+Email: {{email}}{% if embargo and data.release.release_date > now %}
+
+{% trans '* The embargo that ePOD uses for its press releases acts as an advanced notice system and it is not meant to "hype" news items. Given the often complex nature of the astronomical discoveries, we prefer to make our press releases and additional materials available about 48 hours in advance of the public release to give media representatives the time to research a topic, gather relevant information or conduct interviews. This ultimately leads to better and more accurate coverage of our news and therefore the general public will also be better informed.' %}
+{% endif %}

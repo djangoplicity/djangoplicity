@@ -1,0 +1,12 @@
+{% load i18n %}
+{% if workshops %}
+<p><strong>Workshops</strong></p>
+
+<div style="font-family: Helvetica, Arial;font-size: 12px;color:#505050;">
+<ul style="padding-left: 20px;">
+{% for obj in workshops %}
+<li><strong>{{ obj.get_dates|safe }}</strong>: {% if obj.link %}<a href="{{obj.link}}">{{obj.title|safe}}</a>{% else %}{{obj.title|safe}}{% endif %}{% if obj.get_location %}. {{ obj.get_location }}.{% endif %}</li>
+{% endfor %}
+
+</div>
+{% endif %}

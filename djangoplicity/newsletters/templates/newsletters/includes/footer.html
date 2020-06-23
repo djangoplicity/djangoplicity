@@ -1,0 +1,41 @@
+{% load i18n %}
+<!-- // Begin Template Footer \\ --> 
+                                    <table border="0" cellpadding="0" cellspacing="0" width="{% include "newsletters/includes/width.html" %}" id="templateFooter" style="background-color: #FFFFFF;border-top: 0;"> 
+                                        <tr> 
+                                            <td valign="top" class="footerContent"> 
+                                                                        
+                                                <!-- // Begin Module: Standard Footer \\ --> 
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
+                                                    <tr><td colspan="3" style="background-color:#292929" height="5"></td></tr>
+                                                    <tr> 
+                                                        <td width="20" style="background-color:#292929">&nbsp;</td>
+                                                        <td valign="top" width="{{width}}" style="background-color:#292929"> 
+                                                            <div style="color: #707070;font-family: Helvetica, Arial;font-size: 10px;line-height: 125%;text-align: center;background-color:#292929; padding-top:5px;padding-bottom:0px;padding-left:0px;padding-right:0px;">
+                                                                {% if footer_potws %}
+                                                                {% for obj in footer_potws %}{% if obj.image %}
+                                                                <a href="{{base_url}}{{obj.image.get_absolute_url}}?lang"><img style="border:0px;margin:2px;" src="{{base_url}}{{obj.image.resource_wallpaperthumbs.url}}" alt="{{obj.image.title}}"></img></a>&nbsp;
+                                                                {% endif %}{% if obj.comparison %}
+                                                                <a href="{{base_url}}{{obj.comparison.get_absolute_url}}?lang"><img style="border:0px;margin:2px;" src="{{base_url}}{{obj.comparison.resource_wallpaperthumbs.url}}" alt="{{obj.comparison.title}}"></img></a>&nbsp;{% endif %}
+                                                                {% endfor %}
+                                                                <div style="font-size:15px;color:white; padding-top: 5px;"><a href="{{potw_feed_url}}"><img border="0" src="{{base_url}}{{MEDIA_URL}}djangoplicity/images/rssicon.png"></a>&nbsp;<a style="font-size:15px;color:white;text-decoration:none;" href="{{base_url}}{% url 'potw_defaultquery' %}?lang">{{ org }} {% trans "Pictures of the Week" %}</a>
+                                                                <hr size="1" style="color: #bbbbbb; background-color: #bbbbbb; border: 0; height: 1px;" /> 
+                                                                </div>
+                                                                {% endif %} 
+                                                                <div style="text-align:left;padding-top:5px;color:white; background-color:#292929;">
+                                                                {% if footer_note %}<p style="font-size: 11px;">{% trans footer_note %}</p>{% endif%} 
+                                                                {% include "newsletters/includes/preferences_bottom.html" %}
+                                                                {% include "newsletters/includes/footer_followus.html" %}
+                                                                <p style="font-size: 11px; text-align:center; margin-bottom: 0px;">{% if address %}{{ address }}{% else %}{% trans "European Southern Observatory" %}, Karl-Schwarzschild-Str 2, D-85748 Garching bei M&uuml;nchen, Germany{% endif %}</p>
+                                                                </div>
+                                                            </div> 
+                                                        </td>
+                                                        <td width="20" style="background-color:#292929">&nbsp;</td> 
+                                                    </tr> 
+                                                    <tr><td colspan="3" style="background-color:#292929" height="10">&nbsp;</td></tr>
+                                                </table> 
+                                                <!-- // End Module: Standard Footer \\ --> 
+                                            
+                                            </td> 
+                                        </tr> 
+                                    </table> 
+                                    <!-- // End Template Footer \\ --> 

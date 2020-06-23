@@ -1,0 +1,14 @@
+{% load i18n %}
+{% if press_events %}
+<h3 class="h3" style="color: #285A97;display: block;font-family: Helvetica, Arial;font-size: 12px;font-weight: bold;line-height: 100%;margin-top: 10px;margin-right: 0;margin-bottom: 10px;margin-left: 0;text-align: left;">
+    <a style="color: #285A97;font-size: 12px;font-weight: bold; text-decoration:none;" href="{{events_url}}">{% trans "Upcoming Press Events" %}</a>
+</h3>
+
+
+<div style="font-family: Helvetica, Arial;font-size: 12px;color:#505050;">
+{% for obj in press_events %}
+<p><strong>{{ obj.get_dates|safe }}</strong>: {% if obj.link %}<a href="{{obj.link}}">{{obj.title|safe}}</a>{% else %}{{obj.title|safe}}{% endif %}{% if obj.get_location %}. {{ obj.get_location }}.{% endif %}</p>
+{% endfor %}
+
+</div>
+{% endif %}

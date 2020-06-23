@@ -1,0 +1,10 @@
+{% load i18n djangoplicity_text_utils djangoplicity_datetime %}
+========================
+ESO Supernova {% trans 'Press Releases' %}
+========================
+{% for release in data.releases %}
+*{{ release.title|safe }}{% if release.subtitle%} - {{ release.subtitle|safe }}{% endif %}*
+
+{{ release.release_date|date }}: {{ release.description|striptags|truncatewords:50|unescape|safe }} [read more on {{base_url}}{{ release.get_absolute_url }}]
+{% endfor %}
+{% blocktrans %}See latest {{org}} releases on{% endblocktrans %} {{base_url}}{% url 'releases_defaultquery' %}

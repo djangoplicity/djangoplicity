@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load djangoplicity_text_utils djangoplicity_datetime %}===============================
+{{org}} {% trans "Pictures of the Week" %}
+===============================
+{% for obj in potws %}
+*{% if obj.image %}{{ obj.image.title|safe }}{% endif %}{% if obj.comparison %}{{ obj.comparison.title|safe }}{% endif %}*
+
+{{ obj.release_date|date }}: {% if obj.image %}{{ obj.image.description|striptags|truncatewords:50|unescape|safe }}{% endif %}{% if obj.comparison %}{{ obj.comparison.description|striptags|truncatewords:50|unescape|safe }}{% endif %} [read more on {{base_url}}{{ obj.get_absolute_url }}]
+{% endfor %}
+{% blocktrans %}See latest {{org}} Pictures of the Week on{% endblocktrans %} {{base_url}}{% url 'potw_defaultquery' %}

@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load djangoplicity_text_utils release_links djangoplicity_datetime %}{% trans "For Your Information" %}:
+
+{{org}} Announcement {{data.announcement.id}}{% if embargo and data.announcement.release_date > now %} *{% trans "UNDER EMBARGO" %}*{% endif %} - {{data.announcement.title|safe}}{% if data.announcement.subtitle %} — {{data.announcement.subtitle|safe}}{% endif %}
+{% if embargo and data.announcement.release_date > now %}
+{% if language == "no" %} 
+{% trans "EMBARGOED* UNTIL" %} {{data.announcement.release_date|datetime:"DATETIME" }}
+{% else %}
+{% trans "EMBARGOED* UNTIL" %} {{data.announcement.release_date|time4lang:"en"|datetime:"DATETIME" }}
+{% endif %}
+{% endif %}
+{% trans "For your convenience the first paragraph of the announcement is provided below:" %}
+
+{{ data.announcement.description|truncatewords_html:100|description_links|release_ids|html2text|safe }}
+
+{%if data.announcement.related_images and data.announcement.related_videos %}{% trans "The announcement, images and videos are available on:" %}{% else %}{% if data.announcement.related_images %}{% trans "The announcement and images are available on:" %}{% else %}{% if data.announcement.related_videos %}{% trans "The announcement and videos are available on:" %}{% else %}{% trans "The announcement is available on:" %}{% endif %}{% endif %}{%endif%}
+http://www.eso.org{{data.announcement.get_absolute_url}}{% if embargo and data.announcement.release_date > now %}
+login: {{data.announcement.get_embargo_login.0}}
+password: {{data.announcement.get_embargo_login.1}}{% endif %}
+
+{% if editorial_text %}
+{{ editorial_text }}
+{% else %}
+{% trans "Kind regards" %},
+{% if signature1 %}{% trans signature1|striptags %}{% endif %}{% if signature2 %}
+{% trans signature2|striptags %}{% endif %}
+
+{% endif %}{% if signature_date %}{% if embargo and data.announcement.release_date > now %}{{ data.announcement.embargo_date|date }}{% else %}{{ data.announcement.release_date|date }}{% endif %}{% endif %}

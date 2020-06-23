@@ -1,0 +1,12 @@
+{% extends "archives/newsletters/base__.html" %}
+
+{% block content_area %}
+    {% block title %}
+    <h1>{{ archive_title }}</h1>
+    {% endblock %}
+
+    {% with type="default" %}
+        {% include index_template %}
+    {% endwith %}
+
+{% endblock %}
