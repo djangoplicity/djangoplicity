@@ -1,27 +1,62 @@
-version: '3'
+version: "3.4"
 
-services:
-  web:
-    build: .
-    container_name: djangoplicity
-    command: ["./scripts/command-dev.sh"]
-    volumes:
+x-common: &common
+  build: .
+  volumes:
+    - media:/app/media
+    - import:/app/import
     - ./djangoplicity:/app/djangoplicity
     - ./test_project:/app/test_project
     - ./htmlcov:/app/htmlcov
     - ./.coveragerc:/app/.coveragerc
     - ./db:/app/db
+
+services:
+  web:
+    <<: *common
+    container_name: djangoplicity
+    command: ["./scripts/command-dev.sh"]
     ports:
       - "8001:8000"
+  
+  broker:
+    image: rabbitmq:3.8.3
+    container_name: djangoplicity-broker
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  celery:
+    <<: *common
+    container_name: djangoplicity-celery
+    # Celerybeat included, not recommended for production
+    command: ["celery", "-B", "--app=test_project", "--concurrency=8", "--hostname=worker1@%h", "--loglevel=INFO", "--queues=celery", "worker"]
+    depends_on:
+      - broker
+      - web
+
+  flower:
+    <<: *common
+    container_name: djangoplicity-flower
+    # TODO: Change url prefix to /admin/tasks when having nginx proxy
+    command: ["celery", "--app=test_project", "--concurrency=8", "--db=/app/tmp/flowerdb", "--persistent", "--port=5555", "flower"]
+    depends_on:
+      - broker
+      - web
+    ports:
+      - "5556:5555"
   
   # TODO: Currently not being used, configure test_project to use this database
   # db:
   #   image: postgres:10.5
   #   container_name: djangoplicity-db
-  #   restart: always
   #   environment:
   #     POSTGRES_DB: djangoplicity
   #     POSTGRES_USER: djangoplicity
   #     POSTGRES_PASSWORD: djangoplicity
   #   ports:
-  #     - "50001:5432"
+  #     - "60000:5432"
+
+volumes:
+  import:
+  media:
