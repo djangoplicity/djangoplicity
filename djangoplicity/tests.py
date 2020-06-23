@@ -17,12 +17,10 @@
 import unittest
 
 import djangoplicity.archives.fields
-import djangoplicity.massmailer.models
 
 # # Can't figure out how to instantiate this field
 # from djangoplicity.translation.fields import TranslationManyToManyField
 
-import djangoplicity.contrib.db.fields
 
 # # This must be dead code, won't even import...
 # import djangoplicity.metadata.fields
@@ -179,13 +177,6 @@ class FieldsTest(unittest.TestCase):
         )
         self._run_field_tests(djangoplicity.archives.fields.TaskIdField, my_tests)
 
-    def test_multi_email_field(self):
-        my_tests = (
-            ('max_length', 77),
-            ('max_length', 300),
-        )
-        self._run_field_tests(djangoplicity.massmailer.models.MultiEmailField, my_tests)
-
 
     # def test_translation_many_to_many_field(self):
     #     my_field_instance = TranslationManyToManyField()
@@ -204,17 +195,6 @@ class FieldsTest(unittest.TestCase):
     #     name, path, args, kwargs = my_field_instance.deconstruct()
     #     new_instance = TranslationManyToManyField(*args, **kwargs)
     #     self.assertEqual(my_field_instance.only_sources, new_instance.only_sources)
-
-
-    def test_language_code_field(self):
-        my_tests = (
-            ('choices', ((1, 'A'), (2, 'B'), )),
-            ('max_length', 77),
-            ('max_length', 2),
-            ('default', 'de'),
-            ('default', 'en'),
-        )
-        self._run_field_tests(djangoplicity.contrib.db.fields.LanguageCodeField, my_tests)
 
     # def test_avm_dead_field():
     #     my_field_instance = SpectralCentralWavelengthField()
