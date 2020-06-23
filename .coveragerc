@@ -1,0 +1,5 @@
+[run]
+omit = */migrations/*
+
+plugins =
+    django_coverage_plugin

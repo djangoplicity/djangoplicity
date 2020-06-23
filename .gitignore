@@ -3,9 +3,12 @@
 *.swo
 *.gz
 
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 .idea/
 =======
+=======
+>>>>>>> develop
 .idea/
 /*.egg-info/
 .tox/
@@ -15,7 +18,10 @@ db/*
 htmlcov/*
 !htmlcov/.keep
 .coverage
+<<<<<<< HEAD
 djangoplicity/actions
 djangoplicity/mailinglists
 djangoplicity/newsletters
 >>>>>>> Stashed changes
+=======
+>>>>>>> develop

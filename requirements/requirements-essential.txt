@@ -1,0 +1,37 @@
+BeautifulSoup
+django-ace == 1.0.4
+django-mptt == 0.9.1
+django-recaptcha == 1.4.0
+djangorestframework == 3.8.2  # Used for pages fixed version as 3.6 causes conflict with collectstatic
+django-signals-ahoy  # Used by satchmo/models.py
+django-redis
+google-api-python-client == 1.7.4
+html2text == 3.200.3
+htmllaundry
+icalendar == 2.1
+ipython == 5.5.0  # Last version compatible with python 2.7
+Pillow
+pycountry == 1.16
+ephem == 3.7.6.0
+pysftp               # Used for contentserver
+python-dateutil
+python-memcached == 1.59
+python-xmp-toolkit == 1.0.2
+pytz
+requests
+ndg-httpsclient  # Extra for requests
+setuptools
+Wand == 0.4.4
+piexif
+pika
+openpyxl
+django-tinymce4-lite == 1.7.2
+
+# Last version that has dependencies that support python 2.7
+oauth2client==1.4.11
+
+# PostgreSQL python client
+psycopg2-binary==2.7.7
+
+# Asynchronous Task Queue
+celery==4.3.0

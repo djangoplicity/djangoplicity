@@ -1,57 +1,105 @@
 [
-    {
-        "pk": 1, 
-        "model": "reports.reportgroup", 
-        "fields": {
-            "name": "Statistics"
-        }
-    },
-    {
-        "pk": 3, 
-        "model": "reports.report", 
-        "fields": {
-            "sql_command": "SELECT name,description FROM reports_report", 
-            "displayed_fields": " ", 
-            "is_mailable" : 0,
-            "group": 1, 
-            "name": "Bad Report 1", 
-            "description": "Some description"
-        }
-    }, 
-    {
-        "pk": 4, 
-        "model": "reports.report", 
-        "fields": {
-            "sql_command": "SELECT name,description FRO reports_report", 
-            "displayed_fields": "Name; Description", 
-            "is_mailable" : 0, 
-            "group": 1, 
-            "name": "Bad Report 2", 
-            "description": "Some description"
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "reports.report", 
-        "fields": {
-            "sql_command": "SELECT * FROM countries_country", 
-            "displayed_fields": "Field 1; Field 2", 
-            "is_mailable" : 0, 
-            "group": 1, 
-            "name": "Empty Report", 
-            "description": "Some description"
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "reports.report", 
-        "fields": {
-            "sql_command": "SELECT name,description FROM reports_report", 
-            "displayed_fields": "Country Name; IAU Name", 
-            "is_mailable" : 0, 
-            "group": 1, 
-            "name": "Good report", 
-            "description": "Some description"
-        }
+  {
+    "pk": 1,
+    "model": "reports.reportgroup",
+    "fields": {
+      "name": "Statistics"
     }
+  },
+  {
+    "pk": 1,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FROM reports_report",
+      "displayed_fields": "Country Name; IAU Name",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Good report",
+      "description": "Some description"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT * FROM reports_report WHERE id > 666",
+      "displayed_fields": "Name; Description",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Empty Report",
+      "description": "Some description"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FROM reports_report",
+      "displayed_fields": " ",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Bad Report 1",
+      "description": "Some description"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FRO reports_report",
+      "displayed_fields": "Name; Description",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Bad Report 2",
+      "description": "Some description"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FROM reports_report",
+      "displayed_fields": "Name; Description; Hunger; Speed; Vision;",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Bad Report 3",
+      "description": "Report with more displayed fields than fetched fields"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FROM reports_report",
+      "displayed_fields": "Name",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Bad Report 3",
+      "description": "Report with less displayed fields than fetched fields"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FROM reports_report",
+      "displayed_fields": "ä名文♡♥💕❤😘",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "ä名文♡♥💕❤😘",
+      "description": "Report with non unicode chars"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "reports.report",
+    "fields": {
+      "sql_command": "SELECT name,description FROM reports_report",
+      "displayed_fields": "Name; Email",
+      "is_mailable": 0,
+      "group": 1,
+      "name": "Report with an pseudo-email field",
+      "description": "Did you know you could breath lava? (but just once)"
+    }
+  }
 ]
