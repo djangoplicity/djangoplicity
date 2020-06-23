@@ -35,7 +35,6 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from djangoplicity.archives.contrib.admin import ArchiveAdmin, RenameAdmin, \
     view_link, product_link
-from djangoplicity.archives.contrib.satchmo.models import ShopModel
 from djangoplicity.contrib.admin import DjangoplicityModelAdmin
 from djangoplicity.products.base.models import StandardArchiveInfo, PhysicalInfo, \
     PrintInfo, ScreenInfo
@@ -43,6 +42,16 @@ from djangoplicity.products.models import *
 from djangoplicity.products.options import *
 from djangoplicity.products.base.models import ArchiveCategory
 
+
+if hasattr(settings, 'ENABLE_SATCHMO'):
+    ENABLE_SATCHMO = settings.ENABLE_SATCHMO
+else:
+    ENABLE_SATCHMO = False
+
+if ENABLE_SATCHMO:
+    from djangoplicity.archives.contrib.satchmo.models import ShopModel
+else:
+    ShopModel = None
 
 class ExhibitionGroupAdmin( DjangoplicityModelAdmin ):
     list_display = ( 'id', 'name', 'priority', )
@@ -192,7 +201,7 @@ def admin_factory( model, options, exclude=['release_date', 'embargo_date', 'cre
     #
     # Shop information
     #
-    if issubclass( model, ShopModel ):
+    if ShopModel is not None and issubclass( model, EmptyClass ):
         try:
             model._meta.get_field('weight')  # Test if field exists.
             product_list_display += ['sale', 'free', 'price', 'weight', product_link( 'adminshop_site' ) ]

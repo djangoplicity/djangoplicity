@@ -52,13 +52,10 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.utils.translation import ugettext_lazy as _
-from product.models import Category
 
 from djangoplicity.archives import fields as archivesfields
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.contrib import types
-from djangoplicity.archives.contrib.satchmo.models import ShopModel, \
-    DEFAULT_JOB_NO_HELP_TEXT_FUNC, DEFAULT_JSP_NO_FUNC, DEFAULT_ACCOUNT_NO_FUNC
 from djangoplicity.archives.resources import AudioResourceManager, \
     ImageFileType, ResourceManager, ImageResourceManager
 from djangoplicity.media.models import Image
@@ -66,6 +63,23 @@ from djangoplicity.products.base import *
 from djangoplicity.products.conf import archive_settings
 from djangoplicity.translation.models import TranslationForeignKey
 from djangoplicity.products.base.consts import DEFAULT_CREDIT
+
+from django.conf import settings
+
+if hasattr(settings, 'ENABLE_SATCHMO'):
+    ENABLE_SATCHMO = settings.ENABLE_SATCHMO
+else:
+    ENABLE_SATCHMO = False
+
+if ENABLE_SATCHMO:
+    from product.models import Category
+    from djangoplicity.archives.contrib.satchmo.models import ShopModel, \
+    DEFAULT_JOB_NO_HELP_TEXT_FUNC, DEFAULT_JSP_NO_FUNC, DEFAULT_ACCOUNT_NO_FUNC
+else:
+    DEFAULT_JOB_NO_HELP_TEXT_FUNC = ''
+    DEFAULT_JSP_NO_FUNC = ''
+    DEFAULT_ACCOUNT_NO_FUNC = ''
+
 
 # SATCHMO RELATED
 # ===============
@@ -76,10 +90,15 @@ from djangoplicity.products.base.consts import DEFAULT_CREDIT
 #
 SATCHMO_PRODUCT = True
 
+class EmptyClass:
+    pass
 
 def get_product_types():
     """ Return a list of custom product models to satchmo - special function """
-    return ('AnnualReport', 'Apparel', 'Book', 'Brochure', 'Bulletin', 'Calendar', 'CapJournal', 'STECFNewsletter', 'EducationalMaterial', 'Media', 'Flyer', 'Handout', 'Messenger', 'PrintedPoster', 'TechnicalDocument', 'Map', 'Merchandise', 'ScienceInSchool', 'Sticker', 'PostCard', 'ConferenceItem', 'MountedImage')
+    if ENABLE_SATCHMO:
+        return ('AnnualReport', 'Apparel', 'Book', 'Brochure', 'Bulletin', 'Calendar', 'CapJournal', 'STECFNewsletter', 'EducationalMaterial', 'Media', 'Flyer', 'Handout', 'Messenger', 'PrintedPoster', 'TechnicalDocument', 'Map', 'Merchandise', 'ScienceInSchool', 'Sticker', 'PostCard', 'ConferenceItem', 'MountedImage')
+    else:
+        return ()
 
 
 #############################
@@ -123,7 +142,7 @@ class MiniSite( ArchiveModel, StandardArchiveInfo ):
 # =============================================================
 # Paper models
 # =============================================================
-class PaperModel (ArchiveModel, StandardArchiveInfo, PrintInfo, PhysicalInfo):
+class PaperModel ( ArchiveModel, StandardArchiveInfo, PrintInfo, PhysicalInfo ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager(type=types.PDFType)
 
@@ -214,7 +233,7 @@ class PressKit( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo ):
         return reverse('presskits_detail', args=[str(self.id)])
 
 
-class Music(ArchiveModel, StandardArchiveInfo):
+class Music( ArchiveModel, StandardArchiveInfo ):
     file_duration = metadatafields.AVMFileDuration()
 
     class Archive(StandardArchiveInfo.Archive):
@@ -457,7 +476,7 @@ class Presentation( ArchiveModel, StandardArchiveInfo ):
 # =============================================================
 # AnnualReport
 # =============================================================
-class AnnualReport( ArchiveModel, StandardArchiveInfo, PrintInfo, PhysicalInfo, ShopModel ):
+class AnnualReport( ArchiveModel, StandardArchiveInfo, PrintInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager(type=types.PDFType)
         pdfsm = ResourceManager(type=types.PDFType, verbose_name=_( 'PDF File (Small)' ))
@@ -482,14 +501,15 @@ class AnnualReport( ArchiveModel, StandardArchiveInfo, PrintInfo, PhysicalInfo, 
         """
         return 'AnnualReport'
 
-post_save.connect( AnnualReport.post_save_handler, sender=AnnualReport )
-post_delete.connect( AnnualReport.post_delete_handler, sender=AnnualReport )
+if ENABLE_SATCHMO:
+    post_save.connect( AnnualReport.post_save_handler, sender=AnnualReport )
+    post_delete.connect( AnnualReport.post_delete_handler, sender=AnnualReport )
 
 
 # =============================================================
 # Educational material
 # =============================================================
-class EducationalMaterial( ArchiveModel, StandardArchiveInfo, PrintInfo, PhysicalInfo, ShopModel ):
+class EducationalMaterial( ArchiveModel, StandardArchiveInfo, PrintInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType )
@@ -507,14 +527,15 @@ class EducationalMaterial( ArchiveModel, StandardArchiveInfo, PrintInfo, Physica
     def _get_subtype( self ):
         return 'EducationalMaterial'
 
-post_save.connect( EducationalMaterial.post_save_handler, sender=EducationalMaterial )
-post_delete.connect( EducationalMaterial.post_delete_handler, sender=EducationalMaterial )
+if ENABLE_SATCHMO:
+    post_save.connect( EducationalMaterial.post_save_handler, sender=EducationalMaterial )
+    post_delete.connect( EducationalMaterial.post_delete_handler, sender=EducationalMaterial )
 
 
 # =============================================================
 # Media
 # =============================================================
-class Media(ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
+class Media(ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     """
     Optical Media such as CDs/DVDs/BluRays...
     """
@@ -536,14 +557,15 @@ class Media(ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
     def _get_subtype(self):
         return 'Media'
 
-post_save.connect(Media.post_save_handler, sender=Media)
-post_delete.connect(Media.post_delete_handler, sender=Media)
+if ENABLE_SATCHMO:
+    post_save.connect(Media.post_save_handler, sender=Media)
+    post_delete.connect(Media.post_delete_handler, sender=Media)
 
 
 # =============================================================
 # Book
 # =============================================================
-class Book( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class Book( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     isbn = models.CharField( max_length=255, blank=True, verbose_name=_( "ISBN" ) )
     doi = models.CharField( max_length=255, blank=True, verbose_name=_( "DOI" ) )
 
@@ -565,14 +587,15 @@ class Book( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopMode
     def _get_subtype( self ):
         return 'Book'
 
-post_save.connect( Book.post_save_handler, sender=Book )
-post_delete.connect( Book.post_delete_handler, sender=Book )
+if ENABLE_SATCHMO:
+    post_save.connect( Book.post_save_handler, sender=Book )
+    post_delete.connect( Book.post_delete_handler, sender=Book )
 
 
 # =============================================================
 # Brochures
 # =============================================================
-class Brochure( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class Brochure( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType, verbose_name=_( 'PDF File (Small)' ) )
@@ -590,14 +613,15 @@ class Brochure( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, Shop
     def _get_subtype( self ):
         return 'Brochure'
 
-post_save.connect( Brochure.post_save_handler, sender=Brochure )
-post_delete.connect( Brochure.post_delete_handler, sender=Brochure )
+if ENABLE_SATCHMO:
+    post_save.connect( Brochure.post_save_handler, sender=Brochure )
+    post_delete.connect( Brochure.post_delete_handler, sender=Brochure )
 
 
 # =============================================================
 #  Handouts
 # =============================================================
-class Handout ( ArchiveModel, StandardArchiveInfo, ShopModel, PrintInfo, PhysicalInfo ):
+class Handout ( ArchiveModel, StandardArchiveInfo, ShopModel if ENABLE_SATCHMO else EmptyClass, PrintInfo, PhysicalInfo ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
 
@@ -618,14 +642,15 @@ class Handout ( ArchiveModel, StandardArchiveInfo, ShopModel, PrintInfo, Physica
         """
         return 'Handout'
 
-post_save.connect( Handout.post_save_handler, sender=Handout )
-post_delete.connect( Handout.post_delete_handler, sender=Handout )
+if ENABLE_SATCHMO:
+    post_save.connect( Handout.post_save_handler, sender=Handout )
+    post_delete.connect( Handout.post_delete_handler, sender=Handout )
 
 
 # =============================================================
 # Flyers
 # =============================================================
-class Flyer( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class Flyer( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType, verbose_name=_( 'PDF File (Small)' ) )
@@ -643,14 +668,15 @@ class Flyer( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopMod
     def _get_subtype( self ):
         return 'Flyer'
 
-post_save.connect( Flyer.post_save_handler, sender=Flyer )
-post_delete.connect( Flyer.post_delete_handler, sender=Flyer )
+if ENABLE_SATCHMO:
+    post_save.connect( Flyer.post_save_handler, sender=Flyer )
+    post_delete.connect( Flyer.post_delete_handler, sender=Flyer )
 
 
 # =============================================================
 # Maps
 # =============================================================
-class Map( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class Map( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType, verbose_name=_( 'PDF File (Small)' ) )
@@ -668,14 +694,15 @@ class Map( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel
     def _get_subtype( self ):
         return 'Map'
 
-post_save.connect( Map.post_save_handler, sender=Map )
-post_delete.connect( Map.post_delete_handler, sender=Map )
+if ENABLE_SATCHMO:
+    post_save.connect( Map.post_save_handler, sender=Map )
+    post_delete.connect( Map.post_delete_handler, sender=Map )
 
 
 # =============================================================
 # Stationery
 # =============================================================
-class Stationery( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class Stationery( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType, verbose_name=_( 'PDF File (Small)' ) )
@@ -693,14 +720,15 @@ class Stationery( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, Sh
     def _get_subtype( self ):
         return 'Stationery'
 
-post_save.connect( Stationery.post_save_handler, sender=Stationery )
-post_delete.connect( Stationery.post_delete_handler, sender=Stationery )
+if ENABLE_SATCHMO:
+    post_save.connect( Stationery.post_save_handler, sender=Stationery )
+    post_delete.connect( Stationery.post_delete_handler, sender=Stationery )
 
 
 # =============================================================
 # Merchandise
 # =============================================================
-class Merchandise( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
+class Merchandise( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         class Meta( StandardArchiveInfo.Archive.Meta ):
             root = archive_settings.MERCHANDISE_ROOT
@@ -715,14 +743,15 @@ class Merchandise( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
     class Meta( StandardArchiveInfo.Meta ):
         verbose_name_plural = _( 'Merchandise' )
 
-post_save.connect( Merchandise.post_save_handler, sender=Merchandise )
-post_delete.connect( Merchandise.post_delete_handler, sender=Merchandise )
+if ENABLE_SATCHMO:
+    post_save.connect( Merchandise.post_save_handler, sender=Merchandise )
+    post_delete.connect( Merchandise.post_delete_handler, sender=Merchandise )
 
 
 # =============================================================
 # Apparel
 # =============================================================
-class Apparel( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
+class Apparel( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         class Meta( StandardArchiveInfo.Archive.Meta ):
             root = archive_settings.APPAREL_ROOT
@@ -737,14 +766,15 @@ class Apparel( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
     class Meta( StandardArchiveInfo.Meta ):
         verbose_name_plural = _( 'Apparel' )
 
-post_save.connect( Apparel.post_save_handler, sender=Apparel )
-post_delete.connect( Apparel.post_delete_handler, sender=Apparel )
+if ENABLE_SATCHMO:
+    post_save.connect( Apparel.post_save_handler, sender=Apparel )
+    post_delete.connect( Apparel.post_delete_handler, sender=Apparel )
 
 
 # =============================================================
 # STECF Newsletter
 # =============================================================
-class STECFNewsletter( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class STECFNewsletter( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
 
@@ -761,14 +791,15 @@ class STECFNewsletter( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInf
     def _get_subtype( self ):
         return 'STECFNewsletter'
 
-post_save.connect( STECFNewsletter.post_save_handler, sender=STECFNewsletter )
-post_delete.connect( STECFNewsletter.post_delete_handler, sender=STECFNewsletter )
+if ENABLE_SATCHMO:
+    post_save.connect( STECFNewsletter.post_save_handler, sender=STECFNewsletter )
+    post_delete.connect( STECFNewsletter.post_delete_handler, sender=STECFNewsletter )
 
 
 # =============================================================
 # Cap Journal
 # =============================================================
-class CapJournal( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class CapJournal( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType, verbose_name=_( 'PDF File (Small)' ) )
@@ -787,14 +818,15 @@ class CapJournal( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, Sh
     def _get_subtype( self ):
         return 'CapJournal'
 
-post_save.connect( CapJournal.post_save_handler, sender=CapJournal )
-post_delete.connect( CapJournal.post_delete_handler, sender=CapJournal )
+if ENABLE_SATCHMO:
+    post_save.connect( CapJournal.post_save_handler, sender=CapJournal )
+    post_delete.connect( CapJournal.post_delete_handler, sender=CapJournal )
 
 
 # =============================================================
 # Messenger
 # =============================================================
-class Messenger( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class Messenger( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType, verbose_name=_( 'PDF File (Small)' ) )
@@ -813,14 +845,15 @@ class Messenger( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, Sho
     def _get_subtype( self ):
         return 'Messenger'
 
-post_save.connect( Messenger.post_save_handler, sender=Messenger )
-post_delete.connect( Messenger.post_delete_handler, sender=Messenger )
+if ENABLE_SATCHMO:
+    post_save.connect( Messenger.post_save_handler, sender=Messenger )
+    post_delete.connect( Messenger.post_delete_handler, sender=Messenger )
 
 
 # =============================================================
 # ScienceInSchool
 # =============================================================
-class ScienceInSchool( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class ScienceInSchool( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType, verbose_name=_( 'PDF File (Small)' ) )
@@ -839,14 +872,15 @@ class ScienceInSchool( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInf
     def _get_subtype( self ):
         return 'ScienceInSchool'
 
-post_save.connect( ScienceInSchool.post_save_handler, sender=ScienceInSchool )
-post_delete.connect( ScienceInSchool.post_delete_handler, sender=ScienceInSchool )
+if ENABLE_SATCHMO:
+    post_save.connect( ScienceInSchool.post_save_handler, sender=ScienceInSchool )
+    post_delete.connect( ScienceInSchool.post_delete_handler, sender=ScienceInSchool )
 
 
 # =============================================================
 # Bulletin
 # =============================================================
-class Bulletin( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class Bulletin( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
 
@@ -863,14 +897,15 @@ class Bulletin( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, Shop
     def _get_subtype( self ):
         return 'Bulletin'
 
-post_save.connect( Bulletin.post_save_handler, sender=Bulletin )
-post_delete.connect( Bulletin.post_delete_handler, sender=Bulletin )
+if ENABLE_SATCHMO:
+    post_save.connect( Bulletin.post_save_handler, sender=Bulletin )
+    post_delete.connect( Bulletin.post_delete_handler, sender=Bulletin )
 
 
 # =============================================================
 # Postcards
 # =============================================================
-class PostCard( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
+class PostCard( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         class Meta( StandardArchiveInfo.Archive.Meta ):
             root = archive_settings.POSTCARD_ROOT
@@ -885,14 +920,15 @@ class PostCard( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
     def _get_subtype( self ):
         return 'PostCard'
 
-post_save.connect( PostCard.post_save_handler, sender=PostCard )
-post_delete.connect( PostCard.post_delete_handler, sender=PostCard )
+if ENABLE_SATCHMO:
+    post_save.connect( PostCard.post_save_handler, sender=PostCard )
+    post_delete.connect( PostCard.post_delete_handler, sender=PostCard )
 
 
 # =============================================================
 # Mounted Images
 # =============================================================
-class MountedImage( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
+class MountedImage( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     image = TranslationForeignKey( Image )
 
     def __init__( self, *args, **kwargs ):
@@ -931,15 +967,16 @@ class MountedImage( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel )
     def _get_subtype( self ):
         return 'MountedImage'
 
-post_save.connect( MountedImage.post_save_handler, sender=MountedImage )
-post_delete.connect( MountedImage.post_delete_handler, sender=MountedImage )
+if ENABLE_SATCHMO:
+    post_save.connect( MountedImage.post_save_handler, sender=MountedImage )
+    post_delete.connect( MountedImage.post_delete_handler, sender=MountedImage )
 
 
 # =============================================================
 # Printed Posters
 # =============================================================
 
-class PrintedPoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenInfo, ShopModel ):
+class PrintedPoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
 
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
@@ -958,15 +995,16 @@ class PrintedPoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenInfo
     def _get_subtype( self ):
         return 'PrintedPoster'
 
-post_save.connect(PrintedPoster.post_save_handler, sender=PrintedPoster)
-post_delete.connect(PrintedPoster.post_delete_handler, sender=PrintedPoster)
+if ENABLE_SATCHMO:
+    post_save.connect(PrintedPoster.post_save_handler, sender=PrintedPoster)
+    post_delete.connect(PrintedPoster.post_delete_handler, sender=PrintedPoster)
 
 
 # =============================================================
 # Conference Posters
 # =============================================================
 
-class ConferencePoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenInfo, ShopModel ):
+class ConferencePoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
 
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
@@ -985,15 +1023,16 @@ class ConferencePoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenI
     def _get_subtype( self ):
         return 'ConferencePoster'
 
-post_save.connect(ConferencePoster.post_save_handler, sender=ConferencePoster)
-post_delete.connect(ConferencePoster.post_delete_handler, sender=ConferencePoster)
+if ENABLE_SATCHMO:
+    post_save.connect(ConferencePoster.post_save_handler, sender=ConferencePoster)
+    post_delete.connect(ConferencePoster.post_delete_handler, sender=ConferencePoster)
 
 
 # =============================================================
 # Electronic Posters
 # =============================================================
 
-class ElectronicPoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenInfo, ShopModel ):
+class ElectronicPoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
 
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
@@ -1013,14 +1052,15 @@ class ElectronicPoster( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ScreenI
     def _get_subtype( self ):
         return 'ElectronicPoster'
 
-post_save.connect(ElectronicPoster.post_save_handler, sender=ElectronicPoster)
-post_delete.connect(ElectronicPoster.post_delete_handler, sender=ElectronicPoster)
+if ENABLE_SATCHMO:
+    post_save.connect(ElectronicPoster.post_save_handler, sender=ElectronicPoster)
+    post_delete.connect(ElectronicPoster.post_delete_handler, sender=ElectronicPoster)
 
 
 # =============================================================
 # Stickers
 # =============================================================
-class Sticker( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
+class Sticker( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         class Meta( StandardArchiveInfo.Archive.Meta ):
             root = archive_settings.STICKER_ROOT
@@ -1035,14 +1075,15 @@ class Sticker( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
     def _get_subtype(self):
         return 'Sticker'
 
-post_save.connect(Sticker.post_save_handler, sender=Sticker)
-post_delete.connect(Sticker.post_delete_handler, sender=Sticker)
+if ENABLE_SATCHMO:
+    post_save.connect(Sticker.post_save_handler, sender=Sticker)
+    post_delete.connect(Sticker.post_delete_handler, sender=Sticker)
 
 
 # =============================================================
 # Technical Documents
 # =============================================================
-class TechnicalDocument( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel ):
+class TechnicalDocument( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     class Archive( StandardArchiveInfo.Archive ):
         pdf = ResourceManager( type=types.PDFType )
         pdfsm = ResourceManager( type=types.PDFType )
@@ -1060,8 +1101,9 @@ class TechnicalDocument( ArchiveModel, StandardArchiveInfo, PhysicalInfo, PrintI
     def _get_subtype( self ):
         return 'TechnicalDocument'
 
-post_save.connect( TechnicalDocument.post_save_handler, sender=TechnicalDocument )
-post_delete.connect( TechnicalDocument.post_delete_handler, sender=TechnicalDocument )
+if ENABLE_SATCHMO:
+    post_save.connect( TechnicalDocument.post_save_handler, sender=TechnicalDocument )
+    post_delete.connect( TechnicalDocument.post_delete_handler, sender=TechnicalDocument )
 
 # =============================================================
 # Calendar
@@ -1083,7 +1125,7 @@ MONTHS_CHOICES = (
 )
 
 
-class Calendar( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
+class Calendar( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     year = models.CharField( max_length=4, blank=False, null=False, )
     month = archivesfields.ChoiceField( choices=MONTHS_CHOICES, blank=True, default=0 )
 
@@ -1116,11 +1158,12 @@ class Calendar( ArchiveModel, StandardArchiveInfo, PhysicalInfo, ShopModel ):
         else:
             return 'Calendar %s' % self.year
 
-post_save.connect(Calendar.post_save_handler, sender=Calendar)
-post_delete.connect(Calendar.post_delete_handler, sender=Calendar)
+if ENABLE_SATCHMO:
+    post_save.connect(Calendar.post_save_handler, sender=Calendar)
+    post_delete.connect(Calendar.post_delete_handler, sender=Calendar)
 
 
-class Donation( ArchiveModel, StandardArchiveInfo, ShopModel ):
+class Donation( ArchiveModel, StandardArchiveInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     """
     Donations
     """
@@ -1144,11 +1187,12 @@ class Donation( ArchiveModel, StandardArchiveInfo, ShopModel ):
         """
         return 'Donation'
 
-post_save.connect(Donation.post_save_handler, sender=Donation)
-post_delete.connect(Donation.post_delete_handler, sender=Donation)
+if ENABLE_SATCHMO:
+    post_save.connect(Donation.post_save_handler, sender=Donation)
+    post_delete.connect(Donation.post_delete_handler, sender=Donation)
 
 
-class SupernovaActivity( ArchiveModel, StandardArchiveInfo, ShopModel ):
+class SupernovaActivity( ArchiveModel, StandardArchiveInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     """
     SupernovaActivities
     """
@@ -1177,8 +1221,9 @@ class SupernovaActivity( ArchiveModel, StandardArchiveInfo, ShopModel ):
         """
         return 'SupernovaActivity'
 
-post_save.connect(SupernovaActivity.post_save_handler, sender=SupernovaActivity)
-post_delete.connect(SupernovaActivity.post_delete_handler, sender=SupernovaActivity)
+if ENABLE_SATCHMO:
+    post_save.connect(SupernovaActivity.post_save_handler, sender=SupernovaActivity)
+    post_delete.connect(SupernovaActivity.post_delete_handler, sender=SupernovaActivity)
 
 
 # =============================================================
@@ -1220,7 +1265,7 @@ class EPublication( ArchiveModel, StandardArchiveInfo ):
 # =============================================================
 # Conferences
 # =============================================================
-class ConferenceItem( ArchiveModel, StandardArchiveInfo, ShopModel ):
+class ConferenceItem( ArchiveModel, StandardArchiveInfo, ShopModel if ENABLE_SATCHMO else EmptyClass ):
     """
     A conference item can be anything that should be sold in connection with payment for a conference.
     This could include items such as:
@@ -1283,8 +1328,9 @@ class ConferenceItem( ArchiveModel, StandardArchiveInfo, ShopModel ):
         return [main_category, category]
 
 
-post_save.connect( ConferenceItem.post_save_handler, sender=ConferenceItem )
-post_delete.connect( ConferenceItem.post_delete_handler, sender=ConferenceItem )
+if ENABLE_SATCHMO:
+    post_save.connect( ConferenceItem.post_save_handler, sender=ConferenceItem )
+    post_delete.connect( ConferenceItem.post_delete_handler, sender=ConferenceItem )
 
 
 def DEFAULT_CONFERENCE_JOB_NO_HELP_TEXT_FUNC():
@@ -1335,7 +1381,8 @@ class Conference( models.Model ):
             for item in instance.conferenceitem_set.all():
                 item.save()  # ConferenceItem will copy the job/jsp/account_no on save.
 
-post_save.connect( Conference.post_save_handler, sender=Conference )
+if ENABLE_SATCHMO:
+    post_save.connect( Conference.post_save_handler, sender=Conference )
 
 
 # =============================================================
