@@ -4,3 +4,4 @@
 
 -r requirements/requirements-essential.txt
 -r requirements/requirements-testing.txt
+-r requirements/requirements-project.txt
