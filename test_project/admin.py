@@ -11,12 +11,11 @@ from django.contrib.redirects.admin import RedirectAdmin
 from djangoplicity.reports import admin as reports_admin
 # import djangoplicity.archives.contrib.satchmo.freeorder.admin
 
-import importlib
-
-# Register each applications admin interfaces with
-# an admin site.
+# Register each applications admin interfaces with an admin site.
 from djangoplicity.metadata.admin import CategoryTypeAdmin
 from djangoplicity.metadata.models import CategoryType
+
+import importlib
 
 admin_site = AdminSite(name="admin_site")
 adminlogs_site = AdminSite(name="adminlogs_site")
