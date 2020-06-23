@@ -8,7 +8,7 @@ from django.contrib.sites.models import Site
 from django.contrib.sites.admin import SiteAdmin
 from django.contrib.redirects.models import Redirect
 from django.contrib.redirects.admin import RedirectAdmin
-# from djangoplicity.reports import admin as reports_admin
+from djangoplicity.reports import admin as reports_admin
 # import djangoplicity.archives.contrib.satchmo.freeorder.admin
 
 import importlib
@@ -63,7 +63,7 @@ for site_config in admin_sites_modules_config:
 admin_site.register(User, UserAdmin)
 admin_site.register(Group, GroupAdmin)
 admin_site.register(CategoryType, CategoryTypeAdmin)
-# reports_admin.advanced_register_with_admin(admin_site)
+reports_admin.advanced_register_with_admin(admin_site)
 
 adminlogs_site.register(Site, SiteAdmin)
 adminlogs_site.register(Redirect, RedirectAdmin)
