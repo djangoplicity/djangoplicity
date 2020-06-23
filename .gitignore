@@ -1,5 +1,21 @@
 *.pyc
 *.swp
 *.swo
+*.gz
 
+<<<<<<< Updated upstream
 .idea/
+=======
+.idea/
+/*.egg-info/
+.tox/
+.env/
+db/*
+!db/.keep
+htmlcov/*
+!htmlcov/.keep
+.coverage
+djangoplicity/actions
+djangoplicity/mailinglists
+djangoplicity/newsletters
+>>>>>>> Stashed changes
