@@ -43,9 +43,7 @@ def report_detail( request, report_id ):
     output formatter.
     """
 
-    #
     # Determine output formatter
-    #
 
     # Request parameter 'output' specifies the formatter
     if 'output' in request.GET:
@@ -56,14 +54,11 @@ def report_detail( request, report_id ):
             output_formatter_type = settings.REPORTS_DEFAULT_FORMATTER
         else:
             output_formatter_type = REPORTS_DEFAULT_FORMATTER
-    #
+    
     # Retrieve report
-    #
     report = get_object_or_404( Report, pk=report_id )
 
-    #
     # Execute and format report
-    #
     try:
         result = ReportEngine.run_report( report )
         response = ReportFormatter.format( result, output_formatter_type, request )
