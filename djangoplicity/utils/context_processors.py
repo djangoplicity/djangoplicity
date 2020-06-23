@@ -46,7 +46,6 @@ def djangoplicity_environment( request ):
     return {
         'DJANGOPLICITY': {
             'HAS_SHOP': hasattr( settings, 'SATCHMO_SETTINGS' ),
-            'URL_PREFIX': '/{}'.format(settings.URLS_BASEPATH) if hasattr(settings, 'URLS_BASEPATH') else '',
             'SHOP_LIVE': settings.LIVE if hasattr( settings, 'LIVE' ) else False,
             'PROJECT_ENVIRONMENT': settings.PRJNAME if hasattr( settings, 'PRJNAME' ) else None,
             'SITE_ENVIRONMENT': settings.SITE_ENVIRONMENT if hasattr( settings, 'SITE_ENVIRONMENT' ) else None,
