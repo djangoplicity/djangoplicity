@@ -5,6 +5,9 @@ SITE_ENVIRONMENT = os.environ.get('ENVIRONMENT', 'dev')
 SHORT_NAME = 'Djangoplicity'
 TMP_DIR = os.path.join(BASE_DIR, 'tmp')
 
+# CUSTOM CONFIG DEFAULTS
+SERVE_STATIC_MEDIA = True
+
 # APPLICATION DEFINITION
 DJANGO_APPS = [
     # Do not autodiscover admin.py modules in all apps because test_project.admin configures custom Admin Sites itself
@@ -30,6 +33,8 @@ DJANGOPLICITY_APPS = [
     'djangoplicity.archives',
     'djangoplicity.releases',
     'djangoplicity.media',
+    # Used to create images derivatives
+    'djangoplicity.cutter',
     'djangoplicity.announcements',
     'djangoplicity.reports',
     'djangoplicity.utils',
@@ -90,7 +95,14 @@ ARCHIVE_ROOT = 'archives/'
 IMAGES_ARCHIVE_ROOT = 'archives/images/'
 VIDEOS_ARCHIVE_ROOT = 'archives/videos/'
 RELEASE_ARCHIVE_ROOT = 'archives/releases/'
+
+ARCHIVE_URL_QUERY_PREFIX = 'archive'
+ARCHIVE_URL_DETAIL_PREFIX = ''
+ARCHIVE_URL_FEED_PREFIX = 'feed'
+ARCHIVE_URL_SEARCH_PREFIX = 'search'
+
 ARCHIVE_AUTO_RESOURCE_DELETION = False
+ENABLE_ADVANCED_SEARCH = True
 
 ARCHIVES = (
     ('djangoplicity.media.models.Image', 'djangoplicity.media.options.ImageOptions'),
