@@ -19,6 +19,8 @@ INSTALLED_APPS += [
     'djangoplicity.utils',
 ]
 
+SITE_ID=1
+
 if USE_I18N:
     INSTALLED_APPS += [
         'djangoplicity.translation',
@@ -37,6 +39,12 @@ DJANGOPLICITY_ADMIN_CSS = "djangoplicity/css/admin.css"
 DJANGOPLICITY_ADMIN_JS = "djangoplicity/js/admin.js"
 SUBJECT_CATEGORY_CSS = "djangoplicity/css/widgets.css"
 
+############
+# REPORTS  #
+############
+REPORTS_DEFAULT_FORMATTER = 'html'
+REPORT_REGISTER_FORMATTERS = True
+
 
 USE_TZ = False
 
@@ -50,3 +58,6 @@ ARCHIVE_ROOT = 'archives/'
 IMAGES_ARCHIVE_ROOT = 'archives/images/'
 VIDEOS_ARCHIVE_ROOT = 'archives/videos/'
 RELEASE_ARCHIVE_ROOT = 'archives/releases/'
+
+# Allows templates coverage
+TEMPLATES[0]['OPTIONS']['debug'] = True

@@ -6,11 +6,11 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 from django.conf.urls import url
-from djangoplicity.reports.views import *
+from djangoplicity.reports.views import report_detail
 
 # URL config for overwriting the default change view of the reports module.
 # See notes in views.py for usage guide.
 
 urlpatterns = [
     url(r'^report/(?P<report_id>\d+)/$', report_detail, name='report-detail'),
- ]
+]

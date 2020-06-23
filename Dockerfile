@@ -18,6 +18,5 @@ RUN pip install -r requirements.txt
 COPY scripts/ scripts/
 COPY djangoplicity/ djangoplicity/
 COPY test_project/ test_project/
-COPY setup.cfg .
 COPY .coveragerc .
 COPY manage.py .

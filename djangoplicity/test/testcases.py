@@ -15,17 +15,19 @@
 """
 import unittest
 import urllib2
+from django.contrib.auth.models import User
 from django.test import TestCase
 
 
-class AdminTestCase( TestCase ):
-    """
-    :deprecated:
-    """
-    fixtures = ['auth.json' ]
-
+class AdminTestCase(TestCase):
     def setUp(self):
-        self.failUnless( self.client.login( username='test', password='test' ) )
+        user = User.objects.create_superuser(
+            username='admin',
+            email='admin@gmail.com',
+            password='admin'
+        )
+
+        assert self.client.login(username='admin', password='admin')
 
 
 class RedirectTestCase( unittest.TestCase ):
