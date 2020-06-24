@@ -46,7 +46,7 @@ setup(
         'django-tinymce4-lite == 1.7.2',
     ],
     dependency_links=[
-        'https://github.com/esoobservatory/python-avm-library/tarball/master',
+        'https://github.com/esoobservatory/python-avm-library/tarball/master#egg=python-avm-library-1.0b3',
     ],
     # metadata for upload to PyPI
     author='European Southern Observatory',
