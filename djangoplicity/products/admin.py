@@ -201,7 +201,7 @@ def admin_factory( model, options, exclude=['release_date', 'embargo_date', 'cre
     #
     # Shop information
     #
-    if ShopModel is not None and issubclass( model, EmptyClass ):
+    if ShopModel is not None and issubclass( model, ShopModel ):
         try:
             model._meta.get_field('weight')  # Test if field exists.
             product_list_display += ['sale', 'free', 'price', 'weight', product_link( 'adminshop_site' ) ]
