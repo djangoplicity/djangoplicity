@@ -568,7 +568,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
 The original image size (%dx%d px) is too small, please replace the original
 format by a higher resolution one and re-import.
 '''
-
+         # The original image size is too small
         message = body % (', '.join(missing_required), width, height)
 
     if upscaled_formats and not (getattr(model.Archive.Meta, 'ignore_upsale_warnings', False) or
@@ -587,9 +587,10 @@ Please verify that the following images have been upscaled correctly:
                 url = 'https://%s%s' % (Site.objects.get_current().domain, url)
 
             body += '\n - %s: %s' % (fmt.name, url)
+            # Please verify that the following images have been upscaled correctly
             message = body.format(pk=pk)
 
-    # Send mail when the original image is to small that some of the required
+    # Send mail
     if message is not None and subject is not None:
         try:
             if user and user.email:
