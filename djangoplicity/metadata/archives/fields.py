@@ -620,7 +620,7 @@ class AVMTypeField( models.CharField ):
     def __init__( self, *args, **kwargs ):
         defaults = {
             'choices': consts.TYPE_CHOICES,
-            'max_length': 12,
+            'max_length': 30,
             'null': True,
             'blank': True,
             'verbose_name': _( "Type" ),

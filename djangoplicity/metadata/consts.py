@@ -13,7 +13,7 @@ TYPE_CHOICES = (
     ('Day Photo', _('Day Photo')),
     ('DeepSky Photo', _('DeepSky Photo')),
     ('Spectrum', _('Spectrum')),
-    ('Annotated Obs', _('Annotated Obs')),
+    ('Annotated Obs', _('Annotated Observation')),
 )
 
 IMAGE_PRODUCT_QUALITY_CHOICES = (
