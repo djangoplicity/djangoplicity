@@ -44,7 +44,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from django.core.mail import send_mail
+from django.core.mail import send_mail, mail_admins
 from django.template.loader import get_template
 
 from djangoplicity.archives.base import cache_handler
@@ -557,6 +557,9 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         # Make sure permissions are correct
         os.chmod(dest_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
 
+    subject = None
+    message = None
+
     if missing_required:
         subject = 'Could not generate all required image formats for %s: %s'
         body = '''The following images formats could not be generated:
@@ -565,17 +568,8 @@ def process_image_derivatives(app_label, module_name, pk, formats,
 The original image size (%dx%d px) is too small, please replace the original
 format by a higher resolution one and re-import.
 '''
-        rcpt = 'epodweb@eso.org'
-        if user and user.email:
-            rcpt = user.email
-
-        send_mail(
-            subject % (module_name, pk),
-            body % (', '.join(missing_required), width, height),
-            'no-reply@eso.org',
-            [rcpt],
-            fail_silently=False,
-        )
+         # The original image size is too small
+        message = body % (', '.join(missing_required), width, height)
 
     if upscaled_formats and not (getattr(model.Archive.Meta, 'ignore_upsale_warnings', False) or
             getattr(settings, 'DJANGOPLICITY_IGNORE_UPSCALE_WARNING', False)):
@@ -585,10 +579,6 @@ formats, and the image was upscaled to match.
 
 Please verify that the following images have been upscaled correctly:
 '''
-        rcpt = 'epodweb@eso.org'
-        if user and user.email:
-            rcpt = user.email
-
         for fmt in upscaled_formats:
             resource = getattr(archive, 'resource_%s' % fmt.name)
 
@@ -597,14 +587,30 @@ Please verify that the following images have been upscaled correctly:
                 url = 'https://%s%s' % (Site.objects.get_current().domain, url)
 
             body += '\n - %s: %s' % (fmt.name, url)
+            # Please verify that the following images have been upscaled correctly
+            message = body.format(pk=pk)
 
-        send_mail(
-            subject % (module_name, pk),
-            body.format(pk=pk),
-            'no-reply@eso.org',
-            [rcpt],
-            fail_silently=False,
-        )
+    # Send mail
+    if message is not None and subject is not None:
+        try:
+            if user and user.email:
+                rcpt = user.email
+                send_mail(
+                    subject % (module_name, pk),
+                    message,
+                    settings.NO_REPLY_SMTP_EMAIL,
+                    [rcpt],
+                    fail_silently=False,
+                )
+            else:
+                mail_admins(
+                    subject % (module_name, pk),
+                    message,
+                    fail_silently=False,
+                )
+        except Exception, e:
+            cache_handler(model, created=False, instance=archive)
+            raise Exception(e)
 
     # Clear the cache for the archive
     cache_handler(model, created=False, instance=archive)
