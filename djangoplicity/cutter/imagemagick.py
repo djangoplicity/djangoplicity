@@ -427,16 +427,18 @@ def process_image_derivatives(app_label, module_name, pk, formats,
     try:
         archive = model.objects.get(pk=pk)
     except model.DoesNotExist:
-        logging.error('No archive found for %s.%s "%s"', app_label, module_name, pk)
-        return
+        error = 'No archive found for %s.%s "%s"', app_label, module_name, pk
+        logging.error(error)
+        raise Exception(error)
 
     dest_dir = os.path.join(settings.MEDIA_ROOT, archive.Archive.Meta.root)
 
     original = wait_for_resource(archive)
 
     if not original:
-        logging.error('No original format found for "%s"', pk)
-        return
+        error = 'No original format found for "%s"', pk
+        logging.error(error)
+        raise Exception(error)
 
     # Get the original file resolution:
     width, height = identify_image(original.path)
@@ -592,25 +594,21 @@ Please verify that the following images have been upscaled correctly:
 
     # Send mail
     if message is not None and subject is not None:
-        try:
-            if user and user.email:
-                rcpt = user.email
-                send_mail(
-                    subject % (module_name, pk),
-                    message,
-                    settings.NO_REPLY_SMTP_EMAIL,
-                    [rcpt],
-                    fail_silently=False,
-                )
-            else:
-                mail_admins(
-                    subject % (module_name, pk),
-                    message,
-                    fail_silently=False,
-                )
-        except Exception, e:
-            cache_handler(model, created=False, instance=archive)
-            raise Exception(e)
+        if user and user.email:
+            rcpt = user.email
+            send_mail(
+                subject % (module_name, pk),
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [rcpt],
+                fail_silently=True,
+            )
+        else:
+            mail_admins(
+                subject % (module_name, pk),
+                message,
+                fail_silently=True,
+            )
 
     # Clear the cache for the archive
     cache_handler(model, created=False, instance=archive)
