@@ -110,16 +110,17 @@ def find_importables( archive_import_root, archive_model, archive_options, exclu
 
         fmt_directory = os.path.join( archive_import_root, fmt )
 
+        disallowed_characters_regex = r"[^\w-]"
         # Get files in directory or creates the directory if it doesn't exists.
         for f in _get_files( fmt_directory ):
             ( obj_id, ext ) = os.path.splitext( f )
-            cleanid = re.sub( r"[^\w-]", "", obj_id )
-            fpath = os.path.join( fmt_directory, f )
+            cleanid = re.sub(disallowed_characters_regex, "", obj_id)
+            fpath = os.path.join(fmt_directory, f)
 
             # Skip file if: excluded file, unallowed extension, dot file,
-            # whitespace in file
+            # disallowed characters or whitespace in file
             if cleanid == exclude_id or ext.lower() not in allowed_exts or \
-                obj_id.startswith( "." ) or ' ' in obj_id:
+                re.search(disallowed_characters_regex, obj_id) or ' ' in obj_id:
                 invalid.append(fpath)
                 continue
 
