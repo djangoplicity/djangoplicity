@@ -226,7 +226,7 @@ class PageMigrationTask( MigrationTask ):
                 )
             p.save()
             return p
-        except Exception, e:
+        except Exception as e:
             import pprint
             pprint.pprint(e)
             raise MigrationError( "Could not save the parse page." )
@@ -416,7 +416,7 @@ class PageFilesCopyTask( PageLinksCleanupTask ):
                     # Create intermediate directories
                     try:
                         os.makedirs( head )
-                    except OSError, e:
+                    except OSError as e:
                         if e.errno != 17:
                             raise e
 

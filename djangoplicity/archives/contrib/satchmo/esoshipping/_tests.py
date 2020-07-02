@@ -1,6 +1,7 @@
 """
 Module for testing shipping prices defined in the database.
 """
+from __future__ import print_function
 
 #
 # General setup
@@ -71,5 +72,5 @@ for row in shipping_table:
                 calculated_cost = z.cost( w )
                 expected_cost = Decimal(expected_cost)
                 assert calculated_cost == expected_cost
-    except AssertionError, e:
-        print "Zone %s, Weight %s: Expected %s, got %s" % ( z.name, w, expected_cost, calculated_cost )
+    except AssertionError as e:
+        print("Zone %s, Weight %s: Expected %s, got %s" % ( z.name, w, expected_cost, calculated_cost ))

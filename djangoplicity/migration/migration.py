@@ -68,7 +68,7 @@ def run_migration( conf, tasks ):
         t.state = state
         try:
             t.run()
-        except MigrationError, e:
+        except MigrationError as e:
             if e.can_continue:
                 logger.error( "Task failed: %s", e )
             else:

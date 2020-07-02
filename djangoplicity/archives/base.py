@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -454,7 +455,7 @@ class ArchiveModel( object ):
 
             for resource in related_resources:
                 if not resource.pk.startswith(self.pk):
-                    print '** Not renaming %s for %s' % (resource.pk, self.pk)
+                    print('** Not renaming %s for %s' % (resource.pk, self.pk))
                     continue
 
                 # Generate destination pk:
@@ -504,7 +505,7 @@ class ArchiveModel( object ):
                 # get_translations():
                 proxytranslation = proxymodel.objects.get(pk=translation.pk)
                 proxytranslation.rename(destpk)
-                print '** Renaming %s Translation %s to %s' % (proxytranslation.__class__.__name__, translation.pk, destpk)
+                print('** Renaming %s Translation %s to %s' % (proxytranslation.__class__.__name__, translation.pk, destpk))
 
         # Update key in primary table
         sql = """UPDATE "%(table)s" SET "%(key)s"='%(new_key)s' WHERE "%(key)s"='%(old_key)s'"""

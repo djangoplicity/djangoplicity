@@ -64,5 +64,5 @@ def report_detail( request, report_id ):
         response = ReportFormatter.format( result, output_formatter_type, request )
 
         return response
-    except ReportExecutionError, e:
+    except ReportExecutionError as e:
         return render(request, 'error.html', {'error_message': e, 'title': _('Report "%s" could not be generated') % report.name})

@@ -200,7 +200,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
                 args = ['/usr/bin/mplayer', '-noconfig', 'all', '-cache-min', '0', '-vo', 'null', '-ao', 'null', '-frames', '0', '-identify', path]
                 try:
                     output = Popen(args, stdout=PIPE, stderr=PIPE).communicate()[0].split('\n')
-                except OSError, e:
+                except OSError as e:
                     logger.error('Can\'t run mplayer identify command: "%s"' % ' '.join(args))
                     raise e
                 output_d = dict([data.split('=') for data in output if data.startswith('ID_')])
@@ -365,7 +365,7 @@ def fast_start(video_id, fmt, sendtask_callback=None, sendtask_tasksetid=None):
             if res:
                 os.system(MP4BOX_PATH + " -quiet -tmp %s -inter 500 %s" % (settings.TMP_DIR, res.path))
                 logger.info('Video %s set to fast start' % video_id)
-    except Exception, e:
+    except Exception as e:
         logger.warning("Exception: %s." % e)
 
     # send_task callback
@@ -476,7 +476,7 @@ def video_embed_subtitles( video_id, resource_name, sendtask_callback=None, send
                         res = get_instance_resource( v, resource_name )
                     except ResourceError:
                         logger.error( "%s is not a valid resource on video instances." % resource_name )
-                    except Exception, e:
+                    except Exception as e:
                         logger.error( "Error: %s" % e )
 
                     file = None

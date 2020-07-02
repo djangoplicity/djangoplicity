@@ -76,17 +76,17 @@ class MenuNode( template.Node ):
             if 'request' in context:
                 mark_selected_item( menu['byurls'], context['request'].path )
 
-        except MenuDoesNotExist, e:
+        except MenuDoesNotExist as e:
             return node_error( u"The menu '%s' does not exists" % menu_proxy.menu_name )
-        except template.VariableDoesNotExist, e:
+        except template.VariableDoesNotExist as e:
             return node_error( _(u"Couldn't resolve menu variable: %s") % e )
 
         # Render template and report any errors if debug is on
         try:
             t = template.loader.get_template( MENU_TMPL_NAME )
-        except template.TemplateDoesNotExist, e:
+        except template.TemplateDoesNotExist as e:
             return node_error( u"The template %s does not exists: %s" % (MENU_TMPL_NAME, e) )
-        except template.TemplateSyntaxError, e:
+        except template.TemplateSyntaxError as e:
             return node_error( u"The template %s had syntax errors: %s" % (MENU_TMPL_NAME, e) )
 
         return t.render({
@@ -109,7 +109,7 @@ class SubMenuNode( template.Node ):
     def render( self, context ):
         try:
             submenu = template.Variable( self.submenu_var ).resolve( context )
-        except template.VariableDoesNotExist, e:
+        except template.VariableDoesNotExist as e:
             return node_error( u"Couldn't resolve variable in submenu: %s" % e )
 
         ctx = {}
@@ -121,13 +121,13 @@ class SubMenuNode( template.Node ):
         if self.template_name is not None and self.template_name == "template":
             try:
                 ctx['template'] = template.Variable( "template" ).resolve( context )
-            except template.VariableDoesNotExist, e:
+            except template.VariableDoesNotExist as e:
                 return node_error( u"Couldn't resolve variable in submenu: %s" % e )
         else:
             if self.template_name is None:
                 try:
                     ctx['template'] = template.Variable( "template" ).resolve( context )
-                except template.VariableDoesNotExist, e:
+                except template.VariableDoesNotExist as e:
                     return node_error( u"Couldn't resolve variable in submenu: %s" % e )
             else:
                 ctx['template'] = self.template_name
@@ -136,9 +136,9 @@ class SubMenuNode( template.Node ):
         try:
             tplname = u'menus/submenu_%s.html' % ctx['template']
             t = template.loader.get_template( tplname )
-        except template.TemplateDoesNotExist, e:
+        except template.TemplateDoesNotExist as e:
             return node_error( u"The template %s does not exists: %s" % ( tplname, e) )
-        except template.TemplateSyntaxError, e:
+        except template.TemplateSyntaxError as e:
             return node_error( u"The template %s had syntax errors: %s" % (tplname, e) )
 
         return t.render( ctx )
@@ -193,13 +193,13 @@ class BreadcrumbNode( template.Node ):
             else:
                 return ''
 
-        except MenuDoesNotExist, e:
+        except MenuDoesNotExist as e:
             return node_error( _(u"The menu does not exists") )
-        except template.VariableDoesNotExist, e:
+        except template.VariableDoesNotExist as e:
             return node_error( _(u"Couldn't resolve menu variable: %s") % e )
-        except template.TemplateDoesNotExist, e:
+        except template.TemplateDoesNotExist as e:
             return node_error( _(u"The template %(tpl)s does not exists: %(msg)s") % { 'tpl': MENU_TMPL_NAME, 'msg': e } )
-        except template.TemplateSyntaxError, e:
+        except template.TemplateSyntaxError as e:
             return node_error( _(u"The template %(tpl)s had syntax errors: %(msg)s") % { 'tpl': MENU_TMPL_NAME, 'msg': e } )
 
         return node_error( _(u"An unknown error occurred.") )
