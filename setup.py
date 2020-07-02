@@ -25,7 +25,6 @@ setup(
         'oauth2client',
         'html2text == 3.200.3',
         'htmllaundry',
-        'icalendar == 2.1',
         'ipython == 5.5.0',  # Last version compatible with python 2.7
         'Pillow',
         'pycountry == 1.16',
@@ -34,7 +33,7 @@ setup(
         'pytest-django',
         'python-dateutil',
         'python-memcached == 1.59',
-        'python-xmp-toolkit == 1.0.2',
+        'python-xmp-toolkit == 2.0.1',
         'pytz',
         'requests',
         'ndg-httpsclient',  # Extra for requests
