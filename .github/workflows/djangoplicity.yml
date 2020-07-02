@@ -2,9 +2,9 @@ name: Djangoplicity CI
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master, develop, release/* ]
   pull_request:
-    branches: [ master, develop ]
+    branches: [ master, develop, release/* ]
 
 jobs:
   build:
