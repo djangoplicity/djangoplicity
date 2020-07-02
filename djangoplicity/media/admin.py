@@ -190,7 +190,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
             for obj in queryset:
                 write_metadata.delay( obj.id, IMAGE_AVM_FORMATS )
             self.message_user( request, _("Writing AVM to selected images.") )
-        except Exception, e:
+        except Exception as e:
             self.message_user( request, _("This djangoplicity installation does not support writing AVM to images (%s)." % unicode( e ) ) )
     action_write_avm.short_description = _("Write AVM to images")
 
@@ -317,7 +317,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
                 for f in settings.VIDEOS_SUBTITLES_FORMATS:
                     video_embed_subtitles.delay( obj.pk, f)
             self.message_user( request, _("Updating subtitles for selected videos.") )
-        except Exception, e:
+        except Exception as e:
             self.message_user( request, _("Error while updating subtitles." % unicode( e ) ) )
 
     action_update_subtitles.short_description = "Update subtitles"

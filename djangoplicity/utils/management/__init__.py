@@ -34,7 +34,7 @@ def find_management_module_replacement(app_name):
     try:
         modules = find_modules(part, paths)
         paths = [m[1] for m in modules]
-    except ImportError, e:
+    except ImportError as e:
         # When namespace packages are installed with python setup.py install --single-version-externally-managed
         # will not have a __init__.py file in the directory. Instead there'll be a .pth file in site-packges
         # with a bit of python code that will add the namespace package as builtin module and set it's path (i.e it's

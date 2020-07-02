@@ -1,3 +1,4 @@
+from __future__ import print_function
 from optparse import OptionParser
 import sys
 
@@ -20,8 +21,8 @@ def get_options( argoptions ):
         attr = getattr( options, o[1], None )
 
         if attr is None and o[3]:
-            print "Error: Option -%s must be specified." % o[0]
-            print ""
+            print("Error: Option -%s must be specified." % o[0])
+            print("")
             args = ['-h']
             (options, args) = parser.parse_args(args)
             sys.exit(1)

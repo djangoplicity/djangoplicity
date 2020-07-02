@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 
 from django.conf import settings
@@ -10,6 +11,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for path in (settings.PRJBASE, settings.DJANGOPLICITY_ROOT):
-            print path
+            print(path)
             os.chdir(path)
             call_command('makemessagesnofuzzy')

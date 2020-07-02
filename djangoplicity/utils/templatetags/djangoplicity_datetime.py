@@ -62,7 +62,7 @@ def time4lang(value, arg=settings.LANGUAGE_CODE):
             return timezone(value, timezones[arg])
         else:
             return timezone(value)
-    except Exception, e:
+    except Exception as e:
         return e.message
 
 

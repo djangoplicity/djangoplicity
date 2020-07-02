@@ -94,7 +94,7 @@ class CSVIterator( object ):
         return data
 
     def next(self):
-        return self._to_dict( self.reader.next() )
+        return self._to_dict( next(self.reader) )
 
 
 class CSVDataSource( DataSource ):
@@ -125,7 +125,7 @@ class CSVDataSource( DataSource ):
             self.reader = csv.reader( open( self.csvfilename, "r") )
 
         if not self.fieldnames:
-            self.fieldnames = self.reader.next()
+            self.fieldnames = next(self.reader)
 
         return CSVIterator( self.reader, self.fieldnames )
 

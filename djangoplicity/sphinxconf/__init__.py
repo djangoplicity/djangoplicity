@@ -25,7 +25,7 @@ def read_version():
         import paver.svn
         svninfo = paver.svn.info(path='../')
         return str( svninfo['revision'] )
-    except Exception, e:
+    except Exception as e:
         raise SystemExit(
             "Error: you must run setup from the root directory (%s)" % str(e))
 

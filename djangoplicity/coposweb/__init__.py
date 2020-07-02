@@ -35,5 +35,6 @@ COPOSWeb payment module for Satchmo 0.9.1 (http://http://www.satchmoproject.com/
 For details about custom payment modules please referrer to:
 - http://www.satchmoproject.com/docs/rel/0.9.1/custom-payment.html
 """
+from __future__ import absolute_import
 
-from manager import CoposWebManager
+from .manager import CoposWebManager
