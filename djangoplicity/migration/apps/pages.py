@@ -30,8 +30,8 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
-from BeautifulSoup import BeautifulStoneSoup
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulStoneSoup
+from bs4 import BeautifulSoup
 from djangoplicity.pages.models import Page
 from django.contrib.redirects.models import Redirect
 from djangoplicity.migration import MigrationTask, MigrationError, MigrationConfAdapter

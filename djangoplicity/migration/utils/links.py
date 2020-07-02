@@ -30,7 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 from django.contrib.redirects.models import Redirect
 from urlparse import urljoin, urlsplit, urlunsplit
 
