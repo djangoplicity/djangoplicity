@@ -93,13 +93,13 @@ class CommonViewsTestCase( TestCase ):
 
         self.assertEqual(status_code, code, error_message)
 
-    def test_index_root( self ):
+    def test_index_root(self):
         """
         Test if main index archive pages is reachable
         """
         for conf in self.conf.values():
-            response = self.client.get( conf['root'] )
-            self._assert_response( response, 200 )
+            response = self.client.get(conf['root'])
+            self.assertEqual(response.status_code, 200)
 
     def test_queries( self ):
         """
