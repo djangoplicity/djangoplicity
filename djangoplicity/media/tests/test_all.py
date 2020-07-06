@@ -83,8 +83,15 @@ class CommonViewsTestCase( TestCase ):
     def setUp( self ):
         pass
 
-    def _assert_response(self, response, code ):
-        self.assertEqual( response.status_code, code, "%s request to %s failed. Expected code %s, got %s instead." % (response.request['REQUEST_METHOD'], response.request['PATH_INFO'], code, response.status_code ) )
+    def _assert_response(self, response, code):
+        status_code = response.status_code
+
+        keyed_message = "%s request to %s failed,.. Expected code %s, got %s instead."
+        request_method = response.request['REQUEST_METHOD']
+        path_info = response.request['PATH_INFO']
+        error_message = keyed_message % (request_method, path_info, code, status_code)
+
+        self.assertEqual(status_code, code, error_message)
 
     def test_index_root( self ):
         """
