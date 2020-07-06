@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="row page">
+    <div class="col-md-9 left-column">
+{% block content %}
+{% endblock %}
+    </div>
+    <div class="col-md-3 right-column">
+{% block rightcolumn %}
+{% include "archives/searchbox.html" %}
+{{ right_column_page }}
+{% include "archives/crosslinks.html" %}
+{% endblock %}
+    </div>
+</div>
+{% endblock %}

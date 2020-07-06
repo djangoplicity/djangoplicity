@@ -1,0 +1,88 @@
+{% load i18n %}
+<!DOCTYPE HTML>
+<html lang="{{ LANGUAGE_CODE }}">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="KTjYtxjG6PEMU6XMF7LY4nMnJ7MXxYaNzVY6SYTo1Qc" />
+    <meta name="author" content="information@eso.org" />
+    {% spaceless %}
+    {% endspaceless %}
+    <link href="http://www.spacetelescope.org/rss/feed.xml" rel="alternate" type="application/rss+xml" title="Hubble Space Telescope News">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet' type='text/css'>
+
+    <title>{% block site_title %}ESA/Hubble{% endblock %}</title>
+{% load pipeline %}
+{% stylesheet 'main' %}
+    <!--[if IE]><link rel="shortcut icon" href="/static/favicon.ico"><![endif]-->
+    <link rel="icon" href="/static/favicon.ico">
+
+    <!--[if lte IE 9]>
+        {% javascript 'ie8compat' %}
+        <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></SCRIpt>
+        <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+
+    {% include "archives/opengraph.html" %}
+    {% block extra_header %}
+    {% endblock %}
+</head>
+
+<body>
+
+<nav class="navbar-general-wrapper" role="navigation">
+    <div class="navbar-general">
+        <a href="/"><div class="sprites-title"></div></a>
+        <div class="quicklinks">
+            <a href="/contact">Contact</a>
+            <a href="/subscribe/">Subscribe to Hubble News</a>
+            <a href="/sitemap/">Site Map</a>
+            <a href="/search/"><span class="fa fa-search"></span></a>
+        </div>
+        <a href="http://www.esa.int">
+            <div class="sprites-esa-logo inlinesprite toplogo" title="ESA/Hubble"></div>
+        </a>
+        {% load menus %}
+        {% init_menu 'Main Menu' as main_menu %}
+        <div class="main-menu">
+            <div class="mobile-menu clearfix">
+                <button class="menu-trigger"><span class="fa fa-navicon"></span> {% trans "Open Menu" %}</button>
+            </div>
+            {% render_menu main_menu main %}
+        </div>
+    </div>
+</nav>
+
+
+<div id="content">
+{% block content_area %}
+{% endblock %}
+</div>
+
+<div class="row footernote">
+    <div class="col-xs-12 col-md-12">
+        <a href="http://www.cdn77.com">{% trans "Accelerated by CDN77" %}</a>
+    </div>
+</div>
+
+{% stylesheet 'extras' %}
+
+<script type="text/javascript">var MEDIA_URL = "{{MEDIA_URL}}"</script>
+{% javascript 'main' %}
+{% block extra_scripts %}
+{% endblock %}
+
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-2368492-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
