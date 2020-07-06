@@ -85,10 +85,10 @@ class CommonViewsTestCase( TestCase ):
 
     def _assert_response(self, response, code):
         status_code = response.status_code
-
-        keyed_message = "%s request to %s failed,.. Expected code %s, got %s instead."
         request_method = response.request['REQUEST_METHOD']
         path_info = response.request['PATH_INFO']
+
+        keyed_message = "%s request to %s failed,.. Expected code %s, got %s instead."
         error_message = keyed_message % (request_method, path_info, code, status_code)
 
         self.assertEqual(status_code, code, error_message)
@@ -99,7 +99,7 @@ class CommonViewsTestCase( TestCase ):
         """
         for conf in self.conf.values():
             response = self.client.get(conf['root'])
-            self.assertEqual(response.status_code, 200)
+            self._assert_response(response, 200)
 
     def test_queries( self ):
         """
