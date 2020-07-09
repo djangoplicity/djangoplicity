@@ -69,15 +69,15 @@ class CommonViewsTestCase( TestCase ):
                 ( 'year', '2012/', 200 ),
             ],
         },
-        'potws': {
-            'root': '/images/potw/',
-            'options': PictureOfTheWeekOptions,
-            'list_views': [
-                ( 'embargo', '', 302 ),
-                ( 'staging', '', 302 ),
-                ( 'year', '2012/', 200 ),
-            ],
-        },
+        # 'potws': {
+        #     'root': '/images/potw/',
+        #     'options': PictureOfTheWeekOptions,
+        #     'list_views': [
+        #         ( 'embargo', '', 302 ),
+        #         ( 'staging', '', 302 ),
+        #         ( 'year', '2012/', 200 ),
+        #     ],
+        # },
     }
 
     def setUp( self ):
@@ -111,11 +111,11 @@ class CommonViewsTestCase( TestCase ):
             views = conf['list_views']
 
             for q, subpart, code in views:
-                view_url_root = "%sarchive/%s/%s" % ( root, q, subpart )
-                response = self.client.get( view_url_root )
-                self._assert_response( response, code )
+                view_url_root = "%sarchive/%s/%s" % (root, q, subpart)
+                response = self.client.get(view_url_root)
+                self._assert_response(response, code)
 
-                for browser in getattr( opt.Queries, q ).browsers:
-                    view_url = "%s%s/" % ( view_url_root, browser )
-                    response = self.client.get( view_url )
-                    self._assert_response( response, code )
+                # for browser in getattr(opt.Queries, q).browsers:
+                #     view_url = "%s%s/" % ( view_url_root, browser )
+                #     response = self.client.get( view_url )
+                #     self._assert_response( response, code )
