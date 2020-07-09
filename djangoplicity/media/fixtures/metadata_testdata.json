@@ -25558,10 +25558,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "alma",
-          "subject_category": 1106,
           "type": 8,
-          "name": "ALMA",
-          "subject_name": null
+          "name": "ALMA"
       }
   },
   {
@@ -25569,10 +25567,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "apex",
-          "subject_category": 1095,
           "type": 8,
-          "name": "APEX",
-          "subject_name": null
+          "name": "APEX"
       }
   },
   {
@@ -25580,10 +25576,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "blackholes",
-          "subject_category": 1103,
           "type": 8,
-          "name": "Quasars & Black Holes",
-          "subject_name": null
+          "name": "Quasars & Black Holes"
       }
   },
   {
@@ -25591,10 +25585,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "chile",
-          "subject_category": 1115,
           "type": 8,
-          "name": "Chile",
-          "subject_name": null
+          "name": "Chile"
       }
   },
   {
@@ -25602,10 +25594,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "cosmology",
-          "subject_category": 1098,
           "type": 8,
-          "name": "Cosmology",
-          "subject_name": null
+          "name": "Cosmology"
       }
   },
   {
@@ -25613,10 +25603,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "e-elt",
-          "subject_category": 1105,
           "type": 8,
-          "name": "E-ELT",
-          "subject_name": null
+          "name": "E-ELT"
       }
   },
   {
@@ -25624,10 +25612,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "exoplanets",
-          "subject_category": 313,
           "type": 8,
-          "name": "Exoplanets",
-          "subject_name": null
+          "name": "Exoplanets"
       }
   },
   {
@@ -25635,10 +25621,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "galaxies",
-          "subject_category": 1097,
           "type": 8,
-          "name": "Galaxies",
-          "subject_name": null
+          "name": "Galaxies"
       }
   },
   {
@@ -25646,10 +25630,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "galaxyclusters",
-          "subject_category": 1094,
           "type": 8,
-          "name": "Galaxy Clusters",
-          "subject_name": null
+          "name": "Galaxy Clusters"
       }
   },
   {
@@ -25657,10 +25639,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "illustrations",
-          "subject_category": 1102,
           "type": 8,
-          "name": "Illustrations",
-          "subject_name": null
+          "name": "Illustrations"
       }
   },
   {
@@ -25668,10 +25648,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "lasilla",
-          "subject_category": 1099,
           "type": 8,
-          "name": "La Silla",
-          "subject_name": null
+          "name": "La Silla"
       }
   },
   {
@@ -25679,10 +25657,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "logos",
-          "subject_category": 1112,
           "type": 8,
-          "name": "Logos",
-          "subject_name": null
+          "name": "Logos"
       }
   },
   {
@@ -25690,10 +25666,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "nebulae",
-          "subject_category": 1093,
           "type": 8,
-          "name": "Nebulae",
-          "subject_name": null
+          "name": "Nebulae"
       }
   },
   {
@@ -25701,10 +25675,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "paranal",
-          "subject_category": 1092,
           "type": 8,
-          "name": "Paranal",
-          "subject_name": null
+          "name": "Paranal"
       }
   },
   {
@@ -25712,10 +25684,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "peopleandevents",
-          "subject_category": 1091,
           "type": 8,
-          "name": "People and Events",
-          "subject_name": null
+          "name": "People and Events"
       }
   },
   {
@@ -25723,10 +25693,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "premises",
-          "subject_category": 1100,
           "type": 8,
-          "name": "Premises",
-          "subject_name": null
+          "name": "Premises"
       }
   },
   {
@@ -25734,10 +25702,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "solarsystem",
-          "subject_category": 1096,
           "type": 8,
-          "name": "Solar System",
-          "subject_name": null
+          "name": "Solar System"
       }
   },
   {
@@ -25745,10 +25711,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "starclusters",
-          "subject_category": 1104,
           "type": 8,
-          "name": "Star Clusters",
-          "subject_name": null
+          "name": "Star Clusters"
       }
   },
   {
@@ -25756,10 +25720,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "stars",
-          "subject_category": 1101,
           "type": 8,
-          "name": "Stars",
-          "subject_name": null
+          "name": "Stars"
       }
   },
   {
@@ -25767,10 +25729,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "surveytelescopes",
-          "subject_category": 1111,
           "type": 8,
-          "name": "Survey Telescopes",
-          "subject_name": null
+          "name": "Survey Telescopes"
       }
   },
   {
@@ -25778,10 +25738,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "abouteso",
-          "subject_category": 1107,
           "type": 9,
-          "name": "About ESO",
-          "subject_name": null
+          "name": "About ESO"
       }
   },
   {
@@ -25789,10 +25747,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "alma",
-          "subject_category": 1106,
           "type": 9,
-          "name": "ALMA",
-          "subject_name": null
+          "name": "ALMA"
       }
   },
   {
@@ -25800,10 +25756,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "apex",
-          "subject_category": 1095,
           "type": 9,
-          "name": "APEX",
-          "subject_name": null
+          "name": "APEX"
       }
   },
   {
@@ -25811,10 +25765,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "blackholes",
-          "subject_category": 1103,
           "type": 9,
-          "name": "Quasars & Black Holes",
-          "subject_name": null
+          "name": "Quasars & Black Holes"
       }
   },
   {
@@ -25822,10 +25774,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "compilations",
-          "subject_category": 1114,
           "type": 9,
-          "name": "Compilations",
-          "subject_name": null
+          "name": "Compilations"
       }
   },
   {
@@ -25833,10 +25783,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "cosmology",
-          "subject_category": 1098,
           "type": 9,
-          "name": "Cosmology",
-          "subject_name": null
+          "name": "Cosmology"
       }
   },
   {
@@ -25844,10 +25792,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "e-elt",
-          "subject_category": 1105,
           "type": 9,
-          "name": "The  European ELT",
-          "subject_name": null
+          "name": "The  European ELT"
       }
   },
   {
@@ -25855,10 +25801,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "esocast",
-          "subject_category": 1109,
           "type": 9,
-          "name": "ESOcast",
-          "subject_name": null
+          "name": "ESOcast"
       }
   },
   {
@@ -25866,10 +25810,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "events",
-          "subject_category": 1110,
           "type": 9,
-          "name": "Events",
-          "subject_name": null
+          "name": "Events"
       }
   },
   {
@@ -25877,10 +25819,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "exoplanets",
-          "subject_category": 313,
           "type": 9,
-          "name": "Exoplanets",
-          "subject_name": null
+          "name": "Exoplanets"
       }
   },
   {
@@ -25888,10 +25828,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "featuremovies",
-          "subject_category": 1116,
           "type": 9,
-          "name": "Feature Movies",
-          "subject_name": null
+          "name": "Feature Movies"
       }
   },
   {
@@ -25899,10 +25837,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "galaxies",
-          "subject_category": 1097,
           "type": 9,
-          "name": "Galaxies",
-          "subject_name": null
+          "name": "Galaxies"
       }
   },
   {
@@ -25910,10 +25846,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "galaxyclusters",
-          "subject_category": 1094,
           "type": 9,
-          "name": "Galaxy Clusters",
-          "subject_name": null
+          "name": "Galaxy Clusters"
       }
   },
   {
@@ -25921,10 +25855,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "hd",
-          "subject_category": 1113,
           "type": 9,
-          "name": "HD Videos",
-          "subject_name": null
+          "name": "HD Videos"
       }
   },
   {
@@ -25932,10 +25864,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "illustrations",
-          "subject_category": 1102,
           "type": 9,
-          "name": "Illustrations",
-          "subject_name": null
+          "name": "Illustrations"
       }
   },
   {
@@ -25943,10 +25873,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "lasilla",
-          "subject_category": 1099,
           "type": 9,
-          "name": "La Silla",
-          "subject_name": null
+          "name": "La Silla"
       }
   },
   {
@@ -25954,10 +25882,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "nebulae",
-          "subject_category": 1093,
           "type": 9,
-          "name": "Nebulae",
-          "subject_name": null
+          "name": "Nebulae"
       }
   },
   {
@@ -25965,10 +25891,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "paranal",
-          "subject_category": 1092,
           "type": 9,
-          "name": "Paranal",
-          "subject_name": null
+          "name": "Paranal"
       }
   },
   {
@@ -25976,10 +25900,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "peopleandevents",
-          "subject_category": 1091,
           "type": 9,
-          "name": "People and Events",
-          "subject_name": null
+          "name": "People and Events"
       }
   },
   {
@@ -25987,10 +25909,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "premises",
-          "subject_category": 1100,
           "type": 9,
-          "name": "Premises",
-          "subject_name": null
+          "name": "Premises"
       }
   },
   {
@@ -25998,10 +25918,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "solarsystem",
-          "subject_category": 1096,
           "type": 9,
-          "name": "Solar System",
-          "subject_name": null
+          "name": "Solar System"
       }
   },
   {
@@ -26009,10 +25927,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "starclusters",
-          "subject_category": 1104,
           "type": 9,
-          "name": "Star Clusters",
-          "subject_name": null
+          "name": "Star Clusters"
       }
   },
   {
@@ -26020,10 +25936,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "stars",
-          "subject_category": 1101,
           "type": 9,
-          "name": "Stars",
-          "subject_name": null
+          "name": "Stars"
       }
   },
   {
@@ -26031,10 +25945,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "surveytelescopes",
-          "subject_category": 1111,
           "type": 9,
-          "name": "Survey Telescopes",
-          "subject_name": null
+          "name": "Survey Telescopes"
       }
   },
   {
@@ -26042,10 +25954,8 @@
       "model": "metadata.category",
       "fields": {
           "url": "vnr",
-          "subject_category": 1108,
           "type": 9,
-          "name": "Video News Releases",
-          "subject_name": null
+          "name": "Video News Releases"
       }
   },
   {
