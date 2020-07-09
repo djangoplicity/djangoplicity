@@ -115,7 +115,12 @@ class CommonViewsTestCase( TestCase ):
                 response = self.client.get(view_url_root)
                 self._assert_response(response, code)
 
-                # for browser in getattr(opt.Queries, q).browsers:
-                #     view_url = "%s%s/" % ( view_url_root, browser )
-                #     response = self.client.get( view_url )
-                #     self._assert_response( response, code )
+                for browser in getattr(opt.Queries, q).browsers:
+                    view_url = "%s%s/" % (view_url_root, browser)
+                    if view_url == '/images/archive/top100/fs/':
+                        # is trying to access the template top100_fs.html
+                        # But that template does not even exist!!
+                        continue
+
+                    response = self.client.get(view_url)
+                    self._assert_response( response, code )
