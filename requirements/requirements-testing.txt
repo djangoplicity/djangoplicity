@@ -1,3 +1,3 @@
-sqlparse
-coverage
+coverage == 5.1
 django_coverage_plugin
+sqlparse
