@@ -1,0 +1,25 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls admin_modify %}
+
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+  <ul class="object-tools">
+  <li><a href="rename/" class="historylink">{% trans "Rename" %}</a></li>
+  <li><a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a></li>
+  {% if has_absolute_url %}<li><a href="{{ original.get_absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif%}
+  </ul>
+{% endif %}{% endif %}
+{% endblock %}
+
+{% block form_top %}
+<fieldset style="border: 0; width: 220px; float: right;" class="module aligned">
+<div>
+    <div align="center" style="margin-top: 15px;">
+    {% if original.resource_thumb %}<img src="{{ original.resource_thumb.url }}" />
+    {% else %}
+    No preview available
+    {% endif %}
+    </div>
+</div>
+</fieldset>
+{% endblock %}
