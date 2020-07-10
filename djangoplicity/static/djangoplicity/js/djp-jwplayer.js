@@ -92,7 +92,9 @@ $(document).ready(function() {
         $('#popup-jwplayer').find('.title').html(title);
         $('#popup-jwplayer').find('a').first().attr('href', url);
 
-        var config = window['config_' + videoID];
+        // Replace '-' by '_' in video_id if any:
+        var config_video_id = videoID.replace(/-/g, '_', 'g');
+        var config = window['config_' + config_video_id];
         jwplayer.key = 'EAjAk7x879BjeiN54i9pMZjIrVJMCTtZFFMcmY2yiTI=';
 
         config.height = '550px'; // We fix the height otherwise jwplayer
