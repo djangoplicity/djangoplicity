@@ -33,6 +33,7 @@ DJANGOPLICITY_APPS = [
     'djangoplicity.archives',
     'djangoplicity.releases',
     'djangoplicity.media',
+    'djangoplicity.iframe',
     # Used to create images derivatives
     'djangoplicity.cutter',
     'djangoplicity.announcements',
