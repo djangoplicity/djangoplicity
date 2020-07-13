@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth.views import login
 from djangoplicity.releases.models import Release
 from djangoplicity.releases.options import ReleaseOptions
 from djangoplicity.media.models import Image, Video, PictureOfTheWeek, ImageComparison
@@ -48,6 +49,9 @@ urlpatterns = [
     # Other archives
     url( r'^announcements/webupdates/', include('djangoplicity.announcements.urls_webupdates'), { 'model': WebUpdate, 'options': WebUpdateOptions } ),
     url( r'^announcements/', include('djangoplicity.announcements.urls'), { 'model': Announcement, 'options': AnnouncementOptions } ),
+
+    # User Auth
+    url( r'^login/$', login, { 'template_name': 'login.html' } ),
 ]
 
 # This only works if DEBUG=True
