@@ -1,9 +1,10 @@
 from django.test import TestCase
 
 class IframeTestCase(TestCase):
+    fixtures = ['videos.json']
 
     urls = [
-        # '/facebook/welcome/',
+        '/facebook/welcome/',
         '/facebook/discoveries/',
         '/facebook/virtualtours/'
     ]
