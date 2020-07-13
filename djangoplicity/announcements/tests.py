@@ -1,7 +1,7 @@
-from django.test import TestCase
+from djangoplicity.test.testcases import AdminTestCase
 from djangoplicity.announcements.options import AnnouncementOptions, WebUpdateOptions
 
-class AnnouncementsTestCase(TestCase):
+class AnnouncementsTestCase(AdminTestCase):
     conf = {
         'announcements': {
             'root': '/announcements/',
@@ -9,7 +9,7 @@ class AnnouncementsTestCase(TestCase):
             'list_views': [
                 ('embargo', '', 200),
                 ('staging', '', 200),
-                ('year', '', 200),
+                ('year', '2020/', 200),
             ]
         },
         'webupdates': {
@@ -32,9 +32,6 @@ class AnnouncementsTestCase(TestCase):
 
             for query, subpart, code in views:
                 view_url_root = "%sarchive/%s/%s" % (root, query, subpart)
-                print('!!!!!!!!!!!!!!!!!!!!!!!!!')
-                print('testing: %s' % (view_url_root))
-                print('-------------------------')
                 response = self.client.get(view_url_root)
                 self.assertEqual(response.status_code, code)
 
