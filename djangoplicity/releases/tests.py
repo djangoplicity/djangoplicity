@@ -28,9 +28,6 @@ class ReleasesTestCase(TestCase):
             for query, subpart, code in views:
                 view_url_root = "%sarchive/%s/%s" % (root, query, subpart)
                 response = self.client.get(view_url_root)
-                print('!!!!!!!!!!!!!!!!!!!!')
-                print("testing: %s with %s" % (view_url_root, response.status_code))
-                print("???????????????????")
                 self.assertEqual(response.status_code, code)
 
                 for browser in getattr(options.Queries, query).browsers:
