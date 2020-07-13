@@ -20,6 +20,8 @@ from djangoplicity.releases.models import Release
 from djangoplicity.releases.options import ReleaseOptions
 from djangoplicity.media.models import Image, Video, PictureOfTheWeek, ImageComparison
 from djangoplicity.media.options import ImageOptions, VideoOptions, PictureOfTheWeekOptions, ImageComparisonOptions
+from djangoplicity.announcements.models import Announcement, WebUpdate
+from djangoplicity.announcements.options import AnnouncementOptions, WebUpdateOptions
 from test_project.admin import admin_site, adminlogs_site
 
 
@@ -42,6 +44,10 @@ urlpatterns = [
 
     # Apps
     url(r'^reports/', include('djangoplicity.reports.urls')),
+
+    # Other archives
+    url( r'^announcements/webupdates/', include('djangoplicity.announcements.urls_webupdates'), { 'model': WebUpdate, 'options': WebUpdateOptions } ),
+    url( r'^announcements/', include('djangoplicity.announcements.urls'), { 'model': Announcement, 'options': AnnouncementOptions } ),
 ]
 
 # This only works if DEBUG=True
