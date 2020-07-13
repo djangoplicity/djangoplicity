@@ -82,6 +82,9 @@ SUBJECT_CATEGORY_CSS = "djangoplicity/css/widgets.css"
 # Social Networks
 SOCIAL_FACEBOOK_WALL = 'https://www.facebook.com/AndresLinaresBC?sk=wall'
 
+# Environment configuration
+GA_ID = "XX-XXXXXXX-X"
+
 
 ############
 # REPORTS  #
