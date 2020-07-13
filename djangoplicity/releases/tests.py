@@ -4,11 +4,12 @@ from djangoplicity.releases.options import ReleaseOptions
 class ReleasesTestCase(TestCase):
     conf = {
         'releases': {
-            'root': 'news',
+            'root': '/news/',
             'options': ReleaseOptions,
             'list_views': [
-                ('search', '', 200),
-                ('staging', '', 200),
+                ('embargo', '', 302),
+                ('search', '', 302),
+                ('staging', '', 302),
                 ('year', '2020/', 200),
             ]
         }
@@ -27,9 +28,12 @@ class ReleasesTestCase(TestCase):
             for query, subpart, code in views:
                 view_url_root = "%sarchive/%s/%s" % (root, query, subpart)
                 response = self.client.get(view_url_root)
+                print('!!!!!!!!!!!!!!!!!!!!')
+                print("testing: %s with %s" % (view_url_root, response.status_code))
+                print("???????????????????")
                 self.assertEqual(response.status_code, code)
 
-                for browser in getattr(opt.Queries, query).browsers:
+                for browser in getattr(options.Queries, query).browsers:
                     view_url = "%s%s/" % (view_url_root, browser)
                     response = self.client.get(view_url)
                     self.assertEqual(response.status_code, code)
