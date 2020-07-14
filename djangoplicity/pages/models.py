@@ -236,9 +236,6 @@ class Page( TranslationModel ):
         except IndexError:
             base_url = ''
 
-        URLS_BASEPATH = getattr( settings, 'URLS_BASEPATH', '')
-        if URLS_BASEPATH and URLS_BASEPATH != '/':
-            base_url = '/{}{}'.format(URLS_BASEPATH, base_url)
         return get_path_for_language(self.lang, base_url)
 
     def save(self, **kwargs):
