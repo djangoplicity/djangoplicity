@@ -32,6 +32,7 @@ DJANGOPLICITY_APPS = [
     'djangoplicity.metadata',
     'djangoplicity.archives',
     'djangoplicity.releases',
+    'djangoplicity.adminhistory',
     'djangoplicity.media',
     'djangoplicity.eventcalendar',
     # Used to create images derivatives

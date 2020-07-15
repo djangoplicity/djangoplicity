@@ -68,7 +68,7 @@ class MovType(FileType):
 
 class BroadcastType(FileType):
     verbose_name = ugettext_noop('Broadcast')
-    exts = ['avi', 'mxf', 'm2t']
+    exts = ['avi', 'mxf', 'm2t', 'mov']
 
 
 class HDAndAppleType(M4VType):
@@ -169,7 +169,7 @@ class UltraHDH265Type(FileType):
 
 class UltraHDBroadcastType(FileType):
     verbose_name = ugettext_noop(u'Ultra HD Broadcast (4k/2160p)')
-    exts = ['avi']
+    exts = ['avi', 'mov']
 
 
 class BroadcastSDType(FileType):
