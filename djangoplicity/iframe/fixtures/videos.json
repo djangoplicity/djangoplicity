@@ -1,0 +1,12 @@
+[
+  {
+    "model": "media.video",
+    "pk": 1,
+    "fields": {
+      "id": "esotrailer",
+      "priority": 100,
+      "last_modified": "2020-06-06",
+      "created": "2020-06-04"
+    }
+  }
+]
