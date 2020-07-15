@@ -42,6 +42,7 @@ urlpatterns = [
 
     # Apps
     url(r'^reports/', include('djangoplicity.reports.urls')),
+    url( r'^facebook/', include('djangoplicity.iframe.urls')  ),
 ]
 
 # This only works if DEBUG=True
