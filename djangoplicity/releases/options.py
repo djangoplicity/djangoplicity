@@ -28,6 +28,7 @@
 # IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
+from builtins import object
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from djangoplicity.archives.options import ArchiveOptions

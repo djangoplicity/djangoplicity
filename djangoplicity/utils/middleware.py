@@ -1,3 +1,4 @@
+from __future__ import division
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -5,13 +6,17 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
+from builtins import object
 import hotshot
 import hotshot.stats
 import json
 import os
 import re
 import sys
-import StringIO
+import io
 import tempfile
 
 from django.conf import settings
@@ -188,13 +193,13 @@ class ProfileMiddleware(object):
                 return name[0]
 
     def get_summary(self, results_dict, total):
-        l = [(item[1], item[0]) for item in results_dict.items()]
+        l = [(item[1], item[0]) for item in list(results_dict.items())]
         l.sort(reverse=True)
         l = l[:40]
 
         res = '   tottime\n'
         for item in l:
-            res += '%4.1f%% %7.3f %s\n' % (100 * item[0] / total if total else 0, item[0], item[1])
+            res += '%4.1f%% %7.3f %s\n' % (old_div(100 * item[0], total) if total else 0, item[0], item[1])
 
         return res
 
@@ -231,7 +236,7 @@ class ProfileMiddleware(object):
         if (settings.DEBUG or request.user.is_superuser) and 'prof' in request.GET:
             self.prof.close()
 
-            out = StringIO.StringIO()
+            out = io.StringIO()
             old_stdout = sys.stdout
             sys.stdout = out
 

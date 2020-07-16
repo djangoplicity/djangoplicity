@@ -10,6 +10,7 @@
 """
 """
 
+from builtins import str
 import csv
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -219,11 +220,11 @@ def orders_for_product( request, product_id, format=None, **kwargs ):
         response = HttpResponse( content_type="text/plain" )
         response['Content-Disposition'] = "attachment; filename=%s.txt" % product.slug
         writer = csv.writer( response )
-        header = [unicode( x ).encode( 'utf8', 'replace' ) for x in header]
+        header = [str( x ).encode( 'utf8', 'replace' ) for x in header]
         writer.writerow( header )
 
         for row in table:
-            row = [unicode( x ).encode( 'utf8', 'replace' ) for x in row]
+            row = [str( x ).encode( 'utf8', 'replace' ) for x in row]
             writer.writerow( row )
         return response
     else:
@@ -344,11 +345,11 @@ def orders_for_category( request, category_id, format=None, **kwargs ):
         response = HttpResponse( content_type="text/plain" )
         response['Content-Disposition'] = "attachment; filename=%s.txt" % category.slug
         writer = csv.writer( response )
-        header = [unicode( x ).encode( 'utf8', 'replace' ) for x in header]
+        header = [str( x ).encode( 'utf8', 'replace' ) for x in header]
         writer.writerow( header )
 
         for row in table:
-            row = [unicode( x ).encode( 'utf8', 'replace' ) for x in row]
+            row = [str( x ).encode( 'utf8', 'replace' ) for x in row]
             writer.writerow( row )
         return response
     else:

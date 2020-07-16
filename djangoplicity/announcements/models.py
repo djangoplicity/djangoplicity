@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from datetime import datetime
 
 from django.conf import settings
@@ -347,7 +348,7 @@ class RelatedAnnouncement( models.Model  ):
     # Define if the visual should be hidden if used for e.g. the kiosk
 
     def __unicode__( self ):
-        return ugettext( "Archive Item for Announcement %s" % ( unicode( self.announcement.id ) ) )
+        return ugettext( "Archive Item for Announcement %s" % ( str( self.announcement.id ) ) )
 
     class Meta:
         abstract = True

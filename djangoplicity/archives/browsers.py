@@ -7,6 +7,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import object
 import os
 
 from django.conf import settings
@@ -396,7 +397,7 @@ class ArchiveBrowser( object ):
         #
         # Process callables in extra_context
         #
-        for key, value in extra_context.items():
+        for key, value in list(extra_context.items()):
             if callable( value ):
                 context[key] = value()
             else:

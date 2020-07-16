@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -140,7 +141,7 @@ class RelatedScienceAnnouncement(models.Model):
     # Define if the visual should be hidden if used for e.g. the kiosk
 
     def __unicode__(self):
-        return ugettext("Archive Item for Science Announcement %s" % (unicode(self.science_announcement.id)))
+        return ugettext("Archive Item for Science Announcement %s" % (str(self.science_announcement.id)))
 
     class Meta:
         abstract = True

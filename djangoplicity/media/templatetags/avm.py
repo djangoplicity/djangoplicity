@@ -29,6 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from past.utils import old_div
 from django import template
 from django.utils.html import mark_safe
 import math
@@ -40,7 +42,7 @@ units = [(0, 'nm'), (3, '&mu;m'), (6, 'mm'), (7, 'cm'), (9, 'm')]
 
 def power10( x, p ):
     if x >= 10:
-        return power10( x / 10, p + 1 )
+        return power10( old_div(x, 10), p + 1 )
     else:
         return p
 
@@ -66,7 +68,7 @@ def wavelength( l ):
                 break
 
         # Convert l to determine unit
-        l = l / math.pow( 10, l_p )
+        l = old_div(l, math.pow( 10, l_p ))
 
         # Only put digits on numbers below 10.
         if l >= 10:

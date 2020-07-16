@@ -99,7 +99,7 @@ def check_content_server_resources(last=40):
     from djangoplicity.contentserver.models import ContentDeliveryModel
 
     # Get list of CDNs which use a remote archive
-    cdns = [c for c in settings.MEDIA_CONTENT_SERVERS.values() if c.remote_archive]
+    cdns = [c for c in list(settings.MEDIA_CONTENT_SERVERS.values()) if c.remote_archive]
 
     # Get list of Archive models which inherit from ContentDeliveryModel
     models = [m for m, _o in get_archives() if issubclass(m, ContentDeliveryModel)]

@@ -1,5 +1,7 @@
+from future import standard_library
+standard_library.install_aliases()
 import codecs
-from htmlentitydefs import codepoint2name
+from html.entities import codepoint2name
 
 
 def named_entities(text):

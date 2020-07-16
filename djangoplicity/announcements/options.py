@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import object
 from django.utils.translation import ugettext_noop
 from djangoplicity.announcements.models import Announcement, AnnouncementProxy
 from djangoplicity.announcements.serializers import AnnouncementSerializer, \

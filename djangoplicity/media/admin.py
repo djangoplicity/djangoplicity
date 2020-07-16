@@ -29,6 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
+from builtins import object
 from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelForm
@@ -191,7 +193,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
                 write_metadata.delay( obj.id, IMAGE_AVM_FORMATS )
             self.message_user( request, _("Writing AVM to selected images.") )
         except Exception as e:
-            self.message_user( request, _("This djangoplicity installation does not support writing AVM to images (%s)." % unicode( e ) ) )
+            self.message_user( request, _("This djangoplicity installation does not support writing AVM to images (%s)." % str( e ) ) )
     action_write_avm.short_description = _("Write AVM to images")
 
     def action_avm_content_review( self, request, queryset ):
@@ -318,7 +320,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
                     video_embed_subtitles.delay( obj.pk, f)
             self.message_user( request, _("Updating subtitles for selected videos.") )
         except Exception as e:
-            self.message_user( request, _("Error while updating subtitles." % unicode( e ) ) )
+            self.message_user( request, _("Error while updating subtitles." % str( e ) ) )
 
     action_update_subtitles.short_description = "Update subtitles"
 
@@ -496,7 +498,7 @@ class PictureOfTheWeekAdmin( dpadmin.DjangoplicityModelAdmin, POTWDisplaysAdmin,
 
     def visual_title( self, obj ):
         v = obj.visual()
-        return unicode( v ) if v else ""
+        return str( v ) if v else ""
     visual_title.short_description = _(u'Title')
 
     def visual_type( self, obj ):

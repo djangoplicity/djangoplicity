@@ -36,6 +36,7 @@ Models for the event calendar.
 Worth noting is the support for timezones on start/end dates.
 """
 
+from builtins import str
 from django.conf import settings
 from django.db import models
 from django.utils import dateformat, formats
@@ -136,7 +137,7 @@ class Event( models.Model ):
             location = self.city
 
         if self.country:
-            c = unicode( self.country )
+            c = str( self.country )
             location += ", %s" % c if location else c
 
         return location

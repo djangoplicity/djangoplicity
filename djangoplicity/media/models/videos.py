@@ -29,9 +29,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import datetime
 import logging
-import HTMLParser
+import html.parser
 
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -446,7 +449,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
             'domain': get_current_site(None).domain,
         })
 
-        description = HTMLParser.HTMLParser().unescape(description)
+        description = html.parser.HTMLParser().unescape(description)
 
         # YouTube description are limited to 5000 characters, so we truncate
         # it a bit shorter

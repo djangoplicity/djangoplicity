@@ -34,6 +34,7 @@
 Base archive options definitions across all product archives.
 """
 
+from builtins import object
 from django.utils.translation import ugettext_lazy as _
 from djangoplicity.archives.options import ArchiveOptions
 from djangoplicity.archives.contrib import security

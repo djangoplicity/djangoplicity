@@ -20,7 +20,7 @@ class ReleasesTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_queries(self):
-        for conf in self.conf.values():
+        for conf in list(self.conf.values()):
             options = conf['options']
             root = conf['root']
             views = conf['list_views']

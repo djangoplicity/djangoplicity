@@ -30,6 +30,8 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
+from builtins import str
+from builtins import object
 from celery import current_app
 import uuid
 
@@ -42,7 +44,7 @@ def str_keys( d ):
     """
     Return a dict where all keys are 8 bit strings
     """
-    return dict( [ ( str( k ), v ) for k, v in d.items() ] )
+    return dict( [ ( str( k ), v ) for k, v in list(d.items()) ] )
 
 
 class SerialSendTaskSet( object ):

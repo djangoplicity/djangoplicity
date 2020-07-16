@@ -29,6 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import range
+from builtins import object
 import json
 import logging
 import os
@@ -70,7 +72,7 @@ class ContentServer(object):
         self.name = name
         # We convert the list to sets for faster lookups
         self.formats = dict(
-            [(key, set(values)) for key, values in formats.items()]
+            [(key, set(values)) for key, values in list(formats.items())]
         )
         self.url = url
         self.remote_dir = remote_dir

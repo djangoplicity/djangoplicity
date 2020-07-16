@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 import xml.etree.ElementTree as ET
 
 from django import forms
@@ -125,7 +126,7 @@ class WTMLMetadataImport(FormView):
 
             missing_keys = []
             for key in keys:
-                if key not in imageset.keys():
+                if key not in list(imageset.keys()):
                     missing_keys.append(key)
 
             if missing_keys:
@@ -190,7 +191,7 @@ class WTMLMetadataImport(FormView):
                 user_id=self.request.user.id,
                 content_type_id=ContentType.objects.get_for_model(i).pk,
                 object_id=i.pk,
-                object_repr=unicode(i),
+                object_repr=str(i),
                 action_flag=CHANGE,
                 change_message=change_message
             )

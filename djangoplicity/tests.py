@@ -14,6 +14,7 @@
 # Testing for custom model fields done according to instructions here:
 # https://docs.djangoproject.com/en/1.7/howto/custom-model-fields/#custom-field-deconstruct-method
 
+from builtins import str
 import unittest
 
 import djangoplicity.archives.fields

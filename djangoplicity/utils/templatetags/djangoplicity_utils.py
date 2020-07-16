@@ -1,3 +1,4 @@
+from __future__ import division
 # Djangoplicity
 # -*- coding: utf-8 -*-
 # Copyright 2007-2008 ESA/Hubble
@@ -6,6 +7,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from builtins import range
+from past.utils import old_div
 from django import template
 from django.conf import settings
 from datetime import datetime
@@ -112,7 +115,7 @@ def sub(value, arg):
 @register.filter
 def div(value, arg):
     "Divides the value by the arg"
-    return int(value) / int(arg)
+    return old_div(int(value), int(arg))
 
 
 @register.filter
@@ -153,7 +156,7 @@ def code_to_country_prefix(code):
     Return the country name for the given code
     E.g.: fr-be => /public/belgium-fr/
     '''
-    for prefix, c in settings.LANGUAGE_PREFIX.iteritems():
+    for prefix, c in settings.LANGUAGE_PREFIX.items():
         if c == code:
             return prefix
 
@@ -233,7 +236,7 @@ def years_range(start):
     '''
     Returns a list of years up the current one (included)
     '''
-    return range(int(start), datetime.now().year + 1)
+    return list(range(int(start), datetime.now().year + 1))
 
 
 @register.filter

@@ -5,6 +5,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
+from builtins import object
 import logging
 import os.path
 
@@ -57,7 +59,7 @@ def get_instance_resource( obj, resource_name ):
     from djangoplicity.archives.base import ArchiveModel
 
     if not isinstance( obj, ArchiveModel ):
-        raise ResourceError( "%s not an instance of ArchiveModel" % unicode( obj ) )
+        raise ResourceError( "%s not an instance of ArchiveModel" % str( obj ) )
 
     resattr = "%s%s" % ( obj.__class__.Archive.Meta.resource_fields_prefix, resource_name )
 

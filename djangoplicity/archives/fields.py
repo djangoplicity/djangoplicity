@@ -37,7 +37,7 @@ class IdField(models.SlugField):
             'primary_key': True,
             'help_text': _('Ids are only allowed to contain letters, numbers, underscores or hyphens. They are used in URLs for the archive item.')
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(IdField, self).__init__(*args, **defaults)
 
@@ -65,7 +65,7 @@ class PriorityField(models.PositiveSmallIntegerField):
             'help_text': _(u'Priority of product (100 highest, 0 lowest) - high priority products are ranked higher in search results than low priority products.'),
             'db_index': True,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(PriorityField, self).__init__(*args, **defaults)
 
@@ -91,7 +91,7 @@ class TitleField(models.CharField):
             'help_text': _(u"Title is shown in browser window. Use a good informative title, since search engines normally display the title on their result pages."),
             'db_index': True,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(TitleField, self).__init__(*args, **defaults)
 
@@ -112,7 +112,7 @@ class ReleaseDateTimeField(models.DateTimeField):
             'null': True,
             'db_index': True,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(ReleaseDateTimeField, self).__init__(*args, **defaults)
 
@@ -132,7 +132,7 @@ class DescriptionField(models.TextField):
             'blank': True,
             'help_text': u'',
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(DescriptionField, self).__init__(*args, **defaults)
 
@@ -152,7 +152,7 @@ class CreditField(models.TextField):
             'blank': True,
             'help_text': u'',
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(CreditField, self).__init__(*args, **defaults)
 
@@ -172,7 +172,7 @@ class ImageSizeField(models.PositiveSmallIntegerField):
             'blank': True,
             'null': True,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(ImageSizeField, self).__init__(*args, **defaults)
 
@@ -194,7 +194,7 @@ class PaperSizeField(models.DecimalField):
             'max_digits': 7,
             'decimal_places': 1,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(PaperSizeField, self).__init__(*args, **defaults)
 
@@ -214,7 +214,7 @@ class PagesField(models.PositiveSmallIntegerField):
             'blank': True,
             'null': True,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(PagesField, self).__init__(*args, **defaults)
 
@@ -234,7 +234,7 @@ class IntField(models.PositiveIntegerField):
             'blank': True,
             'null': True,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(IntField, self).__init__(*args, **defaults)
 
@@ -255,7 +255,7 @@ class DurationField(models.PositiveIntegerField):
             'null': True,
             'help_text': u'Duration of audio/video in seconds',
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(DurationField, self).__init__(*args, **defaults)
 
@@ -275,7 +275,7 @@ class EmailField(models.EmailField):
             'blank': True,
             'help_text': u'',
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(EmailField, self).__init__(*args, **defaults)
 
@@ -294,7 +294,7 @@ class URLField(models.URLField):
         defaults = {
             'blank': True,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(URLField, self).__init__(*args, **defaults)
 
@@ -312,7 +312,7 @@ class ChoiceField(models.PositiveSmallIntegerField):
             'choices': None,
             'help_text': _(u'Choice.'),
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(ChoiceField, self).__init__(*args, **defaults)
 
@@ -331,7 +331,7 @@ class TaskIdField(models.CharField):
         defaults = {
             'max_length': 40,
         }
-        self.my_default_keys = defaults.keys()
+        self.my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super(TaskIdField, self).__init__(*args, **defaults)
 

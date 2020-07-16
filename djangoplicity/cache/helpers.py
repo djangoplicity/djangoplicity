@@ -30,6 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE
 from __future__ import unicode_literals
 
+from builtins import range
 import logging
 
 from django.core.cache import cache
@@ -53,7 +54,7 @@ def clear_cache(cls):
 
     keys = ['{}-{}'.format(key_base, i) for i in range(MAX_KEYS)]
 
-    values = cache.get_many(keys).values()
+    values = list(cache.get_many(keys).values())
     if values:
         logger.debug('Clearing cache: %s', ', '.join(values))
         cache.delete_many(values)

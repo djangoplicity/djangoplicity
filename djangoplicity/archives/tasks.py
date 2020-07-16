@@ -6,6 +6,7 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import str
 from __future__ import with_statement
 import glob
 import hashlib
@@ -52,7 +53,7 @@ def move_file( src, dst, overwrite=True, sendtask_callback=None, sendtask_taskse
 
         shutil.move( src, dst )
     except Exception as e:
-        logger.warning( unicode( e ) )
+        logger.warning( str( e ) )
 
     # send_task callback
     if sendtask_callback:
@@ -158,7 +159,7 @@ def _create_dir( path ):
 def _get_dirs( path ):
     """ Get all subdirectories in path """
     files = os.listdir( path )
-    return filter( lambda x: os.path.isdir( os.path.join( path, x ) ), files )
+    return [x for x in files if os.path.isdir( os.path.join( path, x ) )]
 
 
 def _get_missing( src, dst ):

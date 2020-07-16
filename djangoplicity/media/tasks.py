@@ -29,6 +29,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from builtins import str
+from past.utils import old_div
 import codecs
 import datetime
 import os
@@ -94,7 +97,7 @@ def image_extras( image_id, sendtask_callback=None, sendtask_tasksetid=None ):
 
             if original_file:
                 # File size/type
-                fields['file_size'] = long( os.path.getsize( original_file ) / 1024 )
+                fields['file_size'] = int( old_div(os.path.getsize( original_file ), 1024) )
 
                 fields['file_type'] = get_file_type( original_file )
 
@@ -109,7 +112,7 @@ def image_extras( image_id, sendtask_callback=None, sendtask_tasksetid=None ):
 
                 fields['n_pixels'] = fields['width'] * fields['height']
 
-                for key, value in fields.items():
+                for key, value in list(fields.items()):
                     if value != getattr(im, key):
                         setattr(im, key, value)
                         update_fields.append(key)
@@ -174,7 +177,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
 
                 # Divide the number of includes files (frames) by the framerate
                 # to get the duration in seconds
-                fields['file_duration'] = len(z.infolist()) / v.frame_rate
+                fields['file_duration'] = old_div(len(z.infolist()), v.frame_rate)
 
                 # Assume the width and height is 8k, 4k or 2k unless it's already set
                 if resource == 'dome_8kmaster':
@@ -220,7 +223,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
             # We use int(duration) to drop the microseconds
             fields['file_duration'] = str(datetime.timedelta(seconds=int(fields['file_duration']))) + ':000'
 
-            for key, value in fields.items():
+            for key, value in list(fields.items()):
                 if value != getattr(v, key):
                     setattr(v, key, value)
                     update_fields.append(key)
