@@ -40,7 +40,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'test_project.urls'
 
-
 # To find the templates
 DIRNAME = os.path.abspath(os.path.dirname(__file__))
 
@@ -52,6 +51,7 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': True,
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',

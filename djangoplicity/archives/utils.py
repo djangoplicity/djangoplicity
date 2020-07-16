@@ -235,7 +235,7 @@ def get_instance_resources(instance):
             formats['Preview'] = ('dome_preview', 'Video')
 
         # Normal videos
-        for fmt in ['ultra_hd', 'hd_1080p25_screen', 'ext_highres']:
+        for fmt in ['ultra_hd', 'hd_1080p25_screen', 'hd_1080_screen', 'ext_highres']:
             if getattr(instance, 'resource_%s' % fmt, None):
                 formats['Original'] = (fmt, 'Video')
                 break

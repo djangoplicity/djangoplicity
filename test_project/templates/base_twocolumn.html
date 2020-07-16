@@ -1,15 +1,13 @@
-{% extends "base.html" %}
-
 {% block body %}
-<div class="row page">
-    <div class="col-md-9 left-column">
-{% block content %}
-{% endblock %}
+    <div class="row page">
+        <div class="col-md-9 left-column">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div class="col-md-3 right-column">
+            {% block rightcolumn %}
+                {{ right_column_page }}
+            {% endblock %}
+        </div>
     </div>
-    <div class="col-md-3 right-column">
-{% block rightcolumn %}
-{{ right_column_page }}
-{% endblock %}
-    </div>
-</div>
 {% endblock %}
