@@ -7,6 +7,7 @@ x-common: &common
     - import:/app/import
     - ./djangoplicity:/app/djangoplicity
     - ./test_project:/app/test_project
+    - ./local:/app/local
     - ./htmlcov:/app/htmlcov
     - ./.coveragerc:/app/.coveragerc
     - ./db:/app/db
