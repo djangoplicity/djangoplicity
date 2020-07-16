@@ -32,7 +32,10 @@ DJANGOPLICITY_APPS = [
     'djangoplicity.metadata',
     'djangoplicity.archives',
     'djangoplicity.releases',
+    'djangoplicity.adminhistory',
     'djangoplicity.media',
+    'djangoplicity.eventcalendar',
+    'djangoplicity.iframe',
     # Used to create images derivatives
     'djangoplicity.cutter',
     'djangoplicity.announcements',
@@ -76,6 +79,13 @@ JQUERY_UI_CSS = "jquery-ui-1.12.1/jquery-ui.min.css"
 DJANGOPLICITY_ADMIN_CSS = "djangoplicity/css/admin.css"
 DJANGOPLICITY_ADMIN_JS = "djangoplicity/js/admin.js"
 SUBJECT_CATEGORY_CSS = "djangoplicity/css/widgets.css"
+
+
+# Social Networks
+SOCIAL_FACEBOOK_WALL = 'https://www.facebook.com/AndresLinaresBC?sk=wall'
+
+# Environment configuration
+GA_ID = "XX-XXXXXXX-X"
 
 
 ############

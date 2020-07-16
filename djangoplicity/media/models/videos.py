@@ -87,7 +87,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
 
     UPLOAD_FORMATS = (
         'vr_8k', 'vr_4k', 'cylindrical_preview', 'ultra_hd',
-        'hd_1080p25_screen', 'dome_preview', 'hd_broadcast_720p25',
+        'hd_1080p25_screen', 'hd_1080_screen', 'dome_preview', 'hd_broadcast_720p25',
         'hd_and_apple', 'medium_podcast', 'ext_highres', 'ext_playback',
         'old_video'
     )
@@ -272,6 +272,9 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         hd_broadcast_720p50 = ResourceManager( type=types.BroadcastType, verbose_name=_(u"HD Broadcast 720p/50") )  # hd720p50_brodcast
         hd_1080p25_screen = ResourceManager( type=types.FullHDPreview1080p, verbose_name=_(u"Full HD Preview 1080p") )  # hd1080p25_screen
         hd_1080p25_broadcast = ResourceManager( type=types.BroadcastType, verbose_name=_(u"Full HD Broadcast 1080p") )  # hd1080p25_brodcast
+        # FULL HD 29,97 FPS
+        hd_1080_screen = ResourceManager( type=types.FullHDPreview1080p, verbose_name=_(u"Full HD Preview 1080p") )  # hd1080_screen
+        hd_1080_broadcast = ResourceManager( type=types.BroadcastType, verbose_name=_(u"Full HD Broadcast 1080p") )  # hd1080_brodcast
 
         # Ultra HD (4k/2160p)
         ultra_hd = ResourceManager( type=types.UltraHDType, verbose_name=_(u"4K Ultra HD Preview H.264") )

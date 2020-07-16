@@ -52,6 +52,10 @@ urlpatterns = [
 
     # User Auth
     url( r'^login/$', login, { 'template_name': 'login.html' } ),
+    
+    # ETC
+    url(r'^eventcalendar/', include('djangoplicity.eventcalendar.urls')),
+    url( r'^facebook/', include('djangoplicity.iframe.urls')  ),
 ]
 
 # This only works if DEBUG=True
