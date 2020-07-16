@@ -16,10 +16,13 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth.views import login
 from djangoplicity.releases.models import Release
 from djangoplicity.releases.options import ReleaseOptions
 from djangoplicity.media.models import Image, Video, PictureOfTheWeek, ImageComparison
 from djangoplicity.media.options import ImageOptions, VideoOptions, PictureOfTheWeekOptions, ImageComparisonOptions
+from djangoplicity.announcements.models import Announcement, WebUpdate
+from djangoplicity.announcements.options import AnnouncementOptions, WebUpdateOptions
 from test_project.admin import admin_site, adminlogs_site
 
 
@@ -42,6 +45,15 @@ urlpatterns = [
 
     # Apps
     url(r'^reports/', include('djangoplicity.reports.urls')),
+
+    # Other archives
+    url( r'^announcements/webupdates/', include('djangoplicity.announcements.urls_webupdates'), { 'model': WebUpdate, 'options': WebUpdateOptions } ),
+    url( r'^announcements/', include('djangoplicity.announcements.urls'), { 'model': Announcement, 'options': AnnouncementOptions } ),
+
+    # User Auth
+    url( r'^login/$', login, { 'template_name': 'login.html' } ),
+    
+    # ETC
     url(r'^eventcalendar/', include('djangoplicity.eventcalendar.urls')),
     url( r'^facebook/', include('djangoplicity.iframe.urls')  ),
 ]
