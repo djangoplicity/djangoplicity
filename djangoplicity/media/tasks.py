@@ -149,7 +149,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
         fields = {}
 
         # Identify the format with the largest resolution
-        for resource in ('cylindrical_16kmaster', 'dome_8kmaster', 'cylindrical_8kmaster', 'vr_8k', 'vr_4k', 'dome_4kmaster', 'cylindrical_4kmaster', 'ultra_hd_broadcast', 'ultra_hd', 'dome_2kmaster', 'hd_1080p25_screen', 'dome_preview', 'hd_broadcast_720p25', 'hd_and_apple', 'large_qt', 'broadcast_sd', 'medium_flash', 'medium_podcast', 'medium_mpeg1', 'qtvr', 'ext_highres', 'ext_playback', 'old_video'):
+        for resource in ('cylindrical_16kmaster', 'dome_8kmaster', 'cylindrical_8kmaster', 'vr_8k', 'vr_4k', 'dome_4kmaster', 'cylindrical_4kmaster', 'ultra_hd_broadcast', 'ultra_hd', 'dome_2kmaster', 'hd_1080p25_screen', 'hd_1080_screen', 'hd_1080_broadcast', 'dome_preview', 'hd_broadcast_720p25', 'hd_and_apple', 'large_qt', 'broadcast_sd', 'medium_flash', 'medium_podcast', 'medium_mpeg1', 'qtvr', 'ext_highres', 'ext_playback', 'old_video'):
             try:
                 r = getattr(v, 'resource_' + resource)
                 if not r:

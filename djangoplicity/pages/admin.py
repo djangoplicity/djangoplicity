@@ -275,7 +275,7 @@ class PageProxyAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, S
         """
         Callable to include thumbnail of resource in list view.
         """
-        return mark_safe('<a href="%s">View</a>' % obj.get_absolute_url() )
+        return mark_safe('<a href="%s?nolang">View</a>' % obj.get_absolute_url() )
     view_link.short_description = _("Link")
     view_link.allow_tags = True
 

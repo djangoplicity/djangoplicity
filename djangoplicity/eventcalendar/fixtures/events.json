@@ -1,0 +1,10 @@
+[
+  {
+    "model": "eventcalendar.eventtype",
+    "pk": 1,
+    "fields": {
+      "slug": "science",
+      "name": "Science"
+    }
+  }
+]
