@@ -74,3 +74,44 @@ class TestDatetimes(TestCase):
         assert time4lang(cest, 'pt-br').isoformat() == '2011-03-30T07:00:00-03:00'
         assert time4lang(cest_brst, 'pt-br').isoformat() == '2011-10-18T08:00:00-02:00'
         assert time4lang(cet_brst, 'pt-br').isoformat() == '2011-11-01T09:00:00-02:00'
+
+class UtilsTestCase(TestCase):
+    def test_videothumbnails(self):
+        from djangoplicity.utils import videothumbnails
+        self.assertRaises(ValueError, videothumbnails.readexif, 'f', 'tags')
+        self.assertEqual(videothumbnails.decode_duration("20:20"), (1220, 0))
+        self.assertEqual(videothumbnails.format_duration(100), "00:01:40")
+        self.assertEqual(videothumbnails.create_video_thumbnail("something", 200), "something.png")
+
+    def test_text(self):
+        from djangoplicity.utils import text
+        self.assertEqual(text.named_entities(UnicodeEncodeError("utf-8", unicode("hola"), 1, 2, "yes" )), (u'&#111;', 2))
+
+    def test_storage(self):
+        from djangoplicity.utils import storage
+        pipe_instance = storage.PipelineManifestStorage("a mixin?", "a storage?")
+        self.assertIsInstance(pipe_instance, storage.PipelineManifestStorage)
+
+    def test_pagination(self):
+        from djangoplicity.utils import pagination
+        from django.urls import NoReverseMatch
+
+        class PagObj:
+            def __init__(self):
+                self.number = 1
+        
+        self.assertEqual(pagination._adj_range(1, PagObj(), [1, 3]), [1, 3])
+
+        paginator = pagination.Paginator()
+        self.assertRaises(NoReverseMatch, paginator.paginate, 100)
+
+    def test_optionparser(self):
+        from djangoplicity.utils import optionparser
+        self.assertIsNot(optionparser.get_options([
+        ( 'a', 'app', 'Django app used for creating the directories', False, { 'default' : '' } ),
+        ( 'o', 'output', 'Output directory', False, { 'default' : settings.MEDIA_ROOT } ),
+        ( 'i', 'import', 'Output directory for import dirs', False, { 'default' : settings.ARCHIVE_IMPORT_ROOT } ),
+        ( 'm', 'model', 'Specific archive model', False ),
+        ( 'n', 'dry-run', 'Do not actually create the directories', False, { 'action' : 'store_true', 'default' : False } )     
+    ]), "")
+
