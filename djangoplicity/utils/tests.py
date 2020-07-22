@@ -120,3 +120,19 @@ class UtilsTestCase(TestCase):
         the_logger = logger.define_logger( "migration_logger", file_logging=False )
         self.assertNotIsInstance(the_logger, TestCase)
 
+    def test_html_to_text(self):
+        from djangoplicity.utils import html_to_text
+        html2text = html_to_text.DjangoplicityHTML2Text()
+        self.assertEqual(html2text.handle_tag("a", { 'class': 'mmm' }, True), None)
+
+    def test_history(self):
+        from djangoplicity.utils import history
+        class AnInstance:
+            def __init__(self):
+                self.pk = 1
+                self._meta = 'm'
+
+        
+        self.assertRaises(AttributeError,history.add_admin_history, AnInstance(), "mmm")
+
+
