@@ -115,3 +115,8 @@ class UtilsTestCase(TestCase):
         ( 'n', 'dry-run', 'Do not actually create the directories', False, { 'action' : 'store_true', 'default' : False } )     
     ]), "")
 
+    def test_logger(self):
+        from djangoplicity.utils import logger
+        the_logger = logger.define_logger( "migration_logger", file_logging=False )
+        self.assertNotIsInstance(the_logger, TestCase)
+
