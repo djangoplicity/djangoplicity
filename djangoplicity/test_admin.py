@@ -53,8 +53,8 @@ class AdminURLSTestCase(AdminTestCase):
         'system/',
         'import/images/',
         'import/videos/',
-        'videosubtitles/',
-        'imagecomparisons/'
+        'import/videosubtitles/',
+        'import/imagecomparisons/'
     ]
 
     def _assertExists(self, response):
@@ -64,6 +64,4 @@ class AdminURLSTestCase(AdminTestCase):
     def test_url_access(self):
         for url in self.urls:
             response = self.client.get("/admin/%s" % url)
-            print("HOLAAAAAAAAAAA\n")
-            print("Testing: %s with %s" % ("/admin/%s" % url, response.status_code))
             self._assertExists(response)
