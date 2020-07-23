@@ -151,3 +151,4 @@ CELERY_BEAT_SCHEDULE_FILENAME = os.path.join(TMP_DIR, 'celerybeat_schedule')
 CELERY_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPOGATES=True
 CELERY_RESULT_BACKEND = 'db+sqlite:///results.db'
+CELERY_BROKER_URL = 'memory://localhost//'
