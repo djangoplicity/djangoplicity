@@ -133,8 +133,6 @@ CELERY_IMPORTS = [
     "djangoplicity.celery.tasks",
 ]
 # Task result backend
-CELERY_RESULT_BACKEND = "amqp"
-CELERY_BROKER_URL = 'amqp://guest:guest@broker:5672/'
 # Avoid infinite wait times and retries
 CELERY_BROKER_TRANSPORT_OPTIONS = {
     'max_retries': 3,
@@ -148,3 +146,8 @@ CELERY_RESULT_EXPIRES = 3600
 # File to save revoked tasks across workers restart
 CELERY_WORKER_STATE_DB = os.path.join(TMP_DIR, 'celery_states')
 CELERY_BEAT_SCHEDULE_FILENAME = os.path.join(TMP_DIR, 'celerybeat_schedule')
+
+# just in testing
+CELERY_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPOGATES=True
+CELERY_RESULT_BACKEND = 'db+sqlite:///results.db'
