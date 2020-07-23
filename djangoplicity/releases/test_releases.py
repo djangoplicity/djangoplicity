@@ -42,7 +42,7 @@ from djangoplicity.media.models import Image, PictureOfTheWeek
 from djangoplicity.releases.models import Release, ReleaseType, ReleaseImage,\
     ReleaseImageComparison
 from datetime import datetime
-
+from celery.contrib.testing.worker import start_worker
 
 class ReleaseDatePropagation( TestCase ):
 
