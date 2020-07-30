@@ -7,6 +7,7 @@ FROM python:2.7-slim-buster
 # - ffmpeg and mplayer are required for videos processing
 RUN apt-get update && apt-get install -y \
     gcc \
+    git \
     libxml2-dev \
     libxslt-dev \
     imagemagick-6.q16 \
@@ -22,7 +23,7 @@ WORKDIR /app
 # Cache requirements and install them
 COPY requirements/ requirements/
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --find-links https://www.djangoplicity.org/repository/packages/
 
 # Create app required directories
 RUN mkdir -p tmp
