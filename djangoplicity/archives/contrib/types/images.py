@@ -24,7 +24,7 @@ class TiffType(ImageFileType):
 
 class SvgType(ImageFileType):
     verbose_name = _(u'Scalable Vector Graphics (SVG)')
-    exts = ['svg', 'svgz']
+    exts = ['svg']
     content_type = 'image/svg+xml'
 
 
