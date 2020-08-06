@@ -1,6 +1,9 @@
 bash:
 	docker exec -it djangoplicity bash
 
+createsuperuser:
+	docker exec -it djangoplicity ./manage.py createsuperuser
+
 test:
 	docker exec -it djangoplicity coverage run --source='.' manage.py test
 

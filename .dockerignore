@@ -1,3 +1,6 @@
 .env/
 .git/
 .idea/
+local/
+htmlcov/
+db/
