@@ -767,7 +767,6 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendta
         # Takes the screenshot at 5s by default or using setting
         position = getattr(settings, 'VIDEOS_THUMBNAIL_POSITION', 5)
         if position == 'middle':
-            logger.info(v.duration_in_seconds())
             position = int(v.duration_in_seconds() / 2)
 
         cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 {output}'.format(position=position, input=path, output=output)
