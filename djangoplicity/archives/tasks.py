@@ -6,8 +6,8 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
-from builtins import str
 from __future__ import with_statement
+from builtins import str
 import glob
 import hashlib
 import os
