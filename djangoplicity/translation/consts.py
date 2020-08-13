@@ -113,22 +113,13 @@ def _get_lang_country_mapping():
         is_main_language = len( code ) == 2 or ( lang in LANGUAGE_DIALECTS and LANGUAGE_DIALECTS[lang] == ctry )
         languages[lang].append( ( ctry, name, code, is_main_language ) )
 
-    #
-    # Sort the dictionaries for making lists
-    #
-    def getter( x ):
-        try:
-            return pycountry.countries.get( alpha2=x[0].upper() if x[0] != 'uk' else 'GB' )  # Special case for UK
-        except KeyError:
-            return x[0]
-
     countries_list = list(countries.items())
-    countries_list.sort( key=getter )
+    countries_list.sort(key=lambda x: x[0])
 
     languages_list = list(languages.items())
-    languages_list.sort( key=lambda x: x[0][1] )
+    languages_list.sort(key=lambda x: x[0][1])
 
-    return ( countries, languages, countries_list, languages_list )
+    return (countries, languages, countries_list, languages_list)
 
 
 def _get_main_lang_list( languages_list ):
