@@ -1,4 +1,3 @@
-from __future__ import division
 # Djangoplicity
 # -*- coding: utf-8 -*-
 # Copyright 2007-2008 ESA/Hubble
@@ -7,6 +6,7 @@ from __future__ import division
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from __future__ import division
 from builtins import range
 from past.utils import old_div
 from django import template
