@@ -7,6 +7,7 @@ TMP_DIR = os.path.join(BASE_DIR, 'tmp')
 
 # CUSTOM CONFIG DEFAULTS
 SERVE_STATIC_MEDIA = True
+VIDEOS_THUMBNAIL_POSITION = 5  # Value in seconds or 'middle' to calculate the middle of the videos
 
 # APPLICATION DEFINITION
 DJANGO_APPS = [
@@ -41,6 +42,7 @@ DJANGOPLICITY_APPS = [
     'djangoplicity.announcements',
     'djangoplicity.reports',
     'djangoplicity.utils',
+    'djangoplicity.admincomments'
 ]
 
 THIRD_PARTY_APPS = [
@@ -51,7 +53,11 @@ THIRD_PARTY_APPS = [
     'mptt',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + DJANGOPLICITY_APPS + THIRD_PARTY_APPS
+TEST_PROJECT_APPS = [
+    'test_project'
+]
+
+INSTALLED_APPS = DJANGO_APPS + DJANGOPLICITY_APPS + THIRD_PARTY_APPS + TEST_PROJECT_APPS
 
 # SITES
 SITE_ID=1
@@ -133,7 +139,7 @@ CELERY_IMPORTS = [
     "djangoplicity.celery.tasks",
 ]
 # Task result backend
-CELERY_RESULT_BACKEND = "amqp"
+CELERY_RESULT_BACKEND = "amqp"	
 CELERY_BROKER_URL = 'amqp://guest:guest@broker:5672/'
 # Avoid infinite wait times and retries
 CELERY_BROKER_TRANSPORT_OPTIONS = {
