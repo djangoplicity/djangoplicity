@@ -37,6 +37,9 @@ Basically it's an bridge between Satchmo and the manager.CoposWebManager.
 from __future__ import print_function
 from __future__ import absolute_import
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 from django.utils.translation import ugettext_lazy as _
 from payment.modules.base import BasePaymentProcessor, ProcessorResult
 from .manager import CoposWebManager, CoposWebError, CoposWebTransactionError
@@ -106,7 +109,7 @@ class PaymentProcessor( BasePaymentProcessor ):
                 self.log.error('COPOSweb config file %s does not exists.' % ini_file )
                 raise Exception("COPOSweb payment module configuration problem - credentials file does not exists.")
                 
-            from ConfigParser import ConfigParser
+            from configparser import ConfigParser
             config = ConfigParser()
             config.read( ini_file )
             
@@ -167,21 +170,21 @@ class PaymentProcessor( BasePaymentProcessor ):
                                         authorization=authorization,
                                     )
             
-            return ProcessorResult( self.key, False, _( unicode( e ) ) )
+            return ProcessorResult( self.key, False, _( str( e ) ) )
         except CoposWebError as e:
             # Handle local errors
-            self.log.error( "COPOSweb local error: %s", unicode( e.triggered_exception ) if e.triggered_exception else "no additional information" )
+            self.log.error( "COPOSweb local error: %s", str( e.triggered_exception ) if e.triggered_exception else "no additional information" )
             
             payment = self.record_failure( 
                                         order = order, 
                                         amount = amount, 
                                         transaction_id = "", 
                                         reason_code = "", 
-                                        details = unicode( e.triggered_exception )[:254],
+                                        details = str( e.triggered_exception )[:254],
                                         authorization=authorization,
                                     )
             
-            return ProcessorResult( self.key, False, _( unicode( e ) ) )    
+            return ProcessorResult( self.key, False, _( str( e ) ) )    
 
         
     def can_authorize( self ):
@@ -222,7 +225,7 @@ class PaymentProcessor( BasePaymentProcessor ):
             return self.coposweb_run_transaction( transaction, order, amount  )
         except Exception as e:
             import traceback
-            self.log.error( "Satchmo error traceback: %s", unicode( traceback.format_exc( e ) ) )
+            self.log.error( "Satchmo error traceback: %s", str( traceback.format_exc( e ) ) )
             print(traceback.format_exc( e ))
             return ProcessorResult( self.key, False, _( "An unexpected error occurred." ) )
 
@@ -270,5 +273,5 @@ class PaymentProcessor( BasePaymentProcessor ):
             return self.coposweb_run_transaction( transaction, order, amount, authorization=authorization  )
         except Exception as e:
             import traceback
-            self.log.error( "Satchmo capture error traceback: %s", unicode( traceback.format_exc( e ) ) )
+            self.log.error( "Satchmo capture error traceback: %s", str( traceback.format_exc( e ) ) )
             return ProcessorResult( self.key, False, _( "An unexpected error occurred." ) )

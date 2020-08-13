@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from datetime import datetime
 
 from django.conf import settings
@@ -447,7 +448,7 @@ class RelatedRelease( models.Model  ):
     hide = models.BooleanField( default=False, verbose_name=_('Hide on kiosk') )
 
     def __unicode__(self):
-        return ugettext("Archive Item for Release %s" % (unicode(self.release.id)))
+        return ugettext("Archive Item for Release %s" % (str(self.release.id)))
 
     class Meta:
         abstract = True

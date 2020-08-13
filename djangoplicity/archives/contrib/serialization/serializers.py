@@ -1,3 +1,6 @@
+from builtins import str
+from past.builtins import basestring
+from builtins import object
 from datetime import datetime
 import json
 
@@ -144,7 +147,7 @@ class SimpleSerializer( Serializer ):
         """
         Prime cache with all related objects
         """
-        for field, _val in self.related_cache.items():
+        for field, _val in list(self.related_cache.items()):
             reldescriptor = getattr( model, field )
 
             through_model_fieldname = reldescriptor.field.related.m2m_reverse_field_name()
@@ -204,7 +207,7 @@ class XMPEmitter( Emitter ):
         if not isinstance( datadict, dict ):
             raise SerializationError( "XMP emitter expected a dictionary but got a %s." % type( datadict ) )
 
-        for k, v in datadict.items():
+        for k, v in list(datadict.items()):
             try:
                 avm[k] = v
             except KeyError:
@@ -246,7 +249,7 @@ class JSONEmitter( Emitter ):
             return encoder( v )
 
         try:
-            return unicode( v )
+            return str( v )
         except:
             pass
 
@@ -282,7 +285,7 @@ class ICalEmitter( Emitter ):
 
             cal.add_component( event )
 
-        return cal.as_string()
+        return cal.to_ical()
 
     def response( self, response ):
         response['Content-Disposition'] = "attachment; filename=calendar.ics"

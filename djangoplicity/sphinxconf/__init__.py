@@ -15,6 +15,7 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
+from builtins import str
 import sys
 import os
 import datetime

@@ -30,6 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 from __future__ import division
+from builtins import str
 import glob
 import json
 import logging
@@ -116,11 +117,11 @@ def _get_crop_offset(archive, fmt):
         # for the given archive
         return offset
 
-    aspect = unicode(fmt.type.width / fmt.type.height)
+    aspect = str(fmt.type.width / fmt.type.height)
     offsets = json.loads(archive.crop_offsets) if archive.crop_offsets else {}
 
     try:
-        offset = offsets[unicode(aspect)]
+        offset = offsets[str(aspect)]
     except KeyError:
         return offset
 
@@ -448,7 +449,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
     missing_required = []
     upscaled_formats = []
 
-    for fmt_name in ordered_formats.keys():
+    for fmt_name in list(ordered_formats.keys()):
         fmt = ordered_formats[fmt_name]
         derived = fmt.derived
 

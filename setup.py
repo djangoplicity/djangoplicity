@@ -18,13 +18,14 @@ setup(
         'django-ace == 1.0.4',
         'django-mptt == 0.9.1',
         'django-recaptcha == 1.4.0',
-        'djangorestframework == 3.8.2',  # Used for pages, fixed version as 3.6 causes conflict with collectstatic
+        'djangorestframework == 3.9.1',  # Used for pages, fixed version as 3.6 causes conflict with collectstatic
         'django-signals-ahoy',  # Used by satchmo/models.py
         'django-redis',
         'google-api-python-client == 1.7.4',
         'oauth2client',
         'html2text == 3.200.3',
         'htmllaundry',
+        'icalendar == 3.1',
         'ipython == 5.5.0',  # Last version compatible with python 2.7
         'Pillow',
         'pycountry == 1.16',

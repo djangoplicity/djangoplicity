@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 import os
 from importlib import import_module
 
@@ -60,7 +61,7 @@ def celery_task_failure_email(**kwargs):
 
     host = os.environ.get('SERVER')
 
-    error = unicode(kwargs['exception']).replace('\n', '')
+    error = str(kwargs['exception']).replace('\n', '')
 
     subject = u'[{host}] Error: Task {sender.name} ({task_id}): {error}'.format(
         queue_name=u'celery',  # `sender.queue` doesn't exist in 4.1?

@@ -30,6 +30,8 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
+from builtins import str
+from builtins import object
 import logging
 from django.contrib.redirects.models import Redirect
 
@@ -168,7 +170,7 @@ class RedirectTask( MigrationTask ):
         super( RedirectTask, self ).__init__()
 
     def run(self):
-        for old, new in self._redirects.items():
+        for old, new in list(self._redirects.items()):
             r, created = Redirect.objects.get_or_create( site=self.conf['pages']['site'], old_path=old )
             if created:
                 r.new_path = new

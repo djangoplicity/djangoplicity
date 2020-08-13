@@ -1,3 +1,4 @@
+from builtins import str
 from django.forms import fields
 import djangoplicity.metadata.widgets as avmwidgets
 
@@ -42,7 +43,7 @@ class TwoItemFloatField( fields.MultiValueField ):
         """
         if data_list:
             delimiter = ';'
-            return delimiter.join([unicode(x) for x in data_list])
+            return delimiter.join([str(x) for x in data_list])
         return None
 
 
@@ -68,7 +69,7 @@ class FourItemFloatField( fields.MultiValueField ):
         """
         if data_list:
             delimiter = ';'
-            return delimiter.join([unicode(x) for x in data_list])
+            return delimiter.join([str(x) for x in data_list])
         return None
 #
 # Specific Form Elements
@@ -80,7 +81,7 @@ class ContactNameField( fields.RegexField ):
     def compress(self, data_list):
         if data_list:
             delimiter = ';'
-            return delimiter.join([unicode(x) for x in data_list])
+            return delimiter.join([str(x) for x in data_list])
 
         return None
 

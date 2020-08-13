@@ -5,6 +5,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from builtins import str
 from django import template
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import stringfilter
@@ -20,7 +21,7 @@ register = template.Library()
 def truncateparagraph_html(value):
     soup = BeautifulSoup(value)
     result = soup.find('p')
-    return unicode( result ).strip()
+    return str( result ).strip()
 
 
 @register.filter( name='remove_html' )
@@ -29,7 +30,7 @@ def remove_html_tags(value):
     Remove all HTML tags, convert HTML entities into
     unicode characters and strip leading/trailing whitespace.
     """
-    return unicode( BeautifulStoneSoup( strip_tags( value ), convertEntities=BeautifulStoneSoup.HTML_ENTITIES ) ).strip()
+    return str( BeautifulStoneSoup( strip_tags( value ), convertEntities=BeautifulStoneSoup.HTML_ENTITIES ) ).strip()
 
 
 def _remove_bold_italic( text ):
@@ -108,7 +109,7 @@ def underscore_to_space( value ):
 @register.filter
 def sp2nbsp( value ):
     try:
-        value = unicode( value )
+        value = str( value )
         value = value.replace( " ", "&nbsp;" )
         return mark_safe(value)
     except:
@@ -126,7 +127,7 @@ def truncatechars( value, arg ):
     {{ alongtext|truncatechars:20 }}
     """
     try:
-        value = unicode(value)
+        value = str(value)
         arg = int(arg)
     except:
         return value

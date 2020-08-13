@@ -12,9 +12,12 @@ Wrapper around html2text package so we can extend some of its functionality,
 namely by adding baseurls to inline links
 """
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 from html2text import HTML2Text
 try:
-    import urlparse
+    import urllib.parse
 except ImportError:  # Python3
     import urllib.parse as urlparse
 
@@ -42,7 +45,7 @@ class DjangoplicityHTML2Text(HTML2Text):
                     a = self.astack.pop()
                     if a:
                         if self.inline_links:
-                            self.o("] - " + urlparse.urljoin(self.baseurl, a['href']) + " ")
+                            self.o("] - " + urllib.parse.urljoin(self.baseurl, a['href']) + " ")
                         else:
                             i = self.previousIndex(a)
                             if i is not None:

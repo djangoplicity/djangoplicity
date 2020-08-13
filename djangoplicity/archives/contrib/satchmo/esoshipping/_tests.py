@@ -6,6 +6,7 @@ from __future__ import print_function
 #
 # General setup
 #
+from builtins import zip
 from shipping.modules.tieredweight.models import Carrier
 from l10n.models import Country
 
@@ -60,7 +61,7 @@ shipping_table = [
 #
 for row in shipping_table:
     range = row[0]
-    zoneprices = zip(zones, row[1])
+    zoneprices = list(zip(zones, row[1]))
 
     low = range[0]
     high = range[1]

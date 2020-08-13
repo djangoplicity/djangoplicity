@@ -1,3 +1,6 @@
+from builtins import str
+from builtins import map
+from builtins import range
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
@@ -190,7 +193,7 @@ class TaxonomyHierarchy( models.Model ):
 
     def avm_code( self ):
         elements = ( self.top_level, self.level1, self.level2, self.level3, self.level4, self.level5, )
-        return ".".join( map( str, filter( lambda x: x is not None, elements ) ) )
+        return ".".join( map( str, [x for x in elements if x is not None] ) )
     avm_code.short_description = _( "AVM Code" )
 
     class Meta:
@@ -261,7 +264,7 @@ class Publication( models.Model ):
     bibcode = models.CharField( max_length=19, verbose_name=_("Bibliographic Code"), help_text=_("ADS Bibliographic Code - see http://adsdoc.harvard.edu/abs_doc/help_pages/data.html#bibcodes") )
 
     def __unicode__(self):
-        return unicode(self.bibcode)
+        return str(self.bibcode)
 
     def get_absolute_url(self):
         """ Return link to ESO Telescope Bibliography """
@@ -278,7 +281,7 @@ class ObservationProposal( models.Model ):
     proposal_id = models.CharField( max_length=255, verbose_name=_("Program/Proposal ID"), help_text=_("The observation proposal ID from the specific observatory.") )
 
     def __unicode__(self):
-        return unicode(self.proposal_id)
+        return str(self.proposal_id)
 
     class Meta:
         ordering = ('proposal_id',)

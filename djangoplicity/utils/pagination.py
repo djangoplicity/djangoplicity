@@ -1,3 +1,4 @@
+from __future__ import division
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -6,6 +7,9 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import range
+from builtins import object
+from past.utils import old_div
 from django.urls import reverse
 from django.conf import settings
 from django.core.paginator import Paginator as corePaginator, QuerySetPaginator as coreQSetPaginator
@@ -84,7 +88,7 @@ class Paginator (object):
         leftlimit = page * paginate_by
 
         items_in_page = paginate_by
-        pagecount = int(total / paginate_by)
+        pagecount = int(old_div(total, paginate_by))
         if int(pagecount) == int(page):
             items_in_page = total % paginate_by
 

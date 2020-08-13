@@ -13,8 +13,11 @@
    :synopsis: Additional test cases to supplement Django test cases.
 .. moduleauthor:: Lars Holm Nielsen <lnielsen@eso.org>
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import unittest
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from django.contrib.auth.models import User
 from django.test import TestCase
 
@@ -47,7 +50,7 @@ class RedirectTestCase( unittest.TestCase ):
 
     def assertRedirect( self, old, new ):
         """ Assert that `old` URL is redirected to `new` URL. """
-        u = urllib2.urlopen( old )
+        u = urllib.request.urlopen( old )
         self.assertEqual( u.geturl(), new )
 
     def assertRedirects(self, base, links ):
@@ -65,7 +68,7 @@ class RedirectTestCase( unittest.TestCase ):
                 self.assertRedirect( old, new )
             except AssertionError:
                 failures.append( old )
-            except urllib2.HTTPError as e:
+            except urllib.error.HTTPError as e:
                 httperrors.append( (str(e), old) )
 
         if httperrors:

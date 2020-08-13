@@ -1,3 +1,4 @@
+from __future__ import division
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -6,6 +7,10 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import hashlib
 import logging
 from math import ceil
@@ -235,7 +240,7 @@ def get_instance_resources(instance):
             formats['Preview'] = ('dome_preview', 'Video')
 
         # Normal videos
-        for fmt in ['ultra_hd', 'hd_1080p25_screen', 'ext_highres']:
+        for fmt in ['ultra_hd', 'hd_1080p25_screen', 'hd_1080_screen', 'ext_highres']:
             if getattr(instance, 'resource_%s' % fmt, None):
                 formats['Original'] = (fmt, 'Video')
                 break
@@ -263,7 +268,7 @@ def get_instance_resources(instance):
 
     resources = [
         get_instance_d2d_resource(instance, fmt, name, media_type)
-        for (name, (fmt, media_type)) in formats.items()
+        for (name, (fmt, media_type)) in list(formats.items())
     ]
 
     # Remove empty resources if any:
@@ -319,18 +324,18 @@ def get_resource_dimension(instance, resource_name):
         # Resource has a max dimension (restricts maximum width or height)
         if instance_width > instance_height:
             # Landscape
-            return [size, ceil(instance_height * size / instance_width)]
+            return [size, ceil(old_div(instance_height * size, instance_width))]
         else:
             # Portrait
-            return [ceil(instance_width * size / instance_height), size]
+            return [ceil(old_div(instance_width * size, instance_height)), size]
 
     if width and instance_width and instance_height:
         # Only width is defined
-        return [width, ceil(instance_height * width / instance_width)]
+        return [width, ceil(old_div(instance_height * width, instance_width))]
 
     if height and instance_width and instance_height:
         # Only height is defined
-        return [ceil(instance_width * height) / instance_height, height]
+        return [old_div(ceil(instance_width * height), instance_height), height]
 
     return [instance_width, instance_height]
 

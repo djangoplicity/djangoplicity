@@ -6,6 +6,9 @@ from __future__ import print_function
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import filter
+from builtins import str
+from builtins import object
 import os
 import shutil
 import inspect
@@ -33,6 +36,7 @@ from djangoplicity.archives.fields import ReleaseDateTimeField
 from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.archives.tasks import clear_archive_list_cache, \
     embargo_release_date_task
+from future.utils import with_metaclass
 
 
 __all__ = ( 'ArchiveModel', 'post_rename' )
@@ -350,7 +354,7 @@ class ArchiveBase( ModelBase ):
         # - This is done for convenience, when accessing a manager, and so that you
         #   don't need to give the name twice.
         #
-        for ( attrname, manager ) in resources.iteritems():
+        for ( attrname, manager ) in resources.items():
             manager.name = attrname
 
         #
@@ -372,7 +376,7 @@ class ArchiveBase( ModelBase ):
         return newclass
 
 
-class ArchiveModel( object ):
+class ArchiveModel( with_metaclass(ArchiveBase, object) ):
     """
     Super class for all Models that needs archive functionality.
 
@@ -395,7 +399,6 @@ class ArchiveModel( object ):
     metaclass (ArchiveBase), and hence nothing of the magic will be
     added unless ArchiveModel is specified as the first super class.
     """
-    __metaclass__ = ArchiveBase
 
     def save(self, *args, **kwargs ):
         if not self._state.adding and not self.pk:
@@ -472,7 +475,7 @@ class ArchiveModel( object ):
 
         # Get list of translations (if any) and rename them
         if settings.USE_I18N and hasattr(self, 'Translation') and self.is_source():
-            for _lang, translation in self.get_translations(filter_kwargs={})['translations'].iteritems():
+            for _lang, translation in self.get_translations(filter_kwargs={})['translations'].items():
                 if not translation.pk.startswith(self.pk):
                     continue
 
@@ -538,7 +541,7 @@ class ArchiveModel( object ):
 
         # Only delete resources for source objects
         resource_names = [
-            name for name, type_ in vars(self.Archive).items()
+            name for name, type_ in list(vars(self.Archive).items())
             if isinstance(type_, ResourceManager)
         ]
 
@@ -565,7 +568,7 @@ class ArchiveModel( object ):
         # Rename resources
         #
         resource_names = [
-            name for name, type_ in vars(self.Archive).items()
+            name for name, type_ in list(vars(self.Archive).items())
             if isinstance(type_, ResourceManager)
         ]
 
@@ -592,7 +595,7 @@ class ArchiveModel( object ):
         # Rename resources
         #
         resource_names = [
-            name for name, type_ in vars(self.Archive).items()
+            name for name, type_ in list(vars(self.Archive).items())
             if isinstance(type_, ResourceManager)
         ]
 

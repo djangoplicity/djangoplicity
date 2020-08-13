@@ -30,7 +30,7 @@ def get_model_resources( model ):
     Get all resources defined on model
     """
     resources = []
-    for attr, val in model.Archive.__dict__.items():
+    for attr, val in list(model.Archive.__dict__.items()):
         if isinstance( val, ResourceManager ):
             resources.append( ( attr, val, "%s%s" % (model.Archive.Meta.resource_fields_prefix, attr), os.path.join( settings.MEDIA_ROOT, model.Archive.Meta.root, attr ) ) )
     return resources

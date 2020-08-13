@@ -7,6 +7,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
 from datetime import datetime
 
 from django.http import HttpResponse, HttpResponseForbidden

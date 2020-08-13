@@ -6,6 +6,7 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import map
 from datetime import datetime, tzinfo, timedelta
 import time
 from django.conf import settings
@@ -41,7 +42,7 @@ def timetuple_to_datetime( dt ):
 
 def timestring_to_seconds( timestring):
     """ converts 'H:m:s:f' string to seconds """
-    h, m, s, _f = map(int, timestring.split(':'))
+    h, m, s, _f = list(map(int, timestring.split(':')))
     seconds = (h * 60 * 60) + (m * 60) + s
     return seconds
 

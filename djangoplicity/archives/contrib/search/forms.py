@@ -30,6 +30,9 @@
 # POSSIBILITY OF SUCH DAMAGE
 from __future__ import unicode_literals
 
+from past.builtins import cmp
+from builtins import str
+from builtins import object
 from collections import OrderedDict
 
 from django import forms
@@ -76,7 +79,7 @@ class AdvancedSearchForm( object ):
 
     def query(self):
         q = Q()
-        for key, f in self.form.fields.iteritems():
+        for key, f in self.form.fields.items():
             q = q & f.query(value=self.form.cleaned_data[key])
         return q
 
@@ -85,7 +88,7 @@ class AdvancedSearchForm( object ):
 
         header = ('%s' % self.options.urlname_prefix)
 
-        for name, field in self.form.fields.items():
+        for name, field in list(self.form.fields.items()):
             bf = BoundField( self.form, field, name )
 
             repr = bf.field.repr( bf.data )
@@ -116,7 +119,7 @@ class AdvancedSearchForm( object ):
             options = self.options
 
         # take fields from options class, and sort them correctly
-        fields = [(field_name, obj) for field_name, obj in options.AdvancedSearch.__dict__.iteritems() if isinstance(obj, formsFields.Field)]
+        fields = [(field_name, obj) for field_name, obj in options.AdvancedSearch.__dict__.items() if isinstance(obj, formsFields.Field)]
         fields.sort(lambda x, y: cmp(x[1].creation_counter, y[1].creation_counter))
 
         for dummy_name, field in fields:
@@ -128,7 +131,7 @@ class AdvancedSearchForm( object ):
                 field.choices = field.choices
 
         # inject them into ASF's base fields
-        AdvancedSearchForm.base_fields = OrderedDict(AdvancedSearchForm.base_fields.items() + fields)
+        AdvancedSearchForm.base_fields = OrderedDict(list(AdvancedSearchForm.base_fields.items()) + fields)
 
         return AdvancedSearchForm(data)
 
@@ -141,7 +144,7 @@ def outputhelper(self, normal_row, error_row, row_ender, help_text_html, errors_
     top_errors = self.non_field_errors()  # Errors that should be displayed above all fields.
     output, hidden_fields = [], []
 
-    for name, field in self.fields.items():
+    for name, field in list(self.fields.items()):
         html_class_attr = ''
         bf = BoundField(self, field, name)
         bf_errors = self.error_class([conditional_escape(error) for error in bf.errors])  # Escape and cache in local variable.
@@ -149,14 +152,14 @@ def outputhelper(self, normal_row, error_row, row_ender, help_text_html, errors_
         # Check that we can get a unicode output of the field (in particular
         # if someone tries to pass bad data to the form
         try:
-            unicode(bf)
+            str(bf)
         except TypeError:
             raise Http404
 
         if bf.is_hidden:
             if bf_errors:
                 top_errors.extend([u'(Hidden field %s) %s' % (name, force_unicode(e)) for e in bf_errors])
-            hidden_fields.append(unicode(bf))
+            hidden_fields.append(str(bf))
 
         elif bf.field.is_separator():
             output.append(separator_html % {
@@ -192,7 +195,7 @@ def outputhelper(self, normal_row, error_row, row_ender, help_text_html, errors_
             output.append(normal_row % {
                 'errors': force_unicode(bf_errors),
                 'label': force_unicode(label),
-                'field': unicode(bf),
+                'field': str(bf),
                 'help_text': help_text,
                 'html_class_attr': html_class_attr
             })

@@ -43,7 +43,7 @@ class WebCategoryQuery(CategoryQuery):
         # hack: added source if model has source attr so that translation lookups work
         if settings.USE_I18N and issubclass( model, TranslationModel ):
             params2 = {}
-            for k in params.keys():
+            for k in list(params.keys()):
                 params2['source__' + k] = params[k]
             q_obj = q_obj | Q(**params2)
 

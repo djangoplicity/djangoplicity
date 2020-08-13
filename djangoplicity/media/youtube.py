@@ -33,11 +33,13 @@
 # Provides a youtube apiclient that can be used as described in
 # https://developers.google.com/youtube/v3/docs/
 
+from future import standard_library
+standard_library.install_aliases()
 import os
 import random
 import time
 
-import httplib
+import http.client
 import httplib2
 from ssl import SSLError
 
@@ -55,10 +57,10 @@ YOUTUBE_API_VERSION = 'v3'
 
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
-RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError, httplib.NotConnected,
-    httplib.IncompleteRead, httplib.ImproperConnectionState,
-    httplib.CannotSendRequest, httplib.CannotSendHeader,
-    httplib.ResponseNotReady, httplib.BadStatusLine)
+RETRIABLE_EXCEPTIONS = (httplib2.HttpLib2Error, IOError, http.client.NotConnected,
+    http.client.IncompleteRead, http.client.ImproperConnectionState,
+    http.client.CannotSendRequest, http.client.CannotSendHeader,
+    http.client.ResponseNotReady, http.client.BadStatusLine)
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -236,7 +238,7 @@ def youtube_thumbnails_set(video_id, path):
 @ssl_error_wrapper
 def youtube_videos_insert(body, media_path):
     response = _youtube().videos().insert(
-        part=','.join(body.keys()),
+        part=','.join(list(body.keys())),
         body=body,
         # The chunksize parameter specifies the size of each chunk of data, in
         # bytes, that will be uploaded at a time. Set a higher value for

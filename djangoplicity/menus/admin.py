@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from django.contrib import admin
 from django.conf.urls import url
 from djangoplicity.menus.models import Menu, MenuItem, invalidate_menu_item_cache

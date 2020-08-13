@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block nav-global %}
-<div class="djangoplicity-tools"><a href="/">{% trans 'Website' %}</a>
+<div class="djangoplicity-tools"><a href="{{ DJANGOPLICITY.URL_PREFIX }}/">{% trans 'Website' %}</a>
 {% if request.user.is_staff %}| <a href="{% url 'admin_site:index' %}">{% trans 'Site admin' %}</a>
 {% if request.user.is_superuser %}| <a href="{% url 'adminlogs_site:index' %}">{% trans 'System admin' %}</a>{% endif %}
 {% block extra_admin_links %}{% endblock %}

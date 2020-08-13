@@ -6,6 +6,7 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import str
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import NoReverseMatch, reverse
 from django.utils.functional import curry

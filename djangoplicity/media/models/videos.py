@@ -29,9 +29,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import datetime
 import logging
-import HTMLParser
+import html.parser
 
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -87,7 +90,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
 
     UPLOAD_FORMATS = (
         'vr_8k', 'vr_4k', 'cylindrical_preview', 'ultra_hd',
-        'hd_1080p25_screen', 'dome_preview', 'hd_broadcast_720p25',
+        'hd_1080p25_screen', 'hd_1080_screen', 'dome_preview', 'hd_broadcast_720p25',
         'hd_and_apple', 'medium_podcast', 'ext_highres', 'ext_playback',
         'old_video'
     )
@@ -272,6 +275,9 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         hd_broadcast_720p50 = ResourceManager( type=types.BroadcastType, verbose_name=_(u"HD Broadcast 720p/50") )  # hd720p50_brodcast
         hd_1080p25_screen = ResourceManager( type=types.FullHDPreview1080p, verbose_name=_(u"Full HD Preview 1080p") )  # hd1080p25_screen
         hd_1080p25_broadcast = ResourceManager( type=types.BroadcastType, verbose_name=_(u"Full HD Broadcast 1080p") )  # hd1080p25_brodcast
+        # FULL HD 29,97 FPS
+        hd_1080_screen = ResourceManager( type=types.FullHDPreview1080p, verbose_name=_(u"Full HD Preview 1080p") )  # hd1080_screen
+        hd_1080_broadcast = ResourceManager( type=types.BroadcastType, verbose_name=_(u"Full HD Broadcast 1080p") )  # hd1080_brodcast
 
         # Ultra HD (4k/2160p)
         ultra_hd = ResourceManager( type=types.UltraHDType, verbose_name=_(u"4K Ultra HD Preview H.264") )
@@ -432,6 +438,10 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
             self.update_youtube_playlists()
             add_admin_history(self, 'Setting YouTube video privacy to "public" at release time')
 
+    def duration_in_seconds(self):
+        h, m, s, f = self.file_duration.split(':')
+        return int(h) * 3600 + int(m) * 60 + int(s)
+
     def get_youtube_description(self):
         '''
         Returns a plain text version of headline, description and headline
@@ -443,7 +453,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
             'domain': get_current_site(None).domain,
         })
 
-        description = HTMLParser.HTMLParser().unescape(description)
+        description = html.parser.HTMLParser().unescape(description)
 
         # YouTube description are limited to 5000 characters, so we truncate
         # it a bit shorter

@@ -1,6 +1,9 @@
 bash:
 	docker exec -it djangoplicity bash
 
+createsuperuser:
+	docker exec -it djangoplicity ./manage.py createsuperuser
+
 test:
 	docker exec -it djangoplicity coverage run --source='.' manage.py test
 
@@ -10,6 +13,9 @@ coverage-html:
 
 futurize-stage1:
 	docker exec -it djangoplicity futurize --stage1 -w -n .
+
+futurize-stage2:
+	docker exec -it djangoplicity futurize --stage2 --nofix=newstyle -w -n .
 
 test-python27:
 	tox -e py27-django111

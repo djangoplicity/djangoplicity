@@ -7,6 +7,7 @@ x-common: &common
     - import:/app/import
     - ./djangoplicity:/app/djangoplicity
     - ./test_project:/app/test_project
+    - ./local:/app/local
     - ./htmlcov:/app/htmlcov
     - ./.coveragerc:/app/.coveragerc
     - ./db:/app/db
@@ -29,8 +30,7 @@ services:
   celery:
     <<: *common
     container_name: djangoplicity-celery
-    # Celerybeat included, not recommended for production
-    command: ["celery", "-B", "--app=test_project", "--concurrency=8", "--hostname=worker1@%h", "--loglevel=INFO", "--queues=celery", "worker"]
+    command: ["python", "manage.py", "runcelery"] # Dev management command
     depends_on:
       - broker
       - web

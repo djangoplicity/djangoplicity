@@ -29,6 +29,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from builtins import str
+from past.utils import old_div
 import codecs
 import datetime
 import os
@@ -94,7 +97,7 @@ def image_extras( image_id, sendtask_callback=None, sendtask_tasksetid=None ):
 
             if original_file:
                 # File size/type
-                fields['file_size'] = long( os.path.getsize( original_file ) / 1024 )
+                fields['file_size'] = int( old_div(os.path.getsize( original_file ), 1024) )
 
                 fields['file_type'] = get_file_type( original_file )
 
@@ -109,7 +112,7 @@ def image_extras( image_id, sendtask_callback=None, sendtask_tasksetid=None ):
 
                 fields['n_pixels'] = fields['width'] * fields['height']
 
-                for key, value in fields.items():
+                for key, value in list(fields.items()):
                     if value != getattr(im, key):
                         setattr(im, key, value)
                         update_fields.append(key)
@@ -149,7 +152,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
         fields = {}
 
         # Identify the format with the largest resolution
-        for resource in ('cylindrical_16kmaster', 'dome_8kmaster', 'cylindrical_8kmaster', 'vr_8k', 'vr_4k', 'dome_4kmaster', 'cylindrical_4kmaster', 'ultra_hd_broadcast', 'ultra_hd', 'dome_2kmaster', 'hd_1080p25_screen', 'dome_preview', 'hd_broadcast_720p25', 'hd_and_apple', 'large_qt', 'broadcast_sd', 'medium_flash', 'medium_podcast', 'medium_mpeg1', 'qtvr', 'ext_highres', 'ext_playback', 'old_video'):
+        for resource in ('cylindrical_16kmaster', 'dome_8kmaster', 'cylindrical_8kmaster', 'vr_8k', 'vr_4k', 'dome_4kmaster', 'cylindrical_4kmaster', 'ultra_hd_broadcast', 'ultra_hd', 'dome_2kmaster', 'hd_1080p25_screen', 'hd_1080_screen', 'hd_1080_broadcast', 'dome_preview', 'hd_broadcast_720p25', 'hd_and_apple', 'large_qt', 'broadcast_sd', 'medium_flash', 'medium_podcast', 'medium_mpeg1', 'qtvr', 'ext_highres', 'ext_playback', 'old_video'):
             try:
                 r = getattr(v, 'resource_' + resource)
                 if not r:
@@ -174,7 +177,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
 
                 # Divide the number of includes files (frames) by the framerate
                 # to get the duration in seconds
-                fields['file_duration'] = len(z.infolist()) / v.frame_rate
+                fields['file_duration'] = old_div(len(z.infolist()), v.frame_rate)
 
                 # Assume the width and height is 8k, 4k or 2k unless it's already set
                 if resource == 'dome_8kmaster':
@@ -220,7 +223,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
             # We use int(duration) to drop the microseconds
             fields['file_duration'] = str(datetime.timedelta(seconds=int(fields['file_duration']))) + ':000'
 
-            for key, value in fields.items():
+            for key, value in list(fields.items()):
                 if value != getattr(v, key):
                     setattr(v, key, value)
                     update_fields.append(key)
@@ -729,8 +732,7 @@ def audio_extras(app_label, module_name, pks, formats=None,
 
 
 @task(name='media.generate_thumbnail', ignore_result=True)
-def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None,
-        sendtask_tasksetid=None):
+def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendtask_tasksetid=None, **kwargs):
     '''
     Generate a thumbnail if no original format is available
     '''
@@ -740,11 +742,12 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None,
         # Load video
         v = cls.objects.get(pk=pk)
     except cls.DoesNotExist:
-        logger.warning('Could not find video %s.%s %s.', app_label, model_name,
-            pk)
-        return
+        error = 'Could not find video %s.%s %s.', app_label, model_name, pk
+        logger.warning(error)
+        raise Exception(error)
 
-    if not v.resource_original:
+    force_generation = kwargs.get('force_generation', False)
+    if not v.resource_original or force_generation:
         # Identify the largest useable format
         path = ''
         for fmt in cls.UPLOAD_FORMATS:
@@ -758,22 +761,32 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None,
             except AttributeError:
                 continue
         else:
-            logger.warning('Couldn\'t find valid format to upload for "%s"', pk)
-            return
+            error = 'Couldn\'t find valid format to upload for "%s"', pk
+            logger.warning(error)
+            raise Exception(error)
 
-        output = os.path.join(settings.MEDIA_ROOT, cls.Archive.Meta.root,
-            'original', pk + '.tif')
+        output = os.path.join(settings.MEDIA_ROOT, cls.Archive.Meta.root, 'original', pk + '.tif')
 
-        # Takes the screenshot at 5s
-        position = 5
+        # Takes the screenshot at 5s by default or using setting
+        position = getattr(settings, 'VIDEOS_THUMBNAIL_POSITION', 5)
+        if position == 'middle':
+            position = int(v.duration_in_seconds() / 2)
 
-        cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 {output}'.format(
-            position=position, input=path, output=output)
+        cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 {output}'.format(position=position, input=path, output=output)
+        if force_generation:
+            cmd += ' -y' # To overwrite image
 
         logger.info(cmd)
-        call(cmd, shell=True)
-        add_admin_history(v, 'Generated thumbnail from %s at %d seconds' % (
-            fmt, position))  # pylint: disable=undefined-loop-variable
+        # Check output raises and error if return code of command is not zero and returns the error as a byte string
+        import subprocess
+        try:
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+        except subprocess.CalledProcessError as e:
+            error = 'The command "{}" returned error: {}'.format(cmd, e.output)
+            logger.warning(e)
+            raise Exception(error)
+
+        add_admin_history(v, 'Generated thumbnail from {} at {} seconds'.format(fmt, position))  # pylint: disable=undefined-loop-variable
 
     # Send_task callback
     if sendtask_callback:

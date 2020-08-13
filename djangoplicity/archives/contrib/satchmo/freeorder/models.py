@@ -7,6 +7,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
+from builtins import range
 from django.utils.translation import gettext as _
 from datetime import datetime, timedelta
 from django.contrib.sites.models import Site

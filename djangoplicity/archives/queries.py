@@ -9,6 +9,8 @@
 #
 
 
+from past.builtins import basestring
+from builtins import object
 from datetime import datetime
 
 from django.conf.urls import include, url

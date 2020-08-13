@@ -54,11 +54,11 @@ def sha1_sign(params, passphrase):
     Params is concatenated with the passphrase
     '''
     # Make sure params are sorted alphabetically
-    params = OrderedDict(sorted(params.items(), key=lambda t: t[0]))
+    params = OrderedDict(sorted(list(params.items()), key=lambda t: t[0]))
 
     string = ''.join([
         '{}={}{}'.format(key, val, passphrase)
-        for (key, val) in params.items()
+        for (key, val) in list(params.items())
         if val  # Empty values are not included in the hash
     ]).encode('utf-8')  # Encode to utf-8 as hashlib expects byte string
 
@@ -71,7 +71,7 @@ def get_params(request):
     '''
     return dict([
         (key.upper(), urlunquote_plus(val))
-        for key, val in request.GET.items()
+        for key, val in list(request.GET.items())
         if key.upper() != 'SHASIGN'
     ])
 

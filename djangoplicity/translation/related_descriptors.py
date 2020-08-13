@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import object
 from django.db import router
 from django.db.models.fields.related_descriptors import \
     ForwardManyToOneDescriptor, ReverseManyToOneDescriptor, \
@@ -243,7 +244,7 @@ class TranslationReverseManyToOneDescriptor(ReverseManyToOneDescriptor, Translat
 
         # Take care of special case (see documentation in __init__ for precise documentation)
         if instance_or_source != instance:
-            for key, value in manager.core_filters.items():
+            for key, value in list(manager.core_filters.items()):
                 if value is instance:
                     manager.core_filters[key] = instance_or_source
 

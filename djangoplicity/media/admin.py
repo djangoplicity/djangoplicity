@@ -29,6 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
+from builtins import object
 from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelForm
@@ -191,7 +193,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
                 write_metadata.delay( obj.id, IMAGE_AVM_FORMATS )
             self.message_user( request, _("Writing AVM to selected images.") )
         except Exception as e:
-            self.message_user( request, _("This djangoplicity installation does not support writing AVM to images (%s)." % unicode( e ) ) )
+            self.message_user( request, _("This djangoplicity installation does not support writing AVM to images (%s)." % str( e ) ) )
     action_write_avm.short_description = _("Write AVM to images")
 
     def action_avm_content_review( self, request, queryset ):
@@ -299,7 +301,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     ordering = ('-last_modified', )
     richtext_fields = ('description', 'credit', )
     readonly_fields = ('content_server_ready', )
-    actions = ['action_toggle_published', 'action_toggle_featured', 'action_update_subtitles', 'action_reimport', 'action_video_extras', 'action_resync_resources', 'action_youtube_upload']
+    actions = ['action_toggle_published', 'action_toggle_featured', 'action_update_subtitles', 'action_reimport', 'action_video_extras', 'action_resync_resources', 'action_youtube_upload', 'action_generate_thumbnail']
     inlines = [ VideoContactInlineAdmin ]
 
     class Media:
@@ -318,7 +320,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
                     video_embed_subtitles.delay( obj.pk, f)
             self.message_user( request, _("Updating subtitles for selected videos.") )
         except Exception as e:
-            self.message_user( request, _("Error while updating subtitles." % unicode( e ) ) )
+            self.message_user( request, _("Error while updating subtitles." % str( e ) ) )
 
     action_update_subtitles.short_description = "Update subtitles"
 
@@ -342,6 +344,18 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
         self.message_user(request, _('Uploading video to YouTube'))
 
     action_youtube_upload.short_description = 'Upload video to YouTube'
+
+    def action_generate_thumbnail(self, request, objects):
+        from djangoplicity.celery.serialtaskset import SerialSendTaskSet
+
+        for obj in objects:
+            taskset = SerialSendTaskSet()
+            taskset.add('media.generate_thumbnail', args=['media', 'Video', obj.pk], kwargs={'force_generation': True})
+            taskset.add('djangoplicity.cutter.tasks.process_images_derivatives', args=['media', 'Video', request.user.pk, [obj.pk]])
+            taskset.send_task()
+        self.message_user(request, _('Generating thumbnail of videos'))
+
+    action_generate_thumbnail.short_description = 'Generate thumbnail at position: {}'.format(getattr(settings, 'VIDEOS_THUMBNAIL_POSITION', 5))
 
     def get_actions( self, request ):
         """
@@ -496,7 +510,7 @@ class PictureOfTheWeekAdmin( dpadmin.DjangoplicityModelAdmin, POTWDisplaysAdmin,
 
     def visual_title( self, obj ):
         v = obj.visual()
-        return unicode( v ) if v else ""
+        return str( v ) if v else ""
     visual_title.short_description = _(u'Title')
 
     def visual_type( self, obj ):

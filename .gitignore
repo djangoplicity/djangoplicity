@@ -10,4 +10,6 @@ db/*
 !db/.keep
 htmlcov/*
 !htmlcov/.keep
+local/*
+!local/.keep
 .coverage
