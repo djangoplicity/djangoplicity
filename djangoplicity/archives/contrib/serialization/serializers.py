@@ -285,7 +285,7 @@ class ICalEmitter( Emitter ):
 
             cal.add_component( event )
 
-        return cal.as_string()
+        return cal.to_ical()
 
     def response( self, response ):
         response['Content-Disposition'] = "attachment; filename=calendar.ics"
