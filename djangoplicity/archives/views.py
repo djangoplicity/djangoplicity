@@ -21,7 +21,7 @@ from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template import loader
 from django.template.loader import render_to_string
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.http import urlunquote
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.views.generic import DetailView, ListView
@@ -371,7 +371,7 @@ class GenericDetailView( object ):
 
         crosslinks = []
         for website, url in crls:
-            str = _('%(products)s on %(website)s') % {'products': force_unicode(crosslinks_subject), 'website': website}
+            str = _('%(products)s on %(website)s') % {'products': force_text(crosslinks_subject), 'website': website}
             crosslinks.append((str, url))
 
         #

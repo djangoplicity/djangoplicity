@@ -1,5 +1,5 @@
 from django.forms import widgets
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.forms.utils import flatatt
 
@@ -179,7 +179,7 @@ class SubjectCategoryWidget( widgets.TextInput ):
         final_attrs = self.build_attrs(attrs,
             {'type': self.input_type, 'name': name})
         if value != '':
-            final_attrs['value'] = force_unicode(value)
+            final_attrs['value'] = force_text(value)
 
         default_html = u'<input%s />' % flatatt(final_attrs)
         return mark_safe(flex + js + default_html)

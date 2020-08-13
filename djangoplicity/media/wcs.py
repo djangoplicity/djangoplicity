@@ -37,7 +37,7 @@ from bs4 import BeautifulStoneSoup
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils.html import strip_tags
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 import urllib.request, urllib.parse, urllib.error
 
 WWT_BASE_URL = "http://www.worldwidetelescope.org/wwtweb/ShowImage.aspx?"
@@ -47,7 +47,7 @@ def prepare_str( s, html=False ):
     """
     Clean string for any mark-up so that string can be shown by other applications (WWT/XMP).
     """
-    s = force_unicode( s )
+    s = force_text( s )
     if html:
         s = strip_tags(s)
         s = s.replace("\r\n", " ")

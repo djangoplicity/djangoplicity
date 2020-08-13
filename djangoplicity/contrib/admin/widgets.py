@@ -13,7 +13,7 @@ Form Widget classes specific to the Djangoplicity admin site.
 from itertools import chain
 from django import forms
 from django.conf import settings
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 from django.utils.html import escape, conditional_escape
 from django.forms.utils import flatatt
@@ -48,10 +48,10 @@ class HierarchicalSelect( forms.Widget ):
         final_attrs = self.build_attrs(attrs, {'name': name})
         output = [u'<select%s>' % forms.widgets.flatatt(final_attrs)]
         # Normalize to string.
-        str_value = force_unicode(value)
+        str_value = force_text(value)
         for obj in chain( self.choices.queryset, choices ):
             option_value = obj.pk
-            option_value = force_unicode( option_value )
+            option_value = force_text( option_value )
 
             if obj.level > 0:
                 option_label = mark_safe( ( u'&nbsp;&nbsp;&nbsp;' * obj.level ) + u'&gt; ' + escape(obj.title) )
@@ -61,7 +61,7 @@ class HierarchicalSelect( forms.Widget ):
             selected_html = (option_value == str_value) and u' selected="selected"' or ''
             output.append(u'<option value="%s"%s>%s</option>' % (
                     escape(option_value), selected_html,
-                    conditional_escape(force_unicode(option_label))))
+                    conditional_escape(force_text(option_label))))
         output.append(u'</select>')
         return mark_safe(u'\n'.join(output))
 
