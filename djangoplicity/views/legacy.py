@@ -101,7 +101,7 @@ def object_list(request, queryset, paginate_by=None, page=None,
         if not allow_empty and len(queryset) == 0:
             raise Http404
 
-    for key, value in extra_context.items():
+    for key, value in list(extra_context.items()):
         if callable(value):
             context[key] = value()
         else:
@@ -157,7 +157,7 @@ def object_detail(request, queryset, object_id=None, slug=None,
         template_object_name: obj,
     }
 
-    for key, value in extra_context.items():
+    for key, value in list(extra_context.items()):
         if callable(value):
             context[key] = value()
         else:

@@ -53,6 +53,7 @@ This will be done automatically in post_save of any objects inheriting from
 ArchiveBase
 """
 
+from builtins import object
 from django.conf import settings
 from django.core.cache import cache
 from djangoplicity.archives.contrib.security.tasks import update_static_files_protection_cache
@@ -101,7 +102,7 @@ class StaticFilesProtectorCache(object):
                 protected_paths[protected_path] = protected_resources
 
         # Remove empty values from protected_paths
-        protected_paths = {k: v for k, v in protected_paths.iteritems() if v is not None}
+        protected_paths = {k: v for k, v in protected_paths.items() if v is not None}
 
         cache.set(PROTECTED_PATH_KEY, protected_paths, TIMEOUT)
         return protected_paths

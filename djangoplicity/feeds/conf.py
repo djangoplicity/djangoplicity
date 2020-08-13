@@ -30,6 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
+from builtins import object
 from django.conf import settings
 
 feed_settings = None

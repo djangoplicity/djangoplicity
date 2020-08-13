@@ -63,7 +63,7 @@ def urlpatterns_for_options( options, urlpatterns=None ):
 
     # Find all queries to include - also determine
     queries = {}
-    for a, q in attrs.items():
+    for a, q in list(attrs.items()):
         if isinstance(q, ArchiveQuery):
             if q.include_in_urlpatterns:
                 queries[a] = q
@@ -72,7 +72,7 @@ def urlpatterns_for_options( options, urlpatterns=None ):
         urlpatterns = []
 
     # Install URLS for all queries
-    for qname, q in queries.items():
+    for qname, q in list(queries.items()):
         if qname == default_q_name:
             name_prefix = '%s_defaultquery' % urlname_prefix
             url_prefix = r'^'
@@ -89,7 +89,7 @@ def urlpatterns_for_options( options, urlpatterns=None ):
         name_prefix = "%s_%s" % ( urlname_prefix if urlname_prefix else None, settings.ARCHIVE_URL_FEED_PREFIX )
         feed_dict = options.feeds()
         if feed_dict:
-            for name, feedklass in feed_dict.items():
+            for name, feedklass in list(feed_dict.items()):
                 # Delegate to each feed class to generate their URLs
                 urlpatterns += feedklass.get_feed_urls( name=name, url_prefix=settings.ARCHIVE_URL_FEED_PREFIX, name_prefix=name_prefix )
 

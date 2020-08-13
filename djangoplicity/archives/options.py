@@ -7,6 +7,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
+from builtins import object
 import operator
 
 from django.conf import settings

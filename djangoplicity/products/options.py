@@ -34,6 +34,7 @@
 Options file for product archives.
 """
 
+from builtins import object
 from django.conf.urls import *
 from django.utils.translation import ugettext_lazy as _
 from djangoplicity.archives.options import ArchiveOptions

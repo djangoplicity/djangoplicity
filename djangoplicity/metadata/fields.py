@@ -1,3 +1,4 @@
+from past.builtins import basestring
 from avm import forms as avmforms
 from avm.consts import *
 from django import forms

@@ -5,6 +5,9 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from past.builtins import cmp
+from builtins import range
+from builtins import object
 from datetime import datetime
 from django import forms
 from django.conf import settings
@@ -177,7 +180,7 @@ def _check_embargo(model, obj, request):
 
 
 def _get_ordered(obj, klass):
-    fields = [(name, o) for name, o in obj.__dict__.items() if isinstance(o, klass)]
+    fields = [(name, o) for name, o in list(obj.__dict__.items()) if isinstance(o, klass)]
     fields.sort(lambda (name1, obj1), (name2, obj2): cmp(obj1.creation_counter, obj2.creation_counter))
     return fields
 

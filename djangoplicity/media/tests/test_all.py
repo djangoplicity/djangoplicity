@@ -97,7 +97,7 @@ class CommonViewsTestCase( TestCase ):
         """
         Test if main index archive pages is reachable
         """
-        for conf in self.conf.values():
+        for conf in list(self.conf.values()):
             response = self.client.get(conf['root'])
             self._assert_response(response, 200)
 
@@ -105,7 +105,7 @@ class CommonViewsTestCase( TestCase ):
         """
         Test if all queries with all their browsers
         """
-        for conf in self.conf.values():
+        for conf in list(self.conf.values()):
             opt = conf['options']
             root = conf['root']
             views = conf['list_views']

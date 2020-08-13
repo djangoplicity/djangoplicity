@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from builtins import str
 import logging
 import os
 from collections import OrderedDict
@@ -103,7 +104,7 @@ def _verify_feedback(request, order, params):
             notes = ''
 
         notes += '--- Concardis payment parameters ---\n'
-        for key, val in params.items():
+        for key, val in list(params.items()):
             notes += '{}: {}\n'.format(key, val)
 
         order.notes = notes
@@ -220,7 +221,7 @@ def confirm_info(request):
     params['SHASIGN'] = sha1_sign(params, passphrase)
 
     # Make sure params are sorted alphabetically
-    params = OrderedDict(sorted(params.items(), key=lambda t: t[0]))
+    params = OrderedDict(sorted(list(params.items()), key=lambda t: t[0]))
 
     return render(request, template, {'order': order,
         'post_url': url,
@@ -249,7 +250,7 @@ def feedback(request):
             _('Your order has already been processed.'))
 
     log.info('Params for order %s', order)
-    for key, val in params.items():
+    for key, val in list(params.items()):
         log.info('%s: %s', key, val)
 
     error = _verify_feedback(request, order, params)
@@ -276,7 +277,7 @@ def success(request):
     params = get_params(request)
 
     log.info('Params for order %s', order)
-    for key, val in params.items():
+    for key, val in list(params.items()):
         log.info('%s: %s', key, val)
 
     # Verify the feedback unless the order has already been paid,

@@ -6,6 +6,7 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import str
 from django.forms import fields
 from django.utils.translation import ugettext_lazy as _
 
@@ -42,7 +43,7 @@ class TwoItemFloatField( fields.MultiValueField ):
         """
         if data_list:
             delimiter = ';'
-            return delimiter.join([unicode(x) for x in data_list])
+            return delimiter.join([str(x) for x in data_list])
         return None
 
 

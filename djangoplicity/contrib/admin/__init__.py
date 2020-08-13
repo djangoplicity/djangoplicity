@@ -6,6 +6,7 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 from __future__ import unicode_literals
 
+from builtins import object
 from functools import update_wrapper
 
 from django.conf.urls import url

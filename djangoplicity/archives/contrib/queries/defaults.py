@@ -5,6 +5,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from builtins import str
+from builtins import filter
 from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, FieldError
@@ -61,7 +63,7 @@ def param_extra_templates( param=None, selector=None ):
 
         if param in query_data:
             stringparam = selector( query_data[param], query ) if selector else query_data[param]
-            stringparam = unicode( stringparam )
+            stringparam = str( stringparam )
 
             return [
                     'archives/%s/%s/list_%s.html' % ( model._meta.object_name.lower(), query_name, stringparam ),

@@ -30,6 +30,8 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
+from builtins import next
+from builtins import object
 from djangoplicity.migration import MigrationTask, MigrationConfAdapter
 import csv
 
@@ -51,7 +53,7 @@ class DataSourceIterator( object ):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         raise StopIteration
 
 
@@ -93,7 +95,7 @@ class CSVIterator( object ):
 
         return data
 
-    def next(self):
+    def __next__(self):
         return self._to_dict( next(self.reader) )
 
 

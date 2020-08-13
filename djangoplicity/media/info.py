@@ -29,6 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from past.utils import old_div
 import math
 
 from django.conf import settings
@@ -78,14 +80,14 @@ def _distance( x ):
     will be 0 or 5).
     """
     l = int( math.log10( x ) )
-    x1 = x / math.pow(10, l)  # x, scale to [0,10[ (i.e one digit)
-    x2 = x / math.pow(10, l - 1)  # x, scale to [0,100[ (i.e two digits)
+    x1 = old_div(x, math.pow(10, l))  # x, scale to [0,10[ (i.e one digit)
+    x2 = old_div(x, math.pow(10, l - 1))  # x, scale to [0,100[ (i.e two digits)
 
     digit2 = int(x2 + 0.5) - 10 * int(x1)  # second digit
     digit2_05 = int(digit2 / 5.0 + 0.5) * 5.0   # second digit, rounded to 0 or 5
 
     x_round2_05 = ( int(x1) + digit2_05 / 10.0 ) * math.pow( 10, l )  # x, with 2nd digit rounded to 0 or 5
-    x_error2_05 = abs( ( x_round2_05 - x ) / x )  # error on x_round2_05
+    x_error2_05 = abs( old_div(( x_round2_05 - x ), x) )  # error on x_round2_05
     x_round2 = int( x2 + 0.5 ) * math.pow( 10, l - 1 )  # x, with 2nd digit rounded
 
     if x_error2_05 <= 0.07:

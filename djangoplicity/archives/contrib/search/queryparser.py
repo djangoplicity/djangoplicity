@@ -33,12 +33,16 @@
 Astronomy-aware query parser.
 """
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import chr
+from builtins import object
 import re
-from htmlentitydefs import codepoint2name
+from html.entities import codepoint2name
 
 __all__ = ['QueryParser', 'AstronomyQueryParser']
 
-unichr2entity = dict((unichr(code), u'&%s;' % name) for code, name in codepoint2name.iteritems() if code != 38)  # exclude "&"
+unichr2entity = dict((chr(code), u'&%s;' % name) for code, name in codepoint2name.items() if code != 38)  # exclude "&"
 
 
 class Criterion( object ):

@@ -36,6 +36,7 @@ The Feeds module allows dynamic definition of RSS Feeds of any media type.
 For archive feeds, please refer to djangoplicity.archives.feeds
 """
 
+from past.builtins import basestring
 from django.contrib.syndication.views import Feed
 from django.core.cache import cache
 from django.template.loader import render_to_string
@@ -73,7 +74,7 @@ class DjangoplicityFeed( Feed ):
         Generate a unique key based on all the kwargs
         '''
         model = kwargs['model']
-        words = [k + '-' + v for k, v in kwargs.items() if isinstance(v, basestring)]
+        words = [k + '-' + v for k, v in list(kwargs.items()) if isinstance(v, basestring)]
         words.append(translation.get_language())
         return '{}-{}-{}-{}-feed'.format(
             model._meta.app_label,

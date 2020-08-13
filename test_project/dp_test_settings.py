@@ -1,4 +1,4 @@
-from dp_settings import *
+from .dp_settings import *
 
 # just in testing
 CELERY_ALWAYS_EAGER = True

@@ -29,6 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import filter
+from builtins import str
 import inspect
 import re
 from datetime import datetime
@@ -76,7 +78,7 @@ def get_language_from_path( path ):
 
     Returns a tuple ( lang, prefix, rewritten path )
     """
-    for prefix in LANGUAGE_PREFIX.keys():
+    for prefix in list(LANGUAGE_PREFIX.keys()):
         if path.startswith( prefix ):
             return ( LANGUAGE_PREFIX[prefix], prefix, path.replace( prefix, DEFAULT_PREFIX ) )
 
@@ -87,7 +89,7 @@ def get_path_for_language( language, path ):
     """
     Rewrite a URL path to a specific language.
     """
-    for p, l in LANGUAGE_PREFIX.iteritems():
+    for p, l in LANGUAGE_PREFIX.items():
         if l == language:
             return path.replace( DEFAULT_PREFIX, p, 1 )
     return path
@@ -324,7 +326,7 @@ class TranslationModel( models.Model ):
                 return not data['translations'][x[0]].translation_ready
             except KeyError:
                 return True
-        return filter( missing_filter, settings.LANGUAGES )
+        return list(filter( missing_filter, settings.LANGUAGES ))
 
     def get_translations( self, filter_kwargs=None, include_self=False ):
         """
@@ -429,7 +431,7 @@ class TranslationModel( models.Model ):
             for lang in notification_langs:
                 if not instance.lang.startswith(lang):
                     continue
-                for code, email in settings.LANGUAGES_CONTACTS.iteritems():
+                for code, email in settings.LANGUAGES_CONTACTS.items():
                     if code.startswith(lang) and code != instance.lang:
 
                         # Check if a translation already exists:
@@ -459,7 +461,7 @@ class TranslationModel( models.Model ):
                             except ImportError:
                                 domain = ''
 
-                            subject = "%s translation %s ready" % ( unicode(translation._meta.verbose_name), translation.pk )
+                            subject = "%s translation %s ready" % ( str(translation._meta.verbose_name), translation.pk )
                             html_body = render_to_string('archives/ready_email.html', {'type': translation._meta.verbose_name, 'source': instance, 'translation': translation, 'site_url': domain})
                             text_body = strip_tags( html_body )
 

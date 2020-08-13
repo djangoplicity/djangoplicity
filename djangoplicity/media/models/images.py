@@ -29,6 +29,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from builtins import str
+from past.utils import old_div
 import colorsys
 import datetime
 import os
@@ -239,7 +242,7 @@ class Color( models.Model ):
             return ( 0, 0, 0 )
 
         if i > 0:
-            return ( r_t / i, g_t / i, b_t / i )
+            return ( old_div(r_t, i), old_div(g_t, i), old_div(b_t, i) )
         return ( 0, 0, 0 )
 
     @staticmethod
@@ -283,7 +286,7 @@ class Color( models.Model ):
 
         # Normalise histogram to sum to 1
         total = im.size[0] * im.size[1]
-        for col, count in histogram.items():
+        for col, count in list(histogram.items()):
             histogram[ col ] = float( count ) / total
 
         #
@@ -299,12 +302,12 @@ class Color( models.Model ):
             return classes
 
         # Determine cut-off ratio.
-        cutoff_ratio = ( 1.0 - histogram['black'] ) / ( len( histogram ) - 1 )
+        cutoff_ratio = old_div(( 1.0 - histogram['black'] ), ( len( histogram ) - 1 ))
         cutoff_ratio = max( cutoff_ratio, 0.02 )  # Ensure ratio is at least 2%
         del histogram['black']
 
         # Select classes
-        for col, ratio in histogram.items():
+        for col, ratio in list(histogram.items()):
             if ratio > cutoff_ratio:
                 classes.append( ( col, ratio ) )
 
@@ -497,7 +500,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         #  Degrees should be in 0..360
         if deg < 0:
             deg += 360
-        deg = deg / 15
+        deg = old_div(deg, 15)
         h = int(deg)
         m = (deg - h) * 60
         s = m - int(m)

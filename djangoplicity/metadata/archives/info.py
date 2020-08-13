@@ -6,6 +6,7 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import str
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_noop as _
 
@@ -22,11 +23,11 @@ def subject_name( obj ):
     names = []
     for sn in subject_names:
         if sn.simbad_link():
-            names.append( link % ( sn.simbad_link(), unicode( sn ) ) )
+            names.append( link % ( sn.simbad_link(), str( sn ) ) )
         elif sn.wiki_link:
-            names.append( link % ( sn.wiki_link, unicode( sn ) ) )
+            names.append( link % ( sn.wiki_link, str( sn ) ) )
         else:
-            names.append(unicode(sn))
+            names.append(str(sn))
 
     return mark_safe(", ".join(names))
 
@@ -48,9 +49,9 @@ def facility( obj ):
     facilities = []
     for f in obj.facility.all():
         if f.wiki_link:
-            facilities.append('<a href="%s">%s</a>' % (f.wiki_link, unicode(f)))
+            facilities.append('<a href="%s">%s</a>' % (f.wiki_link, str(f)))
         else:
-            facilities.append(unicode(f))
+            facilities.append(str(f))
 
     return mark_safe(', '.join(facilities))
 
@@ -65,9 +66,9 @@ def instruments( obj ):
     result = []
     for i in obj.instruments.all():
         if i.wiki_link:
-            result.append('<a href="%s">%s</a>' % (i.wiki_link, unicode(i)))
+            result.append('<a href="%s">%s</a>' % (i.wiki_link, str(i)))
         else:
-            result.append(unicode(i))
+            result.append(str(i))
 
     return mark_safe(', '.join(result))
 
@@ -79,7 +80,7 @@ def subject_category( obj ):
     """
     Display helper for showing the Subject.Name attribute.
     """
-    cat = "<br />".join( map( lambda x: "%s" % unicode(x), obj.subject_category.all() ) )
+    cat = "<br />".join( ["%s" % str(x) for x in obj.subject_category.all()] )
 
     if cat:
         return mark_safe( cat )

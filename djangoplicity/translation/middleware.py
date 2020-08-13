@@ -73,6 +73,7 @@ where made to /public/news/ however the active language will be different in eac
 Only the views specified in urls.py with the `translate` keyword argument will be accessible in this way.
 """
 
+from builtins import object
 from django.conf import settings
 from django.core.urlresolvers import resolve, Resolver404
 from django.shortcuts import redirect

@@ -6,6 +6,7 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import object
 from djangoplicity.archives.utils import is_internal
 
 

@@ -72,7 +72,7 @@ class TransURLNode( URLNode ):
         args = [arg.resolve(context) for arg in self.args]
         kwargs = {
             force_text(k, 'ascii'): v.resolve(context)
-            for k, v in self.kwargs.items()
+            for k, v in list(self.kwargs.items())
         }
         view_name = self.view_name.resolve(context)
         try:

@@ -128,7 +128,7 @@ STRINGS = (
 def crosslinks_for_domain( domain ):
     tmp = {}
 
-    for key, values in ARCHIVE_CROSSLINKS.items():
-        tmp[key] = filter( lambda d_u: d_u[0] != domain, values )
+    for key, values in list(ARCHIVE_CROSSLINKS.items()):
+        tmp[key] = [d_u for d_u in values if d_u[0] != domain]
 
     return tmp

@@ -30,6 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
+from builtins import str
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.cache.backends.base import InvalidCacheBackendError
@@ -77,7 +78,7 @@ def memcache_info( request ):
         # Check if memcache is used:
         hosts = []
 
-        for backend in settings.CACHES.values():
+        for backend in list(settings.CACHES.values()):
             if backend["BACKEND"] == 'django.core.cache.backends.memcached.MemcachedCache':
                 hosts.extend( backend["LOCATION"] )
 
@@ -100,7 +101,7 @@ def memcache_info( request ):
 
         for host in stats:
             header.append( host[0] )
-            keys += host[1].keys()
+            keys += list(host[1].keys())
 
         keys = list(set(keys))
         keys.sort()
@@ -127,5 +128,5 @@ def memcache_info( request ):
         return render(request, 'admin/cache/memcache_info.html', {
             'title': 'Memcached statistics',
             'has_memcache': False,
-            'error_message': unicode(e),
+            'error_message': str(e),
         })

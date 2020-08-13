@@ -45,6 +45,7 @@ The enable items in an product archive to be sold, the archive must:
 
 """
 
+from builtins import str
 from datetime import date
 
 from django.contrib.sites.models import Site

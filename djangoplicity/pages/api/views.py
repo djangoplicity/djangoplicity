@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import viewsets
@@ -98,7 +99,7 @@ class PageAPIView(viewsets.ModelViewSet):
                 user_id=request.user.id,
                 content_type_id=ContentType.objects.get_for_model(page).pk,
                 object_id=page.id,
-                object_repr=unicode(page),
+                object_repr=str(page),
                 action_flag=CHANGE,
                 change_message=change_message
             )

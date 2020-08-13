@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 import os
 import json
 import re
@@ -47,9 +49,9 @@ def decode_duration( s ):
 def format_duration( secs ):
     tmp = secs
     secs = tmp % 60
-    tmp = (tmp - secs) / 60
+    tmp = old_div((tmp - secs), 60)
     mins = tmp % 60
-    hours = (tmp - mins) / 60
+    hours = old_div((tmp - mins), 60)
 
     return "%0*d:%0*d:%0*d" % (2, hours, 2, mins, 2, secs)
 

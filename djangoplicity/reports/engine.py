@@ -71,6 +71,6 @@ class ReportEngine:
             raise ReportExecutionError('Cannot generate report')
         elif fields_count < columns_count:
             # More columns in data than fields: strip columns to number of fields.
-            rows = map(lambda x: x[0:fields_count], rows)
+            rows = [x[0:fields_count] for x in rows]
 
         return ReportResult(report, rows)

@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from past.builtins import cmp
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 import locale
@@ -121,10 +122,10 @@ def _get_lang_country_mapping():
         except KeyError:
             return x[0]
 
-    countries_list = countries.items()
+    countries_list = list(countries.items())
     countries_list.sort( key=getter )
 
-    languages_list = languages.items()
+    languages_list = list(languages.items())
     languages_list.sort( key=lambda x: x[0][1] )
 
     return ( countries, languages, countries_list, languages_list )

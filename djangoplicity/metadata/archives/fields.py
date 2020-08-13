@@ -20,7 +20,7 @@ class AVMFloatField( models.CharField ):
         defaults = {
             'max_length': 23,
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMFloatField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -50,7 +50,7 @@ class AVMTwoFloatField( models.CharField ):
         defaults = {
             'max_length': 47,
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMTwoFloatField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -90,7 +90,7 @@ class AVMCreatorField( models.CharField ):
             'help_text': AVMCreatorField.avm_help_text,
             'verbose_name': _( "Creator" )
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMCreatorField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -115,7 +115,7 @@ class AVMCreatorURLField( models.URLField ):
             'help_text': AVMCreatorURLField.avm_help_text,
             'verbose_name': _( "Creator URL" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMCreatorURLField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -140,7 +140,7 @@ class AVMContactAddressField( models.CharField ):
             'help_text': AVMContactAddressField.avm_help_text,
             'verbose_name': _( "Contact Address" )
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMContactAddressField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -165,7 +165,7 @@ class AVMContactCityField( models.CharField ):
             'help_text': AVMContactCityField.avm_help_text,
             'verbose_name': _( "Contact City" )
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMContactCityField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -190,7 +190,7 @@ class AVMContactStateProvinceField( models.CharField ):
             'help_text': AVMContactStateProvinceField.avm_help_text,
             'verbose_name': _( "Contact State/Province" )
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMContactStateProvinceField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -215,7 +215,7 @@ class AVMContactPostalCodeField( models.CharField ):
             'help_text': AVMContactPostalCodeField.avm_help_text,
             'verbose_name': _( "Contact Postalcode" )
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMContactPostalCodeField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -240,7 +240,7 @@ class AVMContactCountryField( models.CharField ):
             'help_text': AVMContactCountryField.avm_help_text,
             'verbose_name': _( "Contact Country" )
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMContactCountryField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -264,7 +264,7 @@ class AVMRightsField( models.TextField ):
             'help_text': AVMRightsField.avm_help_text,
             'verbose_name': _( "Rights" )
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMRightsField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -287,7 +287,7 @@ class AVMTitleField( models.CharField ):
             'db_index': True,
             'help_text': AVMTitleField.avm_help_text,
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMTitleField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -310,7 +310,7 @@ class AVMHeadlineField( models.TextField ):
             'blank': True,
             'help_text': AVMHeadlineField.avm_help_text
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMHeadlineField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -346,7 +346,7 @@ class AVMDescriptionField( models.TextField ):
             'blank': True,
             'help_text': AVMDescriptionField.avm_help_text,
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMDescriptionField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -388,7 +388,7 @@ class AVMSubjectCategoryField( models.ManyToManyField ):
             'help_text': AVMSubjectCategoryField.avm_help_text,
             'verbose_name': _( "Subject Category" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
 
         if len( args ) == 0 and 'to' not in defaults:
@@ -419,7 +419,7 @@ class AVMSubjectNameField( models.ManyToManyField ):
             'help_text': AVMSubjectNameField.avm_help_text,
             'verbose_name': _( "Subject Name" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
 
         if len( args ) == 0 and 'to' not in defaults:
@@ -456,7 +456,7 @@ class AVMDistanceField( models.CharField ):
                     'verbose_name': _( "Distance" ),
                     'help_text': AVMDistanceField.avm_help_text,
                 }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMDistanceField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -497,7 +497,7 @@ class AVMDistanceLyField( models.DecimalField ):
                     'decimal_places': 1,
                     'help_text': AVMDistanceLyField.avm_help_text,
                 }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMDistanceLyField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -523,7 +523,7 @@ class AVMDistanceZField( models.DecimalField ):
                     'verbose_name': _( "Distance  (redshift)" ),
                     'help_text': AVMDistanceZField.avm_help_text,
                 }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMDistanceZField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -547,7 +547,7 @@ class AVMDistanceNotesField( models.TextField ):
                 'verbose_name': _( "Distance Notes" ),
                 'help_text': AVMDistanceNotesField.avm_help_text,
                 }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMDistanceNotesField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -574,7 +574,7 @@ class AVMCreditField( models.TextField ):
         if 'default' in kwargs:
             self.default_credit = kwargs['default']
 
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMCreditField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -600,7 +600,7 @@ class AVMIdField( models.SlugField ):
             'primary_key': True,
             'help_text': AVMIdField.avm_help_text,
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMIdField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -626,7 +626,7 @@ class AVMTypeField( models.CharField ):
             'verbose_name': _( "Type" ),
             'help_text': AVMTypeField.avm_help_text,
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMTypeField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -654,7 +654,7 @@ class FacilityManyToManyField( models.ManyToManyField ):
             'help_text': FacilityManyToManyField.avm_help_text,
             'verbose_name': _( "Facility" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
 
         if len( args ) == 0 and 'to' not in defaults:
@@ -686,7 +686,7 @@ class InstrumentManyToManyField( models.ManyToManyField ):
             'help_text': InstrumentManyToManyField.avm_help_text,
             'verbose_name': _( "Instrument" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
 
         if len( args ) == 0 and 'to' not in defaults:
@@ -721,7 +721,7 @@ class AVMFacilityField( models.ForeignKey ):
             'help_text': AVMFacilityField.avm_help_text,
             'verbose_name': _( "Facility" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
 
         if len( args ) == 0 and 'to' not in defaults:
@@ -755,7 +755,7 @@ class AVMInstrumentField( models.ForeignKey ):
             'help_text': AVMInstrumentField.avm_help_text,
             'verbose_name': _( "Instrument" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
 
         if len( args ) == 0 and 'to' not in defaults:
@@ -789,7 +789,7 @@ class AVMSpectralColorAssignmentField( models.CharField ):
             'help_text': AVMSpectralColorAssignmentField.avm_help_text,
             'verbose_name': _( "Spectral Color Assignment" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpectralColorAssignmentField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -815,7 +815,7 @@ class AVMSpectralBandField( models.CharField ):
             'help_text': AVMSpectralBandField.avm_help_text,
             'verbose_name': _( "Spectral Band" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpectralBandField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -840,7 +840,7 @@ class AVMSpectralBandpassField( models.CharField ):
             'help_text': AVMSpectralBandpassField.avm_help_text,
             'verbose_name': _( "Spectral Bandpass" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpectralBandpassField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -864,7 +864,7 @@ class AVMSpectralCentralWavelengthField( AVMFloatField ):
             'help_text': AVMSpectralCentralWavelengthField.avm_help_text,
             'verbose_name': _( "Spectral Central Wavelength" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpectralCentralWavelengthField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -888,7 +888,7 @@ class AVMSpectralNotesField( models.TextField ):
             'help_text': AVMSpectralNotesField.avm_help_text,
             'verbose_name': _( "Spectral Notes" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpectralNotesField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -912,7 +912,7 @@ class AVMTemporalStartTimeField( models.DateTimeField ):
             'help_text': AVMTemporalStartTimeField.avm_help_text,
             'verbose_name': _( "Temporal Start Time" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMTemporalStartTimeField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -936,7 +936,7 @@ class AVMTemporalIntegrationTimeField( AVMFloatField ):
             'help_text': AVMTemporalIntegrationTimeField.avm_help_text,
             'verbose_name': _( "Temporal Integration Time" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMTemporalIntegrationTimeField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -961,7 +961,7 @@ class AVMDatasetIDField( models.CharField ):
             'help_text': AVMDatasetIDField.avm_help_text,
             'verbose_name': _( "Dataset ID" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMDatasetIDField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -987,7 +987,7 @@ class AVMSpatialCoordinateFrameField( models.CharField ):
             'help_text': AVMSpatialCoordinateFrameField.avm_help_text,
             'verbose_name': _( "Coordinate Frame" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialCoordinateFrameField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1014,7 +1014,7 @@ class AVMSpatialEquinoxField( models.CharField ):
             'help_text': AVMSpatialEquinoxField.avm_help_text,
             'verbose_name': _( "Equinox" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialEquinoxField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1038,7 +1038,7 @@ class AVMSpatialReferenceValueField( AVMTwoFloatField ):
             'help_text': AVMSpatialReferenceValueField.avm_help_text,
             'verbose_name': _( "Reference Value" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialReferenceValueField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1067,7 +1067,7 @@ class AVMSpatialReferenceDimensionField( AVMTwoFloatField ):
             'help_text': AVMSpatialReferenceDimensionField.avm_help_text,
             'verbose_name': _( "Reference Dimension" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialReferenceDimensionField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1096,7 +1096,7 @@ class AVMSpatialReferencePixelField( AVMTwoFloatField ):
             'help_text': AVMSpatialReferencePixelField.avm_help_text,
             'verbose_name': _( "Reference Pixel" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialReferencePixelField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1126,7 +1126,7 @@ class AVMSpatialScaleField( AVMTwoFloatField ):
             'verbose_name': _( "Scale" ),
             'max_length': 80,
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialScaleField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1150,7 +1150,7 @@ class AVMSpatialRotationField( AVMFloatField ):
             'help_text': AVMSpatialRotationField.avm_help_text,
             'verbose_name': _( "Rotation" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialRotationField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1176,7 +1176,7 @@ class AVMSpatialCoordsystemProjectionField( models.CharField ):
             'help_text': AVMSpatialCoordsystemProjectionField.avm_help_text,
             'verbose_name': _( "Coordinate System Projection" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialCoordsystemProjectionField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1202,7 +1202,7 @@ class AVMSpatialQualityField( models.CharField ):
             'help_text': AVMSpatialQualityField.avm_help_text,
             'verbose_name': _( "Quality" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialQualityField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1226,7 +1226,7 @@ class AVMSpatialNotesField( models.TextField ):
             'help_text': AVMSpatialNotesField.avm_help_text,
             'verbose_name': _( "Notes" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialNotesField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1250,7 +1250,7 @@ class AVMSpatialFITSHeaderField( models.TextField ):
             'help_text': AVMSpatialFITSHeaderField.avm_help_text,
             'verbose_name': _( "FITS Header" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMSpatialFITSHeaderField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1275,7 +1275,7 @@ class AVMPublisherField( models.CharField ):
             'help_text': AVMPublisherField.avm_help_text,
             'verbose_name': _( "Publisher" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMPublisherField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1300,7 +1300,7 @@ class AVMPublisherIdField( models.CharField ):
             'help_text': AVMPublisherIdField.avm_help_text,
             'verbose_name': _( "Publisher ID" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMPublisherIdField, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1328,7 +1328,7 @@ class AVMFileType( models.CharField ):
             'help_text': AVMFileType.avm_help_text,
             'verbose_name': _( "File Type" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMFileType, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1352,7 +1352,7 @@ class AVMFileDimensionWidth( models.PositiveIntegerField ):
             'help_text': AVMFileDimensionWidth.avm_help_text,
             'verbose_name': _( "Width" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMFileDimensionWidth, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1376,7 +1376,7 @@ class AVMFileDimensionHeight( models.PositiveIntegerField ):
             'help_text': AVMFileDimensionHeight.avm_help_text,
             'verbose_name': _( "Height" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMFileDimensionHeight, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1401,7 +1401,7 @@ class AVMFileSize( models.PositiveIntegerField ):
             'help_text': AVMFileSize.avm_help_text,
             'verbose_name': _( "File Size" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMFileSize, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1430,7 +1430,7 @@ class AVMFileDuration( models.CharField ):
             'help_text': AVMFileDuration.avm_help_text,
             'verbose_name': _( "File Duration" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMFileDuration, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1461,7 +1461,7 @@ class AVMFileAspectRatio( models.CharField ):
             'help_text': AVMFileAspectRatio.avm_help_text,
             'verbose_name': _( "File Aspect Ratio" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMFileAspectRatio, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1487,7 +1487,7 @@ class AVMAudioSurroundFormat( models.CharField ):
             'help_text': AVMAudioSurroundFormat.avm_help_text,
             'verbose_name': _( "Surround Sound Format" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
         super( AVMAudioSurroundFormat, self ).__init__( *args, **defaults )
         self.my_default_keys = my_default_keys
@@ -1514,7 +1514,7 @@ class AVMPublicationField( models.ManyToManyField ):
             'help_text': AVMPublicationField.avm_help_text,
             'verbose_name': _( "Publication" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
 
         if len( args ) == 0 and 'to' not in defaults:
@@ -1546,7 +1546,7 @@ class AVMProposalIDField( models.ManyToManyField ):
             'help_text': AVMProposalIDField.avm_help_text,
             'verbose_name': _( "Observation Proposal/Program ID" ),
         }
-        my_default_keys = defaults.keys()
+        my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
 
         if len( args ) == 0 and 'to' not in defaults:

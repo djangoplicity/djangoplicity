@@ -11,6 +11,7 @@ Djangoplicity Archive Feeds
 Provides configuration, display and setup of RSS Feeds for Djangoplicity Archives.
 """
 
+from builtins import object
 from django.conf.urls import url
 from django.contrib.sites.models import Site
 from django.core.cache import cache

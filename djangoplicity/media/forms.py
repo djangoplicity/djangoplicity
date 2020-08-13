@@ -61,7 +61,7 @@ class ImageImportForm( GenericImportForm ):
             return
 
         new_fields = OrderedDict()
-        for key, value in self.fields.items():  # pylint: disable=access-member-before-definition
+        for key, value in list(self.fields.items()):  # pylint: disable=access-member-before-definition
             new_fields[key] = value
             if key == 'title':
                 new_fields['credit'] = forms.CharField(
@@ -109,7 +109,7 @@ class VideoImportForm( GenericImportForm ):
             return
 
         new_fields = OrderedDict()
-        for key, value in self.fields.items():  # pylint: disable=access-member-before-definition
+        for key, value in list(self.fields.items()):  # pylint: disable=access-member-before-definition
             new_fields[key] = value
             if key == 'title':
                 new_fields['credit'] = forms.CharField(
