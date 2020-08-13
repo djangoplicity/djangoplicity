@@ -86,7 +86,6 @@ def get_codes( code ):
 
 
 def _get_lang_country_mapping():
-    return ( {}, {}, [], [] )
     """
     Generate a dictionary of countries and their languages from the
     LANGUAGES settings code.
