@@ -166,4 +166,6 @@ class CropView(UpdateView):
             crop_offsets=json.dumps(offsets)
         )
 
+        self.model.reimport_resources(archive, request.user)
+
         return HttpResponseRedirect(request.path)
