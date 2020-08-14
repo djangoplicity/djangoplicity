@@ -230,7 +230,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
         return actions
 
     class Media:
-        css = { 'all': (settings.STATIC_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
+        css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
 
 
 
@@ -304,7 +304,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     inlines = [ VideoContactInlineAdmin ]
 
     class Media:
-        css = { 'all': (settings.STATIC_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
+        css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
 
     def get_queryset( self, request ):
         qs = super( VideoAdmin, self ).get_queryset( request )
@@ -420,7 +420,7 @@ class VideoSubtitleAdmin( dpadmin.DjangoplicityModelAdmin, RenameAdmin, ArchiveA
     inlines = []
 
     class Media:
-        css = { 'all': (settings.STATIC_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
+        css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
 
 
 # ============================================
@@ -440,7 +440,7 @@ class VideoAudioTrackAdmin( dpadmin.DjangoplicityModelAdmin, ArchiveAdmin ):
     inlines = []
 
     class Media:
-        css = { 'all': (settings.STATIC_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
+        css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
 
 
 # ============================================
@@ -460,7 +460,7 @@ class VideoBroadcastAudioTrackAdmin( dpadmin.DjangoplicityModelAdmin, ArchiveAdm
     inlines = []
 
     class Media:
-        css = { 'all': (settings.STATIC_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
+        css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
 
 
 # ============================================

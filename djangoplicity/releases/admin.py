@@ -239,7 +239,7 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
         return formfield
 
     class Media:
-        css = { 'all': (settings.STATIC_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
+        css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
 
 
 class KidsReleaseAdmin( DjangoplicityModelAdmin, ArchiveAdmin ):
