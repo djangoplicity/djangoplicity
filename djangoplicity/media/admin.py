@@ -233,6 +233,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
         css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
 
 
+
 # ============================================
 # Image proxy admin
 # ============================================
