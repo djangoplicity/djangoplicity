@@ -1,6 +1,9 @@
 bash:
 	docker exec -it djangoplicity bash
 
+shell:
+	docker exec -it djangoplicity ./manage.py shell
+
 createsuperuser:
 	docker exec -it djangoplicity ./manage.py createsuperuser
 

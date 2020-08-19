@@ -51,10 +51,10 @@ def add_model_field( attrs, cls, name, *args, **kwargs ):
     attrs[name] = cls( **kwargs )
 
 
-def add_model_value( attrs, value, name ):
-    if name in attrs:
+def add_model_value( metaclass, value, name ):
+    if name in metaclass.__dict__:
         raise ImproperlyConfigured( _( 'Cannot add attribute to Model from Archive - attribute name %s already exists' % name ) )
-    attrs[name] = value
+    setattr(metaclass, name, value)
 
 
 def add_field( metaclass, attrs, name, default_value, fieldclass, **field_kwargs ):
@@ -62,14 +62,14 @@ def add_field( metaclass, attrs, name, default_value, fieldclass, **field_kwargs
         value = getattr( metaclass, name )
     except AttributeError:
         value = default_value
-        add_model_value( metaclass.__dict__, value, name )
+        add_model_value( metaclass, value, name )
 
     if value:
         try:
             field_name = getattr( metaclass, '%s_fieldname' % name )
         except AttributeError:
             field_name = name
-            add_model_value( metaclass.__dict__, field_name, '%s_fieldname' % name )
+            add_model_value( metaclass, field_name, '%s_fieldname' % name )
         add_model_field( attrs, fieldclass, field_name, **field_kwargs )
 
 
@@ -320,7 +320,7 @@ class ArchiveBase( ModelBase ):
             prefix = getattr( metaclass, 'resource_fields_prefix' )
         except AttributeError:
             prefix = 'resource_'
-            add_model_value( metaclass.__dict__, prefix, 'resource_fields_prefix' )
+            add_model_value( metaclass, prefix, 'resource_fields_prefix' )
 
         # Note if using archiveclass.__dict__ you won't get inherited fields.
         # Compared to dir( archiveclass )
