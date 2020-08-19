@@ -181,7 +181,7 @@ def _check_embargo(model, obj, request):
 
 def _get_ordered(obj, klass):
     fields = [(name, o) for name, o in list(obj.__dict__.items()) if isinstance(o, klass)]
-    fields.sort(lambda (name1, obj1), (name2, obj2): cmp(obj1.creation_counter, obj2.creation_counter))
+    fields.sort(lambda tuple1, tuple2: cmp(tuple1[1].creation_counter, tuple2[1].creation_counter))
     return fields
 
 
