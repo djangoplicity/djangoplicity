@@ -85,7 +85,7 @@ class UtilsTestCase(TestCase):
 
     def test_text(self):
         from djangoplicity.utils import text
-        self.assertEqual(text.named_entities(UnicodeEncodeError("utf-8", unicode("hola"), 1, 2, "yes" )), (u'&#111;', 2))
+        self.assertEqual(text.named_entities(UnicodeEncodeError("utf-8", str("hola"), 1, 2, "yes" )), (u'&#111;', 2))
 
     def test_storage(self):
         from djangoplicity.utils import storage
