@@ -25,7 +25,7 @@ setup(
         'oauth2client',
         'html2text == 3.200.3',
         'htmllaundry',
-        'icalendar == 3.1',
+        'icalendar == 3.8',
         'ipython == 5.5.0',  # Last version compatible with python 2.7
         'Pillow',
         'pycountry == 1.16',
