@@ -23,6 +23,7 @@ import datetime
 
 def read_version():
     try:
+        return None  # TODO: This is failing, remove this module if required or make it work
         import paver.svn
         svninfo = paver.svn.info(path='../')
         return str( svninfo['revision'] )
