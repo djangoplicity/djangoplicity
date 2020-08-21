@@ -41,6 +41,10 @@ from djangoplicity.archives.contrib.info import admin_edit_for_site, \
     admin_add_translation, published
 from djangoplicity.archives.contrib.queries import AllPublicQuery, \
     UnpublishedQuery, YearQuery, EmbargoQuery, StagingQuery, FeaturedQuery
+from djangoplicity.archives.contrib.queries.defaults import AdvancedSearchQuery
+from djangoplicity.archives.contrib.search.fields import  DateSinceSearchField, \
+    DateUntilSearchField, IdSearchField, TextSearchField
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from djangoplicity.archives.contrib.serialization import JSONEmitter, \
     ICalEmitter
 from djangoplicity.archives.contrib.templater import DisplayTemplate
@@ -119,6 +123,7 @@ class AnnouncementOptions( ArchiveOptions ):
         embargo = EmbargoQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Embargoed Announcements") )
         staging = StagingQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Announcements (Staging)") )
         year = YearQuery( browsers=( 'normal', 'viewall' ), verbose_name=ugettext_noop("Announcements %d"), feed_name="default" )
+        search = AdvancedSearchQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Advanced Announcement Search"), searchable=False )
 
     class Browsers( object ):
         normal = ListBrowser()
@@ -171,3 +176,13 @@ class AnnouncementOptions( ArchiveOptions ):
             'comparisons': comparisons,
             'translations': obj.get_translations(),
         }
+
+    class AdvancedSearch(object):
+        id = IdSearchField( label=_('Announcement ID') )
+        published_since = DateSinceSearchField( label=_( "Published since" ), model_field='release_date' )
+        published_until = DateUntilSearchField( label=_( "Published until" ), model_field='release_date' )
+        title = TextSearchField( label=_( "Title" ), model_field='title' )
+        description = TextSearchField( label=_( "Description" ), model_field='description' )
+
+        class Meta:
+            verbose_name = ugettext_noop("Advanced Announcement Search")
