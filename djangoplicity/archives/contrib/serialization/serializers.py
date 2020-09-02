@@ -6,7 +6,7 @@ import json
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_text
 from django.utils.functional import curry
 
 from djangoplicity.utils.datetimes import timezone
@@ -274,14 +274,14 @@ class ICalEmitter( Emitter ):
 
         for e in serialization.data:
             event = Event()
-            event.add( 'summary', smart_unicode( e['summary'] ) )
-            event.add( 'description', smart_unicode( e['description'] ) )
+            event.add( 'summary', smart_text( e['summary'] ) )
+            event.add( 'description', smart_text( e['description'] ) )
             event.add( 'dtstart', e['dtstart'] )
             event.add( 'dtend', e['dtend'] )
             event.add( 'dtstamp', e['dtstamp'] )
 
             if 'location' in e:
-                event['location'] = vText( smart_unicode( e['location'] ) )
+                event['location'] = vText( smart_text( e['location'] ) )
 
             cal.add_component( event )
 

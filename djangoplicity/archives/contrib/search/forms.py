@@ -41,7 +41,7 @@ from django.db.models import Q
 from django.forms import fields as formsFields
 from django.forms.forms import BoundField, conditional_escape, mark_safe
 from django.http import Http404
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 
 # We don't want to use ugettext_lazy here as otherwise the advanced search
 # parameters never get evaluated and are displayed as django.utils.functional.__proxy__
@@ -158,12 +158,12 @@ def outputhelper(self, normal_row, error_row, row_ender, help_text_html, errors_
 
         if bf.is_hidden:
             if bf_errors:
-                top_errors.extend([u'(Hidden field %s) %s' % (name, force_unicode(e)) for e in bf_errors])
+                top_errors.extend([u'(Hidden field %s) %s' % (name, force_text(e)) for e in bf_errors])
             hidden_fields.append(str(bf))
 
         elif bf.field.is_separator():
             output.append(separator_html % {
-                'label': conditional_escape(force_unicode(bf.label)),
+                'label': conditional_escape(force_text(bf.label)),
             })
 
         else:
@@ -174,10 +174,10 @@ def outputhelper(self, normal_row, error_row, row_ender, help_text_html, errors_
                 html_class_attr = ' class="%s"' % css_classes
 
             if errors_on_separate_row and bf_errors:
-                output.append(error_row % force_unicode(bf_errors))
+                output.append(error_row % force_text(bf_errors))
 
             if bf.label:
-                label = conditional_escape(force_unicode(bf.label))
+                label = conditional_escape(force_text(bf.label))
                 # Only add the suffix if the label does not end in
                 # punctuation.
                 if self.label_suffix:
@@ -188,20 +188,20 @@ def outputhelper(self, normal_row, error_row, row_ender, help_text_html, errors_
                 label = ''
 
             if field.help_text:
-                help_text = help_text_html % force_unicode(field.help_text)
+                help_text = help_text_html % force_text(field.help_text)
             else:
                 help_text = u''
 
             output.append(normal_row % {
-                'errors': force_unicode(bf_errors),
-                'label': force_unicode(label),
+                'errors': force_text(bf_errors),
+                'label': force_text(label),
                 'field': str(bf),
                 'help_text': help_text,
                 'html_class_attr': html_class_attr
             })
 
     if top_errors:
-        output.insert(0, error_row % force_unicode(top_errors))
+        output.insert(0, error_row % force_text(top_errors))
 
     if hidden_fields:  # Insert any hidden fields in the last row.
         str_hidden = u''.join(hidden_fields)

@@ -1,4 +1,6 @@
 coverage == 5.1
+# Multienvironment testing
+tox
 # django_coverage_plugin
 sqlparse
 sqlalchemy

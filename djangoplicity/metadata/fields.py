@@ -5,7 +5,7 @@ from django import forms
 from django.core import exceptions
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_text
 
 
 ###
@@ -44,7 +44,7 @@ class AVMStringField( AVMField ):
             else:
                 raise exceptions.ValidationError(
                     _("This field cannot be null."))
-        return smart_unicode(value)
+        return smart_text(value)
 
     def to_xmp(self, value):
         if value:

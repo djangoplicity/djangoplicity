@@ -35,7 +35,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.forms import ModelForm
 from django.shortcuts import render
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 
 from djangoplicity.announcements.admin import announcementinlineadmin
@@ -214,7 +214,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
 
         context = {
             "title": title,
-            "object_name": force_unicode( opts.verbose_name ),
+            "object_name": force_text( opts.verbose_name ),
             'objects': queryset,
             "opts": opts,
             "app_label": app_label,

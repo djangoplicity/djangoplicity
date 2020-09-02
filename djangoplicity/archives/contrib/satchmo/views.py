@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from djangoplicity.archives.contrib.satchmo.export import factory
 from product import views
 from product.models import Product, Category
@@ -207,7 +207,7 @@ def orders_for_product( request, product_id, format=None, **kwargs ):
         app_label = opts.app_label
 
         context = {
-            "object_name": force_unicode( opts.verbose_name ),
+            "object_name": force_text( opts.verbose_name ),
             'objects': table,
             'header': header,
             'product': product,
@@ -332,7 +332,7 @@ def orders_for_category( request, category_id, format=None, **kwargs ):
         app_label = opts.app_label
 
         context = {
-            "object_name": force_unicode( opts.verbose_name ),
+            "object_name": force_text( opts.verbose_name ),
             'objects': table,
             'header': header,
             'category': category,

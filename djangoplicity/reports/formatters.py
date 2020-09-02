@@ -125,15 +125,17 @@ class CSVOutputFormatter( OutputFormatter ):
 
             # Write rows
             for row in report_result.rows:
+                import sys
                 cells = []
 
                 for x in row:
-                    if isinstance( x, str ):
-                        cells.append( str(x, encoding='utf8' ).encode(encoding) )
-                    elif isinstance( x, str ):
-                        cells.append( x.encode( encoding ) )
+                    if sys.version_info[0] < 3:
+                        if isinstance( x, str ):
+                            cells.append( x.encode( encoding ) )
+                        else:
+                            cells.append( str(x).encode(encoding) )
                     else:
-                        cells.append( str(x).encode(encoding) )
+                        cells.append(x)
 
                     # Replace newlines in fields to prevent problems with loading
                     # CSV file.

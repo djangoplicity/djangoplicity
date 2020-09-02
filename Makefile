@@ -1,6 +1,9 @@
 bash:
 	docker exec -it djangoplicity bash
 
+shell:
+	docker exec -it djangoplicity ./manage.py shell
+
 createsuperuser:
 	docker exec -it djangoplicity ./manage.py createsuperuser
 
@@ -19,3 +22,9 @@ futurize-stage2:
 
 test-python27:
 	tox -e py27-django111
+
+test-python37:
+	tox -e py37-django111
+
+test-python38:
+	tox -e py38-django111
