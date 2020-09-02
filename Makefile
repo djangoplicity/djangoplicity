@@ -22,3 +22,9 @@ futurize-stage2:
 
 test-python27:
 	tox -e py27-django111
+
+test-python37:
+	tox -e py37-django111
+
+test-python38:
+	tox -e py38-django111

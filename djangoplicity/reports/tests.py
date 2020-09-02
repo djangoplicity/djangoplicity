@@ -85,9 +85,8 @@ class ReportViewTestCase(AdminTestCase):
         self.assertEqual(response.status_code, 301)
 
     def test_report_with_different_formats(self):
-        # TODO: Re-enable and solve
-        # response = self.client.get('/reports/report/1/?output=csv')
-        # self.assertEqual(response.status_code, 200)
+        response = self.client.get('/reports/report/1/?output=csv')
+        self.assertEqual(response.status_code, 200)
 
         response = self.client.get('/reports/report/1/?output=xlsx')
         self.assertEqual(response.status_code, 200)
