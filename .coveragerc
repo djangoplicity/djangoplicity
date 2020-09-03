@@ -1,5 +1,5 @@
 [run]
 omit =
   */migrations/*
-  djangoplicity/coposweb
-  djangoplicity/migration
+  djangoplicity/coposweb/*
+  djangoplicity/migration/*
