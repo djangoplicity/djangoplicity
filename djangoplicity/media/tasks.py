@@ -729,8 +729,7 @@ def audio_extras(app_label, module_name, pks, formats=None,
 
 
 @task(name='media.generate_thumbnail', ignore_result=True)
-def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None,
-        sendtask_tasksetid=None):
+def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendtask_tasksetid=None, **kwargs):
     '''
     Generate a thumbnail if no original format is available
     '''
@@ -740,11 +739,12 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None,
         # Load video
         v = cls.objects.get(pk=pk)
     except cls.DoesNotExist:
-        logger.warning('Could not find video %s.%s %s.', app_label, model_name,
-            pk)
-        return
+        error = 'Could not find video %s.%s %s.', app_label, model_name, pk
+        logger.warning(error)
+        raise Exception(error)
 
-    if not v.resource_original:
+    force_generation = kwargs.get('force_generation', False)
+    if not v.resource_original or force_generation:
         # Identify the largest useable format
         path = ''
         for fmt in cls.UPLOAD_FORMATS:
@@ -758,22 +758,32 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None,
             except AttributeError:
                 continue
         else:
-            logger.warning('Couldn\'t find valid format to upload for "%s"', pk)
-            return
+            error = 'Couldn\'t find valid format to upload for "%s"', pk
+            logger.warning(error)
+            raise Exception(error)
 
-        output = os.path.join(settings.MEDIA_ROOT, cls.Archive.Meta.root,
-            'original', pk + '.tif')
+        output = os.path.join(settings.MEDIA_ROOT, cls.Archive.Meta.root, 'original', pk + '.tif')
 
-        # Takes the screenshot at 5s
-        position = 5
+        # Takes the screenshot at 5s by default or using setting
+        position = getattr(settings, 'VIDEOS_THUMBNAIL_POSITION', 5)
+        if position == 'middle':
+            position = int(v.duration_in_seconds() / 2)
 
-        cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 {output}'.format(
-            position=position, input=path, output=output)
+        cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 {output}'.format(position=position, input=path, output=output)
+        if force_generation:
+            cmd += ' -y' # To overwrite image
 
         logger.info(cmd)
-        call(cmd, shell=True)
-        add_admin_history(v, 'Generated thumbnail from %s at %d seconds' % (
-            fmt, position))  # pylint: disable=undefined-loop-variable
+        # Check output raises and error if return code of command is not zero and returns the error as a byte string
+        import subprocess
+        try:
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+        except subprocess.CalledProcessError as e:
+            error = 'The command "{}" returned error: {}'.format(cmd, e.output)
+            logger.warning(e)
+            raise Exception(error)
+
+        add_admin_history(v, 'Generated thumbnail from {} at {} seconds'.format(fmt, position))  # pylint: disable=undefined-loop-variable
 
     # Send_task callback
     if sendtask_callback:

@@ -42,7 +42,7 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py makemigrations payment app_plugins tieredweight
-        coverage run --source='.' manage.py test
+        env DJANGO_SETTINGS_MODULE="test_project.dp_test_settings" coverage run --source='.' manage.py test
         coverage xml
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1

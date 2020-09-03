@@ -8,7 +8,12 @@ from djangoplicity.metadata import consts
 
 
 SIMBAD_URL = "http://simbad.u-strasbg.fr/simbad/sim-id"
-ESO_TELBIB = "http://telbib.eso.org/detail.php?%(bibcode)s"
+
+if hasattr(settings, 'TELBIB'):
+    TELBIB = settings.TELBIB
+else:
+    # ESO TELBIB
+    TELBIB = "http://telbib.eso.org/detail.php?%(bibcode)s"
 
 if settings.USE_I18N:
     from djangoplicity.translation.models import translation_reverse
@@ -265,7 +270,10 @@ class Publication( models.Model ):
 
     def get_absolute_url(self):
         """ Return link to ESO Telescope Bibliography """
-        return ESO_TELBIB % { 'bibcode': urlencode([('bibcode', self.bibcode)]) }
+        if hasattr(settings, 'TELBIB'):
+            return TELBIB % { 'bibcode': self.bibcode }
+        else:
+            return TELBIB % { 'bibcode': urlencode([('bibcode', self.bibcode)]) }
 
     class Meta:
         ordering = ('-bibcode',)

@@ -30,8 +30,7 @@ services:
   celery:
     <<: *common
     container_name: djangoplicity-celery
-    # Celerybeat included, not recommended for production
-    command: ["celery", "-B", "--app=test_project", "--concurrency=8", "--hostname=worker1@%h", "--loglevel=INFO", "--queues=celery", "worker"]
+    command: ["python", "manage.py", "runcelery"] # Dev management command
     depends_on:
       - broker
       - web

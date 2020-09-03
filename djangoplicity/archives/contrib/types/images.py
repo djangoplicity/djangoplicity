@@ -22,6 +22,12 @@ class TiffType(ImageFileType):
     exts = ['tif']
 
 
+class SvgType(ImageFileType):
+    verbose_name = _(u'Scalable Vector Graphics (SVG)')
+    exts = ['svg']
+    content_type = 'image/svg+xml'
+
+
 class PublicationTiff40KType(TiffType):
     verbose_name = _(u'Publication TIFF 40K')
     size = 40000
