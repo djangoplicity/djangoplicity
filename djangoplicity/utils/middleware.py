@@ -10,8 +10,7 @@ from future import standard_library
 standard_library.install_aliases()
 from past.utils import old_div
 from builtins import object
-import hotshot
-import hotshot.stats
+import cProfile, pstats
 import json
 import os
 import re
@@ -155,7 +154,7 @@ class DjangoplicityRedirectFallbackMiddleware(RedirectFallbackMiddleware):
 
 class ProfileMiddleware(object):
     '''
-    Displays hotshot profiling for any view.
+    Displays cProfile profiling for any view.
     http://yoursite.com/yourview/?prof
 
     Add the "prof" key to query string by appending ?prof (or &prof=)
@@ -163,7 +162,7 @@ class ProfileMiddleware(object):
     It's set up to only be available in django's debug mode, is available for superuser otherwise,
     but you really shouldn't add this middleware to any production configuration.
 
-    WARNING: It uses hotshot profiler which is not thread safe.
+    WARNING: It uses cProfile profiler which is not thread safe.
     '''
     def __init__(self, get_response):
         self.get_response = get_response
@@ -180,7 +179,7 @@ class ProfileMiddleware(object):
     def process_request(self, request):
         if (settings.DEBUG or request.user.is_superuser) and 'prof' in request.GET:
             self.tmpfile = tempfile.mktemp()
-            self.prof = hotshot.Profile(self.tmpfile)
+            self.prof = cProfile.Profile(self.tmpfile)
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
         if (settings.DEBUG or request.user.is_superuser) and 'prof' in request.GET:
@@ -240,7 +239,7 @@ class ProfileMiddleware(object):
             old_stdout = sys.stdout
             sys.stdout = out
 
-            stats = hotshot.stats.load(self.tmpfile)
+            stats = pstats.Stats(self.tmpfile)
             stats.sort_stats('time', 'calls')
             stats.print_stats()
 
