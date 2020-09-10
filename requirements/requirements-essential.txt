@@ -35,6 +35,7 @@ psycopg2-binary
 
 # Asynchronous Task Queue
 celery==4.3.0
+vine==1.3.0
 
 # Python 2/3 compatibility library
 future
