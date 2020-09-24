@@ -41,7 +41,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 
 from djangoplicity.announcements import archive_settings
 from djangoplicity.archives import fields as archive_fields
-from djangoplicity.archives.base import ArchiveModel
+from djangoplicity.archives.base import ArchiveModel, UnicodeMixin
 from djangoplicity.archives.contrib import types
 from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.archives.translation import TranslationProxyMixin
@@ -65,7 +65,7 @@ WEBUPDATE_ROOT = archive_settings.WEBUPDATE_ROOT
 # ========================================
 # Web updates
 # ========================================
-class WebUpdateType( models.Model ):
+class WebUpdateType( models.Model, UnicodeMixin):
     """
     Type of web update (similar to release types for press releases)
     """
@@ -78,7 +78,7 @@ class WebUpdateType( models.Model ):
         return self.name
 
 
-class WebUpdate( ArchiveModel, models.Model ):
+class WebUpdate( ArchiveModel, models.Model, UnicodeMixin ):
     """
     Minor updates.
     """
@@ -113,7 +113,7 @@ class WebUpdate( ArchiveModel, models.Model ):
 # Announcements
 # ========================================
 
-class AnnouncementType( models.Model ):
+class AnnouncementType( models.Model, UnicodeMixin ):
     """
     An announcement press release can be categorized into different types
     This model is used to define centrally the possible types
@@ -130,7 +130,7 @@ class AnnouncementType( models.Model ):
         verbose_name = _('Announcement Type')
 
 
-class Announcement( ArchiveModel, TranslationModel ):
+class Announcement( ArchiveModel, TranslationModel, UnicodeMixin ):
     """
     Similar to press releases but with fewer fields.
     """
@@ -285,7 +285,7 @@ class Announcement( ArchiveModel, TranslationModel ):
 # ========================================================================
 # Translation proxy model
 # ========================================================================
-class AnnouncementProxy( Announcement, TranslationProxyMixin ):
+class AnnouncementProxy( Announcement, TranslationProxyMixin, UnicodeMixin):
     """
     Announcement proxy model for creating admin only to edit
     translated objects.
@@ -319,7 +319,7 @@ class AnnouncementProxy( Announcement, TranslationProxyMixin ):
 # =======================================
 # Related images, videos and stock images
 # =======================================
-class RelatedAnnouncement( models.Model  ):
+class RelatedAnnouncement( models.Model, UnicodeMixin):
     """
     Abstract model to link another archive item (e.g. visuals) to an Announcement. The Model should be
     subclassed and used as a many-to-many intermediary model::
