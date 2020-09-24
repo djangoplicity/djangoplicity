@@ -41,7 +41,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 
 from djangoplicity.announcements import archive_settings
 from djangoplicity.archives import fields as archive_fields
-from djangoplicity.archives.base import ArchiveModel, UnicodeMixin
+from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.contrib import types
 from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.archives.translation import TranslationProxyMixin
@@ -52,6 +52,7 @@ from djangoplicity.translation.models import TranslationModel, \
     translation_reverse
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
+from djangoplicity.utils.forwards_compatible import UnicodeMixin
 
 
 if hasattr(settings, 'ANNOUNCEMENTS_ARCHIVE_ROOT'):

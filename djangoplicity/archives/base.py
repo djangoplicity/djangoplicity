@@ -37,7 +37,6 @@ from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.archives.tasks import clear_archive_list_cache, \
     embargo_release_date_task
 from future.utils import with_metaclass
-import sys
 
 
 __all__ = ( 'ArchiveModel', 'post_rename' )
@@ -801,16 +800,3 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         """
         return str( pk )
         #return "%s.%s:%s" % ( self._meta.app_label, self._meta.model_name, str( self.pk ) )
-
-
-class UnicodeMixin(object):
-
-  """Mixin class to handle defining the proper __str__/__unicode__
-  methods in Python 2 or 3."""
-
-  if sys.version_info[0] >= 3: # Python 3
-      def __str__(self):
-          return self.__unicode__()
-  else:  # Python 2
-      def __str__(self):
-          return self.__unicode__().encode('utf8')
