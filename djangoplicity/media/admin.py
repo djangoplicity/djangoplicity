@@ -48,7 +48,7 @@ from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
         VideoContact, Video, VideoSubtitle, ImageColor, Color, PictureOfTheWeek, \
         ImageComparison, ImageProxy, ImageComparisonProxy, PictureOfTheWeekProxy, \
         VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, VideoScript
-from djangoplicity.metadata.models import Category
+from djangoplicity.metadata.models import Category, TaggingStatus
 from djangoplicity.releases.admin import releaseinlineadmin
 
 
@@ -145,13 +145,41 @@ class ImageColorAdmin( admin.ModelAdmin ):
     ordering = ('color', )
 
 
+class TaggingStatusExcludeListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('Exclude Tagging Status')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'exclude_tagging_status'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return [(tagging_status.slug, tagging_status.name) for tagging_status in TaggingStatus.objects.all()]
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        if self.value() is not None:
+            return queryset.exclude(tagging_status__slug=self.value())
+
+
 # ============================================
 # Image admin
 # ============================================
 class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, CropAdmin, ArchiveAdmin, SetCategoryMixin, ContentDeliveryAdmin ):
     list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
     list_editable = ( 'priority', 'title' )
-    list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', 'type', 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
+    list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', TaggingStatusExcludeListFilter, 'type', 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
     filter_horizontal = ( 'web_category', 'subject_category', 'subject_name', 'tagging_status' )
     search_fields = ( 'id', 'title', 'headline', 'description', 'credit', )
     fieldsets = (
