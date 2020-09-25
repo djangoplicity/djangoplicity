@@ -378,7 +378,7 @@ def identify_image(path):
 
     # We use Popen instead of identify as a bug with libtiff makes it
     # return -1
-    identify = Popen(identify_args, stdout=PIPE)
+    identify = Popen(identify_args, stdout=PIPE, encoding='utf8')
     output = identify.communicate()[0]  # Get stdout
 
     # If the TIFF file has multiple layer (or a transparent layer 0) the format
