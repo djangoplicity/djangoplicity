@@ -66,6 +66,7 @@ WEBUPDATE_ROOT = archive_settings.WEBUPDATE_ROOT
 # ========================================
 # Web updates
 # ========================================
+@python_2_unicode_compatible
 class WebUpdateType( models.Model ):
     """
     Type of web update (similar to release types for press releases)
@@ -75,10 +76,11 @@ class WebUpdateType( models.Model ):
     class Meta:
         ordering = ['name']
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
 
+@python_2_unicode_compatible
 class WebUpdate( ArchiveModel, models.Model ):
     """
     Minor updates.
@@ -106,7 +108,7 @@ class WebUpdate( ArchiveModel, models.Model ):
     def get_absolute_url( self ):
         return self.link
 
-    def __unicode__( self ):
+    def __str__( self ):
         return "%s: %s" % ( self.id, self.title)
 
 
@@ -131,6 +133,7 @@ class AnnouncementType( models.Model ):
         verbose_name = _('Announcement Type')
 
 
+@python_2_unicode_compatible
 class Announcement( ArchiveModel, TranslationModel ):
     """
     Similar to press releases but with fewer fields.
@@ -250,7 +253,7 @@ class Announcement( ArchiveModel, TranslationModel ):
     def get_absolute_url(self):
         return translation_reverse( 'announcements_detail', args=[str( self.id if self.is_source() else self.source.id )], lang=self.lang )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return u"%s: %s" % ( self.id, self.title )
 
     class Translation:
@@ -286,6 +289,7 @@ class Announcement( ArchiveModel, TranslationModel ):
 # ========================================================================
 # Translation proxy model
 # ========================================================================
+@python_2_unicode_compatible
 class AnnouncementProxy( Announcement, TranslationProxyMixin ):
     """
     Announcement proxy model for creating admin only to edit
@@ -303,7 +307,7 @@ class AnnouncementProxy( Announcement, TranslationProxyMixin ):
     def validate_unique( self, exclude=None ):
         self.id_validate_unique( exclude=exclude )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return "%s: %s" % ( self.id, self.title )
 
     class Meta:
@@ -320,6 +324,7 @@ class AnnouncementProxy( Announcement, TranslationProxyMixin ):
 # =======================================
 # Related images, videos and stock images
 # =======================================
+@python_2_unicode_compatible
 class RelatedAnnouncement( models.Model  ):
     """
     Abstract model to link another archive item (e.g. visuals) to an Announcement. The Model should be
@@ -348,7 +353,7 @@ class RelatedAnnouncement( models.Model  ):
     hide = models.BooleanField( default=False, verbose_name=_('Hide on kiosk') )
     # Define if the visual should be hidden if used for e.g. the kiosk
 
-    def __unicode__( self ):
+    def __str__( self ):
         return ugettext( "Archive Item for Announcement %s" % ( str( self.announcement.id ) ) )
 
     class Meta:
