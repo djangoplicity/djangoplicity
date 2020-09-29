@@ -1,4 +1,4 @@
-FROM python:2.7-slim-buster
+FROM python:3.8
 
 # See: https://docs.python.org/3/using/cmdline.html#cmdoption-u
 ENV PYTHONUNBUFFERED=1
