@@ -52,6 +52,7 @@ from djangoplicity.translation.models import TranslationModel, \
     translation_reverse
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
+from django.utils.encoding import python_2_unicode_compatible
 
 
 if hasattr(settings, 'ANNOUNCEMENTS_ARCHIVE_ROOT'):
@@ -112,7 +113,7 @@ class WebUpdate( ArchiveModel, models.Model ):
 # ========================================
 # Announcements
 # ========================================
-
+@python_2_unicode_compatible
 class AnnouncementType( models.Model ):
     """
     An announcement press release can be categorized into different types
@@ -122,7 +123,7 @@ class AnnouncementType( models.Model ):
     # Display name of the release type
     name = models.CharField( max_length=100, blank=True )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:
