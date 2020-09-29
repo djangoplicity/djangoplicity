@@ -43,8 +43,10 @@ from djangoplicity.metadata.archives import fields as metadatafields
 from djangoplicity.products.base.consts import DEFAULT_CREDIT, COVER_CHOICES, \
     LANGUAGE_CHOICES
 from djangoplicity.products.base.consts import DEFAULT_CREDIT_FUNC
+from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class ArchiveCategory(models.Model):
     '''
     Categories for Archive Items
@@ -57,11 +59,12 @@ class ArchiveCategory(models.Model):
         verbose_name = 'Archive Category'
         verbose_name_plural = 'Archive Categories'
 
-    def __unicode__(self):
+    def __str__(self):
 
         return self.fullname
 
 
+@python_2_unicode_compatible
 class StandardArchiveInfo( models.Model ):
     """
     Abstract model containing fields shared across all archives
@@ -103,7 +106,7 @@ class StandardArchiveInfo( models.Model ):
             published = True
             sort_fields = ['last_modified', 'release_date', 'priority', ]
 
-    def __unicode__( self ):
+    def __str__( self ):
         """
         Default is to return the id as name.
         """

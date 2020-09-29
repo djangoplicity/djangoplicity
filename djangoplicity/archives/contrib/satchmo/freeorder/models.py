@@ -18,6 +18,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.utils.encoding import python_2_unicode_compatible
 from product.models import Discount, ProductAttribute
 import string
 import random
@@ -39,6 +40,7 @@ def validate_percentage(val):
         raise ValidationError('Not a valid percentage.')
 
 
+@python_2_unicode_compatible
 class FreeOrder (models.Model):
     name = models.CharField(verbose_name='Full Name', max_length=250, blank=False)
     email = models.EmailField(verbose_name='Email Address', max_length=250, blank=False)
@@ -57,7 +59,7 @@ class FreeOrder (models.Model):
     class Meta:
         verbose_name = _("free order application")
 
-    def __unicode__(self):
+    def __str__(self):
         return u"Free order application from %s" % self.name
 
     def clean(self):

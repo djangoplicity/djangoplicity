@@ -45,6 +45,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import signals, Q
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.encoding import python_2_unicode_compatible
 
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel, post_rename
@@ -79,7 +80,7 @@ from djangoplicity.translation.fields import TranslationForeignKey, \
 # #########################################################################
 # Colour
 # #########################################################################
-
+@python_2_unicode_compatible
 class Color( models.Model ):
     """
     Definition of colours and algorithms for computing the dominant colours
@@ -110,7 +111,7 @@ class Color( models.Model ):
         self.__class__._bw_cache = None
         super( Color, self ).save( **kwargs )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     @classmethod
@@ -342,6 +343,7 @@ class Exposure( models.Model ):
         app_label = 'media'
 
 
+@python_2_unicode_compatible
 class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     """
     Image Archive
@@ -664,7 +666,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     def get_absolute_url(self):
         return translation_reverse( 'images_detail', args=[str( self.id if self.is_source() else self.source.id )], lang=self.lang )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     @classmethod
@@ -866,6 +868,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
 # ========================================================================
 # Related Image models
 # ========================================================================
+@python_2_unicode_compatible
 class ImageColor( models.Model ):
     """
     Stores a dominant colour for an image (computed by Color model).
@@ -874,7 +877,7 @@ class ImageColor( models.Model ):
     image = TranslationForeignKey( Image, only_sources=True )
     ratio = models.FloatField()
 
-    def __unicode__( self ):
+    def __str__( self ):
         return "%s: %s (%s)" % ( self.image.id, self.color.name, self.ratio )
 
     class Meta:

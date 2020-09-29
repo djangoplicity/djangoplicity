@@ -30,11 +30,13 @@
 # POSSIBILITY OF SUCH DAMAGE
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
 import json
 from djangoplicity.metadata.models import SubjectName, TaxonomyHierarchy, Facility, Instrument
 from djangoplicity.metadata import consts
 
 
+@python_2_unicode_compatible
 class ImageCollection( models.Model ):
     slug = models.SlugField( db_index=True, help_text=_( "Part of the URL" ) )
     title = models.CharField( max_length=255, blank=False, null=False, help_text=_( "Title of collection" ) )
@@ -73,7 +75,7 @@ class ImageCollection( models.Model ):
 
         return json.dumps( [( 'filter', params )] )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     def save( self, *args, **kwargs ):
@@ -81,9 +83,10 @@ class ImageCollection( models.Model ):
         super( ImageCollection, self ).save( *args, **kwargs )
 
 
+@python_2_unicode_compatible
 class ImageType( models.Model ):
     collection = models.ForeignKey( ImageCollection )
     type = models.CharField( max_length=12, choices=consts.TYPE_CHOICES )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.get_type_display()

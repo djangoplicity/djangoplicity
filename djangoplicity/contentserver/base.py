@@ -42,6 +42,7 @@ import time
 from requests.exceptions import ConnectionError
 
 from django.conf import settings
+from django.utils.encoding import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
 
@@ -59,6 +60,7 @@ def chunks(l, n):
         yield l[i:i + n]
 
 
+@python_2_unicode_compatible
 class ContentServer(object):
     def __init__(self, name, formats=None, url='', remote_dir=''):
         '''
@@ -82,7 +84,7 @@ class ContentServer(object):
     def __repr__(self):
         return self.name
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_url(self, resource, format_name):

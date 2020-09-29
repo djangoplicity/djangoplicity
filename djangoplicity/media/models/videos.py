@@ -74,8 +74,10 @@ from djangoplicity.translation.models import TranslationModel, \
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
 from djangoplicity.utils.history import add_admin_history
+from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
     """
     Video archive model
@@ -228,7 +230,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
 
         return result
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     class Meta:
@@ -638,6 +640,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         return sorted(qs, key=lambda s: s.get_lang_display())
 
 
+@python_2_unicode_compatible
 class VideoSubtitle( ArchiveModel, models.Model ):
     """
     Model for storing subtitles for videos.
@@ -673,7 +676,7 @@ class VideoSubtitle( ArchiveModel, models.Model ):
             lambda: update_youtube_caption.delay(self.pk)
         )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return dict( SUBTITLE_LANGUAGES ).get( self.lang, self.lang )
 
     def update_youtube_caption(self, logger=None):
@@ -751,6 +754,7 @@ class VideoSubtitle( ArchiveModel, models.Model ):
             published = True
 
 
+@python_2_unicode_compatible
 class VideoAudioTrack( ArchiveModel, models.Model ):
     """
     Model for storing Audio tracks for videos.
@@ -777,7 +781,7 @@ class VideoAudioTrack( ArchiveModel, models.Model ):
 
         super( VideoAudioTrack, self ).save( **kwargs )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return dict( SUBTITLE_LANGUAGES ).get( self.lang, self.lang )
 
     class Meta:
@@ -796,6 +800,7 @@ class VideoAudioTrack( ArchiveModel, models.Model ):
             published = True
 
 
+@python_2_unicode_compatible
 class VideoBroadcastAudioTrack( ArchiveModel, models.Model ):
     """
     Model for storing Broadcast Audio tracks for videos.
@@ -823,7 +828,7 @@ class VideoBroadcastAudioTrack( ArchiveModel, models.Model ):
 
         super( VideoBroadcastAudioTrack, self ).save( **kwargs )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return '%s %s' % (self.get_type_display(), dict(SUBTITLE_LANGUAGES).get(self.lang, self.lang))
 
     class Meta:
@@ -842,6 +847,7 @@ class VideoBroadcastAudioTrack( ArchiveModel, models.Model ):
             published = True
 
 
+@python_2_unicode_compatible
 class VideoScript( ArchiveModel, models.Model ):
     """
     Model for storing scripts for videos.
@@ -869,7 +875,7 @@ class VideoScript( ArchiveModel, models.Model ):
 
         super( VideoScript, self ).save( **kwargs )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return dict( SUBTITLE_LANGUAGES ).get( self.lang, self.lang )
 
     class Meta:
