@@ -39,6 +39,7 @@ import os
 import shutil
 import stat
 from collections import OrderedDict
+from functools import cmp_to_key
 from subprocess import PIPE, Popen
 
 from django.apps import apps
@@ -333,7 +334,7 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
 
         return 0  # Should never happen
 
-    fileslist = sorted(os.listdir(tiles_dir), cmp=tile_cmp)
+    fileslist = sorted(os.listdir(tiles_dir), key=cmp_to_key(tile_cmp))
 
     i = 0  # Current TileGroup index
     count = 0
@@ -378,7 +379,7 @@ def identify_image(path):
 
     # We use Popen instead of identify as a bug with libtiff makes it
     # return -1
-    identify = Popen(identify_args, stdout=PIPE)
+    identify = Popen(identify_args, stdout=PIPE, encoding='utf8')
     output = identify.communicate()[0]  # Get stdout
 
     # If the TIFF file has multiple layer (or a transparent layer 0) the format
