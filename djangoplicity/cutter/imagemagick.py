@@ -39,6 +39,7 @@ import os
 import shutil
 import stat
 from collections import OrderedDict
+from functools import cmp_to_key
 from subprocess import PIPE, Popen
 
 from django.apps import apps
@@ -333,7 +334,7 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
 
         return 0  # Should never happen
 
-    fileslist = sorted(os.listdir(tiles_dir), cmp=tile_cmp)
+    fileslist = sorted(os.listdir(tiles_dir), key=cmp_to_key(tile_cmp))
 
     i = 0  # Current TileGroup index
     count = 0
