@@ -43,6 +43,7 @@ from djangoplicity.migration.utils import links
 import os
 from urllib.request import url2pathname
 from urllib.parse import urlsplit, urlunsplit
+from django.utils.encoding import python_2_unicode_compatible
 
 
 def nl2space( text ):
@@ -53,6 +54,7 @@ def nl2space( text ):
     return text
 
 
+@python_2_unicode_compatible
 class PageDocument( MigrationConfAdapter ):
     """
     Base class for migration of any document into a djangoplicity.pages.models.Page
@@ -108,7 +110,7 @@ class PageDocument( MigrationConfAdapter ):
         else:
             return ["/%s" % self._filename]
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title()
 
     #

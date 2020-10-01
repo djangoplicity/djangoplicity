@@ -39,7 +39,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.utils.translation import ugettext_lazy as _, ugettext
-
+from django.utils.encoding import python_2_unicode_compatible
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.contrib import types
 from djangoplicity.archives.resources import ResourceManager
@@ -61,6 +61,7 @@ from djangoplicity.media.models.comparisons import ImageComparison
 # Deprecated: Once eso.cl is migrated this model
 # and relations to it should be removed, and
 
+@python_2_unicode_compatible
 class Country( models.Model ):
     isocode = models.CharField( max_length=2, primary_key=True, verbose_name=_('ISO Code') )
     url_prefix = models.CharField( max_length=255, verbose_name=_('URL Prefix') )
@@ -72,7 +73,7 @@ class Country( models.Model ):
         warnings.warn( "Use of ReleaseTranslation and Country has been deprecated.", DeprecationWarning )
         super( Country, self ).__init__( *args, **kwargs )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -83,7 +84,7 @@ class Country( models.Model ):
 # =======================================
 # Press releases
 # =======================================
-
+@python_2_unicode_compatible
 class ReleaseType( models.Model ):
     """
     A press release can be categorized into different types of
@@ -96,7 +97,7 @@ class ReleaseType( models.Model ):
     name = models.CharField( max_length=100, blank=True )
     # Display name of the release type.
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:
@@ -104,6 +105,7 @@ class ReleaseType( models.Model ):
         verbose_name = _('Press Release Type')
 
 
+@python_2_unicode_compatible
 class Release( ArchiveModel, TranslationModel ):
     #
     # Field definitions
@@ -265,7 +267,7 @@ class Release( ArchiveModel, TranslationModel ):
     def get_absolute_url(self):
         return translation_reverse( 'releases_detail', args=[str( self.id if self.is_source() else self.source.id )], lang=self.lang )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.id
 
     class Translation:
@@ -419,7 +421,7 @@ class ReleaseTranslationContact( ExtendedContact ):
 # =======================================
 # Related images, videos and stock images
 # =======================================
-
+@python_2_unicode_compatible
 class RelatedRelease( models.Model  ):
     """
     Abstract model to link another archive item (e.g. visuals) to a release. The Model should be
@@ -447,7 +449,7 @@ class RelatedRelease( models.Model  ):
     # Define if the visual should be hidden if used for e.g. the kiosk
     hide = models.BooleanField( default=False, verbose_name=_('Hide on kiosk') )
 
-    def __unicode__(self):
+    def __str__(self):
         return ugettext("Archive Item for Release %s" % (str(self.release.id)))
 
     class Meta:

@@ -34,7 +34,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
-
+from django.utils.encoding import python_2_unicode_compatible
 from djangoplicity.archives import fields as archivesfields
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.contrib import types
@@ -43,6 +43,7 @@ from djangoplicity.media.models import Image
 from djangoplicity.translation.models import TranslationModel
 
 
+@python_2_unicode_compatible
 class ScienceAnnouncement(ArchiveModel, TranslationModel):
     """
     Similar to press releases but with fewer fields.
@@ -84,7 +85,7 @@ class ScienceAnnouncement(ArchiveModel, TranslationModel):
     def get_absolute_url(self):
         return reverse('scienceannouncements_detail', args=[str(self.id)])
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s: %s" % (self.id, self.title)
 
     class Archive:
@@ -110,7 +111,7 @@ class ScienceAnnouncement(ArchiveModel, TranslationModel):
 # =======================================
 # Related images, etc.
 # =======================================
-
+@python_2_unicode_compatible
 class RelatedScienceAnnouncement(models.Model):
     """
     Abstract model to link another archive item (e.g. visuals) to a
@@ -140,7 +141,7 @@ class RelatedScienceAnnouncement(models.Model):
     hide = models.BooleanField(default=False, verbose_name=_('Hide on kiosk'))
     # Define if the visual should be hidden if used for e.g. the kiosk
 
-    def __unicode__(self):
+    def __str__(self):
         return ugettext("Archive Item for Science Announcement %s" % (str(self.science_announcement.id)))
 
     class Meta:

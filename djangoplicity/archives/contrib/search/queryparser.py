@@ -39,12 +39,14 @@ from builtins import chr
 from builtins import object
 import re
 from html.entities import codepoint2name
+from django.utils.encoding import python_2_unicode_compatible
 
 __all__ = ['QueryParser', 'AstronomyQueryParser']
 
 unichr2entity = dict((chr(code), u'&%s;' % name) for code, name in codepoint2name.items() if code != 38)  # exclude "&"
 
 
+@python_2_unicode_compatible
 class Criterion( object ):
     PLUS = '+'
     MINUS = '-'
@@ -71,7 +73,7 @@ class Criterion( object ):
         else:
             return '%s"%s"' % ( self.sign, self.keyword )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.__repr__()
 
 

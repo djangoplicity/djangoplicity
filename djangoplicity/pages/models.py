@@ -19,6 +19,7 @@ from django.forms import fields
 from django.template import Engine, Template
 from django.template.base import TemplateSyntaxError
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import python_2_unicode_compatible
 
 from djangoplicity.archives.translation import TranslationProxyMixin
 from djangoplicity.translation.models import TranslationModel, \
@@ -44,6 +45,7 @@ class TemplateField(models.CharField):
         return fields.ChoiceField(choices=choices, required=False)
 
 
+@python_2_unicode_compatible
 class Section( models.Model ):
     """
     Sections are used to define the templates used for different areas
@@ -59,23 +61,25 @@ class Section( models.Model ):
     append_title = models.CharField( max_length=100 )
     # Text to append to title, e.g. '| Title'
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:
         ordering = ['name']
 
 
+@python_2_unicode_compatible
 class URL( models.Model ):
     """ URL of page. URLs are unique and can only contain alpha numeric characters. """
     url = models.CharField(_(u'URL'), max_length=200, db_index=True, unique=True,
                             help_text=_(u"Example: '/about/contact/'. Make sure to have leading and trailing slashes. Good and descriptive URLs are important for good user experience and search engine ranking."))
     page = models.ForeignKey( 'Page', null=True )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.url
 
 
+@python_2_unicode_compatible
 class PageGroup( models.Model ):
     '''
     Model to group pages together for access control
@@ -85,10 +89,11 @@ class PageGroup( models.Model ):
     groups = models.ManyToManyField(Group, help_text=_('Groups which have to access to this page group'), blank=True)
     full_access = models.BooleanField(default=False, help_text=_('If checked members of this group have access to all pages'))
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
 
+@python_2_unicode_compatible
 class Page( TranslationModel ):
     """
     A general purpose module for displaying and editing text on a website.
@@ -222,7 +227,7 @@ class Page( TranslationModel ):
     is_online.boolean = True
     is_online.short_description = _( u'Is Online' )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     def get_absolute_url(self):
@@ -280,6 +285,7 @@ class Page( TranslationModel ):
             clean_html_fields = ['content']
 
 
+@python_2_unicode_compatible
 class EmbeddedPageKey( models.Model ):
     """
     Model for associating a key with a page, so that pages can be
@@ -313,7 +319,7 @@ class EmbeddedPageKey( models.Model ):
     last_modified = models.DateTimeField( auto_now=True )
     # Date/time of last time page was modified.
 
-    def __unicode__( self ):
+    def __str__( self ):
         return u'%s (%s)' % (self.title, self.page_key)
 
     class Meta:
@@ -323,6 +329,7 @@ class EmbeddedPageKey( models.Model ):
 # ========================================================================
 # Translation proxy model
 # ========================================================================
+@python_2_unicode_compatible
 class PageProxy( Page, TranslationProxyMixin ):
     """
     Page proxy model for creating admin only to edit
@@ -340,7 +347,7 @@ class PageProxy( Page, TranslationProxyMixin ):
     def validate_unique( self, exclude=None ):
         self.id_validate_unique( exclude=exclude )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return "%s: %s" % ( self.id, self.title )
 
     class Meta:
