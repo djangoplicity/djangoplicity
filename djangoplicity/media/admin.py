@@ -31,6 +31,7 @@
 
 from django.conf import settings
 from django.contrib import admin
+from django.db.models import Q
 from django.forms import ModelForm
 from django.shortcuts import render
 from django.utils.encoding import force_unicode
@@ -173,13 +174,35 @@ class TaggingStatusExcludeListFilter(admin.SimpleListFilter):
             return queryset.exclude(tagging_status__slug=self.value())
 
 
+class MissingExposureFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('Exposures')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'missing_exposures'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('True', 'Missing Exposures'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'True':
+            return queryset.exclude(tagging_status__slug__in=('no_exp',)).filter(
+                Q(imageexposure__facility__isnull=True) |
+                Q(imageexposure__instrument__isnull=True) |
+                Q(imageexposure__spectral_color_assignment__isnull=True)
+            )
+
+
 # ============================================
 # Image admin
 # ============================================
 class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, CropAdmin, ArchiveAdmin, SetCategoryMixin, ContentDeliveryAdmin ):
     list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
     list_editable = ( 'priority', 'title' )
-    list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', TaggingStatusExcludeListFilter, 'type', 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
+    list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', 'type', TaggingStatusExcludeListFilter, MissingExposureFilter, 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
     filter_horizontal = ( 'web_category', 'subject_category', 'subject_name', 'tagging_status' )
     search_fields = ( 'id', 'title', 'headline', 'description', 'credit', )
     fieldsets = (
