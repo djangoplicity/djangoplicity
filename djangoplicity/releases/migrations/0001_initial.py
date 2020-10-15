@@ -6,6 +6,7 @@ import djangoplicity.archives.base
 import djangoplicity.metadata.translation.fields
 import djangoplicity.translation.fields
 import djangoplicity.archives.fields
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -55,7 +56,7 @@ class Migration(migrations.Migration):
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
                 ('facility', djangoplicity.metadata.translation.fields.TranslationFacilityManyToManyField(help_text='Telescopes or observatories used for the observations.', to='metadata.Facility', null=True, verbose_name='Facility', blank=True)),
-                ('kids_image', models.ForeignKey(related_name='kids_image_release_set', blank=True, to='media.Image', help_text='Use this to override the default Release image.', null=True)),
+                ('kids_image', models.ForeignKey(related_name='kids_image_release_set', blank=True, on_delete=django.db.models.deletion.CASCADE, to='media.Image', help_text='Use this to override the default Release image.', null=True)),
                 ('publications', djangoplicity.metadata.translation.fields.TranslationAVMPublicationField(help_text='ADS Bibliographic Code', to='metadata.Publication', null=True, verbose_name='Publication', blank=True)),
                 ('subject_category', djangoplicity.metadata.translation.fields.TranslationAVMSubjectCategoryField(help_text='The type(s) of object or objects in the resource, or general subject matter of an image, taken from a controlled vocabulary taxonomy.', to='metadata.TaxonomyHierarchy', null=True, verbose_name='Subject Category', blank=True)),
                 ('subject_name', djangoplicity.metadata.translation.fields.TranslationAVMSubjectNameField(help_text='Proper names/catalog numbers for key objects/subjects in the image field.', to='metadata.SubjectName', null=True, verbose_name='Subject Name', blank=True)),
@@ -83,7 +84,7 @@ class Migration(migrations.Migration):
                 ('state_province', models.CharField(max_length=255, blank=True)),
                 ('postal_code', models.CharField(max_length=255, blank=True)),
                 ('country', models.CharField(max_length=255, blank=True)),
-                ('release', djangoplicity.translation.fields.TranslationForeignKey(to='releases.Release')),
+                ('release', djangoplicity.translation.fields.TranslationForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releases.Release')),
             ],
             options={
                 'ordering': ('id',),
@@ -100,8 +101,8 @@ class Migration(migrations.Migration):
                 ('override_id', models.SlugField(null=True, verbose_name='Override ID', blank=True)),
                 ('hide', models.BooleanField(default=False, verbose_name='Hide on kiosk')),
                 ('zoomable', models.BooleanField(default=False, verbose_name='Zoomable if main')),
-                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Image', to='media.Image')),
-                ('release', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related release', to='releases.Release')),
+                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Image', on_delete=django.db.models.deletion.CASCADE, to='media.Image')),
+                ('release', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related release', on_delete=django.db.models.deletion.CASCADE, to='releases.Release')),
             ],
             options={
                 'abstract': False,
@@ -116,8 +117,8 @@ class Migration(migrations.Migration):
                 ('main_visual', models.BooleanField(default=False)),
                 ('override_id', models.SlugField(null=True, verbose_name='Override ID', blank=True)),
                 ('hide', models.BooleanField(default=False, verbose_name='Hide on kiosk')),
-                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Image Comparison', to='media.ImageComparison')),
-                ('release', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related release', to='releases.Release')),
+                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Image Comparison', on_delete=django.db.models.deletion.CASCADE, to='media.ImageComparison')),
+                ('release', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related release', on_delete=django.db.models.deletion.CASCADE, to='releases.Release')),
             ],
             options={
                 'abstract': False,
@@ -132,8 +133,8 @@ class Migration(migrations.Migration):
                 ('main_visual', models.BooleanField(default=False)),
                 ('override_id', models.SlugField(null=True, verbose_name='Override ID', blank=True)),
                 ('hide', models.BooleanField(default=False, verbose_name='Hide on kiosk')),
-                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Stock Image', to='media.Image')),
-                ('release', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related release', to='releases.Release')),
+                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Stock Image', on_delete=django.db.models.deletion.CASCADE, to='media.Image')),
+                ('release', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related release', on_delete=django.db.models.deletion.CASCADE, to='releases.Release')),
             ],
             options={
                 'abstract': False,
@@ -145,8 +146,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('url_suffix', models.CharField(max_length=255, verbose_name='URL Suffix')),
-                ('country', models.ForeignKey(to='releases.Country')),
-                ('release', models.ForeignKey(to='releases.Release')),
+                ('country', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releases.Country')),
+                ('release', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releases.Release')),
             ],
             options={
             },
@@ -166,7 +167,7 @@ class Migration(migrations.Migration):
                 ('state_province', models.CharField(max_length=255, blank=True)),
                 ('postal_code', models.CharField(max_length=255, blank=True)),
                 ('country', models.CharField(max_length=255, blank=True)),
-                ('release', djangoplicity.translation.fields.TranslationForeignKey(to='releases.Release', only_sources=False)),
+                ('release', djangoplicity.translation.fields.TranslationForeignKey(on_delete=django.db.models.deletion.CASCADE, to='releases.Release', only_sources=False)),
             ],
             options={
                 'verbose_name': 'translation contact',
@@ -193,8 +194,8 @@ class Migration(migrations.Migration):
                 ('main_visual', models.BooleanField(default=False)),
                 ('override_id', models.SlugField(null=True, verbose_name='Override ID', blank=True)),
                 ('hide', models.BooleanField(default=False, verbose_name='Hide on kiosk')),
-                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Video', to='media.Video')),
-                ('release', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related release', to='releases.Release')),
+                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Video', on_delete=django.db.models.deletion.CASCADE, to='media.Video')),
+                ('release', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related release', on_delete=django.db.models.deletion.CASCADE, to='releases.Release')),
             ],
             options={
                 'abstract': False,
@@ -222,13 +223,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='release',
             name='release_type',
-            field=djangoplicity.translation.fields.TranslationForeignKey(default=1, to='releases.ReleaseType'),
+            field=djangoplicity.translation.fields.TranslationForeignKey(on_delete=django.db.models.deletion.CASCADE, default=1, to='releases.ReleaseType'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='release',
             name='source',
-            field=djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='releases.Release', null=True, only_sources=False),
+            field=djangoplicity.translation.fields.TranslationForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='translations', verbose_name='Translation source', blank=True, to='releases.Release', null=True, only_sources=False),
             preserve_default=True,
         ),
         migrations.AddField(
