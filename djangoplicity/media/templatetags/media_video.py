@@ -32,7 +32,7 @@
 from django import template
 from django.conf import settings
 from django.contrib.sites.models import Site
-
+from django.utils.translation import ugettext_noop
 from djangoplicity.media.models import Video
 
 register = template.Library()
@@ -158,4 +158,21 @@ def embed_playlist(videos, sd_formats, hd_formats):
 
     return {
         'playlist': playlist
+    }
+
+
+@register.inclusion_tag( "videos/frame_rate.html")
+def frame_rate(resources_groups):
+    # TODO: Calculate the correct video frame rate
+    value = 29.97
+    name = ugettext_noop("Frame rate")
+
+    if isinstance(resources_groups, list):
+        for resource in resources_groups:
+            if resource['downloads'] and resource['name'] == ugettext_noop('Fulldome'):
+                value = 30
+
+    return {
+        'name': name,
+        'value': value
     }
