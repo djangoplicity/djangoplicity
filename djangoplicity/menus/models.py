@@ -102,9 +102,9 @@ class MenuItem( MPTTModel ):
     on_click = models.PositiveIntegerField( default=0, choices=CLICK_OPTIONS )
 
     # The root menu item, must be related to a menu.
-    menu = models.ForeignKey( Menu, blank=True, null=True, help_text=_( u'This field only have effect for the root menu item' ) )
+    menu = models.ForeignKey( Menu, blank=True, null=True, help_text=_( u'This field only have effect for the root menu item' ), on_delete=models.CASCADE )
 
-    parent = models.ForeignKey( 'self', null=True, blank=True, related_name='children', help_text=_( u'Moving a node to a new parent, will place it as the last node. When moving a menu item, all of it sub-items will be moved as well.') )
+    parent = models.ForeignKey( 'self', null=True, blank=True, related_name='children', help_text=_( u'Moving a node to a new parent, will place it as the last node. When moving a menu item, all of it sub-items will be moved as well.'), on_delete=models.CASCADE )
 
     # Indicates that this is the primary menu item, for a given URL.
     # In case a menu contains several items with the same link, set
