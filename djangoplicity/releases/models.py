@@ -463,7 +463,7 @@ class ReleaseImage( RelatedRelease ):
 
 
 class ReleaseVideo( RelatedRelease ):
-    """ Images related to a release. """
+    """ Videos related to a release. """
     archive_item = TranslationForeignKey( Video, verbose_name=_('Related Video') )
 
 
