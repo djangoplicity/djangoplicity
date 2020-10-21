@@ -115,7 +115,7 @@ class Release( ArchiveModel, TranslationModel ):
     old_ids = models.CharField(verbose_name=_("Old Ids"), max_length=50, blank=True, help_text=_(u'For backwards compatibility: Historic ids of this press release.') )
 
     # Type of the release - see ReleaseType model for more information.
-    release_type = TranslationForeignKey( ReleaseType, blank=False, null=False, default=1 )
+    release_type = TranslationForeignKey( ReleaseType, blank=False, null=False, default=1, on_delete=models.CASCADE )
 
     # Title of of the press release
     title = models.CharField( max_length=255, db_index=True, help_text=_(u"Title is shown in browser window. Use a good informative title, since search engines normally display the title on their result pages.") )
@@ -165,7 +165,7 @@ class Release( ArchiveModel, TranslationModel ):
 
     kids_description = models.TextField( blank=True )
 
-    kids_image = models.ForeignKey( Image, blank=True, null=True, related_name='kids_image_release_set', help_text=_(u'Use this to override the default Release image.') )
+    kids_image = models.ForeignKey( Image, blank=True, null=True, related_name='kids_image_release_set', help_text=_(u'Use this to override the default Release image.'), on_delete=models.CASCADE )
 
     def get_embargo_login( self ):
         return settings.ARCHIVE_EMBARGO_LOGIN
@@ -399,7 +399,7 @@ class ReleaseContact( ExtendedContact ):
     """
     Source release contacts (global for all translations as well)
     """
-    release = TranslationForeignKey( Release, only_sources=True )
+    release = TranslationForeignKey( Release, only_sources=True, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _(u'contact')
@@ -411,7 +411,7 @@ class ReleaseTranslationContact( ExtendedContact ):
     A contact specific for a PR translation (these contacts are shown before
     the source release's contacts.
     """
-    release = TranslationForeignKey( Release, only_sources=False )
+    release = TranslationForeignKey( Release, only_sources=False, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _(u'translation contact')
@@ -435,7 +435,7 @@ class RelatedRelease( models.Model  ):
     """
 
     # The release to link with another archive item.
-    release = TranslationForeignKey( Release, verbose_name=_('Related release'), only_sources=True )
+    release = TranslationForeignKey( Release, verbose_name=_('Related release'), only_sources=True, on_delete=models.CASCADE )
 
     order = models.PositiveSmallIntegerField( blank=True, null=True )
     # Used to define an order for the archive items, in case this should not be via the alphabetic order of the id.
@@ -458,23 +458,23 @@ class RelatedRelease( models.Model  ):
 
 class ReleaseImage( RelatedRelease ):
     """ Images related to a release. """
-    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Image') )
+    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Image'), on_delete=models.CASCADE )
     zoomable = models.BooleanField( default=False, verbose_name=_('Zoomable if main') )
 
 
 class ReleaseVideo( RelatedRelease ):
     """ Videos related to a release. """
-    archive_item = TranslationForeignKey( Video, verbose_name=_('Related Video') )
+    archive_item = TranslationForeignKey( Video, verbose_name=_('Related Video'), on_delete=models.CASCADE )
 
 
 class ReleaseStockImage( RelatedRelease ):
     """ Stock Images related to a release. """
-    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Stock Image') )
+    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Stock Image'), on_delete=models.CASCADE )
 
 
 class ReleaseImageComparison( RelatedRelease ):
     """ Stock Images related to a release. """
-    archive_item = TranslationForeignKey( ImageComparison, verbose_name=_('Related Image Comparison') )
+    archive_item = TranslationForeignKey( ImageComparison, verbose_name=_('Related Image Comparison'), on_delete=models.CASCADE )
 
 
 # =======================================
@@ -485,8 +485,8 @@ class ReleaseImageComparison( RelatedRelease ):
 # this model is no longer needed.
 
 class ReleaseTranslation( models.Model ):
-    release = models.ForeignKey( Release )
-    country = models.ForeignKey( Country )
+    release = models.ForeignKey( Release, on_delete=models.CASCADE )
+    country = models.ForeignKey( Country, on_delete=models.CASCADE )
     url_suffix = models.CharField( max_length=255, verbose_name=_('URL Suffix') )
 
     def __init__(self, *args, **kwargs ):
