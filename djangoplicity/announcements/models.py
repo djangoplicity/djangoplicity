@@ -375,7 +375,7 @@ class AnnouncementImageComparison(RelatedAnnouncement):
     Image Comparisons related to an announcement
     '''
     archive_item = TranslationForeignKey(ImageComparison,
-        verbose_name=_('Related Image Comparison'))
+        verbose_name=_('Related Image Comparison'), on_delete=models.CASCADE)
 
 
 # =======================================

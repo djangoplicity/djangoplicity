@@ -873,8 +873,8 @@ class ImageColor( models.Model ):
     """
     Stores a dominant colour for an image (computed by Color model).
     """
-    color = models.ForeignKey( Color )
-    image = TranslationForeignKey( Image, only_sources=True )
+    color = models.ForeignKey( Color, on_delete=models.CASCADE )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
     ratio = models.FloatField()
 
     def __str__( self ):
@@ -888,7 +888,7 @@ class ImageExposure( Exposure ):
     """
     Links the exposure model with images
     """
-    image = TranslationForeignKey( Image, only_sources=True )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _(u'Exposure')
@@ -899,7 +899,7 @@ class ImageContact( Contact ):
     """
     Links contacts with images
     """
-    image = TranslationForeignKey( Image, only_sources=True )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _(u'Contact')

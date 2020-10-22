@@ -720,6 +720,7 @@ class AVMFacilityField( models.ForeignKey ):
             'blank': True,
             'help_text': AVMFacilityField.avm_help_text,
             'verbose_name': _( "Facility" ),
+            'on_delete': models.CASCADE
         }
         my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
@@ -754,6 +755,7 @@ class AVMInstrumentField( models.ForeignKey ):
             'blank': True,
             'help_text': AVMInstrumentField.avm_help_text,
             'verbose_name': _( "Instrument" ),
+            'on_delete': models.CASCADE
         }
         my_default_keys = list(defaults.keys())
         defaults.update( kwargs )
