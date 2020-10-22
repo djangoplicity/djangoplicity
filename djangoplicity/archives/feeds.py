@@ -15,12 +15,18 @@ from builtins import object
 from django.conf.urls import url
 from django.contrib.sites.models import Site
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+
 from django.http import Http404
 from djangoplicity.feeds import conf as feedsconf
 from djangoplicity.feeds.feeds import DjangoplicityFeed
 
 FORMATS = feedsconf.get_formats() if feedsconf.get_formats() else {}
+
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 
 class DjangoplicityArchiveFeed( DjangoplicityFeed ):

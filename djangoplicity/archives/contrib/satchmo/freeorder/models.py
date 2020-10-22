@@ -14,7 +14,6 @@ from datetime import datetime, timedelta
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMultiAlternatives, send_mail
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -22,6 +21,12 @@ from django.utils.encoding import python_2_unicode_compatible
 from product.models import Discount, ProductAttribute
 import string
 import random
+
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 REJECT_REASONS = (
     ("NOSTOCK", "The product(s) is/are not available on stock."),

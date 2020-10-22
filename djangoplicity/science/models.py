@@ -31,7 +31,6 @@
 
 from builtins import str
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.utils.encoding import python_2_unicode_compatible
@@ -42,6 +41,11 @@ from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.media.models import Image
 from djangoplicity.translation.models import TranslationModel
 
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 @python_2_unicode_compatible
 class ScienceAnnouncement(ArchiveModel, TranslationModel):

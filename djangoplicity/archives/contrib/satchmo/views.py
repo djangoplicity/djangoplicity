@@ -15,7 +15,6 @@ import csv
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from django.utils.encoding import force_text
@@ -27,6 +26,11 @@ from satchmo_store.shop.views.home import home
 
 satchmo_category_view = views.category_view
 
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 def not_found_view( request, *args, **kwargs ):
     raise Http404

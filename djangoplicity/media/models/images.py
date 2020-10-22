@@ -41,7 +41,6 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import signals, Q
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
@@ -76,6 +75,11 @@ from djangoplicity.translation.models import TranslationModel, \
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
 
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 # #########################################################################
 # Colour

@@ -3,13 +3,17 @@ import re
 import os
 import shutil
 
-import django.core.urlresolvers
-
 from djangoplicity.archives.resources import ResourceManager
 
 from djangoplicity.products.models import Application, Handout, MiniSite, PaperModel, PlanetariumShow, VirtualTour, KidsDrawing, PressKit, ConferencePoster, Logo, OnlineArtAuthor, OnlineArt, SlideShow, ElectronicCard, Exhibition, FITSImage, UserVideo, Presentation, AnnualReport, EducationalMaterial, CDROM, Book, Brochure, Merchandise, Periodical, PostCard, MountedImage, Poster, Sticker, TechnicalDocument, Calendar, IMAXFilm, ConferenceItem, Visit, Apparel, CapJournal, Messenger, ScienceInSchool, Bulletin, Flyer, Handout, Map, PrintedPoster, ElectronicPoster
 
 import djangoplicity.products.options
+
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import NoReverseMatch
+else:
+    from django.core.urlresolvers import NoReverseMatch
 
 exclude_fields = ('low_stock_level', 'reserve_count', 'stock', 'delivery_date', 'type', 'product')
 
@@ -141,7 +145,7 @@ for model in Application, Handout, MiniSite, PaperModel, PlanetariumShow, Virtua
 
             try:
                 url = 'https://www.eso.org%s' % obj.get_absolute_url()
-            except (AttributeError, django.core.urlresolvers.NoReverseMatch):
+            except (AttributeError, NoReverseMatch):
                 url = ''
             missing.write('%s,%s,%s\n' % (obj.__class__.__name__, obj.id, url))
             continue

@@ -35,7 +35,6 @@ import math
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import NoReverseMatch, reverse
 from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, ugettext
@@ -44,6 +43,12 @@ from djangoplicity.archives.contrib.info import boolean_property
 from djangoplicity.media.models import Video
 from djangoplicity.translation.models import TranslationModel
 
+
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse, NoReverseMatch
+else:
+    from django.core.urlresolvers import NoReverseMatch, reverse
 
 # =================
 # Utility functions

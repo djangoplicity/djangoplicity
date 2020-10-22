@@ -49,7 +49,6 @@ from builtins import str
 from datetime import date
 
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.utils.translation import ugettext_lazy as _
@@ -68,6 +67,12 @@ from djangoplicity.products.base import *
 from djangoplicity.products.conf import archive_settings
 from djangoplicity.translation.models import TranslationForeignKey
 from djangoplicity.products.base.consts import DEFAULT_CREDIT
+
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 # SATCHMO RELATED
 # ===============

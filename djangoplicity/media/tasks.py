@@ -53,8 +53,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
-
 from djangoplicity.archives.contrib.serialization import XMPEmitter
 from djangoplicity.archives.resources import get_instance_resource, ResourceError
 from djangoplicity.archives.tasks import compute_checksums
@@ -66,6 +64,12 @@ from djangoplicity.media.audio_tasks import encode_audio_derivatives, \
 from djangoplicity.metadata.consts import get_file_type
 from djangoplicity.utils.history import add_admin_history
 from djangoplicity.utils.templatetags.djangoplicity_text_utils import remove_html_tags
+
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 LOCK_EXPIRE = 60 * 30  # 30 mins
 

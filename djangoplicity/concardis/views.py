@@ -8,7 +8,6 @@ from django.conf import settings
 from django.core import urlresolvers
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 
@@ -24,6 +23,11 @@ from satchmo_utils.views import bad_or_missing
 
 from .utils import get_params, get_payment_status, sha1_sign
 
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 log = logging.getLogger(__name__)
 

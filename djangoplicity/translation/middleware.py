@@ -75,13 +75,18 @@ Only the views specified in urls.py with the `translate` keyword argument will b
 
 from builtins import object
 from django.conf import settings
-from django.core.urlresolvers import resolve, Resolver404
 from django.shortcuts import redirect
 from django.utils import translation
 
 from djangoplicity.privacy.utils import privacy_accepted
 from djangoplicity.translation.models import get_language_from_path, \
         get_path_for_language, get_querystring_from_request
+
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import resolve, Resolver404
+else:
+    from django.core.urlresolvers import resolve, Resolver404
 
 
 LANGUAGE_COOKIE_NAME = 'preferred_language'

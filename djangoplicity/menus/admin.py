@@ -36,9 +36,13 @@ from djangoplicity.menus.models import Menu, MenuItem, invalidate_menu_item_cach
 from mptt.admin import MPTTModelAdmin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 
+import django
+if django.VERSION >= (2, 2):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 class MenuAdmin( admin.ModelAdmin ):
     list_display = ( 'name', 'hide_menu_root', 'expansion_depth', 'max_depth' )
