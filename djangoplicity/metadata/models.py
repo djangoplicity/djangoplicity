@@ -51,7 +51,7 @@ class Contact( models.Model):
            ...
 
        class AVMContact( Contact ):
-           avm_model = models.ForeignKey( AVMModel, null=True, blank=True )
+           avm_model = models.ForeignKey( AVMModel, null=True, blank=True , on_delete=models.CASCADE)
 
 
     You can then include the AVMContact in the administration interface for AVMModel
@@ -310,7 +310,7 @@ class Category( models.Model ):
     Model for storing web categories.
     """
     url = models.SlugField( db_index=True, blank=False, null=False, verbose_name=_("URL"), )
-    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies.") )
+    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies."), on_delete=models.CASCADE)
     name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Title of query to be displayed to the user.") )
     enabled = models.BooleanField( default=True, )
 

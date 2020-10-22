@@ -73,7 +73,7 @@ class URL( models.Model ):
     """ URL of page. URLs are unique and can only contain alpha numeric characters. """
     url = models.CharField(_(u'URL'), max_length=200, db_index=True, unique=True,
                             help_text=_(u"Example: '/about/contact/'. Make sure to have leading and trailing slashes. Good and descriptive URLs are important for good user experience and search engine ranking."))
-    page = models.ForeignKey( 'Page', null=True )
+    page = models.ForeignKey('Page', null=True, on_delete=models.CASCADE)
 
     def __str__( self ):
         return self.url
@@ -143,7 +143,7 @@ class Page( TranslationModel ):
     #
     #TODO: Test if this should be blank, null or blank and null
     #TOOD: Automatically populate this field based on
-    #author = models.ForeignKey( User, null=True )
+    #author = models.ForeignKey( User, null=True, on_delete=models.CASCADE)
     #""" Author of the page. """
 
     last_modified = models.DateTimeField( auto_now=True )
@@ -166,7 +166,7 @@ class Page( TranslationModel ):
     #
     # Page style
     #
-    section = models.ForeignKey( Section, default=1, help_text=_(u'Determines e.g. which templates to use for rendering the template.') )
+    section = models.ForeignKey( Section, default=1, help_text=_(u'Determines e.g. which templates to use for rendering the template.'), on_delete=models.CASCADE)
     # Section to use for this page. A section determines default values for a page, and the visual layout (e.g. templaes).
 
     template_name = TemplateField(max_length=100, blank=True, help_text=_(u'Override the template specified by the section.'))
@@ -313,7 +313,7 @@ class EmbeddedPageKey( models.Model ):
 
     # Initial description should be provided by the application registering the key.
 
-    page = models.ForeignKey( Page, null=True, blank=True, limit_choices_to={ 'embedded__exact': True }, help_text=_('Select page that you want to use for the specific key. Note, only pages marked as embedded pages can be selected.') )
+    page = models.ForeignKey( Page, null=True, blank=True, limit_choices_to={ 'embedded__exact': True }, help_text=_('Select page that you want to use for the specific key. Note, only pages marked as embedded pages can be selected.'), on_delete=models.CASCADE)
     # Page that is to be embedded for the specific key.
 
     last_modified = models.DateTimeField( auto_now=True )

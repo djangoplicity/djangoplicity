@@ -46,7 +46,7 @@ class Report( models.Model ):
     #""" Whether the report generates an e-mail list """
 
     # Group of report
-    group = models.ForeignKey( ReportGroup )
+    group = models.ForeignKey( ReportGroup, on_delete=models.CASCADE)
 
     # Whether the report can be used for mass mailing
     is_mailable = models.BooleanField(default=False)

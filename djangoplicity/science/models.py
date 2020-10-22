@@ -119,13 +119,13 @@ class RelatedScienceAnnouncement(models.Model):
     a many-to-many intermediary model::
 
         class RelatedAnnouncementScienceImage(RelatedRAnnouncement):
-            archive_item = models.ForeignKey(Image, verbose_name=('Image'))
+            archive_item = models.ForeignKey(Image, verbose_name=('Image'), on_delete=models.CASCADE)
 
             class Meta:
                 verbose_name = _('...')
     """
 
-    science_announcement = models.ForeignKey(ScienceAnnouncement, verbose_name=_('Related science announcement'))
+    science_announcement = models.ForeignKey(ScienceAnnouncement, verbose_name=_('Related science announcement'), on_delete=models.CASCADE)
     # The announcement to link with another archive item.
 
     order = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -150,4 +150,4 @@ class RelatedScienceAnnouncement(models.Model):
 
 class ScienceAnnouncementImage(RelatedScienceAnnouncement):
     """ Images related to an announcement. """
-    archive_item = models.ForeignKey(Image, verbose_name=_('Related Image'))
+    archive_item = models.ForeignKey(Image, verbose_name=_('Related Image'), on_delete=models.CASCADE)

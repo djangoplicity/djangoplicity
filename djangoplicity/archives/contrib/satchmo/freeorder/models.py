@@ -44,7 +44,7 @@ def validate_percentage(val):
 class FreeOrder (models.Model):
     name = models.CharField(verbose_name='Full Name', max_length=250, blank=False)
     email = models.EmailField(verbose_name='Email Address', max_length=250, blank=False)
-    country = models.ForeignKey('l10n.Country', verbose_name='Country of delivery', blank=False)
+    country = models.ForeignKey('l10n.Country', verbose_name='Country of delivery', blank=False, on_delete=models.CASCADE)
     justification = models.TextField( verbose_name=_("Justification"), blank=False, help_text=_("Please tell us a few words about yourself/your organisation and provide a short justification explaining how you intend to use the products.") )
 
     accepted = models.NullBooleanField(verbose_name='Accepted')

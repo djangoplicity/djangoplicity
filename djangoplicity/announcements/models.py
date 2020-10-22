@@ -89,7 +89,7 @@ class WebUpdate( ArchiveModel, models.Model ):
     title = archive_fields.TitleField()
     link = archive_fields.URLField( blank=True )
     description = archive_fields.DescriptionField( blank=True )
-    type = models.ForeignKey( WebUpdateType )
+    type = models.ForeignKey( WebUpdateType , on_delete=models.CASCADE)
 
     class Archive:
         class Meta:
@@ -150,7 +150,7 @@ class Announcement( ArchiveModel, TranslationModel ):
     related_comparisons = TranslationManyToManyField(ImageComparison,
         through='AnnouncementImageComparison', only_sources=True)
 
-    announcement_type = TranslationForeignKey( AnnouncementType, blank=True, null=True, default=None )
+    announcement_type = TranslationForeignKey( AnnouncementType, blank=True, null=True, default=None, on_delete=models.CASCADE)
 
     def get_embargo_login(self):
         return settings.ARCHIVE_EMBARGO_LOGIN
@@ -331,13 +331,13 @@ class RelatedAnnouncement( models.Model  ):
     subclassed and used as a many-to-many intermediary model::
 
         class RelatedAnnouncementImage( RelatedRAnnouncement ):
-            archive_item = models.ForeignKey( Image, verbose_name=('Image') )
+            archive_item = models.ForeignKey( Image, verbose_name=('Image'), on_delete=models.CASCADE )
 
             class Meta:
                 verbose_name = _('...')
     """
 
-    announcement = TranslationForeignKey( Announcement, verbose_name=_('Related announcement') )
+    announcement = TranslationForeignKey( Announcement, verbose_name=_('Related announcement'), on_delete=models.CASCADE)
     # The announcement to link with another archive item.
 
     order = models.PositiveSmallIntegerField( blank=True, null=True )
@@ -362,12 +362,12 @@ class RelatedAnnouncement( models.Model  ):
 
 class AnnouncementImage( RelatedAnnouncement ):
     """ Images related to an announcement. """
-    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Image') )
+    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Image'), on_delete=models.CASCADE )
 
 
 class AnnouncementVideo( RelatedAnnouncement ):
     """ Videos related to an announcement. """
-    archive_item = TranslationForeignKey( Video, verbose_name=_('Related Video') )
+    archive_item = TranslationForeignKey( Video, verbose_name=_('Related Video'), on_delete=models.CASCADE )
 
 
 class AnnouncementImageComparison(RelatedAnnouncement):
