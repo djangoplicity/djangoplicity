@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='report',
             name='group',
-            field=models.ForeignKey(to='reports.ReportGroup'),
+            field=models.ForeignKey(to='reports.ReportGroup', on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
     ]

@@ -338,7 +338,7 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=False, db_index=True, verbose_name='Published')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('conference', models.ForeignKey(to='products.Conference')),
+                ('conference', models.ForeignKey(to='products.Conference', on_delete=models.deletion.CASCADE)),
                 ('product', models.OneToOneField(null=True, blank=True, to='product.Product')),
             ],
             options={
@@ -906,7 +906,7 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=False, db_index=True, verbose_name='Published')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image')),
+                ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image', on_delete=models.deletion.CASCADE)),
                 ('product', models.OneToOneField(null=True, blank=True, to='product.Product')),
             ],
             options={
@@ -1433,7 +1433,7 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=False, db_index=True, verbose_name='Published')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('image', models.ForeignKey(blank=True, to='media.Image', null=True)),
+                ('image', models.ForeignKey(blank=True, to='media.Image', null=True, on_delete=models.deletion.CASCADE)),
             ],
             options={
                 'ordering': ['-release_date'],
@@ -1443,13 +1443,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='onlineart',
             name='artist',
-            field=models.ForeignKey(to='products.OnlineArtAuthor'),
+            field=models.ForeignKey(to='products.OnlineArtAuthor', on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='exhibition',
             name='group',
-            field=models.ForeignKey(blank=True, to='products.ExhibitionGroup', null=True),
+            field=models.ForeignKey(blank=True, to='products.ExhibitionGroup', null=True, on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
     ]

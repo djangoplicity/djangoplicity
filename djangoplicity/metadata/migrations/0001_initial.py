@@ -136,19 +136,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='category',
             name='subject_category',
-            field=models.ForeignKey(blank=True, to='metadata.TaxonomyHierarchy', null=True),
+            field=models.ForeignKey(blank=True, to='metadata.TaxonomyHierarchy', null=True, on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='category',
             name='subject_name',
-            field=models.ForeignKey(blank=True, to='metadata.SubjectName', null=True),
+            field=models.ForeignKey(blank=True, to='metadata.SubjectName', null=True, on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='category',
             name='type',
-            field=models.ForeignKey(help_text='Defines to which archive this query applies.', to='metadata.CategoryType'),
+            field=models.ForeignKey(help_text='Defines to which archive this query applies.', to='metadata.CategoryType', on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(

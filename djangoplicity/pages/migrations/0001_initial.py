@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('url', models.CharField(help_text="Example: '/about/contact/'. Make sure to have leading and trailing slashes. Good and descriptive URLs are important for good user experience and search engine ranking.", unique=True, max_length=200, verbose_name='URL', db_index=True)),
-                ('page', models.ForeignKey(to='pages.Page', null=True)),
+                ('page', models.ForeignKey(to='pages.Page', null=True, on_delete=models.deletion.CASCADE)),
             ],
             options={
             },
@@ -104,19 +104,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='page',
             name='section',
-            field=models.ForeignKey(default=1, to='pages.Section', help_text='Determines e.g. which templates to use for rendering the template.'),
+            field=models.ForeignKey(default=1, to='pages.Section', help_text='Determines e.g. which templates to use for rendering the template.', on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='page',
             name='source',
-            field=djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='pages.Page', null=True, only_sources=False),
+            field=djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='pages.Page', null=True, only_sources=False, on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='embeddedpagekey',
             name='page',
-            field=models.ForeignKey(blank=True, to='pages.Page', help_text='Select page that you want to use for the specific key. Note, only pages marked as embedded pages can be selected.', null=True),
+            field=models.ForeignKey(blank=True, to='pages.Page', help_text='Select page that you want to use for the specific key. Note, only pages marked as embedded pages can be selected.', null=True, on_delete=models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.CreateModel(

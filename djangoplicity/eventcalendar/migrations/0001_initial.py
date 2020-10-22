@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255)),
                 ('description', models.TextField(blank=True)),
                 ('opengraph_image', models.CharField(help_text="Example: 'http://www.eso.org/public/archives/imagecomparisons/newsfeature/potw1413a.jpg'. If given: full path to an image that will be used when sharing the page on social media. Must be larger than 200x200px and smaller than 5MB.", max_length=250, verbose_name='OpenGraph Image', blank=True)),
-                ('source', djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='eventcalendar.EventType', null=True, only_sources=False)),
+                ('source', djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='eventcalendar.EventType', null=True, only_sources=False, on_delete=models.deletion.CASCADE)),
             ],
             options={
                 'ordering': ['name'],
