@@ -10,7 +10,7 @@ from djangoplicity.products.models import Application, Handout, MiniSite, PaperM
 import djangoplicity.products.options
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.urls import NoReverseMatch
 else:
     from django.core.urlresolvers import NoReverseMatch

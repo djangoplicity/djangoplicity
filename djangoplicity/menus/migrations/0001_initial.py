@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -37,8 +38,8 @@ class Migration(migrations.Migration):
                 ('rght', models.PositiveIntegerField(editable=False, db_index=True)),
                 ('tree_id', models.PositiveIntegerField(editable=False, db_index=True)),
                 ('level', models.PositiveIntegerField(editable=False, db_index=True)),
-                ('menu', models.ForeignKey(blank=True, to='menus.Menu', help_text='This field only have effect for the root menu item', null=True, on_delete=models.deletion.CASCADE)),
-                ('parent', models.ForeignKey(related_name='children', blank=True, to='menus.MenuItem', help_text='Moving a node to a new parent, will place it as the last node. When moving a menu item, all of it sub-items will be moved as well.', null=True, on_delete=models.deletion.CASCADE)),
+                ('menu', models.ForeignKey(blank=True, to='menus.Menu', help_text='This field only have effect for the root menu item', null=True, on_delete=django.db.models.deletion.CASCADE)),
+                ('parent', models.ForeignKey(related_name='children', blank=True, to='menus.MenuItem', help_text='Moving a node to a new parent, will place it as the last node. When moving a menu item, all of it sub-items will be moved as well.', null=True, on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'ordering': ['tree_id', 'lft'],

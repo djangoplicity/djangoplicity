@@ -27,7 +27,7 @@ from satchmo_store.shop.views.home import home
 satchmo_category_view = views.category_view
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.urls import reverse
 else:
     from django.core.urlresolvers import reverse

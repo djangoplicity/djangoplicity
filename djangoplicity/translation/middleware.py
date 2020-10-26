@@ -83,7 +83,7 @@ from djangoplicity.translation.models import get_language_from_path, \
         get_path_for_language, get_querystring_from_request
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.urls import resolve, Resolver404
 else:
     from django.core.urlresolvers import resolve, Resolver404

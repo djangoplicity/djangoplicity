@@ -45,7 +45,7 @@ from djangoplicity.translation.models import TranslationModel
 
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.urls import reverse, NoReverseMatch
 else:
     from django.core.urlresolvers import NoReverseMatch, reverse

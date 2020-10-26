@@ -25,7 +25,7 @@ from djangoplicity.announcements.options import AnnouncementOptions, WebUpdateOp
 from test_project.admin import admin_site, adminlogs_site
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.contrib.auth.views import LoginView as login
 else:
     from django.contrib.auth.views import login

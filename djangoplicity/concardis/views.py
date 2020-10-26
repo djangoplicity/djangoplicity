@@ -24,7 +24,7 @@ from satchmo_utils.views import bad_or_missing
 from .utils import get_params, get_payment_status, sha1_sign
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.urls import reverse
 else:
     from django.core.urlresolvers import reverse

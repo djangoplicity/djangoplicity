@@ -21,7 +21,7 @@ from datetime import time
 __all__ = ('categories', 'admin_edit', 'admin_edit_for_site', 'admin_add_translation', 'published', 'featured', 'boolean_property', 'priority', 'release_date', 'paper_size', 'link_field')
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.urls import NoReverseMatch, reverse
 else:
     from django.core.urlresolvers import NoReverseMatch, reverse

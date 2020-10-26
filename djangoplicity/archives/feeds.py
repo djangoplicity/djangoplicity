@@ -23,7 +23,7 @@ from djangoplicity.feeds.feeds import DjangoplicityFeed
 FORMATS = feedsconf.get_formats() if feedsconf.get_formats() else {}
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.urls import reverse
 else:
     from django.core.urlresolvers import reverse
