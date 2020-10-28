@@ -42,7 +42,7 @@ from djangoplicity.media.models import Image
 from djangoplicity.translation.models import TranslationModel
 
 import django
-if django.VERSION >= (2, 2):
+if django.VERSION >= (2, 0):
     from django.urls import reverse
 else:
     from django.core.urlresolvers import reverse
