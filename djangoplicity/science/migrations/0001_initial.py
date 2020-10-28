@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('main_visual', models.BooleanField(default=False)),
                 ('override_id', models.SlugField(null=True, verbose_name='Override ID', blank=True)),
                 ('hide', models.BooleanField(default=False, verbose_name='Hide on kiosk')),
-                ('archive_item', models.ForeignKey(verbose_name='Related Image', to='media.Image', on_delete=django.db.deletion.CASCADE)),
+                ('archive_item', models.ForeignKey(verbose_name='Related Image', to='media.Image', on_delete=django.db.models.deletion.CASCADE)),
                 ('science_announcement', models.ForeignKey(verbose_name='Related science announcement', to='science.ScienceAnnouncement', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
