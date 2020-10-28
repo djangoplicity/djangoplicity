@@ -65,9 +65,9 @@ class PictureOfTheWeek( ArchiveModel, TranslationModel ):
     set will be propagate to the image/video model.
     """
     id = archive_fields.IdField()
-    image = TranslationForeignKey( Image, blank=True, null=True, only_sources=False )
-    video = TranslationForeignKey( Video, blank=True, null=True, only_sources=False )
-    comparison = models.ForeignKey( ImageComparison, blank=True, null=True )
+    image = TranslationForeignKey( Image, blank=True, null=True, only_sources=False, on_delete=models.CASCADE )
+    video = TranslationForeignKey( Video, blank=True, null=True, only_sources=False, on_delete=models.CASCADE )
+    comparison = models.ForeignKey( ImageComparison, blank=True, null=True, on_delete=models.CASCADE )
     auto_update = True
 
     def visual(self):

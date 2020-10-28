@@ -159,7 +159,7 @@ class TranslationModel( models.Model ):
     # Fields
     #
     lang = LanguageField( verbose_name=_( 'Language' ), max_length=7, default=_get_defaut_lang, db_index=True )
-    source = TranslationForeignKey( 'self', verbose_name=_('Translation source'), related_name='translations', null=True, blank=True, only_sources=False, limit_choices_to={ 'source__isnull': True } )
+    source = TranslationForeignKey( 'self', verbose_name=_('Translation source'), related_name='translations', null=True, blank=True, only_sources=False, limit_choices_to={ 'source__isnull': True }, on_delete=models.CASCADE )
     translation_ready = models.BooleanField(default=False, help_text=_('When you check this box and save this translation, an automatic notification email will be sent.'))
 
     #

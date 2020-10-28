@@ -38,10 +38,15 @@ from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse_lazy
 from django.views.generic import FormView
 
 from djangoplicity.media.models import Image
+
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse_lazy
+else:
+    from django.core.urlresolvers import reverse_lazy
 
 
 class MultiFileInput(forms.FileInput):

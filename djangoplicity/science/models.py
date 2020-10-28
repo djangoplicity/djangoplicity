@@ -31,7 +31,6 @@
 
 from builtins import str
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.utils.encoding import python_2_unicode_compatible
@@ -42,6 +41,11 @@ from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.media.models import Image
 from djangoplicity.translation.models import TranslationModel
 
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 @python_2_unicode_compatible
 class ScienceAnnouncement(ArchiveModel, TranslationModel):
@@ -119,13 +123,13 @@ class RelatedScienceAnnouncement(models.Model):
     a many-to-many intermediary model::
 
         class RelatedAnnouncementScienceImage(RelatedRAnnouncement):
-            archive_item = models.ForeignKey(Image, verbose_name=('Image'))
+            archive_item = models.ForeignKey(Image, verbose_name=('Image'), on_delete=models.CASCADE)
 
             class Meta:
                 verbose_name = _('...')
     """
 
-    science_announcement = models.ForeignKey(ScienceAnnouncement, verbose_name=_('Related science announcement'))
+    science_announcement = models.ForeignKey(ScienceAnnouncement, verbose_name=_('Related science announcement'), on_delete=models.CASCADE)
     # The announcement to link with another archive item.
 
     order = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -150,4 +154,4 @@ class RelatedScienceAnnouncement(models.Model):
 
 class ScienceAnnouncementImage(RelatedScienceAnnouncement):
     """ Images related to an announcement. """
-    archive_item = models.ForeignKey(Image, verbose_name=_('Related Image'))
+    archive_item = models.ForeignKey(Image, verbose_name=_('Related Image'), on_delete=models.CASCADE)

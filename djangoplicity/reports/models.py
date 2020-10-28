@@ -6,10 +6,14 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 from django.db import models
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import python_2_unicode_compatible
 
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 @python_2_unicode_compatible
 class ReportGroup( models.Model ):
@@ -46,7 +50,7 @@ class Report( models.Model ):
     #""" Whether the report generates an e-mail list """
 
     # Group of report
-    group = models.ForeignKey( ReportGroup )
+    group = models.ForeignKey( ReportGroup, on_delete=models.CASCADE)
 
     # Whether the report can be used for mass mailing
     is_mailable = models.BooleanField(default=False)

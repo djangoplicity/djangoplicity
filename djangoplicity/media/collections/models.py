@@ -85,7 +85,7 @@ class ImageCollection( models.Model ):
 
 @python_2_unicode_compatible
 class ImageType( models.Model ):
-    collection = models.ForeignKey( ImageCollection )
+    collection = models.ForeignKey( ImageCollection, on_delete=models.CASCADE)
     type = models.CharField( max_length=12, choices=consts.TYPE_CHOICES )
 
     def __str__( self ):

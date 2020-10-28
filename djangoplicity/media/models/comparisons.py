@@ -65,8 +65,8 @@ class ImageComparison( ArchiveModel, TranslationModel ):
     description = metadatafields.AVMDescriptionField()
     credit = metadatafields.AVMCreditField( default=DEFAULT_CREDIT_FUNC )
 
-    image_before = TranslationForeignKey( Image, related_name='imagecomparison_before_set', null=True )
-    image_after = TranslationForeignKey( Image, related_name='imagecomparison_after_set', null=True )
+    image_before = TranslationForeignKey( Image, related_name='imagecomparison_before_set', null=True, on_delete=models.CASCADE )
+    image_after = TranslationForeignKey( Image, related_name='imagecomparison_after_set', null=True, on_delete=models.CASCADE )
 
     def __init__( self, *args, **kwargs ):
         super( ImageComparison, self ).__init__( *args, **kwargs )

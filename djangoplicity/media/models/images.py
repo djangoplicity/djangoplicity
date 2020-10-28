@@ -41,7 +41,6 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import signals, Q
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
@@ -76,6 +75,11 @@ from djangoplicity.translation.models import TranslationModel, \
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
 
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 # #########################################################################
 # Colour
@@ -873,8 +877,8 @@ class ImageColor( models.Model ):
     """
     Stores a dominant colour for an image (computed by Color model).
     """
-    color = models.ForeignKey( Color )
-    image = TranslationForeignKey( Image, only_sources=True )
+    color = models.ForeignKey( Color, on_delete=models.CASCADE )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
     ratio = models.FloatField()
 
     def __str__( self ):
@@ -888,7 +892,7 @@ class ImageExposure( Exposure ):
     """
     Links the exposure model with images
     """
-    image = TranslationForeignKey( Image, only_sources=True )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _(u'Exposure')
@@ -899,7 +903,7 @@ class ImageContact( Contact ):
     """
     Links contacts with images
     """
-    image = TranslationForeignKey( Image, only_sources=True )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _(u'Contact')

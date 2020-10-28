@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import djangoplicity.archives.contrib.satchmo.freeorder.models
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -25,7 +26,7 @@ class Migration(migrations.Migration):
                 ('reject_reason', models.CharField(blank=True, max_length=255, choices=[(b'NOSTOCK', b'The product(s) is/are not available on stock.'), (b'UNQUALIFIED', b'You did not qualify for receiving free orders at this occasion.'), (b'INSUFFICIENT', b'Your justification is not sufficient to evaluate the request.'), (b'AMOUNT', b'Your order was above our maximum of 180 EUR.'), (b'OLDCUSTOMER', b'You already received a free order during the last six months'), (b'ESONONLY', b'Unfortunately we no longer ship free orders outside ESON countries: http://www.eso.org/public/outreach/eson/'), (b'EUROONLY', b'Unfortunately we no longer ship free orders outside Europe.')])),
                 ('submitted', models.DateTimeField()),
                 ('reviewed', models.DateTimeField(help_text=b'Updated automatically.', null=True, blank=True)),
-                ('country', models.ForeignKey(verbose_name=b'Country of delivery', to='l10n.Country')),
+                ('country', models.ForeignKey(verbose_name=b'Country of delivery', to='l10n.Country', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'free order application',

@@ -646,7 +646,7 @@ class VideoSubtitle( ArchiveModel, models.Model ):
     Model for storing subtitles for videos.
     """
     id = archive_fields.IdField()
-    video = TranslationForeignKey( Video )
+    video = TranslationForeignKey( Video, on_delete=models.CASCADE )
     lang = models.CharField( verbose_name=_( 'Language' ), max_length=7, choices=SUBTITLE_LANGUAGES, default=settings.LANGUAGE_CODE, db_index=True )
 
     def save( self, **kwargs ):
@@ -760,7 +760,7 @@ class VideoAudioTrack( ArchiveModel, models.Model ):
     Model for storing Audio tracks for videos.
     """
     id = archive_fields.IdField()
-    video = TranslationForeignKey( Video )
+    video = TranslationForeignKey( Video, on_delete=models.CASCADE )
     lang = models.CharField( verbose_name=_( 'Language' ), max_length=7, choices=SUBTITLE_LANGUAGES, default=settings.LANGUAGE_CODE, db_index=True )
 
     def save( self, **kwargs ):
@@ -806,7 +806,7 @@ class VideoBroadcastAudioTrack( ArchiveModel, models.Model ):
     Model for storing Broadcast Audio tracks for videos.
     """
     id = archive_fields.IdField()
-    video = TranslationForeignKey(Video)
+    video = TranslationForeignKey(Video, on_delete=models.CASCADE)
     lang = models.CharField(verbose_name=_('Language'), max_length=7, choices=SUBTITLE_LANGUAGES, default=settings.LANGUAGE_CODE, db_index=True)
     type = models.CharField(verbose_name=_('Audio track type'), max_length=25, choices=SPLIT_AUDIO_TYPES)
 
@@ -853,7 +853,7 @@ class VideoScript( ArchiveModel, models.Model ):
     Model for storing scripts for videos.
     """
     id = archive_fields.IdField()
-    video = TranslationForeignKey(Video)
+    video = TranslationForeignKey(Video, on_delete=models.CASCADE)
     lang = models.CharField(verbose_name=_('Language'), max_length=7, choices=SUBTITLE_LANGUAGES, default=settings.LANGUAGE_CODE, db_index=True)
     # type = models.CharField(verbose_name=_('Audio track type'), max_length=25, choices=SPLIT_AUDIO_TYPES)
 
@@ -898,7 +898,7 @@ class VideoContact( Contact ):
     """
     Contact information for a video
     """
-    video = TranslationForeignKey( Video )
+    video = TranslationForeignKey( Video, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _( u'Contact' )

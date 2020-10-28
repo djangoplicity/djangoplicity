@@ -50,10 +50,10 @@ class AdminComment( models.Model ):
     comment = models.TextField( blank=True )
 
     # User who created the comment - is set automatically by admin form
-    user = models.ForeignKey( User, null=True, blank=True, editable=False )
+    user = models.ForeignKey( User, null=True, blank=True, editable=False, on_delete=models.CASCADE)
 
     # Content type of generic relation - see content types framework
-    content_type = models.ForeignKey( ContentType )
+    content_type = models.ForeignKey( ContentType, on_delete=models.CASCADE)
 
     # Object id of generic relation (using slug to allow relations to models with Char PK) - see content types framework
     object_id = models.SlugField()
