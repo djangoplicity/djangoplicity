@@ -55,7 +55,7 @@ from djangoplicity.media.consts import DEFAULT_CREATOR_FUNC, DEFAULT_CREATOR_URL
     DEFAULT_CREDIT_FUNC, DEFAULT_CONTACT_ADDRESS_FUNC, DEFAULT_CONTACT_CITY_FUNC, \
     DEFAULT_CONTACT_COUNTRY_FUNC, DEFAULT_CONTACT_POSTAL_CODE_FUNC, \
     DEFAULT_CONTACT_STATE_PROVINCE_FUNC, DEFAULT_PUBLISHER_FUNC, DEFAULT_PUBLISHER_ID_FUNC, \
-    DEFAULT_RIGHTS_FUNC, SPLIT_AUDIO_TYPES
+    DEFAULT_RIGHTS_FUNC, SPLIT_AUDIO_TYPES, DEFAULT_VIDEOS_FRAME_RATE_FUNC
 from djangoplicity.media.tasks import video_extras, update_youtube_caption, \
     update_youtube_snippet
 from djangoplicity.media.youtube import youtube_configured, \
@@ -175,7 +175,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
     file_size = metadatafields.AVMFileSize()
     file_bit_depth = None  # TODO: Implement File.BitDepth
 
-    frame_rate = models.PositiveIntegerField(default=25)
+    frame_rate = models.PositiveIntegerField(default=DEFAULT_VIDEOS_FRAME_RATE_FUNC)
 
     # ========================================================================
     # Resource Display Related Fields
