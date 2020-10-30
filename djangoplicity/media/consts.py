@@ -264,12 +264,17 @@ DEFAULT_RIGHTS = settings.DEFAULT_RIGHTS if hasattr( settings, 'DEFAULT_RIGHTS' 
 DEFAULT_PUBLISHER = settings.DEFAULT_PUBLISHER if hasattr( settings, 'DEFAULT_PUBLISHER' ) else None
 DEFAULT_PUBLISHER_ID = settings.DEFAULT_PUBLISHER_ID if hasattr( settings, 'DEFAULT_PUBLISHER_ID' ) else None
 DEFAULT_CREDIT = settings.DEFAULT_CREDIT if hasattr( settings, 'DEFAULT_CREDIT' ) else ''
+DEFAULT_VIDEOS_FRAME_RATE = settings.DEFAULT_VIDEOS_FRAME_RATE if hasattr( settings, 'DEFAULT_VIDEOS_FRAME_RATE' ) else 25
 
 
 # the purpose of these functions is to mask the value change accros projects from django migrations
 
 def DEFAULT_CREATOR_FUNC():
     return DEFAULT_CREATOR
+
+
+def DEFAULT_VIDEOS_FRAME_RATE_FUNC():
+    return DEFAULT_VIDEOS_FRAME_RATE
 
 
 def DEFAULT_CREATOR_URL_FUNC():
