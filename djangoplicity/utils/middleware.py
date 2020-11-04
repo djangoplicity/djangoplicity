@@ -82,7 +82,7 @@ class UserInExceptionMiddleware( object ):
         return response
 
     def process_exception( self, request, exception ):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             request.META['USER'] = request.user.username
             request.META['USER_EMAIL'] = request.user.email
 

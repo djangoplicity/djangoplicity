@@ -161,7 +161,7 @@ class ArchiveOptions(object):
         Determine if the given request is authorized to view embargoed archive items.
         By default any logged in user can login.
         """
-        return request.user.is_authenticated()
+        return request.user.is_authenticated
 
     @staticmethod
     def has_admin_perms( request, obj=None ):
