@@ -123,12 +123,12 @@ class TranslationForwardManyToOneDescriptor(ForwardManyToOneDescriptor, Translat
         elif value is not None:
             if instance._state.db is None:
                 instance._state.db = router.db_for_write(instance.__class__, instance=value)
-            elif value._state.db is None:
+            if value._state.db is None:
                 value._state.db = router.db_for_write(value.__class__, instance=instance)
-            elif value._state.db is not None and instance._state.db is not None:
-                if not router.allow_relation(value, instance):
-                    raise ValueError('Cannot assign "%r": the current database router prevents this relation.' % value)
-
+            if not router.allow_relation(value, instance):
+                raise ValueError('Cannot assign "%r": the current database router prevents this relation.' % value)
+        
+        remote_field = self.field.remote_field
         # If we're setting the value of a OneToOneField to None, we need to clear
         # out the cache on any old related object. Otherwise, deleting the
         # previously-related object will also cause this object to be deleted,
@@ -140,13 +140,13 @@ class TranslationForwardManyToOneDescriptor(ForwardManyToOneDescriptor, Translat
             # populated the cache, then we don't care - we're only accessing
             # the object to invalidate the accessor cache, so there's no
             # need to populate the cache just to expire it again.
-            related = getattr(instance, self.cache_name, None)
+            related = self.field.get_cached_value(instance, default=None)
 
             # If we've got an old related object, we need to clear out its
             # cache. This cache also might not exist if the related object
             # hasn't been accessed yet.
             if related is not None:
-                setattr(related, self.field.remote_field.get_cache_name(), None)
+                remote_field.set_cached_value(related, None)
 
             for lh_field, rh_field in self.field.related_fields:
                 setattr(instance, lh_field.attname, None)
@@ -163,13 +163,13 @@ class TranslationForwardManyToOneDescriptor(ForwardManyToOneDescriptor, Translat
 
         # Set the related instance cache used by __get__ to avoid an SQL query
         # when accessing the attribute we just set.
-        setattr(instance, self.cache_name, value)
+        self.field.set_cached_value(instance, value)
 
         # If this is a one-to-one relation, set the reverse accessor cache on
         # the related object to the current instance to avoid an extra SQL
         # query if it's accessed later on.
-        if value is not None and not self.field.remote_field.multiple:
-            setattr(value, self.field.remote_field.get_cache_name(), instance)
+        if value is not None and not remote_field.multiple:
+            remote_field.set_cached_value(value, instance)
 
         # ADDED
         # If we're not dealing with the source field in a TranslationModel
