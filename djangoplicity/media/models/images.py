@@ -331,8 +331,8 @@ class Exposure( models.Model ):
     The model ensures that each AVM field has the exposures listed in the
     right order, instead of creating semicolon separated fields.
     """
-    facility = metadatafields.AVMFacilityField()
-    instrument = metadatafields.AVMInstrumentField()
+    facility = metadatafields.AVMFacilityField( on_delete=models.CASCADE )
+    instrument = metadatafields.AVMInstrumentField( on_delete=models.CASCADE )
     spectral_color_assignment = metadatafields.AVMSpectralColorAssignmentField()
     spectral_band = metadatafields.AVMSpectralBandField()
     spectral_bandpass = metadatafields.AVMSpectralBandpassField()

@@ -159,9 +159,9 @@ class Migration(migrations.Migration):
                 ('temporal_start_time', djangoplicity.metadata.archives.fields.AVMTemporalStartTimeField(help_text="Start time of the exposure in ISO 8601 format 'yyyy-mm-ddThh:mm' (UT; time portion is optional). One Temporal.StartTime entry per exposure.", null=True, verbose_name='Temporal Start Time', blank=True)),
                 ('temporal_integration_time', djangoplicity.metadata.archives.fields.AVMTemporalIntegrationTimeField(help_text='The exposure time in seconds. One Temporal.IntegrationTime entry per exposure.', max_length=23, null=True, verbose_name='Temporal Integration Time', blank=True)),
                 ('dataset_id', djangoplicity.metadata.archives.fields.AVMDatasetIDField(help_text='Identifier for the source FITS dataset for each exposure in the image. If available, this can be a VO-compliant reference to the dataset [ivo://AuthorityID/ResourceKey]. One DatasetID entry per exposure.', max_length=255, null=True, verbose_name='Dataset ID', blank=True)),
-                ('facility', djangoplicity.metadata.archives.fields.AVMFacilityField(blank=True, to='metadata.Facility', help_text='Telescopes or observatories used for the observations.', null=True, verbose_name='Facility')),
+                ('facility', djangoplicity.metadata.archives.fields.AVMFacilityField(blank=True, to='metadata.Facility', help_text='Telescopes or observatories used for the observations.', null=True, verbose_name='Facility', on_delete=django.db.models.deletion.CASCADE)),
                 ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image', on_delete=django.db.models.deletion.CASCADE)),
-                ('instrument', djangoplicity.metadata.archives.fields.AVMInstrumentField(blank=True, to='metadata.Instrument', help_text='Instrument used to collect the data. One Instrument entry per exposure.', null=True, verbose_name='Instrument')),
+                ('instrument', djangoplicity.metadata.archives.fields.AVMInstrumentField(blank=True, to='metadata.Instrument', help_text='Instrument used to collect the data. One Instrument entry per exposure.', null=True, verbose_name='Instrument', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'Exposure',
