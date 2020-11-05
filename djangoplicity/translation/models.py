@@ -61,8 +61,8 @@ DEFAULT_PREFIX = getattr( settings, 'DEFAULT_PREFIX', "/" )
 LANG_SLUG_RE = re.compile( r"^[-\w]+-(%s)$" % "|".join(LANGUAGE_CODES) )
 
 
-UPDATED_FOR = (1, 11)
-if django.VERSION[:2] != UPDATED_FOR:
+UPDATED_FOR = (2, 2)
+if django.VERSION[:2] > UPDATED_FOR:
     raise ImproperlyConfigured('''
 The current Django version is different than the one djangoplicity.translation
 support: {}.
