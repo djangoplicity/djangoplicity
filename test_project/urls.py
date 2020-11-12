@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^admin/', admin_site.urls, {'extra_context': {'ADMIN_SITE': True}}),
     url(r'^admin/cache/', include(('djangoplicity.cache.urls', 'cache'), namespace='admincache_site')),
     url(r'^admin/history/', include(('djangoplicity.adminhistory.urls', 'history'), namespace='adminhistory_site')),
-    url(r'^admin/system/', include(adminlogs_site.urls), {'extra_context': {'ADMINLOGS_SITE': True}}),
+    url(r'^admin/system/', adminlogs_site.urls, {'extra_context': {'ADMINLOGS_SITE': True}}),
     url(r'^admin/', include('djangoplicity.metadata.wtmlimport.urls'), {'extra_context': {'ADMIN_SITE': True}}),
     url(r'^admin/import/', include('djangoplicity.archives.importer.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
