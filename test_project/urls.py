@@ -32,7 +32,7 @@ else:
 
 urlpatterns = [
     # Djangoplicity Administration
-    url(r'^admin/', include(admin_site.urls), {'extra_context': {'ADMIN_SITE': True}}),
+    url(r'^admin/', admin_site.urls, {'extra_context': {'ADMIN_SITE': True}}),
     url(r'^admin/cache/', include('djangoplicity.cache.urls', namespace="admincache_site", app_name="cache")),
     url(r'^admin/history/', include('djangoplicity.adminhistory.urls', namespace="adminhistory_site", app_name="history")),
     url(r'^admin/system/', include(adminlogs_site.urls), {'extra_context': {'ADMINLOGS_SITE': True}}),
