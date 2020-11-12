@@ -93,7 +93,7 @@ def user_can_edit(user, page):
     {% user_can_edit user page %}
     Returns True if the current user can edit the page
     """
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
 
     # If we don't have any configured PageGroup we assume

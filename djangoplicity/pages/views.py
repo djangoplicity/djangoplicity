@@ -100,7 +100,7 @@ def _authorize_pageview( request, page, no_unpublished=False ):
             raise PageNotFoundError
         # If registration is required for accessing this page, and the user isn't
         # logged in, redirect to the login page.
-        if page.login_required and not request.user.is_authenticated():
+        if page.login_required and not request.user.is_authenticated:
             raise PageAuthorizationError
             # User tests passed
     else:

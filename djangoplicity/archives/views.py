@@ -62,7 +62,7 @@ def _authorize_request( request, options, obj, published=None, next=None ):
 
     staging_rights = options.has_staging_perms( request, obj )
     if not staging_rights:
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseForbidden(render_to_string('403.html', request=request))
         else:
             return redirect_to_login( next=next )
@@ -87,7 +87,7 @@ def _authorize_request_releasedate( request, options, obj, release_date=None, em
         if embargo_date > now:
             staging_rights = options.has_staging_perms( request, obj )
             if not staging_rights:
-                if request.user.is_authenticated():
+                if request.user.is_authenticated:
                     return HttpResponseForbidden(render_to_string('403.html', request=request ))
                 else:
                     return redirect_to_login( next=next )
@@ -97,7 +97,7 @@ def _authorize_request_releasedate( request, options, obj, release_date=None, em
             staging_rights = options.has_staging_perms( request, obj )
             embargo_rights = options.has_embargo_perms( request, obj )
             if not ( staging_rights or embargo_rights ):
-                if request.user.is_authenticated():
+                if request.user.is_authenticated:
                     return HttpResponseForbidden(render_to_string('403.html', request=request ))
                 else:
                     return redirect_to_login( next=next )
@@ -685,7 +685,7 @@ def archive_list( request, model=None, options=None, query_name=None, query=None
     # Authorize view
     #
     if not query.has_permissions( request ):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseForbidden(render_to_string('403.html', request=request ))
         else:
             return redirect_to_login( next=request.get_full_path() )

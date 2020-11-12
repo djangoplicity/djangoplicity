@@ -152,7 +152,7 @@ class EmbargoQuery( ArchiveQuery ):
 
     def has_permissions(self, request):
         """ Hook to determine if a request is allowed to view this query. """
-        return request.user.is_authenticated()
+        return request.user.is_authenticated
 
 
 class StagingQuery( ArchiveQuery ):
