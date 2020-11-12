@@ -66,7 +66,6 @@ from django.utils.functional import curry
 from djangoplicity.translation.related_descriptors import \
     TranslationForwardManyToOneDescriptor, TranslationManyToManyDescriptor, \
     TranslationReverseManyToOneDescriptor
-import django
 
 __all__ = ['TranslationForeignKey', 'TranslationManyToManyField']
 
@@ -81,12 +80,6 @@ class TranslationForeignKey(ForeignKey):
         '''
         self.only_sources = kwargs.pop('only_sources', True)
         super(TranslationForeignKey, self).__init__(*args, **kwargs)
-
-    def set_cached_value(self, instance, value):
-        if django.VERSION >= (2, 2):
-            super(TranslationForeignKey, self).set_cached_value(instance, value)
-        else:
-            setattr(instance, self.get_cache_name(), value)
 
     def deconstruct(self):
         '''
