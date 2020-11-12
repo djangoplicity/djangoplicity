@@ -108,6 +108,7 @@ class TranslationForwardManyToOneDescriptor(ForwardManyToOneDescriptor, Translat
         super(TranslationForwardManyToOneDescriptor, self).__init__(field_with_rel)
 
     def __set__(self, instance, value):
+        # See: https://github.com/djangoplicity/djangoplicity/wiki/Django-2-Upgrades#translationforwardmanytoonedescriptor-object-has-no-attribute-cache_name
         if django.VERSION >= (2, 0):
             '''
             Copied and updated from ForwardManyToOneDescriptor 2.2 (two ADDED sections)
