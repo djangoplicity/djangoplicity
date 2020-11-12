@@ -84,9 +84,9 @@ class TranslationForeignKey(ForeignKey):
 
     def set_cached_value(self, instance, value):
         if django.VERSION >= (2, 2):
-            super(TranslationForeignKey, self).set_cached_value(self, instance, value)
+            super(TranslationForeignKey, self).set_cached_value(instance, value)
         else:
-            setattr(value, self.get_cache_name(), instance)
+            setattr(instance, self.get_cache_name(), value)
 
     def deconstruct(self):
         '''
