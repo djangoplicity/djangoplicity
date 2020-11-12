@@ -95,7 +95,7 @@ def satchmo_admin( shop_site ):
             if new_status not in [x[0] for x in ORDER_STATUS]:
                 return
 
-            username = request.user.username if request.user.is_authenticated() else 'N/A'
+            username = request.user.username if request.user.is_authenticated else 'N/A'
 
             orderids = []
 
