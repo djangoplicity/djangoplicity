@@ -344,8 +344,11 @@ class TranslationManyToManyDescriptor(ManyToManyDescriptor, TranslationDescripto
         Copied from ManyToManyDescriptor.related_manager_cls,
         Replace model._default_manager.__class__ by self.get_manager_base_class(related_model=self.field.remote_field.to)
         '''
+        remote_field = self.field.remote_field
+        related_model = remote_field.model if django.VERSION >= (2, 0) else remote_field.to
+
         return create_forward_many_to_many_manager(
-            self.get_manager_base_class(related_model=self.field.remote_field.to),  # Updated
+            self.get_manager_base_class(related_model=related_model),  # Updated
             self.rel,
             reverse=self.reverse,
         )
