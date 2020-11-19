@@ -395,13 +395,14 @@ def wrap_manager(manager, funcname, get_instance):
     func = getattr(manager, funcname, None)
 
     if func:
-        def wrapper(*objs):
+        # Upgrade to Django 2.2 **kwargs arguments are received and passed because of 'add' function requiring the through_defaults argument
+        def djp_many_related_manager_func_wrapper(*objs, **kwargs):
             if objs:
-                objs = [ get_instance(obj) for obj in objs]
-            return func(*objs)
-        wrapper.alters_data = True
+                objs = [get_instance(obj) for obj in objs]
+            return func(*objs, **kwargs)
+        djp_many_related_manager_func_wrapper.alters_data = True
 
-        setattr(manager, funcname, wrapper)
+        setattr(manager, funcname, djp_many_related_manager_func_wrapper)
     return manager
 
 
