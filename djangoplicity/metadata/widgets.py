@@ -169,7 +169,7 @@ class SubjectCategoryWidget( widgets.TextInput ):
         """
         return js
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         flex = self.generateFlex()
         js = self.generateJS()
         if value is None:

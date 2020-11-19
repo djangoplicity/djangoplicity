@@ -50,7 +50,7 @@ else:
 
 
 class MultiFileInput(forms.FileInput):
-    def render(self, name, value, attrs={}):
+    def render(self, name, value, attrs={}, renderer=None):
         attrs['multiple'] = 'multiple'
         return super(MultiFileInput, self).render(name, None, attrs=attrs)
 
