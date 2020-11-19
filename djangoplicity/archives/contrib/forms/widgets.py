@@ -41,7 +41,7 @@ class PriorityWidget( forms.HiddenInput ):
     def is_hidden(self):
         return False
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if attrs is None:
             attrs = {}
         final_attrs = self.build_attrs(attrs,

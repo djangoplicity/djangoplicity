@@ -40,7 +40,7 @@ class HierarchicalSelect( forms.Widget ):
         # more than once.
         self.choices = list(choices)
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, renderer=None, choices=()):
         if value is None:
             value = ''
         if attrs is None:
@@ -81,7 +81,7 @@ class RelationForeignKeyRawIdWidget(forms.TextInput):
         self.rel = rel
         super(RelationForeignKeyRawIdWidget, self).__init__(attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         related_url = '../../../../../%s/%s/' % (self.rel.to._meta.app_label, self.rel.to._meta.object_name.lower())
         if self.rel.limit_choices_to:
             url = '?' + '&amp;'.join(['%s=%s' % (k, v) for k, v in list(self.rel.limit_choices_to.items())])
@@ -105,7 +105,7 @@ class LinkWidget (forms.TextInput):
             final_attrs.update(attrs)
         super(LinkWidget, self).__init__(attrs=final_attrs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         output = [super(LinkWidget, self).render(name, value, attrs)]
         output.append('<a href="%s" target="_blank"><span class="active selector-add" style="display: inline-block; margin-bottom: -5px; margin-left: 5px;"></span> </a>' %
             (value, ))
@@ -113,7 +113,7 @@ class LinkWidget (forms.TextInput):
 
 
 class BooleanIconDisplayWidget (forms.widgets.CheckboxInput):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if attrs is None:
             attrs = {}
         final_attrs = self.build_attrs(attrs, {'type': 'hidden', 'name': name})
@@ -132,7 +132,7 @@ class BooleanIconDisplayWidget (forms.widgets.CheckboxInput):
 
 class StaticTextWidget (forms.widgets.TextInput):
     """ display text from a field, and use a hidden form to carry its data """
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if attrs is None:
             attrs = {}
         final_attrs = self.build_attrs(attrs, {'type': 'hidden', 'name': name})

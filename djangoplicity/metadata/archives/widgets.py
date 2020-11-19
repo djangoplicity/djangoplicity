@@ -20,7 +20,7 @@ class LabeledTextInput( widgets.TextInput ):
         self.label = label
         super( LabeledTextInput, self ).__init__( attrs=attrs )
 
-    def render( self, name, value, attrs=None ):
+    def render( self, name, value, attrs=None, renderer=None):
         output = super( LabeledTextInput, self ).render( name, value, attrs=attrs )
 
         if self.label:
