@@ -979,7 +979,7 @@ def view_link( urlprefix, translation=False ):
         if translation and obj.is_translation():
             kwargs = { 'lang': obj.lang }
         try:
-            return '<a href="%s">View</a>' % reverse_func( "%s_detail" % urlprefix, args=[obj.source.id if translation and obj.is_translation() else obj.id], **kwargs )
+            return mark_safe('<a href="%s">View</a>' % reverse_func( "%s_detail" % urlprefix, args=[obj.source.id if translation and obj.is_translation() else obj.id], **kwargs ))
         except NoReverseMatch:
             return ''
     f.short_description = _("Link")
