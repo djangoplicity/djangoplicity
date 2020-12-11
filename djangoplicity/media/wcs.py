@@ -54,7 +54,8 @@ def prepare_str( s, html=False ):
         s = s.replace("\n", " ")
         s = s.replace("\r", " ")
         if s:
-            s = BeautifulSoup(s, 'xml').contents[0]
+            a = BeautifulSoup(s, 'xml').contents
+            s = a[0] if len(a) > 0 else ''
     return s.encode('utf8')
 
 
