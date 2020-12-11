@@ -258,11 +258,11 @@ class CategoryQuery( ArchiveQuery ):
         try:
             # First try many to many fields, since there are only normally
             # only few of those.
-            field = filter( lambda x: x.name == name, model._meta.local_many_to_many )[0]
+            field = list(filter( lambda x: x.name == name, model._meta.local_many_to_many ))[0]
         except IndexError:
             # Nothing found so try ForeignKeys
             try:
-                field = filter( lambda x: x.name == name and isinstance(x, ForeignKey), model._meta.local_fields )[0]
+                field = list(filter( lambda x: x.name == name and isinstance(x, ForeignKey), model._meta.local_fields ))[0]
             except IndexError:
                 raise ImproperlyConfigured( 'Relation field does not exist on archive model.' )
 
