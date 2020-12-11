@@ -266,8 +266,12 @@ class CategoryQuery( ArchiveQuery ):
             except IndexError:
                 raise ImproperlyConfigured( 'Relation field does not exist on archive model.' )
 
-        # Both ForeignKey and ManyToManyField defines rel.to
-        return field.rel.to
+        # Both ForeignKey and ManyToManyField defines rel.to for django 1.11 and remote_field.model for django 2+
+        import django
+        if django.VERSION >= (2, 0):
+            return field.remote_field.model
+        else:
+            return field.rel.to
 
     def queryset( self, model, options, request, stringparam=None, **kwargs ):
         if not stringparam:
