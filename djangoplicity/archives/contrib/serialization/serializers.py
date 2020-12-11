@@ -199,7 +199,7 @@ class XMPEmitter( Emitter ):
             from libavm import AVMMeta
             avm = AVMMeta()
             avm_enabled = True
-        except:
+        except ImportError:
             avm = {}
             avm_enabled = False
 
