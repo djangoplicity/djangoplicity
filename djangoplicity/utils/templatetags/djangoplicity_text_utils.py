@@ -30,7 +30,7 @@ def remove_html_tags(value):
     Remove all HTML tags, convert HTML entities into
     unicode characters and strip leading/trailing whitespace.
     """
-    return str( BeautifulSoup( strip_tags( value ), 'xml') ).strip()
+    return strip_tags(value).strip()
 
 
 def _remove_bold_italic( text ):
