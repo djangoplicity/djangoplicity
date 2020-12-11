@@ -9,7 +9,7 @@ from builtins import str
 from django import template
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import stringfilter
-from bs4 import BeautifulSoup, BeautifulStoneSoup
+from bs4 import BeautifulSoup
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
@@ -30,7 +30,7 @@ def remove_html_tags(value):
     Remove all HTML tags, convert HTML entities into
     unicode characters and strip leading/trailing whitespace.
     """
-    return str( BeautifulStoneSoup( strip_tags( value ), convertEntities=BeautifulStoneSoup.HTML_ENTITIES ) ).strip()
+    return strip_tags(value).strip()
 
 
 def _remove_bold_italic( text ):

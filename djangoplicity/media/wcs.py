@@ -33,7 +33,7 @@ from __future__ import division
 from future import standard_library
 standard_library.install_aliases()
 from past.utils import old_div
-from bs4 import BeautifulStoneSoup
+from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils.html import strip_tags
@@ -54,7 +54,8 @@ def prepare_str( s, html=False ):
         s = s.replace("\n", " ")
         s = s.replace("\r", " ")
         if s:
-            s = BeautifulStoneSoup( s, convertEntities=BeautifulStoneSoup.HTML_ENTITIES ).contents[0]
+            a = BeautifulSoup(s, 'xml').contents
+            s = a[0] if len(a) > 0 else ''
     return s.encode('utf8')
 
 

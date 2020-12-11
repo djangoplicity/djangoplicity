@@ -34,7 +34,6 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import zip
 from builtins import str
-from bs4 import BeautifulStoneSoup
 from bs4 import BeautifulSoup
 from djangoplicity.pages.models import Page
 from django.contrib.redirects.models import Redirect
@@ -164,7 +163,7 @@ class HTMLPageDocument( PageDocument ):
         return "".join([str(x) for x in s.contents])
 
     def convert_entities(self, s):
-        return self.soup2str(BeautifulStoneSoup( s, convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
+        return self.soup2str(BeautifulSoup(s, 'xml'))
 
     #
     # Parser
