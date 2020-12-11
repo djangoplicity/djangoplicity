@@ -45,7 +45,7 @@ setup(
         'pika',
         'openpyxl',
         'django-tinymce4-lite == 1.7.2',
-        'libavm @ git+https://github.com/djangoplicity/python-avm-library.git@upgrade/python3#subdirectory=libavm'
+        'python-avm-library @ git+https://github.com/djangoplicity/python-avm-library.git@upgrade/python3#subdirectory=libavm'
     ],
     # metadata for upload to PyPI
     author='European Southern Observatory',
