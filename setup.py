@@ -44,9 +44,7 @@ setup(
         'pika',
         'openpyxl',
         'django-tinymce4-lite == 1.7.2',
-    ],
-    dependency_links=[
-        'https://github.com/esoobservatory/python-avm-library/tarball/master#egg=python-avm-library-1.0b3',
+        'python-avm-library @ git+https://github.com/esoobservatory/python-avm-library.git@master#subdirectory=libavm'
     ],
     # metadata for upload to PyPI
     author='European Southern Observatory',
