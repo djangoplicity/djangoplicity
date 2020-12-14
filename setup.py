@@ -40,7 +40,7 @@ setup(
         'requests',
         'ndg-httpsclient',  # Extra for requests
         'setuptools',
-        'Wand == 0.4.4',
+        'Wand == 0.6.5',
         'piexif',
         'pika',
         'openpyxl',
