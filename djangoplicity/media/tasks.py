@@ -285,9 +285,9 @@ def write_metadata(image_id, formats, cdn_sync=True):
     """
     Celery task for writing AVM metadata to file.
     """
-    if settings.SITE_ENVIRONMENT != 'prod':
-        logger.info('%s only runs on a production system', write_metadata.__name__)
-        return
+    # if settings.SITE_ENVIRONMENT != 'prod':
+    #    logger.info('%s only runs on a production system', write_metadata.__name__)
+    #    return
 
     # Imports
     from djangoplicity.media.models import Image
@@ -334,7 +334,9 @@ def write_metadata(image_id, formats, cdn_sync=True):
         logger.debug("Generated XMP for image %s" % image_id)
 
         # Write AVM to file
-        avm_to_file(filepath, avm.data, replace=False)
+        result = avm_to_file(filepath, avm.data, replace=False)
+        if not result:
+            raise Exception('There was an error while writing AVM to file')
         logger.info("Wrote AVM for image %s to %s" % (image_id, filepath))
 
         # Write custom EXIF Camera/Make to mark the image as a 360° pano

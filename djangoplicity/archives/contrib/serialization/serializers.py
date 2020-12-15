@@ -195,6 +195,8 @@ class XMPEmitter( Emitter ):
         pass
 
     def emit( self, serialization, type='str' ):
+        import sys
+        
         try:
             from libavm import AVMMeta
             avm = AVMMeta()
@@ -209,6 +211,9 @@ class XMPEmitter( Emitter ):
 
         for k, v in list(datadict.items()):
             try:
+                if sys.version_info[0] >= 3:
+                    if isinstance(v, bytes):
+                        v = v.decode()
                 avm[k] = v
             except KeyError:
                 # Skip custom fields in serializer not defined in AVM
