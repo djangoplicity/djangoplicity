@@ -163,7 +163,8 @@ class HTMLPageDocument( PageDocument ):
         return "".join([str(x) for x in s.contents])
 
     def convert_entities(self, s):
-        return self.soup2str(BeautifulSoup(s, 'xml'))
+        from djangoplicity.utils.html_cleanup import convert_html_entities
+        return self.soup2str(convert_html_entities(s))
 
     #
     # Parser
