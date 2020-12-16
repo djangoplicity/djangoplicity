@@ -162,7 +162,17 @@ class TaggingStatusExcludeListFilter(admin.SimpleListFilter):
         human-readable name for the option that will appear
         in the right sidebar.
         """
-        return [(tagging_status.slug, tagging_status.name) for tagging_status in TaggingStatus.objects.all()]
+        tagging = [(tagging_status.slug, tagging_status.name) for tagging_status in TaggingStatus.objects.all()]
+        # Mixed tagging statuses
+        try:
+            coords = TaggingStatus.objects.get(slug='coords')
+            coords_no = TaggingStatus.objects.get(slug='coords_no')
+            mixed_slug = '{},{}'.format(coords.slug, coords_no.slug)
+            mixed_name = '{} & {}'.format(coords.name, coords_no.name)
+            tagging.append((mixed_slug, mixed_name,))
+        except TaggingStatus.DoesNotExist:
+            pass
+        return tagging
 
     def queryset(self, request, queryset):
         """
@@ -170,8 +180,12 @@ class TaggingStatusExcludeListFilter(admin.SimpleListFilter):
         provided in the query string and retrievable via
         `self.value()`.
         """
-        if self.value() is not None:
-            return queryset.exclude(tagging_status__slug=self.value())
+        value = self.value()
+        if value is not None:
+            # Multiple tags separated by commas
+            if ',' in value:
+                return queryset.exclude(tagging_status__slug__in=value.split(','))
+            return queryset.exclude(tagging_status__slug=value)
 
 
 class MissingExposureFilter(admin.SimpleListFilter):
