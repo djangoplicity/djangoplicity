@@ -11,4 +11,4 @@ class PipelineManifestStorage(PipelineMixin, ManifestStaticFilesStorage):
     (which can happen during deployment).
     To prevent that we provide this storage based on ManifestStaticFilesStorage
     '''
-    pass
+    manifest_strict = False
