@@ -336,7 +336,7 @@ def write_metadata(image_id, formats, cdn_sync=True):
         # Write AVM to file
         result = avm_to_file(filepath, avm.data, replace=False)
         if not result:
-            raise Exception('There was an error while writing AVM to file')
+            raise Exception('There was an error while writing AVM for image %s to file %s' % (image_id, filepath))
         logger.info("Wrote AVM for image %s to %s" % (image_id, filepath))
 
         # Write custom EXIF Camera/Make to mark the image as a 360° pano
