@@ -426,7 +426,8 @@ def video_embed_subtitles( video_id, resource_name, sendtask_callback=None, send
 
     # The cache key consists of the task name and the MD5 digest
     # of the video id and format
-    fmt_digest = md5('%s%s' % (video_id, resource_name)).hexdigest()
+    to_hash = str('%s%s' % (video_id, resource_name)).encode("utf-8")
+    fmt_digest = md5(to_hash).hexdigest()
     lock_id = "video_embed_subtitles-lock-%s" % fmt_digest
 
     # cache.add fails if if the key already exists
