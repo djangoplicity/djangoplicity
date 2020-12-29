@@ -206,7 +206,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
                 # Use midentify to fetch a dict of key/values about the file
                 args = ['/usr/bin/mplayer', '-noconfig', 'all', '-cache-min', '0', '-vo', 'null', '-ao', 'null', '-frames', '0', '-identify', path]
                 try:
-                    output = Popen(args, stdout=PIPE, stderr=PIPE).communicate()[0].split('\n')
+                    output = Popen(args, stdout=PIPE, stderr=PIPE).communicate()[0].decode('utf-8').split('\n')
                 except OSError as e:
                     logger.error('Can\'t run mplayer identify command: "%s"' % ' '.join(args))
                     raise e
