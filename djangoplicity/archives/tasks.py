@@ -285,7 +285,7 @@ def compute_checksums(app_label, module_name, pk, min_size=104857600,
 
         h = hashlib.sha256()
 
-        with open(resource.path) as f:
+        with open(resource.path, 'rb') as f:
             while True:
                 buf = f.read(2**20)  # Read 1MB at a time
                 if not buf:
