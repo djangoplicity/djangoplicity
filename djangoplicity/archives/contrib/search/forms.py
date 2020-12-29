@@ -120,7 +120,7 @@ class AdvancedSearchForm( object ):
 
         # take fields from options class, and sort them correctly
         fields = [(field_name, obj) for field_name, obj in options.AdvancedSearch.__dict__.items() if isinstance(obj, formsFields.Field)]
-        fields.sort(lambda x, y: cmp(x[1].creation_counter, y[1].creation_counter))
+        fields.sort(key=lambda field: field[1].creation_counter)
 
         for dummy_name, field in fields:
             if hasattr(field, 'choices'):
