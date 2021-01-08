@@ -42,10 +42,10 @@ class FormatTokenGenerator( object ):
     @classmethod
     def create_token( cls, format, id ):
         m = hashlib.sha256()
-        m.update( settings.SECRET_KEY )
-        m.update( str( format ) )
-        m.update( str( id ) )
-        m.update( settings.SECRET_KEY )
+        m.update( settings.SECRET_KEY.encode('utf-8') )
+        m.update( str( format ).encode('utf-8') )
+        m.update( str( id ).encode('utf-8') )
+        m.update( settings.SECRET_KEY.encode('utf-8') )
         return m.hexdigest()
 
     @classmethod
