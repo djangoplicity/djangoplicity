@@ -157,5 +157,5 @@ def remove_html_except(value, arg):
     for tag in soup.findAll(True):
         if tag.name not in valid_tags:
             tag.hidden = True
-        tag.attrs = [(attr, val) for attr, val in tag.attrs.items() if attr in valid_attrs]
+        tag.attrs = {attr: val for attr, val in tag.attrs.items() if attr in valid_attrs}
     return soup.renderContents().decode('utf8').replace('javascript:', '')
