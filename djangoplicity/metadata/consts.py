@@ -9,11 +9,11 @@ TYPE_CHOICES = (
     ('Simulation', _('Simulation')),
     ('Collage', _('Collage')),
     ('Chart', _('Chart')),
-    ('Nightscape', _('Nightscape')),
-    ('Day Photo', _('Day Photo')),
-    ('DeepSky Photo', _('DeepSky Photo')),
-    ('Spectrum', _('Spectrum')),
-    ('Annotated Obs', _('Annotated Observation')),
+    #('Nightscape', _('Nightscape')),
+    #('Day Photo', _('Day Photo')),
+    #('DeepSky Photo', _('DeepSky Photo')),
+    #('Spectrum', _('Spectrum')),
+    #('Annotated Obs', _('Annotated Observation')),
 )
 
 IMAGE_PRODUCT_QUALITY_CHOICES = (
