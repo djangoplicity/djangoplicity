@@ -600,7 +600,7 @@ def upload_youtube(video_id, user_id=None):
 
     def mail_user(subject, body=''):
         if user and user.email:
-            send_mail(subject, body, 'no-reply@eso.org', [user.email])
+            send_mail(subject, body, 'no-reply@esahubble.org', [user.email])
 
     if not youtube_configured:
         logger.warning('YouTube not configured, won\'t upload "%s"', video_id)
