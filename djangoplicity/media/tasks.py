@@ -825,6 +825,6 @@ def image_observation_tagging_notification(pk):
     send_mail(
         'New Observation image: {}'.format(url),
         '',
-        'no-reply@eso.org',
+        settings.DEFAULT_FROM_EMAIL,
         ['zidmani@gmail.com'],
     )
