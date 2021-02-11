@@ -49,7 +49,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.core.mail import send_mail
+from django.core.mail import send_mail, mail_managers
 from django.core.urlresolvers import reverse
 
 from djangoplicity.archives.contrib.serialization import XMPEmitter
@@ -590,7 +590,12 @@ def upload_youtube(video_id, user_id=None):
 
     def mail_user(subject, body=''):
         if user and user.email:
-            send_mail(subject, body, 'no-reply@eso.org', [user.email])
+            send_mail(
+                subject,
+                body,
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email]
+            )
 
     if not youtube_configured:
         logger.warning('YouTube not configured, won\'t upload "%s"', video_id)
@@ -812,9 +817,4 @@ def image_observation_tagging_notification(pk):
     url = 'https://' + settings.SITE_DOMAIN + \
         reverse('admin_site:media_image_change', args=[pk])
 
-    send_mail(
-        'New Observation image: {}'.format(url),
-        '',
-        'no-reply@eso.org',
-        ['zidmani@gmail.com'],
-    )
+    mail_managers('New Observation image: {}'.format(url), '')
