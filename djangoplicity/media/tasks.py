@@ -600,7 +600,7 @@ def upload_youtube(video_id, user_id=None):
 
     def mail_user(subject, body=''):
         if user and user.email:
-            send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, settings.DEFAULT_MAIL_USER)
+            send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, getattr(settings, 'DEFAULT_MAIL_USER', user.email))
 
     if not youtube_configured:
         logger.warning('YouTube not configured, won\'t upload "%s"', video_id)
@@ -826,5 +826,5 @@ def image_observation_tagging_notification(pk):
         'New Observation image: {}'.format(url),
         '',
         settings.DEFAULT_FROM_EMAIL,
-        settings.DEFAULT_MAIL_TAGGING,
+        getattr(settings, 'DEFAULT_MAIL_TAGGING', ['zidmani@gmail.com']),
     )
