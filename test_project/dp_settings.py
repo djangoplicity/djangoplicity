@@ -26,23 +26,26 @@ DJANGO_APPS = [
 ]
 
 DJANGOPLICITY_APPS = [
-    # Djangoplicity is an app package itself containing main templates, statics, etc
-    'djangoplicity',
+    'satchmo_store.shop', # This Satchmo shop app is important to be on top
+    'djangoplicity', # Djangoplicity is an app package itself containing main templates, statics, etc
     'djangoplicity.menus',
     'djangoplicity.pages',
     'djangoplicity.metadata',
     'djangoplicity.archives',
+    'djangoplicity.archives.contrib.satchmo',
+    'djangoplicity.archives.contrib.satchmo.freeorder',
     'djangoplicity.releases',
     'djangoplicity.adminhistory',
     'djangoplicity.media',
     'djangoplicity.eventcalendar',
     'djangoplicity.iframe',
-    # Used to create images derivatives
-    'djangoplicity.cutter',
+    'djangoplicity.cutter', # Used to create images derivatives
     'djangoplicity.announcements',
     'djangoplicity.reports',
     'djangoplicity.utils',
-    'djangoplicity.admincomments'
+    'djangoplicity.admincomments',
+    'djangoplicity.products',
+    'djangoplicity.coposweb'
 ]
 
 THIRD_PARTY_APPS = [
@@ -53,11 +56,27 @@ THIRD_PARTY_APPS = [
     'mptt',
 ]
 
+SATCHMO_APPS = [
+    'livesettings',
+    'satchmo_utils',
+    'satchmo_store.contact',
+    'product',
+    'product.modules.configurable',
+    'shipping',
+    'payment',
+    'djangoplicity.concardis',
+    'l10n',
+    'tax',
+    'tax.modules.no',
+    'app_plugins',
+    'shipping.modules.tieredweight',
+]
+
 TEST_PROJECT_APPS = [
     'test_project'
 ]
 
-INSTALLED_APPS = DJANGO_APPS + DJANGOPLICITY_APPS + THIRD_PARTY_APPS + TEST_PROJECT_APPS
+INSTALLED_APPS = DJANGO_APPS + DJANGOPLICITY_APPS + SATCHMO_APPS + THIRD_PARTY_APPS + TEST_PROJECT_APPS
 
 # SITES
 SITE_ID=1
@@ -72,6 +91,21 @@ if USE_I18N:
         'djangoplicity.translation.middleware.LocaleMiddleware',  # Request/Response
     ]
 
+# Database
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'djangoplicity',
+        'USER': 'djangoplicity',
+        'PASSWORD': 'djangoplicity',
+        'HOST': '127.0.0.1' if os.environ.get('GITHUB_WORKFLOW') else 'djangoplicity-db',
+        'PORT': '5432',
+    }
+}
+
+TEMPLATES[0]['OPTIONS']['context_processors'].append('satchmo_store.shop.context_processors.settings',)
 
 # MEDIA
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

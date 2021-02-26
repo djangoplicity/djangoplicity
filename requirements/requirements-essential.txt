@@ -38,3 +38,6 @@ celery==4.3.0
 
 # Asset packaging library for Django
 django-pipeline==1.6.14
+
+# Configure settings via the admin interface
+django-livesettings==1.4.17

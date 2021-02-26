@@ -68,6 +68,7 @@ adminlogs_site.register(Site, SiteAdmin)
 adminlogs_site.register(Redirect, RedirectAdmin)
 
 # ADMIN SHOP SITE MODULES
-# from djangoplicity.archives.contrib.satchmo.admin import satchmo_admin
-# adminshop_site = satchmo_admin(adminshop_site)
-# autoregister(adminshop_site, djangoplicity.archives.contrib.satchmo.freeorder.admin)
+from djangoplicity.archives.contrib.satchmo.admin import satchmo_admin
+from djangoplicity.archives.contrib.satchmo.freeorder import admin as freorder_admin
+adminshop_site = satchmo_admin(adminshop_site)
+autoregister(adminshop_site, freorder_admin)

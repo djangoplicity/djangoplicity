@@ -17,6 +17,18 @@ jobs:
         # python-version: [2.7, 3.7, 3.8]
         python-version: [2.7]
 
+    services:
+      postgres:
+        image: postgres:10.5
+        env:
+          POSTGRES_DB: djangoplicity
+          POSTGRES_USER: djangoplicity
+          POSTGRES_PASSWORD: djangoplicity
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -26,9 +38,10 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r requirements.txt --find-links https://www.djangoplicity.org/repository/packages/
     - name: Run Tests
       run: |
+        python manage.py makemigrations payment app_plugins tieredweight
         env DJANGO_SETTINGS_MODULE="test_project.dp_test_settings" coverage run --source='.' manage.py test
         coverage xml
     - name: Upload coverage to Codecov

@@ -23,7 +23,7 @@ from djangoplicity.media.models import Image, Video, PictureOfTheWeek, ImageComp
 from djangoplicity.media.options import ImageOptions, VideoOptions, PictureOfTheWeekOptions, ImageComparisonOptions
 from djangoplicity.announcements.models import Announcement, WebUpdate
 from djangoplicity.announcements.options import AnnouncementOptions, WebUpdateOptions
-from test_project.admin import admin_site, adminlogs_site
+from test_project.admin import admin_site, adminlogs_site, adminshop_site
 
 
 urlpatterns = [
@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^admin/cache/', include('djangoplicity.cache.urls', namespace="admincache_site", app_name="cache")),
     url(r'^admin/history/', include('djangoplicity.adminhistory.urls', namespace="adminhistory_site", app_name="history")),
     url(r'^admin/system/', include(adminlogs_site.urls), {'extra_context': {'ADMINLOGS_SITE': True}}),
+    url( r'^admin/shop/', include( 'djangoplicity.archives.contrib.satchmo.urls_admin' ) ),
+    url( r'^admin/shop/', include(adminshop_site.urls), { 'extra_context': { 'ADMINSHOP_SITE': True } } ),
     url(r'^admin/', include('djangoplicity.metadata.wtmlimport.urls'), {'extra_context': {'ADMIN_SITE': True}}),
     url(r'^admin/import/', include('djangoplicity.archives.importer.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
