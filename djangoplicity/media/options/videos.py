@@ -276,7 +276,7 @@ class VideoOptions( ArchiveOptions ):
             ( 'broadcast_sd', ( '.avi', '.mxf', '.mov', '.mp4' ) ),
             ( 'hd_broadcast_720p25', ( '.mxf', '.m2t', '.mov' ) ),
             ( 'hd_broadcast_720p50', ( '.mxf', '.m2t', '.mov' ) ),
-            ( 'hd_1080p25_broadcast', ( '.avi', '.mxf' ) ),
+            ( 'hd_1080p25_broadcast', ( '.avi', '.mxf', '.mov' ) ),
             # Large
             ( 'large_qt', ( '.mov', ) ),
             # Medium
