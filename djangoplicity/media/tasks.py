@@ -63,6 +63,7 @@ from djangoplicity.media.audio_tasks import encode_audio_derivatives, \
 from djangoplicity.metadata.consts import get_file_type
 from djangoplicity.utils.history import add_admin_history
 from djangoplicity.utils.templatetags.djangoplicity_text_utils import remove_html_tags
+from djangoplicity.utils.sending_mail import mail_images_managers
 
 LOCK_EXPIRE = 60 * 30  # 30 mins
 
@@ -817,4 +818,4 @@ def image_observation_tagging_notification(pk):
     url = 'https://' + settings.SITE_DOMAIN + \
         reverse('admin_site:media_image_change', args=[pk])
 
-    mail_managers('New Observation image: {}'.format(url), '')
+    mail_images_managers('New Observation image: {}'.format(url), 'Observation images missing coordinates')
