@@ -818,4 +818,4 @@ def image_observation_tagging_notification(pk):
     url = 'https://' + settings.SITE_DOMAIN + \
         reverse('admin_site:media_image_change', args=[pk])
 
-    mail_images_managers('New Observation image: {}'.format(url), 'Observation images missing coordinates')
+    mail_images_managers('New Observation image: {}'.format(url), '')
