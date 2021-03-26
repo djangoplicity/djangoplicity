@@ -56,6 +56,17 @@ def oldreleaseids( obj ):
 oldreleaseids.short_description = ugettext_noop( 'Legacy ID' )
 
 
+def principal_investigator( obj ):
+    """
+    Display helper for showing a Principal Investigator
+    """
+    if obj.principal_investigator:
+        return obj.principal_investigator
+    else:
+        return ''
+principal_investigator.short_description = ugettext_noop( 'Principal Investigator' )
+
+
 def telbib( obj ):
     """
     Display helper for showing a link to ESO's Telescop Bibliography
