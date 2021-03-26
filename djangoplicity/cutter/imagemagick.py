@@ -441,7 +441,12 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         raise Exception(error)
 
     # Get the original file resolution:
-    width, height = identify_image(original.path)
+    try:
+        width, height = identify_image(original.path)
+    except ValueError:
+        error = "Couldn't open the file %s: width, height value error" % original.path
+        logging.error(error)
+        raise Exception(error)
 
     # We keep track of the required formats which can't be generated, and
     # formats which we have to upscale:
