@@ -99,7 +99,6 @@ def _youtube():
     if credentials is None or credentials.invalid:
         if settings.DEBUG:
             return
-        print(credentials)
         # raise YouTubeInvalidToken('Invalid token provided by %s' %
         #         settings.YOUTUBE_TOKEN)
 
