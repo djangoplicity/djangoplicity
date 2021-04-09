@@ -865,6 +865,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
                 ('releases_releaseimage', 'archive_item_id'),
                 ('releases_releasestockimage', 'archive_item_id'),
                 ('science_scienceannouncementimage', 'archive_item_id'),
+                ('blog_post', 'banner_id'),
             )
             sort_fields = ['last_modified', 'release_date', 'priority', 'file_size', 'distance_ly']
             crop_display_format = 'thumb300y'
