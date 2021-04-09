@@ -162,7 +162,7 @@ def releaseinlineadmin( modeladmin, modelname ):
 
 ReleaseImageInlineAdmin = release_inlineadmin( ReleaseImage )
 ReleaseVideoInlineAdmin = release_inlineadmin( ReleaseVideo, exclude=['zoomable'] )
-ReleaseImageComparisonInlineAdmin = release_inlineadmin( ReleaseImageComparison, exclude=['main_visual', 'zoomable'] )
+ReleaseImageComparisonInlineAdmin = release_inlineadmin( ReleaseImageComparison, exclude=['zoomable'] )
 ReleaseStockImageInlineAdmin = release_inlineadmin( ReleaseStockImage, exclude=['override_id', 'main_visual', 'zoomable'] )
 
 
