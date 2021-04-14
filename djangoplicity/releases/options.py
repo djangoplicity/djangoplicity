@@ -199,6 +199,7 @@ class ReleaseOptions( ArchiveOptions ):
         # Get main_visual
         main_image = main_visual_translated(obj.main_image, images)
         main_video = main_visual_translated(obj.main_video, videos)
+        main_image_comparison = main_visual_translated(obj.main_image_comparison, comparisons)
 
         #
         # Translations
@@ -206,6 +207,7 @@ class ReleaseOptions( ArchiveOptions ):
         return {
             'main_image': main_image,
             'main_video': main_video,
+            'main_image_comparison': main_image_comparison,
             'images': images,
             'videos': videos,
             'comparisons': comparisons,

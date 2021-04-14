@@ -184,6 +184,17 @@ class Release( ArchiveModel, TranslationModel ):
 
     main_image = property( _get_main_image )
 
+    def _get_main_imagen_comparison(self):
+        try:
+            return self._main_imagen_comparison_cache
+        except AttributeError:
+            for visual in self.releaseimagecomparison_set.all():
+                if visual.main_visual:
+                    self._main_imagen_comparison_cache = visual.archive_item
+                    return visual.archive_item
+
+    main_image_comparison = property(_get_main_imagen_comparison)
+
     def _set_main_video(self, vid ):
         self._main_video_cache = vid
 
