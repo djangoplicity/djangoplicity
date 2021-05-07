@@ -195,14 +195,6 @@ class VideoOptions( ArchiveOptions ):
         }),
     )
 
-    # TODO: For this implementation it is necessary to modify the views of the archive model
-    # extras = (
-    #     (ugettext_noop(u'Giphy'), {
-    #         'resources': (video_giphy_url_link),
-    #         'icons': {'video_giphy_url_link': 'giphy'}
-    #     }),
-    # )
-
     detail_views = (
         { 'url_pattern': 'api/(?P<serializer>xml|json)/', 'view': SerializationDetailView( serializer=VideoSerializer, emitters=[JSONEmitter] ), 'urlname_suffix': 'serialization', },
     )
