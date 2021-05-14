@@ -57,7 +57,7 @@ from djangoplicity.media.import_actions import enable_faststart, \
     embed_subtitles, fragment_mp4, upload_youtube_action, video_extras, \
     generate_thumbnail_action
 from djangoplicity.media.info import related_releases, related_announcements, \
-    duration, shadowbox_link, object_id, object_language, video_magnet_uri_link, \
+    duration, shadowbox_link, object_id, object_language, video_giphy_url_link, video_magnet_uri_link, \
     web_categories, frame_rate
 from djangoplicity.media.models.videos import VideoProxy
 from djangoplicity.media.queries import VideoWebCategoryPublicQuery, \
@@ -189,6 +189,10 @@ class VideoOptions( ArchiveOptions ):
             'resources': ( 'old_video', ),
             'icons': { 'old_video': 'movie' }
         } ),
+        (ugettext_noop(u'Giphy'), {
+            'resources': (video_giphy_url_link, ),
+            'icons': {'video_giphy_url_link': 'giphy'}
+        }),
     )
 
     detail_views = (

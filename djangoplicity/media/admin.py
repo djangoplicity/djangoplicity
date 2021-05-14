@@ -293,7 +293,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
                     ( _(u'Content Metadata'), {'fields': ( 'title', 'headline', 'description', 'credit', 'web_category', 'subject_category', 'subject_name', 'type', 'facility', ), 'classes': ('collapse',) } ),
                     ( _(u'Creator Metadata'), {'fields': ( 'creator', 'creator_url', 'contact_address', 'contact_city', 'contact_state_province', 'contact_postal_code', 'contact_country', 'rights', ), 'classes': ('collapse',) } ),
                     ( _(u'Publisher Metadata'), {'fields': ( 'publisher', 'publisher_id', ), 'classes': ('collapse',) } ),
-                    ( _(u'File Metadata'), {'fields': ( 'width', 'height', 'file_duration', 'file_aspect_ratio', 'file_size', 'frame_rate', 'magnet_uri' ), 'classes': ('collapse',) } ),
+                    ( _(u'File Metadata'), {'fields': ( 'width', 'height', 'file_duration', 'file_aspect_ratio', 'file_size', 'frame_rate', 'magnet_uri', 'giphy_url' ), 'classes': ('collapse',) } ),
                     ( _(u'Audio Metadata'), {'fields': ( 'audio_surround_format', ), 'classes': ('collapse',) } ),
                     ( _(u'Content Delivery'), {'fields': ( 'content_server', 'content_server_ready', 'youtube_video_id', 'use_youtube'), 'classes': ('collapse',) } ),
                     ( _(u'Publishing (advanced)'), {'fields': ( ('release_date', 'embargo_date'), 'release_date_owner' ), 'classes': ('collapse',) } ),
