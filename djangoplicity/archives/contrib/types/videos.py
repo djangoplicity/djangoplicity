@@ -129,6 +129,24 @@ class VR4kType(FileType):
     width = 8192
     height = 4096
 
+class VR4kMasterType(FileType):
+    verbose_name = ugettext_noop(u'4k Master VR')
+    exts = ['mp4']
+    width = 4096
+    height = 2048
+
+class VR8kMasterType(FileType):
+    verbose_name = ugettext_noop(u'8k Master VR')
+    exts = ['mp4']
+    width = 8192
+    height = 4096
+
+class VR16kMasterType(FileType):
+    verbose_name = ugettext_noop(u'16k Master VR')
+    exts = ['mp4']
+    width = 16384
+    height = 8192
+
 
 class CylindricalPreviewType(FileType):
     verbose_name = ugettext_noop(u'Cylindrical VR Preview')

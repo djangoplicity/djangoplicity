@@ -89,7 +89,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         'vr_8k', 'vr_4k', 'cylindrical_preview', 'ultra_hd',
         'hd_1080p25_screen', 'hd_1080_screen', 'dome_preview', 'hd_broadcast_720p25',
         'hd_and_apple', 'medium_podcast', 'ext_highres', 'ext_playback',
-        'old_video'
+        'old_video', 'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster'
     )
 
     priority = archive_fields.PriorityField( help_text=_( u'Assessment of the quality of the image (100 highest, 0 lowest). Higher priority images are ranked higher in search results than lower priority images.' ) )
@@ -295,8 +295,11 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         cylindrical_16kmaster = ResourceManager(type=types.Cylindrical16kMasterType, verbose_name=_(u'16k Cylindrical VR Master'))
 
         # VR
-        vr_8k = ResourceManager(type=types.VR8kType, verbose_name=_(u'8k VR'))
-        vr_4k = ResourceManager(type=types.VR4kType, verbose_name=_(u'4k VR'))
+        vr_4k = ResourceManager(type=types.VR4kType, verbose_name=_(u'VR 4k'))
+        vr_4kmaster = ResourceManager(type=types.VR4kMasterType, verbose_name=_(u'VR 4k Master'))
+        vr_8k = ResourceManager(type=types.VR8kType, verbose_name=_(u'VR 8k'))
+        vr_8kmaster= ResourceManager(type=types.VR8kMasterType, verbose_name=_(u'VR 8k Master'))
+        vr_16kmaster= ResourceManager(type=types.VR16kMasterType, verbose_name=_(u'VR 16k Master'))
 
         # Broadcast formats
         hd_broadcast_720p25 = ResourceManager( type=types.BroadcastType, verbose_name=_(u"HD Broadcast 720p/25") )  # hd720p25_brodcast
