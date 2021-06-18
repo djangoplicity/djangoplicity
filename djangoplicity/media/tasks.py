@@ -150,7 +150,16 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
         fields = {}
 
         # Identify the format with the largest resolution
-        for resource in ('cylindrical_16kmaster', 'dome_8kmaster', 'cylindrical_8kmaster', 'vr_8k', 'vr_4k', 'dome_4kmaster', 'cylindrical_4kmaster', 'ultra_hd_broadcast', 'ultra_hd', 'dome_2kmaster', 'hd_1080p25_screen', 'hd_1080_screen', 'hd_1080_broadcast', 'dome_preview', 'hd_broadcast_720p25', 'hd_and_apple', 'large_qt', 'broadcast_sd', 'medium_flash', 'medium_podcast', 'medium_mpeg1', 'qtvr', 'ext_highres', 'ext_playback', 'old_video'):
+        for resource in ('cylindrical_16kmaster', 'dome_8kmaster',
+                         'cylindrical_8kmaster', 'vr_8k', 'vr_4k',
+                         'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster',
+                         'dome_4kmaster', 'cylindrical_4kmaster',
+                         'ultra_hd_broadcast', 'ultra_hd', 'dome_2kmaster',
+                         'hd_1080p25_screen', 'hd_1080_screen', 'hd_1080_broadcast',
+                         'dome_preview', 'hd_broadcast_720p25', 'hd_and_apple',
+                         'large_qt', 'broadcast_sd', 'medium_flash', 'medium_podcast',
+                         'medium_mpeg1', 'qtvr', 'ext_highres', 'ext_playback',
+                         'old_video'):
             try:
                 r = getattr(v, 'resource_' + resource)
                 if not r:
@@ -159,7 +168,9 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
             except AttributeError:
                 continue
 
-            if resource in ('cylindrical_16kmaster', 'cylindrical_8kmaster', 'cylindrical_4kmaster', 'dome_8kmaster', 'dome_4kmaster', 'dome_2kmaster') and path.endswith('.zip'):
+            if resource in ('cylindrical_16kmaster', 'cylindrical_8kmaster',
+                            'cylindrical_4kmaster', 'dome_8kmaster', 'dome_4kmaster',
+                            'dome_2kmaster', 'vr_8kmaster', 'vr_16kmaster') and path.endswith('.zip'):
                 # dome_xkmaster and cylindrical_xkmaster formats are a .zip
                 # file of .jpg, which can't be read by mplayer, but their
                 # resolution is known and we count the number of included files
@@ -196,6 +207,12 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
                 elif resource == 'cylindrical_4kmaster':
                     fields['width'] = v.width or 4096
                     fields['height'] = v.height or 2048
+                elif resource == 'vr_8kmaster':
+                    fields['width'] = v.width or 8192
+                    fields['height'] = v.height or 4096
+                elif resource == 'vr_16kmaster':
+                    fields['width'] = v.width or 16384
+                    fields['height'] = v.height or 8192
             else:
                 # Use midentify to fetch a dict of key/values about the file
                 args = ['/usr/bin/mplayer', '-noconfig', 'all', '-cache-min', '0', '-vo', 'null', '-ao', 'null', '-frames', '0', '-identify', path]
