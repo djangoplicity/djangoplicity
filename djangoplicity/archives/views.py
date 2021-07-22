@@ -617,13 +617,14 @@ def archive_detail( request, object_id=None, slug=None, model=None, options=None
         #
         # Save in cache
         #
-        if ca is None:
-            # No previous cache exists, so create new.
-            cache.set( key, {'obj': obj, htmlkey: html, 'state': state} )
-        else:
-            # Previous cache exists, so only set the missing html key.
-            ca[htmlkey] = html
-            cache.set( key, ca )
+        if options.allow_detail_cache:
+            if ca is None:
+                # No previous cache exists, so create new.
+                cache.set( key, {'obj': obj, htmlkey: html, 'state': state} )
+            else:
+                # Previous cache exists, so only set the missing html key.
+                ca[htmlkey] = html
+                cache.set( key, ca )
 
     # Return response (either cached or just rendered)
     response = detail_view.response( html, **kwargs )
