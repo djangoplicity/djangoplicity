@@ -35,7 +35,7 @@ class ArchiveOptions(object):
     # Absolute URL of an image
     opengraph_image = None
 
-    # Allow save detail in cache
+    # Enables cache for detail views
     allow_detail_cache = True
 
     # The default template for the downloadable resources - template
