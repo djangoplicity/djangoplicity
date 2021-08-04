@@ -53,7 +53,7 @@ from djangoplicity.metadata.archives.info import subject_name, subject_category,
     facility, instruments
 from djangoplicity.metadata.models import Instrument
 from djangoplicity.releases import views
-from djangoplicity.releases.info import releaseid, oldreleaseids, telbib
+from djangoplicity.releases.info import releaseid, oldreleaseids, telbib, principal_investigator
 from djangoplicity.releases.models import ReleaseProxy, Release
 from djangoplicity.releases.serializers import ReleaseSerializer, \
     ICalReleaseSerializer, MiniReleaseSerializer
@@ -76,7 +76,7 @@ class ReleaseOptions( ArchiveOptions ):
     downloads = ( ( ugettext_noop( 'Text' ), {'resources': ( 'pdf', 'text', 'doc', ), 'icons': { 'pdf': 'pdf', 'text': 'txt', 'doc': 'word' } } ), )
 
     info = (
-        ( ugettext_noop( 'About the Release' ), { 'fields': ( releaseid, oldreleaseids, subject_name, subject_category, facility, instruments, telbib, ) } ),
+        ( ugettext_noop( 'About the Release' ), { 'fields': ( releaseid, oldreleaseids, subject_name, subject_category, facility, instruments, telbib, principal_investigator ) } ),
     )
 
     admin = (
@@ -200,6 +200,7 @@ class ReleaseOptions( ArchiveOptions ):
         # Get main_visual
         main_image = main_visual_translated(obj.main_image, images)
         main_video = main_visual_translated(obj.main_video, videos)
+        main_image_comparison = main_visual_translated(obj.main_image_comparison, comparisons)
 
         #
         # Translations
@@ -207,6 +208,7 @@ class ReleaseOptions( ArchiveOptions ):
         return {
             'main_image': main_image,
             'main_video': main_video,
+            'main_image_comparison': main_image_comparison,
             'images': images,
             'videos': videos,
             'comparisons': comparisons,

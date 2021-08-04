@@ -162,7 +162,7 @@ def releaseinlineadmin( modeladmin, modelname ):
 
 ReleaseImageInlineAdmin = release_inlineadmin( ReleaseImage )
 ReleaseVideoInlineAdmin = release_inlineadmin( ReleaseVideo, exclude=['zoomable'] )
-ReleaseImageComparisonInlineAdmin = release_inlineadmin( ReleaseImageComparison, exclude=['main_visual', 'zoomable'] )
+ReleaseImageComparisonInlineAdmin = release_inlineadmin( ReleaseImageComparison, exclude=['zoomable'] )
 ReleaseStockImageInlineAdmin = release_inlineadmin( ReleaseStockImage, exclude=['override_id', 'main_visual', 'zoomable'] )
 
 
@@ -194,7 +194,7 @@ class ReleaseDisplaysAdmin(DisplaysAdmin):
 
 class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmin, RenameAdmin, ArchiveAdmin ):
     list_display = ( 'id', 'release_type', 'title', 'published', 'release_date', 'embargo_date', view_link('releases') )
-    list_filter = ( 'release_type', 'published', 'last_modified', 'created', 'release_date', 'embargo_date', )
+    list_filter = ( 'release_type', 'published', 'last_modified', 'created', 'release_date', 'embargo_date', 'principal_investigator' )
     list_editable = ( 'release_type', 'title', 'published', )
     search_fields = ( 'id', 'old_ids', 'release_type__name', 'title', 'release_city', 'headline',
                     'description', 'notes', 'more_information', 'links', 'subject_name__name', 'facility__name', 'disclaimer', 'meltwater_keywords', 'publications__bibcode', 'kids_title', 'kids_description' )
@@ -207,6 +207,7 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
                     ( 'Classification', {'fields': ( 'subject_category', 'subject_name', 'facility', 'instruments', 'publications' ), 'description': mark_safe("<strong>Typical subject category:</strong><ol><li>Solar System: Planet, Interplanetary Body, Star, Sky Phenomenon, Technology</li><li>Milky Way: Planet, Interplanetary Body, Star, Nebula</li><li>Local Universe (z&lt;=0.1): Star, Nebula, Galaxy</li><li>Early Universe (z&gt;0.1): Galaxy, Cosmology</li><li>Unspecified: any (non-astronomical in nature - e.g. artwork and photographic)</li><li>Local use only: Mission Graphics</li><ol>") } ),
                     ( 'Kids', {'fields': ( 'kids_title', 'kids_description', 'kids_image') } ),
                     ( 'Compatibility', {'fields': ('old_ids', 'meltwater_keywords' ), }),
+                    ( 'Investigator', {'fields': ( 'principal_investigator', ) } ),
                     #( 'Social Networks', {'fields': ( ('facebook_post','facebook_is_posted'),('tweet','tweet_is_posted'),) } ),
 
                 )

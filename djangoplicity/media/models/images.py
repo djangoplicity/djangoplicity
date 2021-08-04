@@ -80,6 +80,8 @@ if django.VERSION >= (2, 0):
     from django.urls import reverse
 else:
     from django.core.urlresolvers import reverse
+from djangoplicity.archives.importer.utils import rerun_import_actions
+from djangoplicity.archives.loading import get_archive_modeloptions
 
 # #########################################################################
 # Colour
@@ -667,6 +669,15 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
             image_color.delay( self.id )
             write_metadata.delay( self.id, IMAGE_AVM_FORMATS )
 
+    def reimport_resources(self, user=None):
+        model, options = get_archive_modeloptions(self._meta.app_label, self._meta.model_name)
+        if options.Import.actions and model:
+            if user:
+                extra_conf = {'user_id': user.pk}
+            else:
+                extra_conf = {}
+            rerun_import_actions(model, options, self, extra_conf=extra_conf)
+
     def get_absolute_url(self):
         return translation_reverse( 'images_detail', args=[str( self.id if self.is_source() else self.source.id )], lang=self.lang )
 
@@ -863,6 +874,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
                 ('releases_releaseimage', 'archive_item_id'),
                 ('releases_releasestockimage', 'archive_item_id'),
                 ('science_scienceannouncementimage', 'archive_item_id'),
+                ('blog_post', 'banner_id'),
             )
             sort_fields = ['last_modified', 'release_date', 'priority', 'file_size', 'distance_ly']
             crop_display_format = 'thumb300y'

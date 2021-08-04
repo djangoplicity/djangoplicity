@@ -33,6 +33,7 @@ from builtins import str
 from builtins import object
 from django.conf import settings
 from django.contrib import admin
+from django.db.models import Q
 from django.forms import ModelForm
 from django.shortcuts import render
 from django.utils.encoding import force_text
@@ -50,7 +51,7 @@ from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
         VideoContact, Video, VideoSubtitle, ImageColor, Color, PictureOfTheWeek, \
         ImageComparison, ImageProxy, ImageComparisonProxy, PictureOfTheWeekProxy, \
         VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, VideoScript
-from djangoplicity.metadata.models import Category
+from djangoplicity.metadata.models import Category, TaggingStatus
 from djangoplicity.releases.admin import releaseinlineadmin
 
 
@@ -147,13 +148,77 @@ class ImageColorAdmin( admin.ModelAdmin ):
     ordering = ('color', )
 
 
+class TaggingStatusExcludeListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('Exclude Tagging Status')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'exclude_tagging_status'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        tagging = [(tagging_status.slug, tagging_status.name) for tagging_status in TaggingStatus.objects.all()]
+        # Mixed tagging statuses
+        try:
+            coords = TaggingStatus.objects.get(slug='coords')
+            coords_no = TaggingStatus.objects.get(slug='coords_no')
+            mixed_slug = '{},{}'.format(coords.slug, coords_no.slug)
+            mixed_name = '{} & {}'.format(coords.name, coords_no.name)
+            tagging.append((mixed_slug, mixed_name,))
+        except TaggingStatus.DoesNotExist:
+            pass
+        return tagging
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        value = self.value()
+        if value is not None:
+            # Multiple tags separated by commas
+            if ',' in value:
+                return queryset.exclude(tagging_status__slug__in=value.split(','))
+            return queryset.exclude(tagging_status__slug=value)
+
+
+class MissingExposureFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('Exposures')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'missing_exposures'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('True', 'Missing Exposures'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'True':
+            return queryset.exclude(tagging_status__slug__in=('no_exp',)).filter(
+                Q(imageexposure__facility__isnull=True) |
+                Q(imageexposure__instrument__isnull=True) |
+                Q(imageexposure__spectral_color_assignment__isnull=True)
+            )
+
+
 # ============================================
 # Image admin
 # ============================================
 class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, CropAdmin, ArchiveAdmin, SetCategoryMixin, ContentDeliveryAdmin ):
     list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
     list_editable = ( 'priority', 'title' )
-    list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', 'type', 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
+    list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', 'type', TaggingStatusExcludeListFilter, MissingExposureFilter, 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
     filter_horizontal = ( 'web_category', 'subject_category', 'subject_name', 'tagging_status' )
     search_fields = ( 'id', 'title', 'headline', 'description', 'credit', )
     fieldsets = (
@@ -233,6 +298,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
 
     class Media:
         css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
+
 
 
 # ============================================

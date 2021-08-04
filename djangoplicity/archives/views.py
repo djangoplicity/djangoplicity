@@ -519,6 +519,9 @@ def archive_detail( request, object_id=None, slug=None, model=None, options=None
                 filterkwargs = {options.slug_field: slug}
 
             obj = queryset.filter( **filterkwargs ).get()
+    except ValueError:
+        raise Http404("Value error: No %s found matching the query" % (model._meta.verbose_name))
+
     except ObjectDoesNotExist:
         # Check if we have a similar object in the default language
         obj = options.detail_notfound( model, **filterkwargs )
@@ -616,13 +619,14 @@ def archive_detail( request, object_id=None, slug=None, model=None, options=None
         #
         # Save in cache
         #
-        if ca is None:
-            # No previous cache exists, so create new.
-            cache.set( key, {'obj': obj, htmlkey: html, 'state': state} )
-        else:
-            # Previous cache exists, so only set the missing html key.
-            ca[htmlkey] = html
-            cache.set( key, ca )
+        if options.allow_detail_cache:
+            if ca is None:
+                # No previous cache exists, so create new.
+                cache.set( key, {'obj': obj, htmlkey: html, 'state': state} )
+            else:
+                # Previous cache exists, so only set the missing html key.
+                ca[htmlkey] = html
+                cache.set( key, ca )
 
     # Return response (either cached or just rendered)
     response = detail_view.response( html, **kwargs )

@@ -10,3 +10,4 @@ from djangoplicity.archives.contrib.types.audio import *
 from djangoplicity.archives.contrib.types.documents import *
 from djangoplicity.archives.contrib.types.images import *
 from djangoplicity.archives.contrib.types.videos import *
+from djangoplicity.archives.contrib.types.applications import *

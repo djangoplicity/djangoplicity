@@ -123,6 +123,9 @@ class Release( ArchiveModel, TranslationModel ):
     # Subtitle of of the press release
     subtitle = models.CharField( max_length=255, blank=True, help_text=_(u"Optional subtitle to be shown just above the headline.") )
 
+    # Name of the Principal Investigator
+    principal_investigator = models.CharField( max_length=255, blank= True, null=True, help_text=_(u'Name of the principal investigator') )
+
     release_city = models.CharField( max_length=100, blank=True, help_text=_(u"The city of the release - e.g. Paris. Can be left blank.") )
 
     headline = models.TextField( blank=True, help_text=_(u'HTML code in lead is not allowed. The lead is further more normally shown in search engine results, making the description an effective way of capturing users attention.') )
@@ -183,6 +186,17 @@ class Release( ArchiveModel, TranslationModel ):
                     return visual.archive_item
 
     main_image = property( _get_main_image )
+
+    def _get_main_imagen_comparison(self):
+        try:
+            return self._main_imagen_comparison_cache
+        except AttributeError:
+            for visual in self.releaseimagecomparison_set.all():
+                if visual.main_visual:
+                    self._main_imagen_comparison_cache = visual.archive_item
+                    return visual.archive_item
+
+    main_image_comparison = property(_get_main_imagen_comparison)
 
     def _set_main_video(self, vid ):
         self._main_video_cache = vid
