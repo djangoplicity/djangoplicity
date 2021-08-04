@@ -53,6 +53,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.mail import send_mail, mail_managers
+from django.core.urlresolvers import reverse
 
 from djangoplicity.archives.contrib.serialization import XMPEmitter
 from djangoplicity.archives.resources import get_instance_resource, ResourceError
