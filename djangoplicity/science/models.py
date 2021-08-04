@@ -41,11 +41,8 @@ from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.media.models import Image
 from djangoplicity.translation.models import TranslationModel
 
-import django
-if django.VERSION >= (2, 0):
-    from django.urls import reverse
-else:
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
+
 
 @python_2_unicode_compatible
 class ScienceAnnouncement(ArchiveModel, TranslationModel):

@@ -22,11 +22,9 @@ from product.models import Discount, ProductAttribute
 import string
 import random
 
-import django
-if django.VERSION >= (2, 0):
-    from django.urls import reverse
-else:
-    from django.core.urlresolvers import reverse
+
+from django.urls import reverse
+
 
 REJECT_REASONS = (
     ("NOSTOCK", "The product(s) is/are not available on stock."),

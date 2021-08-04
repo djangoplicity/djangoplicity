@@ -67,11 +67,9 @@ from djangoplicity.utils.history import add_admin_history
 from djangoplicity.utils.templatetags.djangoplicity_text_utils import remove_html_tags
 from djangoplicity.utils.sending_mail import mail_images_managers
 
-import django
-if django.VERSION >= (2, 0):
-    from django.urls import reverse
-else:
-    from django.core.urlresolvers import reverse
+
+from django.urls import reverse
+
 
 LOCK_EXPIRE = 60 * 30  # 30 mins
 

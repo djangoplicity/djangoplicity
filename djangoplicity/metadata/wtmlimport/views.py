@@ -42,11 +42,9 @@ from django.views.generic import FormView
 
 from djangoplicity.media.models import Image
 
-import django
-if django.VERSION >= (2, 0):
-    from django.urls import reverse_lazy
-else:
-    from django.core.urlresolvers import reverse_lazy
+
+from django.urls import reverse_lazy
+
 
 
 class MultiFileInput(forms.FileInput):
