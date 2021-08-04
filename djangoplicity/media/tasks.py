@@ -44,6 +44,7 @@ from hashlib import md5
 from subprocess import Popen, PIPE, call
 from zipfile import ZipFile
 
+
 from apiclient.errors import HttpError
 from celery import current_app
 from celery.task import task
@@ -53,7 +54,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.mail import send_mail, mail_managers
-
 from djangoplicity.archives.contrib.serialization import XMPEmitter
 from djangoplicity.archives.resources import get_instance_resource, ResourceError
 from djangoplicity.archives.tasks import compute_checksums
@@ -67,11 +67,9 @@ from djangoplicity.utils.history import add_admin_history
 from djangoplicity.utils.templatetags.djangoplicity_text_utils import remove_html_tags
 from djangoplicity.utils.sending_mail import mail_images_managers
 
-import django
-if django.VERSION >= (2, 0):
-    from django.urls import reverse
-else:
-    from django.core.urlresolvers import reverse
+
+from django.urls import reverse
+
 
 LOCK_EXPIRE = 60 * 30  # 30 mins
 

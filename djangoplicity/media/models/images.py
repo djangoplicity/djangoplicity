@@ -75,11 +75,9 @@ from djangoplicity.translation.models import TranslationModel, \
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
 
-import django
-if django.VERSION >= (2, 0):
-    from django.urls import reverse
-else:
-    from django.core.urlresolvers import reverse
+
+from django.urls import reverse
+
 from djangoplicity.archives.importer.utils import rerun_import_actions
 from djangoplicity.archives.loading import get_archive_modeloptions
 

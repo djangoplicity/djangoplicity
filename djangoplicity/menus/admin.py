@@ -38,11 +38,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.safestring import mark_safe
 
-import django
-if django.VERSION >= (2, 0):
-    from django.urls import reverse
-else:
-    from django.core.urlresolvers import reverse
+from django.urls import reverse
+
 
 class MenuAdmin( admin.ModelAdmin ):
     list_display = ( 'name', 'hide_menu_root', 'expansion_depth', 'max_depth' )
