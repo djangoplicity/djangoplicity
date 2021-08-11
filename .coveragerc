@@ -3,4 +3,5 @@ omit =
   */migrations/*
   djangoplicity/coposweb/*
   djangoplicity/migration/*
+  djangoplicity/concardis/*
   djangoplicity/archives/contrib/satchmo/*
