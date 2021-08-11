@@ -8,8 +8,6 @@ from djangoplicity.pages.models import (
     url_cache_invalidator, page_key_cache_invalidator, section_cache_invalidator
     )
 
-from mock import patch
-
 class SectionTest(TestCase):
 
     def test_unicode_representation(self):
