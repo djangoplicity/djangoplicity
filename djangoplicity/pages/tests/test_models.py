@@ -1,25 +1,25 @@
-from django.conf import settings
 from datetime import datetime, timedelta
 from django.test import TestCase
 from factories import SectionFactory, PageFactory, URLFactory, PageGroupFactory, EmbeddedPageKeyFactory
 from djangoplicity.pages.models import (
     Page, URL, EmbeddedPageKey, Section,
-    register_page_key, generate_page_id, page_cache_invalidator, 
+    register_page_key, generate_page_id, page_cache_invalidator,
     url_cache_invalidator, page_key_cache_invalidator, section_cache_invalidator
-    )
+)
+
 
 class SectionTest(TestCase):
 
     def test_unicode_representation(self):
         section = SectionFactory.build()
-        self.assertEqual(u'%s' % section, 'TestingSection')
+        self.assertEqual(section.__str__(), 'TestingSection')
 
 
 class PageTest(TestCase):
 
     def test_unicode_representation(self):
         page = PageFactory.build()
-        self.assertEqual(u'%s' % page, 'TestingTitle')
+        self.assertEqual(page.__str__(), 'TestingTitle')
 
     def test_is_online(self):
         page = PageFactory.build()
@@ -38,11 +38,6 @@ class PageTest(TestCase):
         self.assertFalse(page.is_online())
         page.end_publishing = None
 
-        # translatedPage = PageFactory.create()
-        # translatedPage.source = PageFactory.create()
-        
-        # self.assertTrue(translatedPage.is_online())
-
     def test_get_absolute_url(self):
         translatedPage = PageFactory.create()
         translatedPage.source = PageFactory.create()
@@ -50,7 +45,6 @@ class PageTest(TestCase):
 
         translatedPage.source = None
         self.assertIsNotNone(translatedPage.get_absolute_url())
-
 
     def test_save(self):
         section = SectionFactory.build()
@@ -70,18 +64,20 @@ class PageTest(TestCase):
 class URLTest(TestCase):
     def test_unicode_representation(self):
         url = URLFactory.build()
-        self.assertEqual(u'%s' % url, 'http://someurl.com') 
+        self.assertEqual(url.__str__(), 'http://someurl.com')
+
 
 class PageGroupTest(TestCase):
     def test_unicode_representation(self):
         page_group = PageGroupFactory.build()
-        self.assertEqual(u'%s' % page_group, 'TestingName')
+        self.assertEqual(page_group.__str__(), 'TestingName')
+
 
 class EmbeddedPageKeyTest(TestCase):
     def test_unicode_representation(self):
         page_key = EmbeddedPageKeyFactory.build()
-        self.assertEqual(
-            u'%s' % page_key, u'%s (%s)' % (page_key.title, page_key.page_key))
+        self.assertEqual(page_key.__str__(), '{} ({})'.format(page_key.title, page_key.page_key))
+
 
 class RegisterPageKeyTest(TestCase):
     def test_raise_improperly_configured_except(self):
@@ -90,8 +86,7 @@ class RegisterPageKeyTest(TestCase):
 
 
 class PageSignalsTest(TestCase):
-    
-    
+
     def test_generate_page_id(self):
         section = SectionFactory.build()
         section.save()
@@ -103,25 +98,25 @@ class PageSignalsTest(TestCase):
         self.assertIsNone(generate_page_id(Page, page, None, True))
         self.assertIsNone(generate_page_id(Page, page, None, False))
 
-
     def test_page_cache_invalidator(self):
         section = SectionFactory.build()
         section.save()
         page = PageFactory.build()
         page.section = section
-        page.embedded=True
-        page.url='http://example.com'
+        page.embedded = True
+        page.url = 'http://example.com'
         page.save()
         self.assertIsNone(page_cache_invalidator(Page, page, None, True))
         self.assertIsNone(page_cache_invalidator(Page, page, None, False))
-        page.embedded=False
+        page.embedded = False
         new_page = PageFactory.create()
-        new_page.url='http://example.com'
-        new_page.id='123'
-        page.source_id='123'
+        new_page.url = 'http://example.com'
+        new_page.id = '123'
+        page.source_id = '123'
         page.source = new_page
         self.assertIsNone(page_cache_invalidator(Page, page, None, False))
-    
+
+
 class URLSignalsTest(TestCase):
 
     def test_url_cache_invalidator(self):
@@ -136,13 +131,13 @@ class EmbeddedPageKeySignalsTest(TestCase):
         page_key = EmbeddedPageKeyFactory.build()
         self.assertIsNone(page_key_cache_invalidator(EmbeddedPageKey, page_key, None, True))
 
+
 class SectionSignalsTest(TestCase):
     def test_section_cache_invalidator(self):
-
         section = SectionFactory.build()
         page = PageFactory.build()
         page.section = section
-        page.embedded=True
+        page.embedded = True
 
         self.assertIsNone(section_cache_invalidator(Section, section, None, True))
         self.assertIsNone(section_cache_invalidator(Section, section, None, False))
