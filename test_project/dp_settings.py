@@ -42,7 +42,8 @@ DJANGOPLICITY_APPS = [
     'djangoplicity.announcements',
     'djangoplicity.reports',
     'djangoplicity.utils',
-    'djangoplicity.admincomments'
+    'djangoplicity.admincomments',
+    'djangoplicity.products',
 ]
 
 THIRD_PARTY_APPS = [
