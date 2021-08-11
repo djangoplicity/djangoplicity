@@ -5,3 +5,5 @@ omit =
   djangoplicity/migration/*
   djangoplicity/concardis/*
   djangoplicity/archives/contrib/satchmo/*
+  djangoplicity/sphinxconf/*
+  djangoplicity/crosslinks/*
