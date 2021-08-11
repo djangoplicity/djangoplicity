@@ -4,36 +4,37 @@ from djangoplicity.pages.models import (
 
 
 class SectionFactory(factory.Factory):
+    name = 'TestingSection'
+
     class Meta:
         model = Section
 
-    name = 'TestingSection'
 
 class PageFactory(factory.Factory):
-    class Meta:
-        model = Page
-    
     title = 'TestingTitle'
     section = factory.SubFactory(SectionFactory)
 
+    class Meta:
+        model = Page
+
+
 class URLFactory(factory.Factory):
+    url = 'http://someurl.com'
+
     class Meta:
         model = URL
 
-    url = 'http://someurl.com'
-
 
 class PageGroupFactory(factory.Factory):
+    name = 'TestingName'
+
     class Meta:
         model = PageGroup
 
-    name = 'TestingName'
-
 
 class EmbeddedPageKeyFactory(factory.Factory):
-    class Meta:
-        model = EmbeddedPageKey
-    
     title = 'TestingTitle'
     page_key = 'TestingPageKey'
 
+    class Meta:
+        model = EmbeddedPageKey
