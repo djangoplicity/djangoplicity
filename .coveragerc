@@ -1,6 +1,9 @@
 [run]
 omit =
   */migrations/*
+  # Products app is no longer maintained due to its dependency of satchmo, products2 is the one used now
+  # See: https://github.com/djangoplicity/djangoplicity-products2/
+  djangoplicity/products/*
   djangoplicity/coposweb/*
   djangoplicity/migration/*
   djangoplicity/concardis/*
