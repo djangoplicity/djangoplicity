@@ -210,6 +210,9 @@ class XMPEmitter( Emitter ):
             except KeyError:
                 # Skip custom fields in serializer not defined in AVM
                 continue
+            except TypeError:
+                # Skip string that cannot be represented as a number
+                continue
 
         if avm_enabled:
             if avm:
