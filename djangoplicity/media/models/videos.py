@@ -220,7 +220,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
                 # Try to see if we have a workflow that we need to run.
                 (name, func) = settings.ARCHIVE_WORKFLOWS['media.video.rename']
                 # Try to import the module and run the function
-                module = __import__(name, globals(), locals(), [func, ], -1)
+                module = __import__(name, globals(), locals(), [func, ], 0)
                 getattr(module, func)(pk=self.pk, new_pk=new_pk)
         except (AttributeError, KeyError):
             pass
