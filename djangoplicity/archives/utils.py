@@ -214,6 +214,7 @@ def get_instance_resources(instance):
         formats = D2dDict([
             ('Original', ('original', 'Image')),
             ('Large', ('large', 'Image')),
+            ('Medium', ('wallpaper5', 'Image')),
             ('Small', ('screen', 'Image')),
             ('Thumbnail', ('potwmedium', 'Image')),
             ('Icon', ('newsmini', 'Image')),
