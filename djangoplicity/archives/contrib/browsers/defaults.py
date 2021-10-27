@@ -57,6 +57,10 @@ class SerializationBrowser( ArchiveBrowser ):
         serializer = self.serializer()
         emitter = self.emitter()
 
+        tz = request.GET.get("tz", None)
+        if tz and hasattr(serializer, "timezone"):
+            serializer.timezone = tz
+
         if hasattr( serializer, 'serialize_list' ):
             data = serializer.serialize_list( page_obj.object_list )
         else:
