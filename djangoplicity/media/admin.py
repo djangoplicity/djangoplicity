@@ -354,7 +354,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
                     ( None, {'fields': ( 'id', 'priority', 'published', 'featured') } ),
                     ( _(u'Language'), {'fields': ( 'lang', ) } ),
                     ( _(u'Status'), {'fields': ( 'tagging_status', ), 'classes': ('collapse',) } ),
-                    ( _(u'Content Metadata'), {'fields': ( 'title', 'headline', 'description', 'credit', 'web_category', 'subject_category', 'subject_name', 'type', 'facility' ), 'classes': ('collapse',) } ),
+                    ( _(u'Content Metadata'), {'fields': ( 'title', 'headline', 'description', 'credit', 'web_category', 'subject_category', 'subject_name', 'type', 'facility', ), 'classes': ('collapse',) } ),
                     ( _(u'Creator Metadata'), {'fields': ( 'creator', 'creator_url', 'contact_address', 'contact_city', 'contact_state_province', 'contact_postal_code', 'contact_country', 'rights', ), 'classes': ('collapse',) } ),
                     ( _(u'Publisher Metadata'), {'fields': ( 'publisher', 'publisher_id', ), 'classes': ('collapse',) } ),
                     ( _(u'File Metadata'), {'fields': ( 'width', 'height', 'file_duration', 'file_aspect_ratio', 'file_size', 'frame_rate', 'magnet_uri' ), 'classes': ('collapse',) } ),
