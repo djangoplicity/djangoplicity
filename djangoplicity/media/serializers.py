@@ -125,8 +125,14 @@ class AVMImageSerializer( Serializer ):
         data.update( { 'Date': image.release_date } )
         data.update( { 'ID': image.id } )
         data.update( { 'Type': image.type } )
-        data.update({'ProposalID': image.proposal})
-        data.update({'PublicationID': image.publication})
+        data.update( include_related(
+            cached_objects( image.proposal.all(), 'proposal'), {
+                'proposal_id': 'ProposalID'
+            }))
+        data.update( include_related(
+            cached_objects( image.publication.all(), 'publication'), {
+                'bibcode': 'PublicationID'
+            }))
 
         #serializer.add( { 'Image.ProductQuality': image.image_productquality } )
 
