@@ -429,6 +429,9 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     # Add AVM 1.2 fields
     # - PublicationID (list)
     # - ProposalID (list)
+    proposal = metadatafields.AVMProposalIDField()
+    publication = metadatafields.AVMPublicationField()
+
 
     # ========================================================================
     # Observation Metadata

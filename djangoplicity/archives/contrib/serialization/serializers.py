@@ -194,7 +194,7 @@ class XMPEmitter( Emitter ):
     def emit( self, serialization, type='str' ):
         try:
             from libavm import AVMMeta
-            avm = AVMMeta()
+            avm = AVMMeta(version="1.2")
             avm_enabled = True
         except:
             avm = {}
