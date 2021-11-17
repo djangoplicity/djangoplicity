@@ -368,6 +368,31 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     contact_country = metadatafields.AVMContactCountryField( default=DEFAULT_CONTACT_COUNTRY_FUNC )
     rights = metadatafields.AVMRightsField( default=DEFAULT_RIGHTS_FUNC )
 
+    def get_main_contact(self):
+        return self.imagecontact_set.first()
+
+    def get_main_contact_name(self):
+        contact = self.get_main_contact()
+        if contact:
+            return contact.name
+        return ''
+
+    def get_main_contact_telephone(self):
+        contact = self.get_main_contact()
+        if contact:
+            return contact.telephone
+        return ''
+
+    def get_main_contact_email(self):
+        contact = self.get_main_contact()
+        if contact:
+            return contact.email
+        return ''
+
+    main_contact_name = property(get_main_contact_name)
+    main_contact_telephone = property(get_main_contact_telephone)
+    main_contact_email = property(get_main_contact_email)
+
     # ========================================================================
     # Content Metadata
     # ========================================================================

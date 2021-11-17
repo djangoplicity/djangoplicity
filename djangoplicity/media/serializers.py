@@ -97,12 +97,12 @@ class AVMImageSerializer( Serializer ):
         data.update( { 'Creator': image.creator } )
         data.update( { 'CreatorURL': image.creator_url } )
         data.update(
-            include_related(cached_objects(image.imagecontact_set.all(), 'imagecontact_set'),
-                            {
-                                'name': 'Contact.Name',
-                                'email': 'Contact.Email',
-                                'telephone': 'Contact.Telephone'
-                            }))
+            include_related( cached_objects(image.imagecontact_set.all(), 'imagecontact_set'), {
+                    'name': 'Contact.Name'
+                }))
+        data.update( { 'Contact.Email': prepare_str(image.main_contact_email) })
+        data.update( { 'Contact.Telephone': prepare_str(image.main_contact_telephone) })
+
         data.update( { 'Contact.Address': prepare_str( image.contact_address ) } )
         data.update( { 'Contact.City': prepare_str( image.contact_city ) } )
         data.update( { 'Contact.StateProvince': prepare_str( image.contact_state_province ) } )
