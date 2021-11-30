@@ -78,12 +78,12 @@ class CategoryTypeAdmin( admin.ModelAdmin ):
 
 
 class CategoryAdmin( admin.ModelAdmin ):
-    list_display = ( 'url', 'name', 'type', 'enabled', )
+    list_display = ( 'url', 'name', 'type', 'enabled', 'logo_url')
     list_editable = ( 'name', )
     list_filter = ( 'type', )
     search_fields = ( 'name', 'url', )
     fieldsets = (
-                    ( None, {'fields': ( 'name', 'url', 'type', 'enabled', ) } ),
+                    ( None, {'fields': ( 'name', 'url', 'type', 'enabled', 'logo_url') } ),
                 )
 
 
