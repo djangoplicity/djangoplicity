@@ -5,16 +5,15 @@ from django.db import models, migrations
 from django.contrib.sites.models import Site
 
 
-
 def move_category(apps, schema_editor):
-    # Category = apps.get_model('metadata', 'Category')
+    Category = apps.get_model('metadata', 'Category')
     # I need to import the model directly, even though the doc does not condone it
-    from djangoplicity.metadata.models import Category  
+    # from djangoplicity.metadata.models import Category
 
     setnames = {
         'Images': 'image_set',
         'Videos': 'video_set',
-    } 
+    }
 
     for x in Category.objects.all():
         if x.subject_category:
@@ -30,7 +29,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('metadata', '0004_fix_metadata_category_names'),
-        ('metadata', '0008_category_logo'),
     ]
 
     operations = [
