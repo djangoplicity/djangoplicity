@@ -6,6 +6,8 @@ from django.contrib.sites.models import Site
 
 
 def move_category(apps, schema_editor):
+    # We get the model from the versioned app registry;
+    # if we directly import it, it'll be the wrong version
     Category = apps.get_model('metadata', 'Category')
     # I need to import the model directly, even though the doc does not condone it
     # from djangoplicity.metadata.models import Category
