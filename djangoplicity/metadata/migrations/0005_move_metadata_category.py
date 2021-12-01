@@ -30,6 +30,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('metadata', '0004_fix_metadata_category_names'),
+        ('metadata', '0008_category_logo'),
     ]
 
     operations = [
