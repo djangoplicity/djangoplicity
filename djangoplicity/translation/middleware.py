@@ -135,9 +135,6 @@ class LocaleMiddleware(object):
         if settings.USE_I18N and not _is_just_media(request.path):
             # Check if the user has a preferred language
             preferred_language = get_preferred_language(request)
-            if preferred_language not in map(lambda lang: lang[0], settings.LANGUAGES):
-                preferred_language = settings.LANGUAGE_CODE
-
             preferred_language_modified = False
 
             path_language, prefix, path = get_language_from_path( request.path )
