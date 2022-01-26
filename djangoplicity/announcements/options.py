@@ -165,12 +165,14 @@ class AnnouncementOptions( ArchiveOptions ):
         videos = related_archive_items( Announcement.related_videos, obj, has_main_visual=False )
         comparisons = related_archive_items( Announcement.related_comparisons, obj, has_main_visual=False )
         main_visual = main_visual_translated(obj.main_visual, images + videos)
+        main_image_comparison = main_visual_translated(obj.main_image_comparison, comparisons)
 
         # # main_visual =
         # from djangoplicity.media.models.images import Image
         # main_visual = Image.objects.language(obj.lang).get(source=obj.main_visual)
         return {
             'main_visual': main_visual,
+            'main_image_comparison': main_image_comparison,
             'images': images,
             'videos': videos,
             'comparisons': comparisons,
