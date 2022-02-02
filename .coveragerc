@@ -7,3 +7,19 @@ omit =
   djangoplicity/archives/contrib/satchmo/*
   djangoplicity/sphinxconf/*
   djangoplicity/crosslinks/*
+  djangoplicity/products/*
+  djangoplicity/test/*
+  test_project/*
+  djangoplicity/*/test*
+  manage.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
