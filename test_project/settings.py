@@ -74,10 +74,22 @@ DATABASES = {
         'NAME': 'djangoplicity',
         'USER': 'djangoplicity',
         'PASSWORD': 'djangoplicity',
-        'HOST': '127.0.0.1',
+        'HOST': 'djangoplicity-db',
         'PORT': '5432',
     }
 }
+
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'djangoplicity',
+            'USER': 'djangoplicity',
+            'PASSWORD': 'djangoplicity',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation
