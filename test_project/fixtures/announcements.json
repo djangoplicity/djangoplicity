@@ -1,0 +1,93 @@
+[
+  {
+    "model": "announcements.webupdatetype",
+    "pk": 1,
+    "fields": {
+      "name": "type1"
+    }
+  },
+  {
+    "model": "announcements.webupdate",
+    "pk": "web-update-1",
+    "fields": {
+      "title": "Test Web Update",
+      "link": "https://www.djangoplicity.com/web-update-1",
+      "description": "",
+      "type": 1,
+      "release_date": "2022-02-02T23:33:02.531",
+      "published": true,
+      "last_modified": "2022-02-02T23:33:02.534",
+      "created": "2022-02-02T23:33:02.534",
+      "release_task_id": null,
+      "embargo_task_id": null,
+      "checksums": null
+    }
+  },
+  {
+    "model": "announcements.announcementtype",
+    "pk": 1,
+    "fields": {
+      "name": "public announcement"
+    }
+  },
+  {
+    "model": "announcements.announcement",
+    "pk": "test-ann",
+    "fields": {
+      "lang": "en",
+      "source": null,
+      "translation_ready": false,
+      "title": "Test Announcement",
+      "subtitle": "This a unit test fixture",
+      "description": "<p>Test announcement content</p>",
+      "contacts": "",
+      "links": "",
+      "featured": true,
+      "announcement_type": 1,
+      "release_date": "2022-02-02T22:42:33",
+      "embargo_date": null,
+      "published": true,
+      "last_modified": "2022-02-03T00:49:28.075",
+      "created": "2022-02-02T22:44:04.991",
+      "release_task_id": "fb820b53-e195-4723-a1e4-328f308f7ead",
+      "embargo_task_id": null,
+      "checksums": null
+    }
+  },
+  {
+    "model": "announcements.announcementimage",
+    "pk": 1,
+    "fields": {
+      "announcement": "test-ann",
+      "order": null,
+      "main_visual": true,
+      "override_id": null,
+      "hide": false,
+      "archive_item": "image-1"
+    }
+  },
+  {
+    "model": "announcements.announcementvideo",
+    "pk": 1,
+    "fields": {
+      "announcement": "test-ann",
+      "order": null,
+      "main_visual": true,
+      "override_id": null,
+      "hide": false,
+      "archive_item": "video-1"
+    }
+  },
+  {
+    "model": "announcements.announcementimagecomparison",
+    "pk": 1,
+    "fields": {
+      "announcement": "test-ann",
+      "order": null,
+      "main_visual": true,
+      "override_id": null,
+      "hide": false,
+      "archive_item": "comparison-1"
+    }
+  }
+]

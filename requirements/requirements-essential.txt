@@ -27,6 +27,10 @@ pika
 openpyxl
 django-tinymce4-lite == 1.7.2
 
+# JSMin latest version doesn't support Python 2
+# fix error in admin unicode argument expected, got 'str'
+jsmin==2.2.2
+
 # Last version that has dependencies that support python 2.7
 oauth2client==1.4.11
 
