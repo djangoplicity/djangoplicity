@@ -74,7 +74,7 @@ DATABASES = {
         'NAME': 'djangoplicity',
         'USER': 'djangoplicity',
         'PASSWORD': 'djangoplicity',
-        'HOST': 'djangoplicity-db',
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
