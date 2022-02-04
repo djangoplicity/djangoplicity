@@ -34,8 +34,7 @@ TEMPLATES = [
 ]
 
 
-class ArchiveTests(BasicTestCase):
-    fixtures = ['media']
+class ArchiveContextProcessorTests(BasicTestCase):
 
     @override_settings(TEMPLATES=TEMPLATES, INTERNAL_IPS=['127.0.0.1'])
     def test_context_processors(self):
