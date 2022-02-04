@@ -47,6 +47,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            os.path.join(BASE_DIR, 'djangoplicity', 'templates'),
             os.path.join(DIRNAME, 'templates')
         ],
         'APP_DIRS': True,
