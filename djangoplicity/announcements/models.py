@@ -283,6 +283,7 @@ class Announcement( ArchiveModel, TranslationModel ):
             rename_fks = (
                 ('announcements_announcement', 'source_id'),
                 ('announcements_announcementimage', 'announcement_id'),
+                ('announcements_announcementimagecomparison', 'announcement_id'),
                 ('announcements_announcementvideo', 'announcement_id'),
                 ('media_image', 'release_date_owner'),
                 ('media_video', 'release_date_owner'),
