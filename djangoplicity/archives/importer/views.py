@@ -168,6 +168,9 @@ def manage_archive_imports(request, archive_model, archive_options):
 
                 # Find or create model object and associated file data
                 obj_id = frm['id']
+                # Check object id is in files suitable for import
+                if obj_id not in files:
+                    continue
                 data = files[obj_id]
                 obj = data["obj"] if data["obj"] else archive_model()
 
