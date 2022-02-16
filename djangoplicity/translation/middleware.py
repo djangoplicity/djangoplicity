@@ -77,13 +77,18 @@ from django.conf import settings
 from django.core.urlresolvers import resolve, Resolver404
 from django.shortcuts import redirect
 from django.utils import translation
-
+from django.utils.http import urlencode
 from djangoplicity.privacy.utils import privacy_accepted
 from djangoplicity.translation.models import get_language_from_path, \
         get_path_for_language, get_querystring_from_request
 
 
 LANGUAGE_COOKIE_NAME = 'preferred_language'
+
+if hasattr(settings, 'DP_SET_NOCACHE_LANG_REDIRECT'):
+    NO_CACHE = settings.DP_SET_NOCACHE_LANG_REDIRECT
+else:
+    NO_CACHE = False
 
 
 def _is_just_media(path):
@@ -207,9 +212,16 @@ class LocaleMiddleware(object):
                     path = request.path_info
                     querystring = get_querystring_from_request(request)
 
+                    if NO_CACHE and 'nocache' not in request.GET:
+                        nocache_query = urlencode({'nocache': 'true'})
+                    else:
+                        nocache_query = ''
+
                     if querystring:
                         # Add query string to redirect path if any
-                        path += '?' + querystring
+                        path += '?' + querystring + nocache_query
+                    elif nocache_query:
+                        path += '?' + nocache_query
 
                     return redirect(get_path_for_language(preferred_language, path))
 
