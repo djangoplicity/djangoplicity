@@ -77,7 +77,7 @@ from django.conf import settings
 from django.core.urlresolvers import resolve, Resolver404
 from django.shortcuts import redirect
 from django.utils import translation
-
+from django.utils.http import urlencode
 from djangoplicity.privacy.utils import privacy_accepted
 from djangoplicity.translation.models import get_language_from_path, \
         get_path_for_language, get_querystring_from_request
@@ -207,9 +207,13 @@ class LocaleMiddleware(object):
                     path = request.path_info
                     querystring = get_querystring_from_request(request)
 
+                    nocache_query = urlencode({'nocache': 'true'}) if 'nocache' not in request.GET else ''
+
                     if querystring:
                         # Add query string to redirect path if any
-                        path += '?' + querystring
+                        path += '?' + querystring + nocache_query
+                    elif nocache_query:
+                        path += '?' + nocache_query
 
                     return redirect(get_path_for_language(preferred_language, path))
 
