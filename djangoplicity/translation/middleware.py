@@ -85,6 +85,11 @@ from djangoplicity.translation.models import get_language_from_path, \
 
 LANGUAGE_COOKIE_NAME = 'preferred_language'
 
+if hasattr(settings, 'DP_SET_NOCACHE_LANG_REDIRECT'):
+    NO_CACHE = settings.DP_SET_NOCACHE_LANG_REDIRECT
+else:
+    NO_CACHE = False
+
 
 def _is_just_media(path):
     return path.startswith(settings.MEDIA_URL) or path.startswith(settings.STATIC_URL)
@@ -207,7 +212,10 @@ class LocaleMiddleware(object):
                     path = request.path_info
                     querystring = get_querystring_from_request(request)
 
-                    nocache_query = urlencode({'nocache': 'true'}) if 'nocache' not in request.GET else ''
+                    if NO_CACHE and 'nocache' not in request.GET:
+                        nocache_query = urlencode({'nocache': 'true'})
+                    else:
+                        nocache_query = ''
 
                     if querystring:
                         # Add query string to redirect path if any
