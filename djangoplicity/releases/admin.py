@@ -194,7 +194,7 @@ class ReleaseDisplaysAdmin(DisplaysAdmin):
 
 class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmin, RenameAdmin, ArchiveAdmin ):
     list_display = ( 'id', 'release_type', 'title', 'published', 'release_date', 'embargo_date', view_link('releases') )
-    list_filter = ( 'release_type', 'published', 'last_modified', 'created', 'release_date', 'embargo_date', 'principal_investigator' )
+    list_filter = ( 'release_type', 'published', 'last_modified', 'created', 'release_date', 'embargo_date', 'web_category', 'principal_investigator' )
     list_editable = ( 'release_type', 'title', 'published', )
     search_fields = ( 'id', 'old_ids', 'release_type__name', 'title', 'release_city', 'headline',
                     'description', 'notes', 'more_information', 'links', 'subject_name__name', 'facility__name', 'disclaimer', 'meltwater_keywords', 'publications__bibcode', 'kids_title', 'kids_description' )
@@ -203,6 +203,7 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
                     ( None, {'fields': ( 'id', ('release_type'), 'release_city' ) } ),
                     ( 'Language', {'fields': ( 'lang', ) } ),
                     ( 'Publishing', {'fields': ( 'published', ('release_date', 'embargo_date', ),), } ),
+                    ( 'Web Category', {'fields': ('web_category',) }),
                     ( 'Release', {'fields': ( 'title', 'subtitle', 'headline', 'description', 'notes', 'more_information', 'links', 'disclaimer' ), } ),
                     ( 'Classification', {'fields': ( 'subject_category', 'subject_name', 'facility', 'instruments', 'publications' ), 'description': mark_safe("<strong>Typical subject category:</strong><ol><li>Solar System: Planet, Interplanetary Body, Star, Sky Phenomenon, Technology</li><li>Milky Way: Planet, Interplanetary Body, Star, Nebula</li><li>Local Universe (z&lt;=0.1): Star, Nebula, Galaxy</li><li>Early Universe (z&gt;0.1): Galaxy, Cosmology</li><li>Unspecified: any (non-astronomical in nature - e.g. artwork and photographic)</li><li>Local use only: Mission Graphics</li><ol>") } ),
                     ( 'Kids', {'fields': ( 'kids_title', 'kids_description', 'kids_image') } ),
@@ -218,7 +219,7 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
                 #ReleaseSubjectNameInlineAdmin, ReleaseFacilityInlineAdmin,
                 ReleaseContactInlineAdmin, ReleaseImageInlineAdmin, ReleaseVideoInlineAdmin, ReleaseImageComparisonInlineAdmin, ReleaseStockImageInlineAdmin] + ([ReleaseProxyInlineAdmin] if settings.USE_I18N else [])
     #radio_fields = {"release_type": admin.VERTICAL }
-    filter_horizontal = ('subject_category', 'subject_name', 'facility', 'instruments', 'publications' )
+    filter_horizontal = ('web_category', 'subject_category', 'subject_name', 'facility', 'instruments', 'publications' )
     raw_id_fields = ('kids_image',)
 
     def get_queryset( self, request ):
