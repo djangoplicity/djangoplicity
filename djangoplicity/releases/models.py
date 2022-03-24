@@ -47,7 +47,7 @@ from djangoplicity.archives.utils import propagate_release_date, \
     release_date_change_check
 from djangoplicity.media.models import Image, Video
 from djangoplicity.metadata.translation import fields as metadatafields_trans
-from djangoplicity.metadata.models import ExtendedContact, Category
+from djangoplicity.metadata.models import ExtendedContact, Program
 from djangoplicity.translation.models import TranslationModel, \
     translation_reverse
 from djangoplicity.translation.fields import TranslationForeignKey, \
@@ -121,7 +121,7 @@ class Release( ArchiveModel, TranslationModel ):
     # Subtitle of of the press release
     subtitle = models.CharField( max_length=255, blank=True, help_text=_(u"Optional subtitle to be shown just above the headline.") )
 
-    web_category = models.ManyToManyField(Category, limit_choices_to=Q(type__name='News'), blank=True)
+    programs = models.ManyToManyField(Program, limit_choices_to=Q(type__name='Releases'), blank=True)
 
     # Name of the Principal Investigator
     principal_investigator = models.CharField( max_length=255, blank= True, null=True, help_text=_(u'Name of the principal investigator') )

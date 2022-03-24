@@ -329,6 +329,33 @@ class Category( models.Model ):
         verbose_name_plural = _('Web Categories')
 
 
+class Program(models.Model):
+    """
+    Model for storing Programs
+    """
+    url = models.SlugField( db_index=True, blank=False, null=False, verbose_name=_("URL"), )
+    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies.") )
+    name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Title of query to be displayed to the user.") )
+    logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
+    enabled = models.BooleanField(default=True, )
+
+    def __unicode__(self):
+        result = self.name
+        if not self.enabled:
+            result += ' (disabled)'
+        return result
+
+    def get_absolute_url(self):
+        return reverse_func('%s_query_program' % self.type.name.lower(),
+                args=[self.url], **reverse_kwargs())
+
+    class Meta:
+        ordering = ('type', 'name',)
+        unique_together = ('url', 'type',)
+        verbose_name = _('Program')
+        verbose_name_plural = _('Programs')
+
+
 class TaggingStatus( models.Model ):
     """
     Model for tagging images with a tagging state
