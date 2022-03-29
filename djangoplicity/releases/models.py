@@ -121,7 +121,7 @@ class Release( ArchiveModel, TranslationModel ):
     # Subtitle of of the press release
     subtitle = models.CharField( max_length=255, blank=True, help_text=_(u"Optional subtitle to be shown just above the headline.") )
 
-    programs = models.ManyToManyField(Program, limit_choices_to=Q(type__name='Releases'), blank=True)
+    programs = TranslationManyToManyField(Program, limit_choices_to=Q(type__name='Releases'), blank=True, only_sources=True)
 
     # Name of the Principal Investigator
     principal_investigator = models.CharField( max_length=255, blank= True, null=True, help_text=_(u'Name of the principal investigator') )
