@@ -363,6 +363,17 @@ class ArchiveBrowser( object ):
                 x.selected = True
 
         #
+        # Programs
+        #
+        from djangoplicity.metadata.models import Program
+        category_type = options.urlname_prefix.capitalize()  # urlname_prefix is either 'releases'
+        programs = Program.objects.filter(type__name=category_type, enabled=True).select_related('type')
+        selected_web_program = kwargs.get('stringparam', None)
+        for x in programs:
+            if x.url == selected_web_program:
+                x.selected = True
+
+        #
         # Request context setup
         #
         context = {
@@ -391,6 +402,7 @@ class ArchiveBrowser( object ):
             'crosslinks_subject': crosslinks_subject,
             'right_column_page': right_column_page,
             'web_categories': web_categories,
+            'programs': programs,
         }
 
         #

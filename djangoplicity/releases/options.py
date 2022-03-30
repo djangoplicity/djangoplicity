@@ -48,6 +48,7 @@ from djangoplicity.archives.contrib.templater import DisplayTemplate
 from djangoplicity.archives.utils import related_archive_items, \
     main_visual_translated
 from djangoplicity.archives.views import SerializationDetailView
+from djangoplicity.releases.queries import ProgramPublicQuery
 from djangoplicity.metadata.archives.info import subject_name, subject_category, \
     facility, instruments
 from djangoplicity.metadata.models import Instrument
@@ -106,6 +107,11 @@ class ReleaseOptions( ArchiveOptions ):
 
     class Queries( object ):
         default = AllPublicQuery( browsers=( 'normal', 'viewall', 'json', 'minijson', 'ical' ), verbose_name=ugettext_noop("Press Releases"), feed_name="default", select_related='release_type' )
+        program = ProgramPublicQuery(relation_field='programs',
+                                     browsers=('normal', 'json', 'minijson' ),
+                                     verbose_name=ugettext_noop("Press Releases: %(title)s"),
+                                     extra_templates=[],
+                                     category_type='Releases', feed_name='programs')
         embargo = EmbargoQuery( browsers=( 'normal', 'viewall', 'json', 'minijson', 'ical'  ), verbose_name=ugettext_noop("Embargoed Press Releases"), select_related='release_type' )
         staging = StagingQuery( browsers=( 'normal', 'viewall', 'json', 'minijson', 'ical'  ), verbose_name=ugettext_noop("Press Releases (staging)"), select_related='release_type' )
         year = YearQuery( browsers=( 'normal', 'viewall', 'json', 'minijson', 'ical' ), verbose_name=ugettext_noop("Press Releases %d"), feed_name="default", select_related='release_type' )

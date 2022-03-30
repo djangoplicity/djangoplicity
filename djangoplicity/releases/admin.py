@@ -36,6 +36,7 @@ from django.utils.safestring import mark_safe
 from djangoplicity.archives.contrib.admin.defaults import DisplaysAdmin, ArchiveAdmin, \
     RenameAdmin, SyncTranslationAdmin, TranslationDuplicateAdmin, view_link
 from djangoplicity.contrib.admin import CleanHTMLAdmin, DjangoplicityModelAdmin
+from djangoplicity.metadata.models import Program
 from djangoplicity.releases.models import Release, KidsRelease, ReleaseProxy, \
     ReleaseType, ReleaseContact, ReleaseTranslationContact, ReleaseImage, \
     ReleaseVideo, Country, ReleaseImageComparison, \
@@ -192,9 +193,33 @@ class ReleaseDisplaysAdmin(DisplaysAdmin):
     options = ReleaseOptions
 
 
-class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmin, RenameAdmin, ArchiveAdmin ):
-    list_display = ( 'id', 'release_type', 'title', 'published', 'release_date', 'embargo_date', view_link('releases') )
-    list_filter = ( 'release_type', 'published', 'last_modified', 'created', 'release_date', 'embargo_date', 'principal_investigator' )
+# ============================================
+# Mixin
+# ============================================
+class SetProgramMixin( object ):
+    def action_set_program( self, request, queryset, program=None ):
+        """
+        Action method for set programs to Press Releases
+        """
+        if program:
+            for obj in queryset:
+                obj.programs.add(program)
+
+    def _make_program_action( self, program ):
+        """
+        Helper method to define an admin action for a specific group
+        """
+        name = 'set_group_%s' % program.url
+
+        def action(modeladmin, request, queryset):
+            return modeladmin.action_set_program( request, queryset, program=program )
+
+        return ( name, ( action, name, "Set program %s" % str(program) ) )
+
+
+class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmin, RenameAdmin, ArchiveAdmin, SetProgramMixin ):
+    list_display = ( 'id', 'release_type', 'title', 'get_programs', 'published', 'release_date', 'embargo_date', view_link('releases') )
+    list_filter = ( 'release_type', 'published', 'last_modified', 'created', 'release_date', 'embargo_date', 'principal_investigator', 'programs',)
     list_editable = ( 'release_type', 'title', 'published', )
     search_fields = ( 'id', 'old_ids', 'release_type__name', 'title', 'release_city', 'headline',
                     'description', 'notes', 'more_information', 'links', 'subject_name__name', 'facility__name', 'disclaimer', 'meltwater_keywords', 'publications__bibcode', 'kids_title', 'kids_description' )
@@ -203,6 +228,7 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
                     ( None, {'fields': ( 'id', ('release_type'), 'release_city' ) } ),
                     ( 'Language', {'fields': ( 'lang', ) } ),
                     ( 'Publishing', {'fields': ( 'published', ('release_date', 'embargo_date', ),), } ),
+                    ( 'Programs', {'fields': ('programs',) }),
                     ( 'Release', {'fields': ( 'title', 'subtitle', 'headline', 'description', 'notes', 'more_information', 'links', 'disclaimer' ), } ),
                     ( 'Classification', {'fields': ( 'subject_category', 'subject_name', 'facility', 'instruments', 'publications' ), 'description': mark_safe("<strong>Typical subject category:</strong><ol><li>Solar System: Planet, Interplanetary Body, Star, Sky Phenomenon, Technology</li><li>Milky Way: Planet, Interplanetary Body, Star, Nebula</li><li>Local Universe (z&lt;=0.1): Star, Nebula, Galaxy</li><li>Early Universe (z&gt;0.1): Galaxy, Cosmology</li><li>Unspecified: any (non-astronomical in nature - e.g. artwork and photographic)</li><li>Local use only: Mission Graphics</li><ol>") } ),
                     ( 'Kids', {'fields': ( 'kids_title', 'kids_description', 'kids_image') } ),
@@ -218,8 +244,11 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
                 #ReleaseSubjectNameInlineAdmin, ReleaseFacilityInlineAdmin,
                 ReleaseContactInlineAdmin, ReleaseImageInlineAdmin, ReleaseVideoInlineAdmin, ReleaseImageComparisonInlineAdmin, ReleaseStockImageInlineAdmin] + ([ReleaseProxyInlineAdmin] if settings.USE_I18N else [])
     #radio_fields = {"release_type": admin.VERTICAL }
-    filter_horizontal = ('subject_category', 'subject_name', 'facility', 'instruments', 'publications' )
+    filter_horizontal = ( 'programs', 'subject_category', 'subject_name', 'facility', 'instruments', 'publications' )
     raw_id_fields = ('kids_image',)
+
+    def get_programs(self, obj):
+        return ",\n".join([program.name for program in obj.programs.all()])
 
     def get_queryset( self, request ):
         qs = super( ReleaseAdmin, self ).get_queryset( request )
@@ -238,6 +267,14 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
             else:
                 setattr(request, '%s_choices_cache' % db_field.name, formfield.choices)
         return formfield
+
+    def get_actions( self, request ):
+        """
+        Dynamically add admin actions for setting the programs
+        """
+        actions = super( ReleaseAdmin, self ).get_actions( request )
+        actions.update( dict( [self._make_program_action( c ) for c in Program.objects.filter( type__name='Releases' ).order_by( 'name' )] ) )
+        return actions
 
     class Media:
         css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field
