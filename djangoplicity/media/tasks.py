@@ -795,6 +795,8 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendta
         cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 {output}'.format(position=position, input=path, output=output)
         if force_generation:
             cmd += ' -y' # To overwrite image
+        else:
+            cmd += ' -n'  # Not overwrite image
 
         logger.info(cmd)
         # Check output raises and error if return code of command is not zero and returns the error as a byte string
