@@ -10,3 +10,35 @@ omit =
   djangoplicity/archives/contrib/satchmo/*
   djangoplicity/sphinxconf/*
   djangoplicity/crosslinks/*
+  djangoplicity/products/*
+  djangoplicity/test/*
+  test_project/*
+  djangoplicity/*/test*
+  manage.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise Exception
+    raise AssertionError
+    raise NotImplementedError
+    raise ImproperlyConfigured
+    raise ValueError
+    raise Http404
+    AttributeError
+    except ImportError
+    except IOError
+    except OSError
+    except KeyError
+    except NoReverseMatch
+    if 0:
+    if __name__ == .__main__.:
+    if connection.vendor == 'mysql'
+    except InvalidPage
+    return None
+    return {}
+    return ''
+

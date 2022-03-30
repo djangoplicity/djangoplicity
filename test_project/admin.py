@@ -2,6 +2,7 @@ from djangoplicity.contrib.admin.sites import AdminSite
 from djangoplicity.contrib.admin.discover import autoregister
 
 # Import all admin interfaces we need
+import django.contrib.sites.admin
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.sites.models import Site
@@ -19,7 +20,6 @@ import importlib
 
 admin_site = AdminSite(name="admin_site")
 adminlogs_site = AdminSite(name="adminlogs_site")
-adminshop_site = AdminSite(name="adminshop_site")
 
 admin_sites_modules_config = [
     {
@@ -33,20 +33,12 @@ admin_sites_modules_config = [
             'djangoplicity.announcements.admin',
             'djangoplicity.media.admin',
             'djangoplicity.releases.admin',
-            # 'djangoplicity.products.admin',
-            # 'djangoplicity.science.admin',
-            # 'djangoplicity.mailinglists.admin',
-            # 'djangoplicity.newsletters.admin',
-            # 'djangoplicity.customsearch.admin',
-            # 'djangoplicity.contacts.admin',
-            # 'djangoplicity.eventcalendar.admin',
-            # 'djangoplicity.events.admin',
         ],
     },
     {
         'site': adminlogs_site,
         'modules': [
-            # 'djangoplicity.actions.admin'
+            'djangoplicity.admincomments.admin'
         ]
     }
 ]
@@ -66,8 +58,3 @@ reports_admin.advanced_register_with_admin(admin_site)
 
 adminlogs_site.register(Site, SiteAdmin)
 adminlogs_site.register(Redirect, RedirectAdmin)
-
-# ADMIN SHOP SITE MODULES
-# from djangoplicity.archives.contrib.satchmo.admin import satchmo_admin
-# adminshop_site = satchmo_admin(adminshop_site)
-# autoregister(adminshop_site, djangoplicity.archives.contrib.satchmo.freeorder.admin)

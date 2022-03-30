@@ -47,6 +47,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            os.path.join(BASE_DIR, 'djangoplicity', 'templates'),
             os.path.join(DIRNAME, 'templates')
         ],
         'APP_DIRS': True,
@@ -70,10 +71,26 @@ WSGI_APPLICATION = 'test_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'djangoplicity',
+        'USER': 'djangoplicity',
+        'PASSWORD': 'djangoplicity',
+        'HOST': 'djangoplicity-db',
+        'PORT': '5432',
     }
 }
+
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'djangoplicity',
+            'USER': 'djangoplicity',
+            'PASSWORD': 'djangoplicity',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation
@@ -116,6 +133,6 @@ STATIC_URL = '/static/'
 
 # Email config
 EMAIL_HOST = 'smtp.mailtrap.io'
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = '9bf800ee730746'
+EMAIL_HOST_PASSWORD = 'f3162e99c9f248'
 EMAIL_PORT = '2525'

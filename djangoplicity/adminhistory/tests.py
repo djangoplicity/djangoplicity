@@ -28,12 +28,31 @@
 # IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
+from django.contrib.contenttypes.models import ContentType
+
+from djangoplicity.test.base_tests import BasicTestCase
+from django.contrib.admin.models import LogEntry
 
 
-from django.test import TestCase
-from djangoplicity.test.testcases import AdminTestCase
+class AdminHistoryTestCase(BasicTestCase):
 
-class AdminHistoryTestCase(AdminTestCase):
+    def setUp(self):
+        super(AdminHistoryTestCase, self).setUp()
+        data = {
+            'action_flag': 1,
+            'change_message': u'[{"added": {}}]',
+            'content_type': ContentType.objects.get(model='user'),
+            'id': self.admin_user.id,
+            'object_id': u'7',
+            'object_repr': 'User object',
+            'user': self.admin_user
+        }
+        entry = LogEntry.objects.create(**data)
+        entry.save()
+
     def test_adminhistory_index(self):
-        response = self.client.get('/admin/history/')
+        response = self.client.get('/admin/history/?s=user&u=5')
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/admin/history/?s=user&u=5&p=x')
         self.assertEqual(response.status_code, 200)

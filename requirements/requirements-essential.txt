@@ -27,6 +27,10 @@ pika
 openpyxl
 django-tinymce4-lite == 1.7.2
 
+# JSMin latest version doesn't support Python 2
+# fix error in admin unicode argument expected, got 'str'
+jsmin==2.2.2
+
 # Last version that has dependencies that support python 2.7
 oauth2client==1.4.11
 
@@ -38,3 +42,9 @@ celery==4.3.0
 
 # Asset packaging library for Django
 django-pipeline==1.6.14
+
+# Faker
+Faker==3.0.1
+
+# The Django Debug Toolbar is a configurable set of panels that display various debug information
+django-debug-toolbar==1.11

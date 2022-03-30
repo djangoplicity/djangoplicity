@@ -3,3 +3,8 @@ coverage == 5.1
 sqlparse
 sqlalchemy
 factory-boy==2.12.0
+
+# mock is a library for testing in Python.
+# It allows you to replace parts of your system under test with mock objects and
+# make assertions about how they have been used.
+mock==3.0.5

@@ -114,6 +114,10 @@ ARCHIVE_ROOT = 'archives/'
 IMAGES_ARCHIVE_ROOT = 'archives/images/'
 VIDEOS_ARCHIVE_ROOT = 'archives/videos/'
 RELEASE_ARCHIVE_ROOT = 'archives/releases/'
+IMAGECOMPARISON_ARCHIVE_ROOT = 'archives/imagecomparisons/'
+ANNOUNCEMENTS_ARCHIVE_ROOT = 'archives/announcements/'
+NEWSLETTERS_ARCHIVE_ROOT = 'archives/newsletters/'
+SCIENCEANNOUNCEMENTS_ARCHIVE_ROOT = 'archives/science/'
 
 ARCHIVE_URL_QUERY_PREFIX = 'archive'
 ARCHIVE_URL_DETAIL_PREFIX = ''
@@ -130,6 +134,15 @@ ARCHIVES = (
     ('djangoplicity.media.models.ImageComparison', 'djangoplicity.media.options.ImageComparisonOptions'),
 )
 
+# MEDIA
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+
+# STATIC FILES (CSS, JavaScript, Images)
+# See: https://docs.djangoproject.com/en/1.11/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+
 # Allows templates coverage
 TEMPLATES[0]['OPTIONS']['debug'] = True
 
@@ -139,7 +152,7 @@ CELERY_IMPORTS = [
     "djangoplicity.celery.tasks",
 ]
 # Task result backend
-CELERY_RESULT_BACKEND = "amqp"	
+CELERY_RESULT_BACKEND = "amqp"
 CELERY_BROKER_URL = 'amqp://guest:guest@broker:5672/'
 # Avoid infinite wait times and retries
 CELERY_BROKER_TRANSPORT_OPTIONS = {
