@@ -38,7 +38,7 @@ oauth2client==1.4.11
 psycopg2-binary==2.7.7
 
 # Asynchronous Task Queue
-celery==4.3.0
+celery==5.2.2
 
 # Asset packaging library for Django
 django-pipeline==1.6.14
