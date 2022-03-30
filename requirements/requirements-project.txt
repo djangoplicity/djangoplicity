@@ -1,2 +1,5 @@
 # Celery Monitoring
 flower==0.9.3
+
+# Satchmo
+git+https://github.com/djangoplicity/satchmo@master

@@ -46,16 +46,15 @@ services:
     ports:
       - "5556:5555"
   
-  # TODO: Currently not being used, configure test_project to use this database
-  # db:
-  #   image: postgres:10.5
-  #   container_name: djangoplicity-db
-  #   environment:
-  #     POSTGRES_DB: djangoplicity
-  #     POSTGRES_USER: djangoplicity
-  #     POSTGRES_PASSWORD: djangoplicity
-  #   ports:
-  #     - "60000:5432"
+  db:
+    image: postgres:10.5
+    container_name: djangoplicity-db
+    environment:
+      POSTGRES_DB: djangoplicity
+      POSTGRES_USER: djangoplicity
+      POSTGRES_PASSWORD: djangoplicity
+    ports:
+      - "60000:5432"
 
 volumes:
   import:
