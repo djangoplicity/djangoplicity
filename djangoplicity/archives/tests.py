@@ -5,12 +5,20 @@
 #
 #
 from datetime import datetime, timedelta
+from django.contrib.admin.options import get_content_type_for_model
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.test import override_settings
 import djangoplicity.archives as package
 from djangoplicity.announcements.models import Announcement, AnnouncementImage, AnnouncementProxy
 from djangoplicity.archives.base import resource_deletion_handler, ArchiveModel
+from djangoplicity.archives.contrib.admin import ArchiveAdmin, RenameAdmin
+from djangoplicity.archives.contrib.admin.defaults import TranslationDuplicateAdmin, SyncTranslationAdmin
+from djangoplicity.contrib import admin as dpadmin
 from djangoplicity.archives.resources import ImageResourceManager
 from django.db import models
+from django.contrib.admin.models import ADDITION, CHANGE, DELETION, LogEntry
+from djangoplicity.contrib.admin.sites import AdminSite
 from djangoplicity.media.models.images import Image
 from djangoplicity.test.base_tests import BasicTestCase
 from django.http import HttpRequest
@@ -23,6 +31,12 @@ try:
 except ImportError:
     from unittest.mock import patch, MagicMock, PropertyMock
 
+class MockRequest:
+    pass
+
+class MockSuperUser:
+    def has_perm(self, perm, obj=None):
+        return True
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -222,3 +236,65 @@ class ArchiveBaseTestCase(BasicTestCase):
         instance.set_embargo_date_task()
 
         self.assertNotEqual(instance.embargo_task_id, 'a85bedd6-37aa-4363-b149-93f0c18ed159')
+
+
+class ArchiveContribAdmin(BasicTestCase):
+    fixtures = ['media', 'announcements']
+
+    def setUp(self):
+        super(ArchiveContribAdmin, self).setUp()
+        self.site = AdminSite()
+
+        class TestArchiveAdmin(RenameAdmin, dpadmin.DjangoplicityModelAdmin,
+                               TranslationDuplicateAdmin, SyncTranslationAdmin, ArchiveAdmin):
+            list_display = ('id', 'title', 'published')
+            list_filter = ('published', 'featured')
+            list_editable = ('title',)
+            search_fields = ('id', 'title', 'description',)
+            date_hierarchy = 'release_date'
+            ordering = ('-release_date', '-last_modified',)
+            richtext_fields = ('description', 'contacts', 'links')
+
+        self.model_admin = TestArchiveAdmin(Image, self.site)
+
+    def test_model_admin_str(self):
+        self.assertEqual(str(self.model_admin), "media.TestArchiveAdmin")
+
+    def test_default_attributes(self):
+        self.assertEqual(self.model_admin.actions, [])
+        self.assertEqual(self.model_admin.inlines, [])
+
+    def test_log_actions(self):
+        mock_request = MockRequest()
+        mock_request.user = self.admin_user
+        image = Image.objects.first()
+        content_type = get_content_type_for_model(image)
+
+        tests = (
+            (self.model_admin.log_addition, ADDITION, {"added": {}}),
+            (self.model_admin.log_change, CHANGE, {"changed": {"fields": ["name", "bio"]}}),
+            (self.model_admin.log_deletion, DELETION, str(image)),
+        )
+
+        for method, flag, message in tests:
+            created = method(mock_request, image, message)
+            fetched = LogEntry.objects.filter(action_flag=flag).latest("id")
+            self.assertEqual(created, fetched)
+            self.assertEqual(fetched.action_flag, flag)
+            self.assertEqual(fetched.content_type, content_type)
+            self.assertEqual(fetched.object_id, str(image.pk))
+            self.assertEqual(fetched.user, mock_request.user)
+            if flag == DELETION:
+                self.assertEqual(fetched.change_message, "")
+                self.assertEqual(fetched.object_repr, message)
+            else:
+                self.assertEqual(fetched.change_message, str(message))
+                self.assertEqual(fetched.object_repr, str(image))
+
+    @override_settings(ARCHIVES=(('djangoplicity.media.models.Image', 'djangoplicity.media.options.ImageOptions'),))
+    @patch('djangoplicity.archives.importer.utils.rerun_import_actions')
+    def test_reimport_action(self, rerun_import_actions_mock):
+        mock_request = MockRequest()
+        mock_request.user = self.admin_user
+        self.model_admin.action_reimport(mock_request, Image.objects.all())
+        self.assertFalse(rerun_import_actions_mock.called)
