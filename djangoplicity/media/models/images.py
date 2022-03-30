@@ -433,7 +433,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     title = metadatafields.AVMTitleField()
     headline = metadatafields.AVMHeadlineField()
     description = metadatafields.AVMDescriptionField()
-    web_category = models.ManyToManyField(Category, limit_choices_to=Q(type__name='Images'), blank=True)
+    web_category = TranslationManyToManyField(Category, limit_choices_to=Q(type__name='Images'), blank=True, only_sources=True)
     subject_category = metadatafields_trans.TranslationAVMSubjectCategoryField()
     subject_name = metadatafields_trans.TranslationAVMSubjectNameField()
 
