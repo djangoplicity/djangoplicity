@@ -439,8 +439,11 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
             add_admin_history(self, 'Setting YouTube video privacy to "public" at release time')
 
     def duration_in_seconds(self):
-        h, m, s, f = self.file_duration.split(':')
-        return int(h) * 3600 + int(m) * 60 + int(s)
+        if self.file_duration:
+            h, m, s, f = self.file_duration.split(':')
+            return int(h) * 3600 + int(m) * 60 + int(s)
+        else:
+            return 0
 
     def get_youtube_description(self):
         '''

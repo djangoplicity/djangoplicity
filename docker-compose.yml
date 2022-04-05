@@ -16,12 +16,14 @@ services:
   web:
     <<: *common
     container_name: djangoplicity
+    platform: linux/amd64
     command: ["./scripts/command-dev.sh"]
     ports:
       - "8001:8000"
   
   broker:
     image: rabbitmq:3.8.3
+    platform: linux/amd64
     container_name: djangoplicity-broker
     environment:
       RABBITMQ_DEFAULT_USER: guest
@@ -30,6 +32,7 @@ services:
   celery:
     <<: *common
     container_name: djangoplicity-celery
+    platform: linux/amd64
     command: ["python", "manage.py", "runcelery"] # Dev management command
     depends_on:
       - broker
@@ -38,6 +41,7 @@ services:
   flower:
     <<: *common
     container_name: djangoplicity-flower
+    platform: linux/amd64
     # TODO: Change url prefix to /admin/tasks when having nginx proxy
     command: ["celery", "--app=test_project", "--concurrency=8", "--db=/app/tmp/flowerdb", "--persistent", "--port=5555", "flower"]
     depends_on:
@@ -46,14 +50,15 @@ services:
     ports:
       - "5556:5555"
 
+  # TODO: Currently not being used, configure test_project to use this database
   db:
-   image: postgres:10.5
-   container_name: djangoplicity-db
-   environment:
+    image: postgres:10.5
+    container_name: djangoplicity-db
+    environment:
      POSTGRES_DB: djangoplicity
      POSTGRES_USER: djangoplicity
      POSTGRES_PASSWORD: djangoplicity
-   ports:
+    ports:
      - "60000:5432"
 
 volumes:
