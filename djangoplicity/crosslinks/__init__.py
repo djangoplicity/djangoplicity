@@ -17,11 +17,13 @@ ARCHIVE_CROSSLINKS = {
     'images': (
             ( 'eso.org', 'https://www.eso.org/public/images/' ),
             ( 'iau.org', 'http://www.iau.org/public_press/images/' ),
+            ( 'esahubble.org', 'http://www.esahubble.org/images/' ),
             ( 'spacetelescope.org', 'http://www.spacetelescope.org/images/' ),
         ),
     'videos': (
             ( 'eso.org', 'https://www.eso.org/public/videos/' ),
             ( 'iau.org', 'http://www.iau.org/public_press/videos/' ),
+            ( 'esahubble.org', 'http://www.esahubble.org/videos/' ),
             ( 'spacetelescope.org', 'http://www.spacetelescope.org/videos/' ),
         ),
     'potw': (
