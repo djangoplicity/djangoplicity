@@ -7,11 +7,13 @@ _ = lambda x: x
 ARCHIVE_CROSSLINKS = {
     'announcements': (
             ( 'eso.org', 'https://www.eso.org/public/announcements/' ),
+            ( 'esahubble.org', 'https://esahubble.org/announcements/' ),
             ( 'spacetelescope.org', 'http://www.spacetelescope.org/announcements/' ),
         ),
     'releases': (
             ( 'eso.org', 'https://www.eso.org/public/news/' ),
             ( 'iau.org', 'http://www.iau.org/public_press/news/' ),
+            ( 'esahubble.org', 'https://esahubble.org/news/' ),
             ( 'spacetelescope.org', 'http://www.spacetelescope.org/news/' ),
         ),
     'images': (
@@ -28,6 +30,7 @@ ARCHIVE_CROSSLINKS = {
         ),
     'potw': (
             ( 'eso.org', 'https://www.eso.org/public/images/potw/' ),
+            ( 'esahubble.org', 'https://esahubble.org/images/potw/' ),
             ( 'spacetelescope.org', 'http://www.spacetelescope.org/images/potw/' ),
         ),
     'posters': (
@@ -53,6 +56,7 @@ ARCHIVE_CROSSLINKS = {
         ),
     'newsletters': (
             ( 'eso.org', 'https://www.eso.org/public/newsletters/esonews/' ),
+            ( 'esahubble.org', 'https://esahubble.org/newsletters/' ),
             ( 'spacetelescope.org', 'http://www.spacetelescope.org/newsletters/hubblenews/' ),
         ),
     'periodicals': (
