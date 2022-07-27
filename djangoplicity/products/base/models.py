@@ -43,7 +43,7 @@ from djangoplicity.metadata.archives import fields as metadatafields
 from djangoplicity.products.base.consts import DEFAULT_CREDIT, COVER_CHOICES, \
     LANGUAGE_CHOICES
 from djangoplicity.products.base.consts import DEFAULT_CREDIT_FUNC
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 
 @python_2_unicode_compatible

@@ -44,7 +44,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.db import models
 from django.db.models import signals, Q
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel, post_rename

@@ -19,7 +19,7 @@ from django.forms import fields
 from django.template import Engine, Template
 from django.template.base import TemplateSyntaxError
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 from djangoplicity.archives.translation import TranslationProxyMixin
 from djangoplicity.translation.models import TranslationModel, \

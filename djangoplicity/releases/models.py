@@ -39,7 +39,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.utils.translation import ugettext_lazy as _, ugettext
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.contrib import types
 from djangoplicity.archives.resources import ResourceManager

@@ -17,7 +17,7 @@ from django.core.mail import EmailMultiAlternatives, send_mail
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 from product.models import Discount, ProductAttribute
 import string
 import random

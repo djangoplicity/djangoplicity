@@ -6,7 +6,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.http import urlencode
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 from djangoplicity.metadata import consts
 

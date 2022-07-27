@@ -52,7 +52,7 @@ from djangoplicity.translation.models import TranslationModel, \
     translation_reverse
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 
 if hasattr(settings, 'ANNOUNCEMENTS_ARCHIVE_ROOT'):

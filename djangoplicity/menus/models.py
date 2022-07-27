@@ -38,7 +38,7 @@ from django.db.models import signals
 from django.utils import translation
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 from djangoplicity.translation.models import get_path_for_language, get_language_from_path
 from mptt.models import MPTTModel
 from operator import itemgetter

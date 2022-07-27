@@ -39,7 +39,7 @@ from builtins import chr
 from builtins import object
 import re
 from html.entities import codepoint2name
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 __all__ = ['QueryParser', 'AstronomyQueryParser']
 

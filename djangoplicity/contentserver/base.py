@@ -42,7 +42,7 @@ import time
 from requests.exceptions import ConnectionError
 
 from django.conf import settings
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
 

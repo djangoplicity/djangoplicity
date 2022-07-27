@@ -44,7 +44,7 @@ from django.utils.translation import ugettext_lazy as _
 from djangoplicity.translation.models import TranslationModel
 from djangoplicity.utils.datetimes import timezone
 from pytz import all_timezones
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 EVENT_TZS = [( tz, tz ) for tz in all_timezones]
 

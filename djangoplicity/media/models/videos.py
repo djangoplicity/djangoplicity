@@ -74,7 +74,7 @@ from djangoplicity.translation.models import TranslationModel, \
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
 from djangoplicity.utils.history import add_admin_history
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 
 
 @python_2_unicode_compatible
