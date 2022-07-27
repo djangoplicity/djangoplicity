@@ -15,7 +15,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'BeautifulSoup4',
-        'django>=1.10',
+        'django<=3.1',
         'django-ace == 1.0.4',
         'django-mptt == 0.9.1',
         'django-recaptcha == 1.4.0',
@@ -44,6 +44,7 @@ setup(
         'pika',
         'openpyxl',
         'django-tinymce4-lite == 1.7.2',
+        'six == 1.16.0',
         'python-avm-library @ git+https://github.com/djangoplicity/python-avm-library.git@master#subdirectory=libavm'
     ],
     # metadata for upload to PyPI
