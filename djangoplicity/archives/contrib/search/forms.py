@@ -39,7 +39,8 @@ from django import forms
 from django.urls import reverse
 from django.db.models import Q
 from django.forms import fields as formsFields
-from django.forms.forms import BoundField, conditional_escape, mark_safe
+from django.forms import BoundField
+from django.forms.forms import conditional_escape, mark_safe
 from django.http import Http404
 from django.utils.encoding import force_text
 
