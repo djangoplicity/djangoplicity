@@ -8,7 +8,7 @@
 
 from builtins import str
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.functional import curry
+from functools import partial
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from djangoplicity.archives.contrib.queries.defaults import \
@@ -88,7 +88,7 @@ def categories(urlname_prefix=None, title=_('Categories'), url_field=CATEGORY_UR
             class Queries(object):
                 category = CategoryQuery(...)
     """
-    f = curry(_categories, relation_field=relation_field, urlname_prefix=urlname_prefix, title_field=title_field, url_field=url_field, query_name=query_name)
+    f = partial(_categories, relation_field=relation_field, urlname_prefix=urlname_prefix, title_field=title_field, url_field=url_field, query_name=query_name)
     f.short_description = title
     return f
 
@@ -120,7 +120,7 @@ def admin_edit_for_site(site, proxy=None, translation_proxy=None):
     Note site name must be valid which means you need to specify it
     when creating the admin site. For instance:
     """
-    f = curry(admin_edit, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
+    f = partial(admin_edit, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
     f.short_description = admin_edit.short_description
     return f
 
@@ -141,7 +141,7 @@ def admin_add_translation(site, proxy=None, translation_proxy=None):
     """
     Admin link helper for displaying an 'add translation' link
     """
-    f = curry(_admin_add_translation, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
+    f = partial(_admin_add_translation, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
     f.short_description = _admin_add_translation.short_description
     return f
 

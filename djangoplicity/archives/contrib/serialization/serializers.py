@@ -7,7 +7,7 @@ import json
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.encoding import smart_text
-from django.utils.functional import curry
+from functools import partial
 
 from djangoplicity.utils.datetimes import timezone
 
@@ -100,7 +100,7 @@ class SimpleSerializer( Serializer ):
         if hasattr( self, "get_%s_values" % field ):
             func = getattr( self, "get_%s_values" % field )
         elif hasattr( obj, field ):
-            func = curry( self._get_related_objects, field=field )
+            func = partial( self._get_related_objects, field=field )
 
         if not func:
             raise ImproperlyConfigured( "%s has no method get_%s_values neither does %s have a field %s" % ( self.__class__.__name__, field, obj.__class__.__name__, field ) )
@@ -196,7 +196,7 @@ class XMPEmitter( Emitter ):
 
     def emit( self, serialization, type='str' ):
         import sys
-        
+
         try:
             from libavm import AVMMeta
             avm = AVMMeta()
