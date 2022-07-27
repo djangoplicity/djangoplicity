@@ -12,7 +12,7 @@ from builtins import object
 from past.utils import old_div
 from django.urls import reverse
 from django.conf import settings
-from django.core.paginator import Paginator as corePaginator, QuerySetPaginator as coreQSetPaginator
+from django.core.paginator import Paginator as corePaginator
 
 
 def _adj_range(adjacent_pages, page_obj, page_range):
@@ -53,7 +53,7 @@ class DjangoplicityPaginator (corePaginator):
         return _adj_range(self.adjacent_pages, page_obj, self.page_range)
 
 
-class DjangoplicityQuerySetPaginator (coreQSetPaginator):
+class DjangoplicityQuerySetPaginator (corePaginator):
     def __init__(self, *args, **kwargs):
         self.adjacent_pages = kwargs.get("adjacent_pages", None)
         if not self.adjacent_pages:
