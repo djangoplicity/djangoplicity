@@ -22,10 +22,11 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db import connection, models
 from django.db.models.base import ModelBase
-from django.db.models.fields import FieldDoesNotExist, CharField
+from django.db.models.fields import CharField
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import Signal
-from django.utils.functional import curry
+from functools import partial
 from django.utils.timezone import is_naive, make_aware
 from django.utils.translation import ugettext_lazy as _
 
@@ -342,7 +343,7 @@ class ArchiveBase( ModelBase ):
                 # Hence, accessing obj.resource_original will be a call to obj._get_resource( resource_name='original' )
                 # It returns a File object, so it can be used more or less as if it
                 # was a database FileField.
-                attrs[field_name] = property( curry( base_cls._get_resource, resource_name=attrname ) )
+                attrs[field_name] = property( partial( base_cls._get_resource, resource_name=attrname ) )
 
         #
         # Create class
