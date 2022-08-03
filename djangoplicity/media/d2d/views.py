@@ -28,7 +28,7 @@
 # IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
-
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -67,13 +67,18 @@ class VideoPagination(BasePagination):
 class D2dImageList(ListAPIView):
     serializer_class = ImageSerializer
     pagination_class = ImagePagination
-    renderer_classes = (AVMJSONRenderer, )
+    renderer_classes = (AVMJSONRenderer,)
+    ORDER_BY_OPTIONS = ['priority', '-priority', 'release_date', '-release_date']
 
     def get_queryset(self):
         qs = ImageOptions.Queries.default.queryset(Image, ImageOptions, None)[0]
+        order_by = self.request.query_params.get('order_by', '-release_date')
+
+        if order_by not in self.ORDER_BY_OPTIONS:
+            raise ValidationError('The order_by possible values are: {}'.format(str(self.ORDER_BY_OPTIONS)))
 
         qs = (
-            qs.order_by('-release_date')
+            qs.order_by(order_by)
             .prefetch_related(
                 'imagecontact_set', 'imageexposure_set', 'subject_category',
                 'subject_name', 'web_category', 'imageexposure_set__facility',

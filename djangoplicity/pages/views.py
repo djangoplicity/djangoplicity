@@ -301,6 +301,11 @@ def view_page( request, url ):
     if not url.startswith('/'):
         url = "/" + url
 
+    is_embed = url.endswith('/embed/') and hasattr(settings, 'EMBED_TEMPLATE')
+
+    if is_embed:
+        url = url.replace('embed/','')
+
     if settings.USE_I18N:
         lang = translation.get_language()
     else:
@@ -422,7 +427,12 @@ def view_page( request, url ):
 
     # Render entire page
     template_names = (page.template_name, page.section.template)
-    template = select_template([x for x in template_names if x])
+
+    if is_embed:
+        template = select_template([settings.EMBED_TEMPLATE])
+    else:
+        template = select_template([x for x in template_names if x])
+
     html = template.render({
             'page': page,
             'translations': page.get_translations(),

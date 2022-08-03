@@ -16,6 +16,8 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import login
 from djangoplicity.releases.models import Release
 from djangoplicity.releases.options import ReleaseOptions
 from djangoplicity.media.models import Image, Video, PictureOfTheWeek, ImageComparison
@@ -39,6 +41,16 @@ urlpatterns = [
     url(r'^admin/', include('djangoplicity.metadata.wtmlimport.urls'), {'extra_context': {'ADMIN_SITE': True}}),
     url(r'^admin/import/', include('djangoplicity.archives.importer.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
+
+    # User authentication
+    url(r'^login/$', auth_views.login, {'template_name': 'login.html'}),
+    url(r'^logout/$', auth_views.logout, {'template_name': 'logout.html'}),
+    url(r'^password-reset/$', auth_views.password_reset,
+        {'email_template_name': 'registration/password_reset_email.txt'}, name='password_reset'),
+    url(r'^password-reset/done/$', auth_views.password_reset_done, name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$', auth_views.password_reset_confirm,
+        name='django.contrib.auth.views.password_reset_confirm'),
+    url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
 
     # Media Archive (Order of the URLs is important because they have common subpaths)
     url(r'^news/', include('djangoplicity.releases.urls'), {'model': Release, 'options': ReleaseOptions, 'translate': True}),

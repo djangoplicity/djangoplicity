@@ -41,7 +41,7 @@ setup(
         'setuptools',
         'Wand == 0.6.5',
         'piexif',
-        'pika',
+        'pika == 1.2.1',
         'openpyxl',
         'django-tinymce4-lite == 1.7.2',
         'six == 1.16.0',

@@ -49,6 +49,17 @@ class WallpaperQuery( AllPublicQuery ):
         return ( qs, query_data )
 
 
+class ObservationQuery( AllPublicQuery ):
+    def queryset( self, model, options, request, **kwargs ):
+        now = datetime.now()
+        ( qs, query_data ) = super( ObservationQuery, self ).queryset( model, options, request, **kwargs )
+        qs = qs.filter( published=True ).prefetch_related('pictureoftheweek_set')
+        qs = qs.filter( spatial_quality='Full', type='Observation' )
+        qs = self._filter_datetime( qs, now, 'release_date', False, True )
+        qs = self._filter_datetime( qs, now, 'embargo_date', False, True )
+        return ( qs, query_data )
+
+
 class ZoomableQuery( AllPublicQuery ):
     def queryset( self, model, options, request, **kwargs ):
         now = datetime.now()

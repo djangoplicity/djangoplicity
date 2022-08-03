@@ -125,6 +125,7 @@ class ImageComparison( ArchiveModel, TranslationModel ):
             rename_fks = (
                 ( 'media_imagecomparison', 'source_id' ),
                 ( 'media_image', 'release_date_owner' ),
+                ( 'releases_releaseimagecomparison', 'archive_item_id' )
             )
             sort_fields = ['last_modified', 'release_date', ]
             clean_html_fields = ['description', 'credit']

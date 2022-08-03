@@ -14,9 +14,10 @@ from django.conf import settings
 from datetime import datetime
 import math
 import pycountry
+import re
 
 register = template.Library()
-
+numeric_test = re.compile("^\d+$")
 
 @register.filter( name='sort_list' )
 def sort_list( value ):
@@ -305,3 +306,22 @@ def startswith(value, arg):
         {% if variable|startswith:"http://" %}
     """
     return value.startswith(arg)
+
+
+@register.simple_tag
+def has_attribute(model, attribute):
+    """
+    check out if exists an attribute of an object dynamically from a string name
+
+    Example::
+        {% has_attribute original "get_report_url" as has_report %}
+    """
+
+    if hasattr(model, str(attribute)):
+        return True
+    elif hasattr(model, 'has_key') and model.has_key(attribute):
+        return True
+    elif numeric_test.match(str(attribute)) and len(model) > int(attribute):
+        return True
+    else:
+        return False

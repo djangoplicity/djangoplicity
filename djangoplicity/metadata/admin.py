@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from djangoplicity.metadata.models import TaxonomyHierarchy, SubjectName, Facility, Instrument, Category, Publication, ObservationProposal, TaggingStatus
+from djangoplicity.metadata.models import TaxonomyHierarchy, SubjectName, Facility, Instrument, Category, Publication, \
+    ObservationProposal, TaggingStatus, Program
 
 
 class TaxonomyHierarchyAdmin( admin.ModelAdmin ):
@@ -78,14 +79,23 @@ class CategoryTypeAdmin( admin.ModelAdmin ):
 
 
 class CategoryAdmin( admin.ModelAdmin ):
-    list_display = ( 'url', 'name', 'type', 'enabled', )
+    list_display = ( 'url', 'name', 'type', 'enabled', 'logo_url')
     list_editable = ( 'name', )
     list_filter = ( 'type', )
     search_fields = ( 'name', 'url', )
     fieldsets = (
-                    ( None, {'fields': ( 'name', 'url', 'type', 'enabled', ) } ),
+                    ( None, {'fields': ( 'name', 'url', 'type', 'enabled', 'logo_url') } ),
                 )
 
+
+class ProgramAdmin( admin.ModelAdmin ):
+    list_display = ( 'url', 'name', 'type', 'logo_url', 'enabled')
+    list_editable = ( 'name', )
+    list_filter = ( 'type', )
+    search_fields = ( 'name', 'url', )
+    fieldsets = (
+                    ( None, {'fields': ( 'name', 'url', 'type', 'enabled' ,'logo_url') } ),
+                )
 
 class TaggingStatusAdmin( admin.ModelAdmin ):
     list_display = ( 'slug', 'name',)
@@ -103,6 +113,7 @@ def register_with_admin( admin_site ):
     admin_site.register( Facility, FacilityAdmin )
     admin_site.register( Instrument, InstrumentAdmin )
     admin_site.register( Category, CategoryAdmin )
+    admin_site.register( Program, ProgramAdmin )
     admin_site.register( Publication, PublicationAdmin )
     admin_site.register( ObservationProposal, ObservationProposalAdmin )
     admin_site.register( TaggingStatus, TaggingStatusAdmin )

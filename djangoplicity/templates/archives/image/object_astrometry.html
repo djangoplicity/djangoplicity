@@ -41,7 +41,7 @@
     </script>
 -->
     {% with wwtlink=object.get_wwt_url %}{% if wwtlink %}
-    <div>{% trans "View in WorldWide Telescope" %}:</div><div align="center"><a href="{{wwtlink}}" title="View in WorldWide Telescope"><img src="{% static 'djangoplicity/images/wwt.png' %}" alt="View in WorldWide Telescope" /></a></div>
+    <div>{% trans "View in WorldWide Telescope" %}:</div><div align="center" class="mt-10"><a href="{{wwtlink}}" title="View in WorldWide Telescope"><img src="{% static 'djangoplicity/images/wwt.png' %}" alt="View in WorldWide Telescope" /></a></div>
     {% endif %}{% endwith %}
 {% else %}
     </table>

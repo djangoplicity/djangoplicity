@@ -58,7 +58,7 @@ from djangoplicity.media.consts import DEFAULT_CREATOR_FUNC, DEFAULT_CREATOR_URL
     DEFAULT_CREDIT_FUNC, DEFAULT_CONTACT_ADDRESS_FUNC, DEFAULT_CONTACT_CITY_FUNC, \
     DEFAULT_CONTACT_COUNTRY_FUNC, DEFAULT_CONTACT_POSTAL_CODE_FUNC, \
     DEFAULT_CONTACT_STATE_PROVINCE_FUNC, DEFAULT_PUBLISHER_FUNC, DEFAULT_PUBLISHER_ID_FUNC, \
-    DEFAULT_RIGHTS_FUNC, SPLIT_AUDIO_TYPES
+    DEFAULT_RIGHTS_FUNC, SPLIT_AUDIO_TYPES, DEFAULT_VIDEOS_FRAME_RATE_FUNC
 from djangoplicity.media.tasks import video_extras, update_youtube_caption, \
     update_youtube_snippet
 from djangoplicity.media.youtube import youtube_configured, \
@@ -94,7 +94,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         'vr_8k', 'vr_4k', 'cylindrical_preview', 'ultra_hd',
         'hd_1080p25_screen', 'hd_1080_screen', 'dome_preview', 'hd_broadcast_720p25',
         'hd_and_apple', 'medium_podcast', 'ext_highres', 'ext_playback',
-        'old_video'
+        'old_video', 'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster'
     )
 
     priority = archive_fields.PriorityField( help_text=_( u'Assessment of the quality of the image (100 highest, 0 lowest). Higher priority images are ranked higher in search results than lower priority images.' ) )
@@ -180,7 +180,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
     file_size = metadatafields.AVMFileSize()
     file_bit_depth = None  # TODO: Implement File.BitDepth
 
-    frame_rate = models.PositiveIntegerField(default=25)
+    frame_rate = models.PositiveIntegerField(default=DEFAULT_VIDEOS_FRAME_RATE_FUNC)
 
     # ========================================================================
     # Resource Display Related Fields
@@ -303,8 +303,11 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         cylindrical_16kmaster = ResourceManager(type=types.Cylindrical16kMasterType, verbose_name=_(u'16k Cylindrical VR Master'))
 
         # VR
-        vr_8k = ResourceManager(type=types.VR8kType, verbose_name=_(u'8k VR'))
-        vr_4k = ResourceManager(type=types.VR4kType, verbose_name=_(u'4k VR'))
+        vr_4k = ResourceManager(type=types.VR4kType, verbose_name=_(u'VR 4k'))
+        vr_4kmaster = ResourceManager(type=types.VR4kMasterType, verbose_name=_(u'VR 4k Master'))
+        vr_8k = ResourceManager(type=types.VR8kType, verbose_name=_(u'VR 8k'))
+        vr_8kmaster= ResourceManager(type=types.VR8kMasterType, verbose_name=_(u'VR 8k Master'))
+        vr_16kmaster= ResourceManager(type=types.VR16kMasterType, verbose_name=_(u'VR 16k Master'))
 
         # Broadcast formats
         hd_broadcast_720p25 = ResourceManager( type=types.BroadcastType, verbose_name=_(u"HD Broadcast 720p/25") )  # hd720p25_brodcast

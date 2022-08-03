@@ -183,6 +183,17 @@ class Announcement( ArchiveModel, TranslationModel ):
 
     main_visual = property( _get_main_visual )
 
+    def _get_main_imagen_comparison(self):
+        try:
+            return self._main_imagen_comparison_cache
+        except AttributeError:
+            for visual in self.announcementimagecomparison_set.all():
+                if visual.main_visual:
+                    self._main_imagen_comparison_cache = visual.archive_item
+                    return visual.archive_item
+
+    main_image_comparison = property(_get_main_imagen_comparison)
+
     def rename( self, new_pk ):
         '''
         Extend Archive's rename() to send email notification if original is renamed
@@ -277,6 +288,7 @@ class Announcement( ArchiveModel, TranslationModel ):
             rename_fks = (
                 ('announcements_announcement', 'source_id'),
                 ('announcements_announcementimage', 'announcement_id'),
+                ('announcements_announcementimagecomparison', 'announcement_id'),
                 ('announcements_announcementvideo', 'announcement_id'),
                 ('media_image', 'release_date_owner'),
                 ('media_video', 'release_date_owner'),

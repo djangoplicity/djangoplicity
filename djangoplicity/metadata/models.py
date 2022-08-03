@@ -12,7 +12,12 @@ from djangoplicity.metadata import consts
 
 
 SIMBAD_URL = "http://simbad.u-strasbg.fr/simbad/sim-id"
-ESO_TELBIB = "http://telbib.eso.org/detail.php?%(bibcode)s"
+
+if hasattr(settings, 'TELBIB'):
+    TELBIB = settings.TELBIB
+else:
+    # ESO TELBIB
+    TELBIB = "http://telbib.eso.org/detail.php?%(bibcode)s"
 
 if settings.USE_I18N:
     from djangoplicity.translation.models import translation_reverse
@@ -273,7 +278,10 @@ class Publication( models.Model ):
 
     def get_absolute_url(self):
         """ Return link to ESO Telescope Bibliography """
-        return ESO_TELBIB % { 'bibcode': urlencode([('bibcode', self.bibcode)]) }
+        if hasattr(settings, 'TELBIB'):
+            return TELBIB % { 'bibcode': self.bibcode }
+        else:
+            return TELBIB % { 'bibcode': urlencode([('bibcode', self.bibcode)]) }
 
     class Meta:
         ordering = ('-bibcode',)
@@ -312,6 +320,7 @@ class Category( models.Model ):
     url = models.SlugField( db_index=True, blank=False, null=False, verbose_name=_("URL"), )
     type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies."), on_delete=models.CASCADE)
     name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Title of query to be displayed to the user.") )
+    logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
     enabled = models.BooleanField( default=True, )
 
     def __str__(self):
@@ -329,6 +338,34 @@ class Category( models.Model ):
         unique_together = ('url', 'type',)
         verbose_name = _('Web Category')
         verbose_name_plural = _('Web Categories')
+
+
+@python_2_unicode_compatible
+class Program(models.Model):
+    """
+    Model for storing Programs
+    """
+    url = models.SlugField( db_index=True, blank=False, null=False, verbose_name=_("URL"), )
+    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies.") )
+    name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Title of query to be displayed to the user.") )
+    logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
+    enabled = models.BooleanField(default=True, )
+
+    def __unicode__(self):
+        result = self.name
+        if not self.enabled:
+            result += ' (disabled)'
+        return result
+
+    def get_absolute_url(self):
+        return reverse_func('%s_query_program' % self.type.name.lower(),
+                args=[self.url], **reverse_kwargs())
+
+    class Meta:
+        ordering = ('type', 'name',)
+        unique_together = ('url', 'type',)
+        verbose_name = _('Program')
+        verbose_name_plural = _('Programs')
 
 
 @python_2_unicode_compatible

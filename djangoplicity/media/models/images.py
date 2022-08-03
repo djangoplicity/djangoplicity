@@ -74,6 +74,8 @@ from djangoplicity.translation.models import TranslationModel, \
     translation_reverse
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
+from djangoplicity.archives.importer.utils import rerun_import_actions
+from djangoplicity.archives.loading import get_archive_modeloptions
 
 import django
 if django.VERSION >= (2, 0):
@@ -375,6 +377,31 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     contact_country = metadatafields.AVMContactCountryField( default=DEFAULT_CONTACT_COUNTRY_FUNC )
     rights = metadatafields.AVMRightsField( default=DEFAULT_RIGHTS_FUNC )
 
+    def get_main_contact(self):
+        return self.imagecontact_set.first()
+
+    def get_main_contact_name(self):
+        contact = self.get_main_contact()
+        if contact:
+            return contact.name
+        return ''
+
+    def get_main_contact_telephone(self):
+        contact = self.get_main_contact()
+        if contact:
+            return contact.telephone
+        return ''
+
+    def get_main_contact_email(self):
+        contact = self.get_main_contact()
+        if contact:
+            return contact.email
+        return ''
+
+    main_contact_name = property(get_main_contact_name)
+    main_contact_telephone = property(get_main_contact_telephone)
+    main_contact_email = property(get_main_contact_email)
+
     # ========================================================================
     # Content Metadata
     # ========================================================================
@@ -415,7 +442,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     title = metadatafields.AVMTitleField()
     headline = metadatafields.AVMHeadlineField()
     description = metadatafields.AVMDescriptionField()
-    web_category = models.ManyToManyField(Category, limit_choices_to=Q(type__name='Images'), blank=True)
+    web_category = TranslationManyToManyField(Category, limit_choices_to=Q(type__name='Images'), blank=True, only_sources=True)
     subject_category = metadatafields_trans.TranslationAVMSubjectCategoryField()
     subject_name = metadatafields_trans.TranslationAVMSubjectNameField()
 
@@ -436,6 +463,9 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     # Add AVM 1.2 fields
     # - PublicationID (list)
     # - ProposalID (list)
+    proposal = metadatafields.AVMProposalIDField()
+    publication = metadatafields.AVMPublicationField()
+
 
     # ========================================================================
     # Observation Metadata
@@ -667,6 +697,15 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
             image_color.delay( self.id )
             write_metadata.delay( self.id, IMAGE_AVM_FORMATS )
 
+    def reimport_resources(self, user=None):
+        model, options = get_archive_modeloptions(self._meta.app_label, self._meta.model_name)
+        if options.Import.actions and model:
+            if user:
+                extra_conf = {'user_id': user.pk}
+            else:
+                extra_conf = {}
+            rerun_import_actions(model, options, self, extra_conf=extra_conf)
+
     def get_absolute_url(self):
         return translation_reverse( 'images_detail', args=[str( self.id if self.is_source() else self.source.id )], lang=self.lang )
 
@@ -863,6 +902,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
                 ('releases_releaseimage', 'archive_item_id'),
                 ('releases_releasestockimage', 'archive_item_id'),
                 ('science_scienceannouncementimage', 'archive_item_id'),
+                ('blog_post', 'banner_id'),
             )
             sort_fields = ['last_modified', 'release_date', 'priority', 'file_size', 'distance_ly']
             crop_display_format = 'thumb300y'

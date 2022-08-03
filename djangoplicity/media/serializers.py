@@ -97,12 +97,12 @@ class AVMImageSerializer( Serializer ):
         data.update( { 'Creator': image.creator } )
         data.update( { 'CreatorURL': image.creator_url } )
         data.update(
-                    include_related( cached_objects( image.imagecontact_set.all(), 'imagecontact_set' ),
-                    {
-                        'contact_name': 'Contact.Name',
-                        'contact_email': 'Contact.Email',
-                        'contact_telephone': 'Contact.Telephone'
-                    } ) )
+            include_related( cached_objects(image.imagecontact_set.all(), 'imagecontact_set'), {
+                    'name': 'Contact.Name'
+                }))
+        data.update( { 'Contact.Email': prepare_str(image.main_contact_email) })
+        data.update( { 'Contact.Telephone': prepare_str(image.main_contact_telephone) })
+
         data.update( { 'Contact.Address': prepare_str( image.contact_address ) } )
         data.update( { 'Contact.City': prepare_str( image.contact_city ) } )
         data.update( { 'Contact.StateProvince': prepare_str( image.contact_state_province ) } )
@@ -125,6 +125,15 @@ class AVMImageSerializer( Serializer ):
         data.update( { 'Date': image.release_date } )
         data.update( { 'ID': image.id } )
         data.update( { 'Type': image.type } )
+        data.update( include_related(
+            cached_objects( image.proposal.all(), 'proposal'), {
+                'proposal_id': 'ProposalID'
+            }))
+        data.update( include_related(
+            cached_objects( image.publication.all(), 'publication'), {
+                'bibcode': 'PublicationID'
+            }))
+
         #serializer.add( { 'Image.ProductQuality': image.image_productquality } )
 
         #
