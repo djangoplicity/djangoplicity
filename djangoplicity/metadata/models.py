@@ -346,7 +346,7 @@ class Program(models.Model):
     Model for storing Programs
     """
     url = models.SlugField( db_index=True, blank=False, null=False, verbose_name=_("URL"), )
-    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies.") )
+    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies."), on_delete=models.CASCADE )
     name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Title of query to be displayed to the user.") )
     logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
     enabled = models.BooleanField(default=True, )
