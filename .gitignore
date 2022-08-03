@@ -14,13 +14,3 @@ local/*
 !local/.keep
 .coverage
 .DS_Store
-
-djangoplicity/actions
-djangoplicity/products2
-djangoplicity/newsletters
-djangoplicity/mailinglists
-djangoplicity/blog
-djangoplicity/events
-djangoplicity/contacts
-djangoplicity/customsearch
-djangoplicity/visits
