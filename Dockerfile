@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
     node-uglify \
     ffmpeg \
     mplayer \
+    procps
 
 RUN mkdir /app
 WORKDIR /app

@@ -16,7 +16,6 @@ services:
   web:
     <<: *common
     container_name: djangoplicity
-    platform: linux/amd64
     command: ["./scripts/command-dev.sh"]
     ports:
       - "8001:8000"
@@ -47,7 +46,6 @@ services:
     ports:
       - "5556:5555"
 
-  # TODO: Currently not being used, configure test_project to use this database
   db:
    image: postgres:10.5
    container_name: djangoplicity-db
