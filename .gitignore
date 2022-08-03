@@ -13,3 +13,4 @@ htmlcov/*
 local/*
 !local/.keep
 .coverage
+.DS_Store
