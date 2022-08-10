@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load admin_list i18n %}
-{% load staticfiles i18n %}
+{% load static i18n %}
 
 {% block extrastyle %}
   {{ block.super }}
@@ -17,7 +17,7 @@
      <a href="{% url 'admin_site:index' %}">{% trans "Home" %}</a> &rsaquo;
      <a href="{% url 'admin_site:app_list' app_label %}">{{ app_label|capfirst|escape }}</a> &rsaquo;
      <a href="{% with changelist_view="admin_site:"|add:opts.app_label|add:"_"|add:opts.model_name|add:"_changelist" %}{% url changelist_view %}{% endwith %}">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
-     {% trans "Import files" %} 
+     {% trans "Import files" %}
 </div>
 {% endif %}{% endblock %}
 
@@ -38,18 +38,18 @@
     <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
     <div class="module">
         <h2>Upload new file</h2>
-        
+
         <table width="100%">
-        {{ file_upload_form.as_table }} 
+        {{ file_upload_form.as_table }}
         </table>
-    
+
     </div>
-    
+
     <div class="submit-row">
         <input type="submit" value="Upload" class="default">
     </div>
     </form>
     {% endif %}
-    
+
 </div>
 {% endblock %}
