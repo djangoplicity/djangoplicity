@@ -366,7 +366,7 @@ class CDN77ContentServer(ContentServer):
             logger.debug('Will %s urls: %s', action, ', '.join(urls))
             for urls_chunk in chunks(urls, 1800):
                 logger.info('%s %d URLs', action, len(urls_chunk))
-                params['url[]'] = urls_chunk
+                params['paths'] = urls_chunk
                 method = 'cdn/{}/job/{}'.format(self.cdnv3_id, action)
                 self._api(method, params)
 
@@ -377,7 +377,7 @@ class CDN77ContentServer(ContentServer):
 
             for urls_chunk in chunks(urls_bigfiles, 1800):
                 logger.info('%s %d URLs', action, len(urls_chunk))
-                params['url[]'] = urls_chunk
+                params['paths'] = urls_chunk
                 method = 'cdn/{}/job/{}'.format(self.cdnv3_id_bigfiles, action)
                 self._api(method, params)
 
