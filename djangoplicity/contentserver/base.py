@@ -181,7 +181,7 @@ class CDN77ContentServer(ContentServer):
         #         method, params, result)
 
         logger.info('Started %s for %s on %s, "%s", request: %s',
-            method, self.name, self.cdn_id, result['description'], result['request_id'])
+            method, self.name, self.cdn_id, result['id'])
 
         return result
 
