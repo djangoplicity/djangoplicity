@@ -180,8 +180,7 @@ class CDN77ContentServer(ContentServer):
         #     raise Exception('Failed API call "%s" "%s" "%s"' %
         #         method, params, result)
 
-        logger.info('Started %s for %s on %s, "%s", request: %s',
-            method, self.name, self.cdn_id, result['id'])
+        logger.info('Started %s for %s on %s", request: %s', method, self.name, self.cdn_id, result['id'])
 
         return result
 
