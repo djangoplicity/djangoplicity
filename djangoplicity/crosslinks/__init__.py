@@ -6,92 +6,63 @@ _ = lambda x: x
 
 ARCHIVE_CROSSLINKS = {
     'announcements': (
-            # ( 'eso.org', 'https://www.eso.org/public/announcements/' ),
-            # ( 'esahubble.org', 'https://esahubble.org/announcements/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/announcements/' ),
-        ),
+        ('esahubble.org', 'https://esahubble.org/announcements/')
+    ),
     'releases': (
-            # ( 'eso.org', 'https://www.eso.org/public/news/' ),
-            # ( 'iau.org', 'http://www.iau.org/public_press/news/' ),
-            # ( 'esahubble.org', 'https://esahubble.org/news/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/news/' ),
-        ),
+        ('esahubble.org', 'https://esahubble.org/news/')
+    ),
     'images': (
-            # ( 'eso.org', 'https://www.eso.org/public/images/' ),
-            # ( 'iau.org', 'http://www.iau.org/public_press/images/' ),
-            # ( 'esahubble.org', 'http://www.esahubble.org/images/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/images/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/images/')
+    ),
     'videos': (
-            # ( 'eso.org', 'https://www.eso.org/public/videos/' ),
-            # ( 'iau.org', 'http://www.iau.org/public_press/videos/' ),
-            # ( 'esahubble.org', 'http://www.esahubble.org/videos/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/videos/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/videos/')
+    ),
     'potw': (
-            # ( 'eso.org', 'https://www.eso.org/public/images/potw/' ),
-            # ( 'esahubble.org', 'https://esahubble.org/images/potw/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/images/potw/' ),
-        ),
+        ('esahubble.org', 'https://esahubble.org/images/potw/')
+    ),
     'posters': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/posters/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/extras/posters/archive/printposters/' ),
-        ),
+        ('esahubble.org', 'https://esahubble.org/products/print_posters/')
+    ),
     'books': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/books/' ),
-            # ( 'iau.org', 'http://www.iau.org/science/publications/iau/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/about/further_information/books/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/about/further_information/books/')
+    ),
     'brochures': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/brochures/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/about/further_information/brochures/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/about/further_information/brochures/')
+    ),
     'calendars': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/calendars/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/extras/calendars/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/products/calendars/')
+    ),
     'education': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/education/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/kidsandteachers/education/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/projects/anniversary/educational_material/')
+    ),
     'newsletters': (
-            # ( 'eso.org', 'https://www.eso.org/public/newsletters/esonews/' ),
-            # ( 'esahubble.org', 'https://esahubble.org/newsletters/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/newsletters/hubblenews/' ),
-        ),
+        ('esahubble.org', 'https://esahubble.org/newsletters/')
+
+    ),
     'periodicals': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/periodicals/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/about/further_information/newsletters/' ),
-        ),
+        # ( 'esahubble.org', 'http://www.esahubble.org/about/further_information/newsletters/' )#brokend
+    ),
     'postcards': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/postcards/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/extras/postcards/' ),
-        ),
+        ('esahubble.org', 'https://esahubble.org/products/postcards/')
+    ),
     'logos': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/logos/' ),
-            # ( 'iau.org', 'http://www.iau.org/public_press/images/archive/category/logos/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/extras/logos/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/products/logos/')
+    ),
     'conferenceposters': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/posters/archive/electronic/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/extras/conferenceposters/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/products/conf_posters/')
+    ),
     'presentations': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/presentations/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/extras/presentations/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/products/presentations/')
+    ),
     'exhibitions': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/exhibitions/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/extras/exhibitions/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/products/exhibitions/')
+    ),
     'dvds': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/dvds/' ),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/extras/dvds/' ),
-        ),
+        ('esahubble.org', 'http://www.esahubble.org/products/media/')
+    ),
     'techdocs': (
-            # ( 'eso.org', 'https://www.eso.org/public/products/reports/'),
-            # ( 'spacetelescope.org', 'http://www.spacetelescope.org/about/further_information/techdocs/' ),
-        ),
+        # ( 'esahubble.org', 'http://www.esahubble.org/about/further_information/techdocs/' )#roto
+    ),
 
 }
 
