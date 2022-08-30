@@ -6,59 +6,59 @@ _ = lambda x: x
 
 ARCHIVE_CROSSLINKS = {
     'announcements': (
-        ('esahubble.org', 'https://esahubble.org/announcements/')
+        ('esahubble.org', 'https://esahubble.org/announcements/'),
     ),
     'releases': (
-        ('esahubble.org', 'https://esahubble.org/news/')
+        ('esahubble.org', 'https://esahubble.org/news/'),
     ),
     'images': (
-        ('esahubble.org', 'http://www.esahubble.org/images/')
+        ('esahubble.org', 'http://www.esahubble.org/images/'),
     ),
     'videos': (
-        ('esahubble.org', 'http://www.esahubble.org/videos/')
+        ('esahubble.org', 'http://www.esahubble.org/videos/'),
     ),
     'potw': (
-        ('esahubble.org', 'https://esahubble.org/images/potw/')
+        ('esahubble.org', 'https://esahubble.org/images/potw/'),
     ),
     'posters': (
-        ('esahubble.org', 'https://esahubble.org/products/print_posters/')
+        ('esahubble.org', 'https://esahubble.org/products/print_posters/'),
     ),
     'books': (
-        ('esahubble.org', 'http://www.esahubble.org/about/further_information/books/')
+        ('esahubble.org', 'http://www.esahubble.org/about/further_information/books/'),
     ),
     'brochures': (
-        ('esahubble.org', 'http://www.esahubble.org/about/further_information/brochures/')
+        ('esahubble.org', 'http://www.esahubble.org/about/further_information/brochures/'),
     ),
     'calendars': (
-        ('esahubble.org', 'http://www.esahubble.org/products/calendars/')
+        ('esahubble.org', 'http://www.esahubble.org/products/calendars/'),
     ),
     'education': (
-        ('esahubble.org', 'http://www.esahubble.org/projects/anniversary/educational_material/')
+        ('esahubble.org', 'http://www.esahubble.org/projects/anniversary/educational_material/'),
     ),
     'newsletters': (
-        ('esahubble.org', 'https://esahubble.org/newsletters/')
+        ('esahubble.org', 'https://esahubble.org/newsletters/'),
 
     ),
     'periodicals': (
         # ( 'esahubble.org', 'http://www.esahubble.org/about/further_information/newsletters/' )#brokend
     ),
     'postcards': (
-        ('esahubble.org', 'https://esahubble.org/products/postcards/')
+        ('esahubble.org', 'https://esahubble.org/products/postcards/'),
     ),
     'logos': (
-        ('esahubble.org', 'http://www.esahubble.org/products/logos/')
+        ('esahubble.org', 'http://www.esahubble.org/products/logos/'),
     ),
     'conferenceposters': (
-        ('esahubble.org', 'http://www.esahubble.org/products/conf_posters/')
+        ('esahubble.org', 'http://www.esahubble.org/products/conf_posters/'),
     ),
     'presentations': (
-        ('esahubble.org', 'http://www.esahubble.org/products/presentations/')
+        ('esahubble.org', 'http://www.esahubble.org/products/presentations/'),
     ),
     'exhibitions': (
-        ('esahubble.org', 'http://www.esahubble.org/products/exhibitions/')
+        ('esahubble.org', 'http://www.esahubble.org/products/exhibitions/'),
     ),
     'dvds': (
-        ('esahubble.org', 'http://www.esahubble.org/products/media/')
+        ('esahubble.org', 'http://www.esahubble.org/products/media/'),
     ),
     'techdocs': (
         # ( 'esahubble.org', 'http://www.esahubble.org/about/further_information/techdocs/' )#roto
