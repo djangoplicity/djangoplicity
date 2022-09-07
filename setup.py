@@ -41,7 +41,7 @@ setup(
         'setuptools',
         'Wand == 0.4.4',
         'piexif',
-        'pika',
+        'pika == 1.2.1',
         'openpyxl',
         'django-tinymce4-lite == 1.7.2',
         'python-avm-library @ git+https://github.com/djangoplicity/python-avm-library.git@release/python2#subdirectory=libavm'
