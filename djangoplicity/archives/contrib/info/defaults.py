@@ -8,7 +8,7 @@
 
 from builtins import str
 from django.core.exceptions import ImproperlyConfigured
-from functools import partial
+from functools import partial, update_wrapper
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from djangoplicity.archives.contrib.queries.defaults import \
@@ -89,6 +89,9 @@ def categories(urlname_prefix=None, title=_('Categories'), url_field=CATEGORY_UR
                 category = CategoryQuery(...)
     """
     f = partial(_categories, relation_field=relation_field, urlname_prefix=urlname_prefix, title_field=title_field, url_field=url_field, query_name=query_name)
+    # This function copies tha __name__, __doc__ etc attributes from the original function to the new one
+    # See: http://louistiao.me/posts/adding-__name__-and-__doc__-attributes-to-functoolspartial-objects/
+    update_wrapper(f, _categories)
     f.short_description = title
     return f
 
@@ -121,6 +124,9 @@ def admin_edit_for_site(site, proxy=None, translation_proxy=None):
     when creating the admin site. For instance:
     """
     f = partial(admin_edit, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
+    # This function copies tha __name__, __doc__ etc attributes from the original function to the new one
+    # See: http://louistiao.me/posts/adding-__name__-and-__doc__-attributes-to-functoolspartial-objects/
+    update_wrapper(f, _categories)
     f.short_description = admin_edit.short_description
     return f
 
@@ -142,6 +148,9 @@ def admin_add_translation(site, proxy=None, translation_proxy=None):
     Admin link helper for displaying an 'add translation' link
     """
     f = partial(_admin_add_translation, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
+    # This function copies tha __name__, __doc__ etc attributes from the original function to the new one
+    # See: http://louistiao.me/posts/adding-__name__-and-__doc__-attributes-to-functoolspartial-objects/
+    update_wrapper(f, _admin_add_translation)
     f.short_description = _admin_add_translation.short_description
     return f
 
