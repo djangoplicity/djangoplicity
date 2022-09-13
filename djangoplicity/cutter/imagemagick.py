@@ -30,7 +30,6 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 from __future__ import division
-
 import errno
 import glob
 import json
@@ -53,7 +52,9 @@ from djangoplicity.archives.base import cache_handler
 from djangoplicity.archives.resources import ImageResourceManager
 from djangoplicity.archives.utils import wait_for_resource
 
+
 logger = logging.getLogger(__name__)
+
 
 # TODO: get path from settings?
 IM_PATH = '/usr/bin/'
@@ -68,7 +69,7 @@ CONVERT = '%s %s %s' % (os.path.join(IM_PATH, 'convert'), IM_LIMITS, CONVERT_DEF
 IDENTIFY = '%s %s' % (os.path.join(IM_PATH, 'identify'), IM_LIMITS)
 
 SRGB_PROFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            'icc', 'sRGB-IEC61966-2.1.icc')
+                           'icc', 'sRGB-IEC61966-2.1.icc')
 
 
 def _format_is_lte_size(fmt, size):
@@ -390,7 +391,7 @@ def identify_image(path):
 
 
 def process_image_derivatives(app_label, module_name, pk, formats,
-                              imported_formats, tmp_dir, user_id):
+                imported_formats, tmp_dir, user_id):
     '''
     Generate the given formats for Archive with pk, temporary files are
     created in tmp_dir. The caller is responsible for the cleanup.
@@ -400,7 +401,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
     # only newsfeature was imported then we do nothing
     if imported_formats and 'original' not in imported_formats:
         logging.info('"original" not in the list of imported formats (%s)'
-                     'skipping', ', '.join(imported_formats))
+        'skipping', ', '.join(imported_formats))
         return
 
     model = apps.get_model(app_label, module_name)
@@ -482,7 +483,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
             # If the original file is smaller than the derived format then
             # we use it instead
             source = getattr(archive, 'resource_%s' % derived)
-            source_fmt = getattr(model.Archive, derived)
+            source_fmt = getattr(model.Archive, derived )
 
             # Use the original if it is smaller than the derived format
             if _format_is_gte_width_height(source_fmt, width, height):
@@ -523,7 +524,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
             logger.debug('Creating MPC file: %s', tmp_path)
             # -background none is to keep the transparency untouched (if any)
             args = CONVERT.split() + [source.path, '-alpha', 'Deactivate',
-                                      '-flatten', tmp_path]
+                '-flatten', tmp_path]
             logger.debug(' '.join(args))
 
             convert = Popen(args)
@@ -542,7 +543,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
             env['MAGICK_TMPDIR'] = IM_TMP_DIR
 
         logger.debug('Generating "%s" from "%s": %s', fmt_name, derived,
-                     ' '.join(convert_args))
+                        ' '.join(convert_args))
 
         convert = Popen(convert_args, env=env)
         convert.communicate()
@@ -573,11 +574,11 @@ def process_image_derivatives(app_label, module_name, pk, formats,
 The original image size (%dx%d px) is too small, please replace the original
 format by a higher resolution one and re-import.
 '''
-        # The original image size is too small
+         # The original image size is too small
         message = body % (', '.join(missing_required), width, height)
 
     if upscaled_formats and not (getattr(model.Archive.Meta, 'ignore_upsale_warnings', False) or
-                                 getattr(settings, 'DJANGOPLICITY_IGNORE_UPSCALE_WARNING', False)):
+            getattr(settings, 'DJANGOPLICITY_IGNORE_UPSCALE_WARNING', False)):
         subject = 'Please verify upscaled formats for %s: %s'
         body = '''The original image for {pk} is smaller than some of the required derived
 formats, and the image was upscaled to match.
