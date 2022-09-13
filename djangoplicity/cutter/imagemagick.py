@@ -219,7 +219,6 @@ def _order_formats(model, formats):
     '''
     Return an ordered dict of name and formats ordered by their derived dependency.
     '''
-
     def get_derived(fmt_name):
         if fmt_name == 'original':
             return []
@@ -391,7 +390,7 @@ def identify_image(path):
 
 
 def process_image_derivatives(app_label, module_name, pk, formats,
-                imported_formats, tmp_dir, user_id):
+        imported_formats, tmp_dir, user_id):
     '''
     Generate the given formats for Archive with pk, temporary files are
     created in tmp_dir. The caller is responsible for the cleanup.
@@ -536,7 +535,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
             os.makedirs(output_dir)
 
         convert_args = _get_convert_args(archive, width, height, fmt,
-                                         tmp_path, output_dir)
+                            tmp_path, output_dir)
 
         env = {}
         if os.path.isdir(IM_TMP_DIR):
