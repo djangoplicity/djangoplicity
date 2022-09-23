@@ -105,6 +105,7 @@ class ImageComparison( ArchiveModel, TranslationModel ):
         newsfeature = ImageResourceManager( derived='original', type=types.NewsFeatureType )
         medium = ImageResourceManager( derived='original', type=types.MediumJpegType )
         wallpaperthumbs = ImageResourceManager( derived='original', type=types.WallpaperThumbnailType )
+        wallpaper1 = ImageResourceManager(derived='publicationtiff', type=types.Wallpaper1Type)
         potwmedium = ImageResourceManager( derived='original', type=types.POTWMediumThumbnailJpegType )
         thumbs = ImageResourceManager( derived='original', type=types.ThumbnailJpegType )
         thumb350x = ImageResourceManager( derived='original', type=types.Thumb350xType )
