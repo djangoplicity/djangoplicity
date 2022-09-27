@@ -9,7 +9,7 @@ import djangoplicity.metadata.archives.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('media', '0027_auto_20200629_0713'),
+        ('media', '0028_auto_20201029_1719'),
     ]
 
     operations = [
