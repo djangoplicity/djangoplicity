@@ -23,6 +23,12 @@ class ExeType(FileType):
     content_type = 'application/x-msdownload'
 
 
+class Bz2Type(FileType):
+    verbose_name = ugettext_noop(u'BZip2 archive (.bz2)')
+    exts = ['bz2']
+    content_type = 'application/x-bzip2'
+
+
 class DebType(FileType):
     verbose_name = ugettext_noop(u'Debian Package (.deb)')
     exts = ['deb']
