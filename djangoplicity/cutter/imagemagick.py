@@ -30,6 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 from __future__ import division
+import errno
 import glob
 import json
 import logging
@@ -503,12 +504,14 @@ def process_image_derivatives(app_label, module_name, pk, formats,
 
                 # Delete file if not generated but there
                 # (from a previous other image with same id)
-                isDelete = False
-                if isDelete:
+                try:
                     fmt_file = os.path.join(dest_dir, fmt_name, '{}.{}'.format(pk, fmt.type.exts[0]))
                     if os.path.exists(fmt_file):
                         os.remove(fmt_file)
-
+                except OSError as e:
+                    if e.errno == errno.ENOENT:
+                        logger.info('%s, no such file or directory', fmt_name)
+                    logger.info('format %s could not be removed from the server error', fmt_name, e.message)
                 continue
             else:
                 upscaled_formats.append(fmt)
