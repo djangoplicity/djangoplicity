@@ -45,6 +45,7 @@ services:
       - web
     ports:
       - "5556:5555"
+
   db:
    image: postgres:10.5
    container_name: djangoplicity-db
