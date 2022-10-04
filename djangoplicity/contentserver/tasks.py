@@ -96,9 +96,9 @@ def check_content_server_resources(last=40):
     is enabled do exist in the CDN for all the resourcs which inherit from
     ContentDeliveryModel
     '''
-    if settings.SITE_ENVIRONMENT != 'prod':
-        logger.info('%s only runs on a production system', check_content_server_resources.__name__)
-        return
+    # if settings.SITE_ENVIRONMENT != 'prod' && :
+    #     logger.info('%s only runs on a production system', check_content_server_resources.__name__)
+    #     return
 
     from djangoplicity.contentserver.models import ContentDeliveryModel
 
