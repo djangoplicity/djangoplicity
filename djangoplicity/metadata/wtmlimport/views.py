@@ -35,6 +35,7 @@ import xml.etree.ElementTree as ET
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
@@ -98,7 +99,7 @@ class MultiFileField(forms.FileField):
 class WTMLForm(forms.Form):
     files = MultiFileField(min_num=1, max_num=40, maximum_file_size=100 * 1024)  # 100KB
 
-
+@login_required
 class WTMLMetadataImport(FormView):
     form_class = WTMLForm
     template_name = 'admin/metadata/wtml_metadata_import.html'
