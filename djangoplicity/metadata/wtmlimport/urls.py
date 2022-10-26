@@ -37,7 +37,8 @@ in settings.ARCHIVES.
 
 from django.conf.urls import url
 from djangoplicity.metadata.wtmlimport.views import WTMLMetadataImport
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    url(r'^wtmlimport/$', WTMLMetadataImport.as_view(), name='wtml_metadata_import'),
+    url(r'^wtmlimport/$', login_required(WTMLMetadataImport.as_view()), name='wtml_metadata_import'),
 ]
