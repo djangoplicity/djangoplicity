@@ -112,7 +112,7 @@ class Dome2kPlaybackType(FileType):
 
 
 class Dome4kPlaybackType(FileType):
-    verbose_name = ugettext_noop(u'Fulldome 2k encoded planetarium playback')
+    verbose_name = ugettext_noop(u'Fulldome 4k encoded planetarium playback')
     exts = ['mp4']
     width = 4096
     height = 4096
