@@ -153,6 +153,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
         for resource in ('cylindrical_16kmaster', 'dome_8kmaster',
                          'cylindrical_8kmaster', 'vr_8k', 'vr_4k',
                          'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster',
+                         'dome_2kplayback', 'dome_4kplayback'
                          'dome_4kmaster', 'cylindrical_4kmaster',
                          'ultra_hd_broadcast', 'ultra_hd', 'dome_2kmaster',
                          'hd_1080p25_screen', 'hd_1080_screen', 'hd_1080_broadcast',

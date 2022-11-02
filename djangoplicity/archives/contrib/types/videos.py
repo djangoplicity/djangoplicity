@@ -104,6 +104,20 @@ class Dome8kMasterType(FileType):
     height = 8192
 
 
+class Dome2kPlaybackType(FileType):
+    verbose_name = ugettext_noop(u'Fulldome 2k encoded planetarium playback')
+    exts = ['mp4']
+    width = 2048
+    height = 2048
+
+
+class Dome4kPlaybackType(FileType):
+    verbose_name = ugettext_noop(u'Fulldome 2k encoded planetarium playback')
+    exts = ['mp4']
+    width = 4096
+    height = 4096
+
+
 class MediumPodcastType(FileType):
     verbose_name = ugettext_noop(u'Video Podcast')
     exts = ['m4v', 'mp4']
