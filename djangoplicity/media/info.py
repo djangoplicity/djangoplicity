@@ -329,17 +329,17 @@ def image_magnet_uri_link( obj ):
 image_magnet_uri_link.short_description = _( 'Magnet Fullsize Original' )
 
 
-def video_giphy_url_link( obj ):
-    """  Generate a video's giphy_url"""
-    if obj.giphy_url:
-        return {
-            'url': obj.giphy_url,
-            'extra_attrs': None,
-            'size': None
-        }
-    else:
-        return None
-video_giphy_url_link.short_description = _( 'giphy resource' )
+# def video_giphy_url_link( obj ):
+#     """  Generate a video's giphy_url"""
+#     if obj.giphy_url:
+#         return {
+#             'url': obj.giphy_url,
+#             'extra_attrs': None,
+#             'size': None
+#         }
+#     else:
+#         return None
+# video_giphy_url_link.short_description = _( 'giphy resource' )
 
 
 def video_magnet_uri_link( obj ):

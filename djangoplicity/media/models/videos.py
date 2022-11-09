@@ -196,7 +196,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
     magnet_uri = models.CharField( max_length=255, blank=True )
     # Magnet link for the bittorrent version of the original format
 
-    giphy_url = models.URLField( max_length=255, blank=True )
+    # giphy_url = models.URLField( max_length=255, blank=True )
     # Giphy link for the GIF version of the video
 
     youtube_video_id = models.CharField(max_length=11, blank=True, null=True, verbose_name=_('YouTube VideoID'))
