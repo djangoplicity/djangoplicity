@@ -846,8 +846,8 @@ def image_observation_tagging_notification(pk):
         reverse('admin_site:media_image_change', args=[pk])
 
     send_mail(
-        'New Observation image: {}'.format(url),
-        '',
+        'New Observation image: {}'.format(pk),
+        'The following image was added as an observation image: {}'.format(url),
         settings.DEFAULT_FROM_EMAIL,
         getattr(settings, 'DEFAULT_MAIL_TAGGING', ['dmartinez@encisosystems.com']),
     )
