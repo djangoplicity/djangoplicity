@@ -849,5 +849,5 @@ def image_observation_tagging_notification(pk):
         'New Observation image: {}'.format(pk),
         'The following image was added as an observation image: {}'.format(url),
         settings.DEFAULT_FROM_EMAIL,
-        getattr(settings, 'DEFAULT_MAIL_TAGGING', ['dmartinez@encisosystems.com']),
+        getattr(settings, 'DEFAULT_MAIL_TAGGING', ['zidmani@gmail.com']),
     )
