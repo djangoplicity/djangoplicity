@@ -120,7 +120,7 @@ class ImageOptions( ArchiveOptions ):
     )
 
     class Queries( object ):
-        default = ImageAllPublicQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Images") )
+        default = ImageAllPublicQuery( browsers=( 'normal', 'viewall', 'json', 'minijson' ), verbose_name=ugettext_noop("Images") )
         category = WebCategoryPublicQuery( relation_field='web_category', browsers=( 'normal', 'viewall', 'json', 'minijson' ), verbose_name=ugettext_noop("Image Archive: %(title)s"), category_type='Images' )
         top100 = ImageAllPublicQuery( browsers=( 'top100', 'json', 'minijson', 'fbtop100', 'fs' ), verbose_name=ugettext_noop("Top 100 Images"), searchable=False, feed_name='top100' )
         observation = ObservationQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Observation Full Spatial Quality Images"), searchable=False, feed_name='observation' )
