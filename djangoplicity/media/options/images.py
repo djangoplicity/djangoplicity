@@ -129,7 +129,7 @@ class ImageOptions( ArchiveOptions ):
         wallpapers = WallpaperQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Wallpapers") )
         wwt = WWTQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop( "WorldWide Telescope" ) )
         print_layouts = PrintLayoutQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Print Layouts") )
-        search = AdvancedSearchQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Advanced Image Search"), searchable=False )
+        search = AdvancedSearchQuery( browsers=( 'normal', 'viewall', 'json', 'minijson' ), verbose_name=ugettext_noop("Advanced Image Search"), searchable=False )
         staging = ImageStagingQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Images (staging)") )
         embargo = ImageEmbargoQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Images (embargoed)") )
 
