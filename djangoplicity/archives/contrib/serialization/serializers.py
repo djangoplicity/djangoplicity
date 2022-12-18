@@ -230,7 +230,7 @@ class XMPEmitter( Emitter ):
 
 class JSONEmitter( Emitter ):
     name = "json"
-    content_type = "text/plain"
+    content_type = "application/json"
 
     json_encoders = {
         datetime: lambda dt: dt.isoformat(),

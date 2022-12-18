@@ -140,7 +140,7 @@ class ImageOptions( ArchiveOptions ):
         fbtop100 = ViewAllBrowser( index_template='index_top100.html', paginate_by=5 )
         fs = ViewAllBrowser( index_template='top100_fs.html', paginate_by=10 )
         json = SerializationBrowser( serializer=AVMImageSerializer, emitter=JSONEmitter, paginate_by=100, display=False, verbose_name=ugettext_noop("JSON") )
-        minijson = SerializationBrowser( serializer=MiniImageSerializer, emitter=JSONEmitter, paginate_by=10, display=False, verbose_name=ugettext_noop( "JSON" ) )
+        minijson = SerializationBrowser( serializer=MiniImageSerializer, emitter=JSONEmitter, paginate_by=25, display=False, include_pagination_data_in_response=True, verbose_name=ugettext_noop( "JSON" ) )
 
     class ResourceProtection (object):
         unpublished = ( UnpublishedQuery, security.UNPUBLISHED_PERMS )
