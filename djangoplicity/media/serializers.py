@@ -198,6 +198,8 @@ class VideoSerializer( SimpleSerializer ):
         'credit',
         'width',
         'height',
+        'youtube_video_id',
+        'use_youtube'
     )
 
     def serialize(self, obj):
