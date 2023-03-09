@@ -123,7 +123,8 @@ class ImageOptions( ArchiveOptions ):
         default = ImageAllPublicQuery( browsers=( 'normal', 'viewall', 'json', 'minijson' ), verbose_name=ugettext_noop("Images") )
         category = WebCategoryPublicQuery( relation_field='web_category', browsers=( 'normal', 'viewall', 'json', 'minijson' ), verbose_name=ugettext_noop("Image Archive: %(title)s"), category_type='Images' )
         top100 = ImageAllPublicQuery( browsers=( 'top100', 'json', 'minijson', 'fbtop100', 'fs' ), verbose_name=ugettext_noop("Top 100 Images"), searchable=False, feed_name='top100' )
-        observation = ObservationQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Observation Full Spatial Quality Images"), searchable=False, feed_name='observation' )
+        # Temp Disabled Observation Query because its inefficient, all the JSON browsers are inefficient, however this one is causing performance issues
+        # observation = ObservationQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Observation Full Spatial Quality Images"), searchable=False, feed_name='observation' )
         bestof = ImageAllPublicQuery( browsers=( 'viewall', 'json' ), verbose_name=ugettext_noop("Hall Of Fame"), searchable=False )
         zoomable = ZoomableQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Zoomable Images") )
         wallpapers = WallpaperQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Wallpapers") )
