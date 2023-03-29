@@ -13,6 +13,7 @@ __all__ = (
     'AACAudioType',
     'Mp3AudioType',
     'WaveAudioType',
+    'M4AAudioType',
 )
 
 
@@ -25,6 +26,11 @@ class AACAudioType( FileType ):
 class Mp3AudioType( FileType ):
     verbose_name = ugettext_noop(u'MP3 Audio File')
     exts = ['mp3']
+
+
+class M4AAudioType( FileType ):
+    verbose_name = ugettext_noop(u'M4A Audio File')
+    exts = ['m4a']
 
 
 class WaveAudioType( FileType ):
