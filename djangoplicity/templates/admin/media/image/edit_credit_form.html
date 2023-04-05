@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div class="module">
+    <form method="post" action="">
+      {{ form.media }}
+        <p>{%  trans 'Are you sure you want to execute this action on the selected items?' %}</p>
+          {% for image in queryset %}
+            <p>{{ image }}</p>
+            <input type="hidden" name="_selected_action" value="{{ image.pk }}" />
+          {% endfor %}
+      {% csrf_token %}
+      {{ form.as_p }}
+        <input type="hidden" name="action" value="edit_bulk_credit_action" />
+      <input type="submit" name="action" value="{% trans 'Change Credits' %}">
+    </form>
+  </div>
+{% endblock %}
