@@ -225,8 +225,8 @@ class ChangeCreditForm(forms.Form):
 # Image admin
 # ============================================
 class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, CropAdmin, ArchiveAdmin, SetCategoryMixin, ContentDeliveryAdmin ):
-    list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
-    list_editable = ( 'priority', 'title' )
+    list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'credit', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
+    list_editable = ( 'priority', 'title', 'credit')
     list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', 'type', TaggingStatusExcludeListFilter, MissingExposureFilter, 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
     filter_horizontal = ( 'web_category', 'subject_category', 'subject_name', 'tagging_status', 'proposal', 'publication')
     search_fields = ( 'id', 'title', 'headline', 'description', 'credit', )
