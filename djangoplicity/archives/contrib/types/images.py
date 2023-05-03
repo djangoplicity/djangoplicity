@@ -200,7 +200,6 @@ class Wallpaper5Type(JpegType):
     width = 2048
     height = 1536
     unsharp = 25
-    compression_quality = 100
     upscale = True
     required = False
 
