@@ -123,16 +123,17 @@ class ImageOptions( ArchiveOptions ):
     )
 
     class Queries( object ):
-        default = ImageAllPublicQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Images") )
-        category = WebCategoryPublicQuery( relation_field='web_category', browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Image Archive: %(title)s"), category_type='Images' )
+        default = ImageAllPublicQuery( browsers=( 'normal', 'viewall', 'json', 'minijson' ), verbose_name=ugettext_noop("Images") )
+        category = WebCategoryPublicQuery( relation_field='web_category', browsers=( 'normal', 'viewall', 'json', 'minijson' ), verbose_name=ugettext_noop("Image Archive: %(title)s"), category_type='Images' )
         top100 = ImageAllPublicQuery( browsers=( 'top100', 'json', 'minijson', 'fbtop100', 'fs' ), verbose_name=ugettext_noop("Top 100 Images"), searchable=False, feed_name='top100' )
-        observation = ObservationQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Observation Full Spatial Quality Images"), searchable=False, feed_name='observation' )
+        # Temp Disabled Observation Query because its inefficient, all the JSON browsers are inefficient, however this one is causing performance issues
+        # observation = ObservationQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Observation Full Spatial Quality Images"), searchable=False, feed_name='observation' )
         bestof = ImageAllPublicQuery( browsers=( 'viewall', 'json' ), verbose_name=ugettext_noop("Hall Of Fame"), searchable=False )
         zoomable = ZoomableQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Zoomable Images") )
         wallpapers = WallpaperQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Wallpapers") )
         wwt = WWTQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop( "WorldWide Telescope" ) )
         print_layouts = PrintLayoutQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Print Layouts") )
-        search = AdvancedSearchQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Advanced Image Search"), searchable=False )
+        search = AdvancedSearchQuery( browsers=( 'normal', 'viewall', 'json', 'minijson' ), verbose_name=ugettext_noop("Advanced Image Search"), searchable=False )
         staging = ImageStagingQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Images (staging)") )
         embargo = ImageEmbargoQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Images (embargoed)") )
 
@@ -143,7 +144,7 @@ class ImageOptions( ArchiveOptions ):
         fbtop100 = ViewAllBrowser( index_template='index_top100.html', paginate_by=5 )
         fs = ViewAllBrowser( index_template='top100_fs.html', paginate_by=10 )
         json = SerializationBrowser( serializer=AVMImageSerializer, emitter=JSONEmitter, paginate_by=100, display=False, verbose_name=ugettext_noop("JSON") )
-        minijson = SerializationBrowser( serializer=MiniImageSerializer, emitter=JSONEmitter, paginate_by=10, display=False, verbose_name=ugettext_noop( "JSON" ) )
+        minijson = SerializationBrowser( serializer=MiniImageSerializer, emitter=JSONEmitter, paginate_by=25, display=False, include_pagination_data_in_response=True, verbose_name=ugettext_noop( "JSON" ) )
 
     class ResourceProtection (object):
         unpublished = ( UnpublishedQuery, security.UNPUBLISHED_PERMS )

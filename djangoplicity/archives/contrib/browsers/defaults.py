@@ -37,13 +37,15 @@ class ListBrowser(ArchiveBrowser):
 
 
 class SerializationBrowser( ArchiveBrowser ):
-    def __init__(self, serializer=None, emitter=None, paginate_by=100, display=False, verbose_name="" ):
+    def __init__(self, serializer=None, emitter=None, paginate_by=100, display=False, verbose_name="", include_pagination_data_in_response=False ):
         self.serializer = serializer
         self.emitter = emitter
         self._paginate_by = paginate_by
         self.display = display
         self.verbose_name = _(u'Serialization') if not verbose_name else verbose_name
         self.allow_empty = True
+        # By default the response is a plain array, but this include extra data like count, page_size, etc
+        self.include_pagination_data_in_response = include_pagination_data_in_response
 
     def render( self, request, model, options, query, query_name, qs, query_data, search_str, **kwargs ):
         #
@@ -68,6 +70,15 @@ class SerializationBrowser( ArchiveBrowser ):
             for obj in page_obj.object_list:
                 list_serialization.append( serializer.serialize( obj ).data )
             data = Serialization( list_serialization )
+
+        if self.include_pagination_data_in_response:
+            data = Serialization({
+                "count": _paginator.count, 
+                "total_pages": _paginator.num_pages, 
+                "page_size": self._paginate_by, 
+                "current_page": _page_number,
+                "results": data.data # Data is a serialization therefore data.data
+            })
 
         return emitter.emit( data )
 

@@ -260,6 +260,8 @@ class VideoOptions( ArchiveOptions ):
             ( 'dome_8kmaster', ( '.avi', '.zip', ) ),
             ( 'dome_4kmaster', ( '.avi', '.zip', ) ),
             ( 'dome_2kmaster', ( '.avi', '.zip', ) ),
+            ('dome_2kplayback', ('.mp4',)),
+            ('dome_4kplayback', ('.mp4',)),
             ( 'dome_mov', ( '.mov', '.mp4' ) ),
             ( 'vr_8k', ( '.mp4', ) ),
             ( 'vr_8k', ( '.mp4', ) ),

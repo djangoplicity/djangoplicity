@@ -122,7 +122,7 @@ class ReleaseOptions( ArchiveOptions ):
         normal = ListBrowser()
         viewall = ListBrowser( verbose_name=ugettext_noop('View all'), paginate_by=100 )
         json = SerializationBrowser( serializer=ReleaseSerializer, emitter=JSONEmitter, paginate_by=20, display=False, verbose_name=_( "JSON" ) )
-        minijson = SerializationBrowser( serializer=MiniReleaseSerializer, emitter=JSONEmitter, paginate_by=10, display=False, verbose_name=_( "JSON" ) )
+        minijson = SerializationBrowser( serializer=MiniReleaseSerializer, emitter=JSONEmitter, paginate_by=10, display=False, include_pagination_data_in_response=True, verbose_name=_( "JSON" ) )
         ical = SerializationBrowser( serializer=ICalReleaseSerializer, emitter=ICalEmitter, paginate_by=100, display=False, verbose_name=_( "iCal" ) )
 
     class ResourceProtection( object ):

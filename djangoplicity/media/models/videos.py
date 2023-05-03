@@ -93,8 +93,9 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
     UPLOAD_FORMATS = (
         'vr_8k', 'vr_4k', 'cylindrical_preview', 'ultra_hd',
         'hd_1080p25_screen', 'hd_1080_screen', 'dome_preview', 'hd_broadcast_720p25',
-        'hd_and_apple', 'medium_podcast', 'ext_highres', 'ext_playback',
-        'old_video', 'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster'
+        'dome_2kplayback', 'dome_4kplayback', 'hd_and_apple', 'medium_podcast',
+        'ext_highres', 'ext_playback', 'old_video', 'vr_16kmaster', 'vr_8kmaster',
+        'vr_4kmaster'
     )
 
     priority = archive_fields.PriorityField( help_text=_( u'Assessment of the quality of the image (100 highest, 0 lowest). Higher priority images are ranked higher in search results than lower priority images.' ) )
@@ -295,6 +296,8 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         dome_2kmaster = ResourceManager( type=types.Dome2kMasterType, verbose_name=_(u"Fulldome 2k Master") )
         dome_mov = ResourceManager( type=types.DomeMovType, verbose_name=_(u"Fulldome 1.5k mov") )
         dome_preview = ResourceManager( type=types.DomePreviewType, verbose_name=_(u"Fulldome Preview") )
+        dome_2kplayback = ResourceManager(type=types.Dome2kPlaybackType, verbose_name=_(u"Fulldome 2k encoded planetarium playback"))
+        dome_4kplayback = ResourceManager(type=types.Dome4kPlaybackType, verbose_name=_(u"Fulldome 4k encoded planetarium playback"))
 
         # Cylindrical
         cylindrical_preview = ResourceManager(type=types.CylindricalPreviewType, verbose_name=_(u'Cylindrical VR Preview'))

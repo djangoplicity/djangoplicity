@@ -35,6 +35,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.db.models import Q
 from django.forms import ModelForm
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
@@ -45,6 +46,7 @@ from djangoplicity.archives.contrib.admin.defaults import RenameAdmin, \
         SyncTranslationAdmin
 from djangoplicity.contentserver.admin import ContentDeliveryAdmin
 from djangoplicity.contrib import admin as dpadmin
+from djangoplicity.contrib.admin import AdminRichTextAreaWidget
 from djangoplicity.cutter.admin import CropAdmin
 from djangoplicity.media.consts import IMAGE_AVM_FORMATS
 from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
@@ -53,7 +55,8 @@ from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
         VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, VideoScript
 from djangoplicity.metadata.models import Category, TaggingStatus
 from djangoplicity.releases.admin import releaseinlineadmin
-
+from django import forms
+from django.contrib import messages
 
 # ============================================
 # Mixin
@@ -212,12 +215,20 @@ class MissingExposureFilter(admin.SimpleListFilter):
             )
 
 
+class ChangeCreditForm(forms.Form):
+    new_value = forms.CharField(widget=AdminRichTextAreaWidget())
+
+    def change_value(self, queryset):
+        new_value = self.cleaned_data['new_value']
+        queryset.update(credit=new_value)
+
+
 # ============================================
 # Image admin
 # ============================================
 class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, CropAdmin, ArchiveAdmin, SetCategoryMixin, ContentDeliveryAdmin ):
-    list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
-    list_editable = ( 'priority', 'title' )
+    list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'credit', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
+    list_editable = ( 'priority', 'title', 'credit')
     list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', 'type', TaggingStatusExcludeListFilter, MissingExposureFilter, 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
     filter_horizontal = ( 'web_category', 'subject_category', 'subject_name', 'tagging_status', 'proposal', 'publication')
     search_fields = ( 'id', 'title', 'headline', 'description', 'credit', )
@@ -239,8 +250,20 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     ordering = ('-last_modified', )
     richtext_fields = ('description', 'credit')
     readonly_fields = ('id', 'content_server_ready')
-    actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_resync_resources']
+    actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_resync_resources', 'edit_bulk_credit_action']
     inlines = [ ImageExposureInlineAdmin, ImageContactInlineAdmin ]
+
+    def edit_bulk_credit_action(self, request, queryset):
+        if request.method == 'POST':
+            form = ChangeCreditForm(request.POST)
+            if form.is_valid():
+                form.change_value(queryset)
+                self.message_user(request, _('The credit fields has been successfully modified.'))
+                return HttpResponseRedirect(request.get_full_path())
+        else:
+            form = ChangeCreditForm()
+        return render(request, 'admin/media/image/edit_credit_form.html', context={'queryset': queryset, 'form': form})
+    edit_bulk_credit_action.short_description = _('Change credits in bulk')
 
     def get_queryset(self, request):
         qs = super(ImageAdmin, self).get_queryset(request)
