@@ -318,8 +318,8 @@ class Category( models.Model ):
             result += ' (disabled)'
         return result
 
-    def get_absolute_url(self):
-        return reverse_func('%s_query_category' % self.type.name.lower(),
+    def get_absolute_url(self, type='releases'):
+        return reverse_func('%s_query_category' % type.lower,
                 args=[self.url], **reverse_kwargs())
 
     class Meta:
@@ -334,8 +334,9 @@ class Program(models.Model):
     Model for storing Programs
     """
     url = models.SlugField( db_index=True, blank=False, null=False, verbose_name=_("URL"), )
-    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies.") )
-    name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Title of query to be displayed to the user.") )
+    types = models.ManyToManyField(CategoryType, help_text=_("Defines to which types this program applies."))
+    name = models.CharField(max_length=255, blank=False, null=False,
+                             help_text=_("Title of query to be displayed to the user."))
     logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
     enabled = models.BooleanField(default=True, )
 
@@ -345,13 +346,13 @@ class Program(models.Model):
             result += ' (disabled)'
         return result
 
-    def get_absolute_url(self):
-        return reverse_func('%s_query_program' % self.type.name.lower(),
-                args=[self.url], **reverse_kwargs())
+    def get_absolute_url(self, type='releases'):
+        return reverse_func('%s_query_program' % type.lower(),
+                            args=[self.url], **reverse_kwargs())
 
     class Meta:
-        ordering = ('type', 'name',)
-        unique_together = ('url', 'type',)
+        ordering = ('name',)
+        unique_together = ('url',)
         verbose_name = _('Program')
         verbose_name_plural = _('Programs')
 

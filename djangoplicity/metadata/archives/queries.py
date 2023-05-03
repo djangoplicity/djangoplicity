@@ -76,7 +76,7 @@ class ProgramQuery(CategoryQuery):
         if not stringparam:
             raise Http404
         try:
-            program = Program.objects.get(url=stringparam, type__name=self.category_type)
+            program = Program.objects.get(url=stringparam, types__name__iexact=self.category_type)
         except Program.DoesNotExist:
             # URL of non existing category specified.
             raise Http404

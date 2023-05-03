@@ -273,7 +273,7 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
         Dynamically add admin actions for setting the programs
         """
         actions = super( ReleaseAdmin, self ).get_actions( request )
-        actions.update( dict( [self._make_program_action( c ) for c in Program.objects.filter( type__name='Releases' ).order_by( 'name' )] ) )
+        actions.update( dict( [self._make_program_action( c ) for c in Program.objects.filter( types__name='Releases' ).order_by( 'name' )] ) )
         return actions
 
     class Media:

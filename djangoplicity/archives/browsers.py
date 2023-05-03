@@ -367,7 +367,7 @@ class ArchiveBrowser( object ):
         #
         from djangoplicity.metadata.models import Program
         category_type = options.urlname_prefix.capitalize()  # urlname_prefix is either 'releases'
-        programs = Program.objects.filter(type__name=category_type, enabled=True).select_related('type')
+        programs = Program.objects.filter(types__name__iexact=category_type, enabled=True).prefetch_related('types')
         selected_web_program = kwargs.get('stringparam', None)
         for x in programs:
             if x.url == selected_web_program:
