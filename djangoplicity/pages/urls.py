@@ -30,14 +30,14 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 from django.conf.urls import url, include
-# from rest_framework import routers
+from rest_framework import routers
 
 from djangoplicity.pages.api.views import PageAPIView
 
 
-# router = routers.DefaultRouter()
-# router.register(r'pages', PageAPIView, 'page')
+router = routers.DefaultRouter()
+router.register(r'pages', PageAPIView, 'page')
 
 urlpatterns = [
-    # url('^api/', include(router.urls)),
+    url('^api/', include(router.urls)),
 ]
