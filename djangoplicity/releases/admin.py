@@ -37,6 +37,7 @@ from djangoplicity.archives.contrib.admin.defaults import DisplaysAdmin, Archive
     RenameAdmin, SyncTranslationAdmin, TranslationDuplicateAdmin, view_link
 from djangoplicity.contrib.admin import CleanHTMLAdmin, DjangoplicityModelAdmin
 from djangoplicity.metadata.models import Program
+from djangoplicity.metadata.admin_actions import SetProgramMixin
 from djangoplicity.releases.models import Release, KidsRelease, ReleaseProxy, \
     ReleaseType, ReleaseContact, ReleaseTranslationContact, ReleaseImage, \
     ReleaseVideo, Country, ReleaseImageComparison, \
@@ -193,31 +194,8 @@ class ReleaseDisplaysAdmin(DisplaysAdmin):
     options = ReleaseOptions
 
 
-# ============================================
-# Mixin
-# ============================================
-class SetProgramMixin( object ):
-    def action_set_program( self, request, queryset, program=None ):
-        """
-        Action method for set programs to Press Releases
-        """
-        if program:
-            for obj in queryset:
-                obj.programs.add(program)
-
-    def _make_program_action( self, program ):
-        """
-        Helper method to define an admin action for a specific group
-        """
-        name = 'set_group_%s' % program.url
-
-        def action(modeladmin, request, queryset):
-            return modeladmin.action_set_program( request, queryset, program=program )
-
-        return ( name, ( action, name, "Set program %s" % str(program) ) )
-
-
-class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmin, RenameAdmin, ArchiveAdmin, SetProgramMixin ):
+class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmin, RenameAdmin, ArchiveAdmin,
+                    SetProgramMixin):
     list_display = ( 'id', 'release_type', 'title', 'get_programs', 'published', 'release_date', 'embargo_date', view_link('releases') )
     list_filter = ( 'release_type', 'published', 'last_modified', 'created', 'release_date', 'embargo_date', 'principal_investigator', 'programs',)
     list_editable = ( 'release_type', 'title', 'published', )
@@ -246,9 +224,6 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
     #radio_fields = {"release_type": admin.VERTICAL }
     filter_horizontal = ( 'programs', 'subject_category', 'subject_name', 'facility', 'instruments', 'publications' )
     raw_id_fields = ('kids_image',)
-
-    def get_programs(self, obj):
-        return ",\n".join([program.name for program in obj.programs.all()])
 
     def get_queryset( self, request ):
         qs = super( ReleaseAdmin, self ).get_queryset( request )
