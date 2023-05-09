@@ -48,9 +48,9 @@ from djangoplicity.archives.contrib.templater import DisplayTemplate
 from djangoplicity.archives.utils import related_archive_items, \
     main_visual_translated
 from djangoplicity.archives.views import SerializationDetailView
-from djangoplicity.releases.queries import ProgramPublicQuery
 from djangoplicity.metadata.archives.info import subject_name, subject_category, \
     facility, instruments
+from djangoplicity.metadata.archives.queries import ProgramPublicQuery
 from djangoplicity.metadata.models import Instrument
 from djangoplicity.releases import views
 from djangoplicity.releases.info import releaseid, oldreleaseids, telbib, principal_investigator

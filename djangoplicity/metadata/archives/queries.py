@@ -4,7 +4,7 @@
 # Authors:
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
-
+from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import FieldError, ImproperlyConfigured
 from django.db.models import Q
@@ -106,3 +106,13 @@ class ProgramQuery(CategoryQuery):
         else:
             return self._verbose_name
 
+
+class ProgramPublicQuery(ProgramQuery):
+
+    def queryset(self, model, options, request, **kwargs):
+        now = datetime.now()
+        (qs, query_data) = super(ProgramPublicQuery, self).queryset(model, options, request, **kwargs)
+        qs = self._filter_datetime(qs, now, 'release_date', False, True)
+        qs = self._filter_datetime(qs, now, 'embargo_date', False, True)
+        qs = qs.filter(published=True)
+        return (qs, query_data)
