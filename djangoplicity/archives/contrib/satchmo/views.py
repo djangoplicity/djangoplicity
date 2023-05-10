@@ -10,14 +10,14 @@
 """
 """
 
+from builtins import str
 import csv
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from djangoplicity.archives.contrib.satchmo.export import factory
 from product import views
 from product.models import Product, Category
@@ -26,6 +26,11 @@ from satchmo_store.shop.views.home import home
 
 satchmo_category_view = views.category_view
 
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 def not_found_view( request, *args, **kwargs ):
     raise Http404
@@ -206,7 +211,7 @@ def orders_for_product( request, product_id, format=None, **kwargs ):
         app_label = opts.app_label
 
         context = {
-            "object_name": force_unicode( opts.verbose_name ),
+            "object_name": force_text( opts.verbose_name ),
             'objects': table,
             'header': header,
             'product': product,
@@ -219,11 +224,11 @@ def orders_for_product( request, product_id, format=None, **kwargs ):
         response = HttpResponse( content_type="text/plain" )
         response['Content-Disposition'] = "attachment; filename=%s.txt" % product.slug
         writer = csv.writer( response )
-        header = [unicode( x ).encode( 'utf8', 'replace' ) for x in header]
+        header = [str( x ).encode( 'utf8', 'replace' ) for x in header]
         writer.writerow( header )
 
         for row in table:
-            row = [unicode( x ).encode( 'utf8', 'replace' ) for x in row]
+            row = [str( x ).encode( 'utf8', 'replace' ) for x in row]
             writer.writerow( row )
         return response
     else:
@@ -331,7 +336,7 @@ def orders_for_category( request, category_id, format=None, **kwargs ):
         app_label = opts.app_label
 
         context = {
-            "object_name": force_unicode( opts.verbose_name ),
+            "object_name": force_text( opts.verbose_name ),
             'objects': table,
             'header': header,
             'category': category,
@@ -344,11 +349,11 @@ def orders_for_category( request, category_id, format=None, **kwargs ):
         response = HttpResponse( content_type="text/plain" )
         response['Content-Disposition'] = "attachment; filename=%s.txt" % category.slug
         writer = csv.writer( response )
-        header = [unicode( x ).encode( 'utf8', 'replace' ) for x in header]
+        header = [str( x ).encode( 'utf8', 'replace' ) for x in header]
         writer.writerow( header )
 
         for row in table:
-            row = [unicode( x ).encode( 'utf8', 'replace' ) for x in row]
+            row = [str( x ).encode( 'utf8', 'replace' ) for x in row]
             writer.writerow( row )
         return response
     else:

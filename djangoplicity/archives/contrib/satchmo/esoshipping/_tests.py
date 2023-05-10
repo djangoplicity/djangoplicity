@@ -1,10 +1,12 @@
 """
 Module for testing shipping prices defined in the database.
 """
+from __future__ import print_function
 
 #
 # General setup
 #
+from builtins import zip
 from shipping.modules.tieredweight.models import Carrier
 from l10n.models import Country
 
@@ -59,7 +61,7 @@ shipping_table = [
 #
 for row in shipping_table:
     range = row[0]
-    zoneprices = zip(zones, row[1])
+    zoneprices = list(zip(zones, row[1]))
 
     low = range[0]
     high = range[1]
@@ -71,5 +73,5 @@ for row in shipping_table:
                 calculated_cost = z.cost( w )
                 expected_cost = Decimal(expected_cost)
                 assert calculated_cost == expected_cost
-    except AssertionError, e:
-        print "Zone %s, Weight %s: Expected %s, got %s" % ( z.name, w, expected_cost, calculated_cost )
+    except AssertionError as e:
+        print("Zone %s, Weight %s: Expected %s, got %s" % ( z.name, w, expected_cost, calculated_cost ))

@@ -29,11 +29,11 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext
-
+from six import python_2_unicode_compatible
 from djangoplicity.archives import fields as archivesfields
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.contrib import types
@@ -41,7 +41,13 @@ from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.media.models import Image
 from djangoplicity.translation.models import TranslationModel
 
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
+@python_2_unicode_compatible
 class ScienceAnnouncement(ArchiveModel, TranslationModel):
     """
     Similar to press releases but with fewer fields.
@@ -83,7 +89,7 @@ class ScienceAnnouncement(ArchiveModel, TranslationModel):
     def get_absolute_url(self):
         return reverse('scienceannouncements_detail', args=[str(self.id)])
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s: %s" % (self.id, self.title)
 
     class Archive:
@@ -109,7 +115,7 @@ class ScienceAnnouncement(ArchiveModel, TranslationModel):
 # =======================================
 # Related images, etc.
 # =======================================
-
+@python_2_unicode_compatible
 class RelatedScienceAnnouncement(models.Model):
     """
     Abstract model to link another archive item (e.g. visuals) to a
@@ -117,13 +123,13 @@ class RelatedScienceAnnouncement(models.Model):
     a many-to-many intermediary model::
 
         class RelatedAnnouncementScienceImage(RelatedRAnnouncement):
-            archive_item = models.ForeignKey(Image, verbose_name=('Image'))
+            archive_item = models.ForeignKey(Image, verbose_name=('Image'), on_delete=models.CASCADE)
 
             class Meta:
                 verbose_name = _('...')
     """
 
-    science_announcement = models.ForeignKey(ScienceAnnouncement, verbose_name=_('Related science announcement'))
+    science_announcement = models.ForeignKey(ScienceAnnouncement, verbose_name=_('Related science announcement'), on_delete=models.CASCADE)
     # The announcement to link with another archive item.
 
     order = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -139,8 +145,8 @@ class RelatedScienceAnnouncement(models.Model):
     hide = models.BooleanField(default=False, verbose_name=_('Hide on kiosk'))
     # Define if the visual should be hidden if used for e.g. the kiosk
 
-    def __unicode__(self):
-        return ugettext("Archive Item for Science Announcement %s" % (unicode(self.science_announcement.id)))
+    def __str__(self):
+        return ugettext("Archive Item for Science Announcement %s" % (str(self.science_announcement.id)))
 
     class Meta:
         abstract = True
@@ -148,4 +154,4 @@ class RelatedScienceAnnouncement(models.Model):
 
 class ScienceAnnouncementImage(RelatedScienceAnnouncement):
     """ Images related to an announcement. """
-    archive_item = models.ForeignKey(Image, verbose_name=_('Related Image'))
+    archive_item = models.ForeignKey(Image, verbose_name=_('Related Image'), on_delete=models.CASCADE)

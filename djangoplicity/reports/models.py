@@ -6,10 +6,16 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 from django.db import models
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from six import python_2_unicode_compatible
 
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
+@python_2_unicode_compatible
 class ReportGroup( models.Model ):
     """
     Defines groups of reports.
@@ -18,7 +24,7 @@ class ReportGroup( models.Model ):
     # Name of the group
     name = models.CharField( max_length=100 )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:
@@ -26,6 +32,7 @@ class ReportGroup( models.Model ):
 
 
 # pylint: disable=R0921
+@python_2_unicode_compatible
 class Report( models.Model ):
     """
     A report is essential a SQL query in the database, that can be displayed
@@ -43,7 +50,7 @@ class Report( models.Model ):
     #""" Whether the report generates an e-mail list """
 
     # Group of report
-    group = models.ForeignKey( ReportGroup )
+    group = models.ForeignKey( ReportGroup, on_delete=models.CASCADE)
 
     # Whether the report can be used for mass mailing
     is_mailable = models.BooleanField(default=False)
@@ -103,7 +110,7 @@ class Report( models.Model ):
     def get_absolute_url(self):
         return reverse('report-detail', args=[self.pk])
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:

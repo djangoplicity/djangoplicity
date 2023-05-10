@@ -7,6 +7,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
 from datetime import datetime
 
 from django.http import HttpResponse, HttpResponseForbidden
@@ -94,7 +95,7 @@ def satchmo_admin( shop_site ):
             if new_status not in [x[0] for x in ORDER_STATUS]:
                 return
 
-            username = request.user.username if request.user.is_authenticated() else 'N/A'
+            username = request.user.username if request.user.is_authenticated else 'N/A'
 
             orderids = []
 

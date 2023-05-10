@@ -5,6 +5,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
 import copy
 import datetime
 
@@ -18,6 +19,7 @@ from django.forms import fields
 from django.template import Engine, Template
 from django.template.base import TemplateSyntaxError
 from django.utils.translation import ugettext_lazy as _
+from six import python_2_unicode_compatible
 
 from djangoplicity.archives.translation import TranslationProxyMixin
 from djangoplicity.translation.models import TranslationModel, \
@@ -43,6 +45,7 @@ class TemplateField(models.CharField):
         return fields.ChoiceField(choices=choices, required=False)
 
 
+@python_2_unicode_compatible
 class Section( models.Model ):
     """
     Sections are used to define the templates used for different areas
@@ -58,23 +61,25 @@ class Section( models.Model ):
     append_title = models.CharField( max_length=100 )
     # Text to append to title, e.g. '| Title'
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:
         ordering = ['name']
 
 
+@python_2_unicode_compatible
 class URL( models.Model ):
     """ URL of page. URLs are unique and can only contain alpha numeric characters. """
     url = models.CharField(_(u'URL'), max_length=200, db_index=True, unique=True,
                             help_text=_(u"Example: '/about/contact/'. Make sure to have leading and trailing slashes. Good and descriptive URLs are important for good user experience and search engine ranking."))
-    page = models.ForeignKey( 'Page', null=True )
+    page = models.ForeignKey('Page', null=True, on_delete=models.CASCADE)
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.url
 
 
+@python_2_unicode_compatible
 class PageGroup( models.Model ):
     '''
     Model to group pages together for access control
@@ -84,10 +89,11 @@ class PageGroup( models.Model ):
     groups = models.ManyToManyField(Group, help_text=_('Groups which have to access to this page group'), blank=True)
     full_access = models.BooleanField(default=False, help_text=_('If checked members of this group have access to all pages'))
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
 
+@python_2_unicode_compatible
 class Page( TranslationModel ):
     """
     A general purpose module for displaying and editing text on a website.
@@ -137,7 +143,7 @@ class Page( TranslationModel ):
     #
     #TODO: Test if this should be blank, null or blank and null
     #TOOD: Automatically populate this field based on
-    #author = models.ForeignKey( User, null=True )
+    #author = models.ForeignKey( User, null=True, on_delete=models.CASCADE)
     #""" Author of the page. """
 
     last_modified = models.DateTimeField( auto_now=True )
@@ -160,7 +166,7 @@ class Page( TranslationModel ):
     #
     # Page style
     #
-    section = models.ForeignKey( Section, default=1, help_text=_(u'Determines e.g. which templates to use for rendering the template.') )
+    section = models.ForeignKey( Section, default=1, help_text=_(u'Determines e.g. which templates to use for rendering the template.'), on_delete=models.CASCADE)
     # Section to use for this page. A section determines default values for a page, and the visual layout (e.g. templaes).
 
     template_name = TemplateField(max_length=100, blank=True, help_text=_(u'Override the template specified by the section.'))
@@ -221,7 +227,7 @@ class Page( TranslationModel ):
     is_online.boolean = True
     is_online.short_description = _( u'Is Online' )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     def get_absolute_url(self):
@@ -279,6 +285,7 @@ class Page( TranslationModel ):
             clean_html_fields = ['content']
 
 
+@python_2_unicode_compatible
 class EmbeddedPageKey( models.Model ):
     """
     Model for associating a key with a page, so that pages can be
@@ -306,13 +313,13 @@ class EmbeddedPageKey( models.Model ):
 
     # Initial description should be provided by the application registering the key.
 
-    page = models.ForeignKey( Page, null=True, blank=True, limit_choices_to={ 'embedded__exact': True }, help_text=_('Select page that you want to use for the specific key. Note, only pages marked as embedded pages can be selected.') )
+    page = models.ForeignKey( Page, null=True, blank=True, limit_choices_to={ 'embedded__exact': True }, help_text=_('Select page that you want to use for the specific key. Note, only pages marked as embedded pages can be selected.'), on_delete=models.CASCADE)
     # Page that is to be embedded for the specific key.
 
     last_modified = models.DateTimeField( auto_now=True )
     # Date/time of last time page was modified.
 
-    def __unicode__( self ):
+    def __str__( self ):
         return u'%s (%s)' % (self.title, self.page_key)
 
     class Meta:
@@ -322,6 +329,7 @@ class EmbeddedPageKey( models.Model ):
 # ========================================================================
 # Translation proxy model
 # ========================================================================
+@python_2_unicode_compatible
 class PageProxy( Page, TranslationProxyMixin ):
     """
     Page proxy model for creating admin only to edit
@@ -339,7 +347,7 @@ class PageProxy( Page, TranslationProxyMixin ):
     def validate_unique( self, exclude=None ):
         self.id_validate_unique( exclude=exclude )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return "%s: %s" % ( self.id, self.title )
 
     class Meta:

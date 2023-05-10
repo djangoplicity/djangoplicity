@@ -1,3 +1,4 @@
+from __future__ import division
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -5,13 +6,16 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
-import hotshot
-import hotshot.stats
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
+from builtins import object
+import cProfile, pstats
 import json
 import os
 import re
 import sys
-import StringIO
+import io
 import tempfile
 
 from django.conf import settings
@@ -78,7 +82,7 @@ class UserInExceptionMiddleware( object ):
         return response
 
     def process_exception( self, request, exception ):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             request.META['USER'] = request.user.username
             request.META['USER_EMAIL'] = request.user.email
 
@@ -150,7 +154,7 @@ class DjangoplicityRedirectFallbackMiddleware(RedirectFallbackMiddleware):
 
 class ProfileMiddleware(object):
     '''
-    Displays hotshot profiling for any view.
+    Displays cProfile profiling for any view.
     http://yoursite.com/yourview/?prof
 
     Add the "prof" key to query string by appending ?prof (or &prof=)
@@ -158,7 +162,7 @@ class ProfileMiddleware(object):
     It's set up to only be available in django's debug mode, is available for superuser otherwise,
     but you really shouldn't add this middleware to any production configuration.
 
-    WARNING: It uses hotshot profiler which is not thread safe.
+    WARNING: It uses cProfile profiler which is not thread safe.
     '''
     def __init__(self, get_response):
         self.get_response = get_response
@@ -175,7 +179,7 @@ class ProfileMiddleware(object):
     def process_request(self, request):
         if (settings.DEBUG or request.user.is_superuser) and 'prof' in request.GET:
             self.tmpfile = tempfile.mktemp()
-            self.prof = hotshot.Profile(self.tmpfile)
+            self.prof = cProfile.Profile(self.tmpfile)
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
         if (settings.DEBUG or request.user.is_superuser) and 'prof' in request.GET:
@@ -188,13 +192,13 @@ class ProfileMiddleware(object):
                 return name[0]
 
     def get_summary(self, results_dict, total):
-        l = [(item[1], item[0]) for item in results_dict.items()]
+        l = [(item[1], item[0]) for item in list(results_dict.items())]
         l.sort(reverse=True)
         l = l[:40]
 
         res = '   tottime\n'
         for item in l:
-            res += '%4.1f%% %7.3f %s\n' % (100 * item[0] / total if total else 0, item[0], item[1])
+            res += '%4.1f%% %7.3f %s\n' % (old_div(100 * item[0], total) if total else 0, item[0], item[1])
 
         return res
 
@@ -231,11 +235,11 @@ class ProfileMiddleware(object):
         if (settings.DEBUG or request.user.is_superuser) and 'prof' in request.GET:
             self.prof.close()
 
-            out = StringIO.StringIO()
+            out = io.StringIO()
             old_stdout = sys.stdout
             sys.stdout = out
 
-            stats = hotshot.stats.load(self.tmpfile)
+            stats = pstats.Stats(self.tmpfile)
             stats.sort_stats('time', 'calls')
             stats.print_stats()
 

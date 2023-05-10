@@ -29,6 +29,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from builtins import str
+from past.utils import old_div
 import colorsys
 import datetime
 import os
@@ -38,10 +41,10 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import signals, Q
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from six import python_2_unicode_compatible
 
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel, post_rename
@@ -71,14 +74,19 @@ from djangoplicity.translation.models import TranslationModel, \
     translation_reverse
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
-
 from djangoplicity.archives.importer.utils import rerun_import_actions
 from djangoplicity.archives.loading import get_archive_modeloptions
+
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 # #########################################################################
 # Colour
 # #########################################################################
-
+@python_2_unicode_compatible
 class Color( models.Model ):
     """
     Definition of colours and algorithms for computing the dominant colours
@@ -109,7 +117,7 @@ class Color( models.Model ):
         self.__class__._bw_cache = None
         super( Color, self ).save( **kwargs )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     @classmethod
@@ -241,7 +249,7 @@ class Color( models.Model ):
             return ( 0, 0, 0 )
 
         if i > 0:
-            return ( r_t / i, g_t / i, b_t / i )
+            return ( old_div(r_t, i), old_div(g_t, i), old_div(b_t, i) )
         return ( 0, 0, 0 )
 
     @staticmethod
@@ -285,7 +293,7 @@ class Color( models.Model ):
 
         # Normalise histogram to sum to 1
         total = im.size[0] * im.size[1]
-        for col, count in histogram.items():
+        for col, count in list(histogram.items()):
             histogram[ col ] = float( count ) / total
 
         #
@@ -301,12 +309,12 @@ class Color( models.Model ):
             return classes
 
         # Determine cut-off ratio.
-        cutoff_ratio = ( 1.0 - histogram['black'] ) / ( len( histogram ) - 1 )
+        cutoff_ratio = old_div(( 1.0 - histogram['black'] ), ( len( histogram ) - 1 ))
         cutoff_ratio = max( cutoff_ratio, 0.02 )  # Ensure ratio is at least 2%
         del histogram['black']
 
         # Select classes
-        for col, ratio in histogram.items():
+        for col, ratio in list(histogram.items()):
             if ratio > cutoff_ratio:
                 classes.append( ( col, ratio ) )
 
@@ -325,8 +333,8 @@ class Exposure( models.Model ):
     The model ensures that each AVM field has the exposures listed in the
     right order, instead of creating semicolon separated fields.
     """
-    facility = metadatafields.AVMFacilityField()
-    instrument = metadatafields.AVMInstrumentField()
+    facility = metadatafields.AVMFacilityField( on_delete=models.CASCADE )
+    instrument = metadatafields.AVMInstrumentField( on_delete=models.CASCADE )
     spectral_color_assignment = metadatafields.AVMSpectralColorAssignmentField()
     spectral_band = metadatafields.AVMSpectralBandField()
     spectral_bandpass = metadatafields.AVMSpectralBandpassField()
@@ -341,6 +349,7 @@ class Exposure( models.Model ):
         app_label = 'media'
 
 
+@python_2_unicode_compatible
 class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     """
     Image Archive
@@ -527,7 +536,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         #  Degrees should be in 0..360
         if deg < 0:
             deg += 360
-        deg = deg / 15
+        deg = old_div(deg, 15)
         h = int(deg)
         m = (deg - h) * 60
         s = m - int(m)
@@ -700,7 +709,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     def get_absolute_url(self):
         return translation_reverse( 'images_detail', args=[str( self.id if self.is_source() else self.source.id )], lang=self.lang )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     @classmethod
@@ -903,15 +912,16 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
 # ========================================================================
 # Related Image models
 # ========================================================================
+@python_2_unicode_compatible
 class ImageColor( models.Model ):
     """
     Stores a dominant colour for an image (computed by Color model).
     """
-    color = models.ForeignKey( Color )
-    image = TranslationForeignKey( Image, only_sources=True )
+    color = models.ForeignKey( Color, on_delete=models.CASCADE )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
     ratio = models.FloatField()
 
-    def __unicode__( self ):
+    def __str__( self ):
         return "%s: %s (%s)" % ( self.image.id, self.color.name, self.ratio )
 
     class Meta:
@@ -922,7 +932,7 @@ class ImageExposure( Exposure ):
     """
     Links the exposure model with images
     """
-    image = TranslationForeignKey( Image, only_sources=True )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _(u'Exposure')
@@ -933,7 +943,7 @@ class ImageContact( Contact ):
     """
     Links contacts with images
     """
-    image = TranslationForeignKey( Image, only_sources=True )
+    image = TranslationForeignKey( Image, only_sources=True, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _(u'Contact')

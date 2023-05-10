@@ -6,9 +6,9 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import str
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import NoReverseMatch, reverse
-from django.utils.functional import curry
+from functools import partial, update_wrapper
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from djangoplicity.archives.contrib.queries.defaults import \
@@ -20,6 +20,11 @@ from datetime import time
 
 __all__ = ('categories', 'admin_edit', 'admin_edit_for_site', 'admin_add_translation', 'published', 'featured', 'boolean_property', 'priority', 'release_date', 'paper_size', 'link_field')
 
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import NoReverseMatch, reverse
+else:
+    from django.core.urlresolvers import NoReverseMatch, reverse
 
 # TODO Wed Jul 29 13:54:21 CEST 2015
 # We use quote around the pk in reverse() to handle cases where the pk contains
@@ -83,7 +88,10 @@ def categories(urlname_prefix=None, title=_('Categories'), url_field=CATEGORY_UR
             class Queries(object):
                 category = CategoryQuery(...)
     """
-    f = curry(_categories, relation_field=relation_field, urlname_prefix=urlname_prefix, title_field=title_field, url_field=url_field, query_name=query_name)
+    f = partial(_categories, relation_field=relation_field, urlname_prefix=urlname_prefix, title_field=title_field, url_field=url_field, query_name=query_name)
+    # This function copies tha __name__, __doc__ etc attributes from the original function to the new one
+    # See: http://louistiao.me/posts/adding-__name__-and-__doc__-attributes-to-functoolspartial-objects/
+    update_wrapper(f, _categories)
     f.short_description = title
     return f
 
@@ -115,7 +123,10 @@ def admin_edit_for_site(site, proxy=None, translation_proxy=None):
     Note site name must be valid which means you need to specify it
     when creating the admin site. For instance:
     """
-    f = curry(admin_edit, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
+    f = partial(admin_edit, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
+    # This function copies tha __name__, __doc__ etc attributes from the original function to the new one
+    # See: http://louistiao.me/posts/adding-__name__-and-__doc__-attributes-to-functoolspartial-objects/
+    update_wrapper(f, _categories)
     f.short_description = admin_edit.short_description
     return f
 
@@ -136,7 +147,10 @@ def admin_add_translation(site, proxy=None, translation_proxy=None):
     """
     Admin link helper for displaying an 'add translation' link
     """
-    f = curry(_admin_add_translation, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
+    f = partial(_admin_add_translation, admin_app=site, proxy=proxy, translation_proxy=translation_proxy)
+    # This function copies tha __name__, __doc__ etc attributes from the original function to the new one
+    # See: http://louistiao.me/posts/adding-__name__-and-__doc__-attributes-to-functoolspartial-objects/
+    update_wrapper(f, _admin_add_translation)
     f.short_description = _admin_add_translation.short_description
     return f
 

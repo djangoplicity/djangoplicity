@@ -5,6 +5,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from builtins import object
 from django.contrib import admin
 from django.core.cache import cache
 from django.db import models

@@ -30,15 +30,19 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
-from BeautifulSoup import BeautifulStoneSoup
-from BeautifulSoup import BeautifulSoup
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import str
+from bs4 import BeautifulSoup
 from djangoplicity.pages.models import Page
 from django.contrib.redirects.models import Redirect
 from djangoplicity.migration import MigrationTask, MigrationError, MigrationConfAdapter
 from djangoplicity.migration.utils import links
 import os
-from urllib import url2pathname
-from urlparse import urlsplit, urlunsplit
+from urllib.request import url2pathname
+from urllib.parse import urlsplit, urlunsplit
+from six import python_2_unicode_compatible
 
 
 def nl2space( text ):
@@ -49,6 +53,7 @@ def nl2space( text ):
     return text
 
 
+@python_2_unicode_compatible
 class PageDocument( MigrationConfAdapter ):
     """
     Base class for migration of any document into a djangoplicity.pages.models.Page
@@ -104,7 +109,7 @@ class PageDocument( MigrationConfAdapter ):
         else:
             return ["/%s" % self._filename]
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title()
 
     #
@@ -155,10 +160,11 @@ class HTMLPageDocument( PageDocument ):
         """
         Get the contents of a soup element as a string.
         """
-        return "".join([unicode(x) for x in s.contents])
+        return "".join([str(x) for x in s.contents])
 
     def convert_entities(self, s):
-        return self.soup2str(BeautifulStoneSoup( s, convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
+        from djangoplicity.utils.html_cleanup import convert_html_entities
+        return self.soup2str(convert_html_entities(s))
 
     #
     # Parser
@@ -178,7 +184,7 @@ class HTMLPageDocument( PageDocument ):
     def content(self):
         elem = self.soup.find( 'body' )
         if elem:
-            return "".join([unicode(x) for x in elem.contents]).strip()
+            return "".join([str(x) for x in elem.contents]).strip()
         else:
             return None
 
@@ -226,7 +232,7 @@ class PageMigrationTask( MigrationTask ):
                 )
             p.save()
             return p
-        except Exception, e:
+        except Exception as e:
             import pprint
             pprint.pprint(e)
             raise MigrationError( "Could not save the parse page." )
@@ -321,21 +327,21 @@ class PageLinksCleanupTask( MigrationTask ):
         Update links in a page according to the list of redirects.
         """
         pagelinks = links.extract_links( page.content )
-        pagelinks = zip( pagelinks, [links.normalize_link( x, self.bases ) for x in pagelinks] )
+        pagelinks = list(zip( pagelinks, [links.normalize_link( x, self.bases ) for x in pagelinks] ))
 
         #  Internal/external links
-        internallinks = filter( lambda x: links.is_internal_link( x[1], self.bases ), pagelinks )
-        self.externallinks += filter( lambda x: not links.is_internal_link( x[1], self.bases ), pagelinks )
+        internallinks = [x for x in pagelinks if links.is_internal_link( x[1], self.bases )]
+        self.externallinks += [x for x in pagelinks if not links.is_internal_link( x[1], self.bases )]
 
         # Normalize to absolute path
-        internallinks = map( lambda x: ( x[0], links.to_absolute_link( x[1], self._pagebase( page ) ) ), internallinks )
+        internallinks = [( x[0], links.to_absolute_link( x[1], self._pagebase( page ) ) ) for x in internallinks]
 
         # Determine if link should be updated
-        self.not_considered += filter( lambda x: not self._is_page_link( x[1] ), internallinks )
-        internallinks = filter( lambda x: self._is_page_link( x[1] ), internallinks )
+        self.not_considered += [x for x in internallinks if not self._is_page_link( x[1] )]
+        internallinks = [x for x in internallinks if self._is_page_link( x[1] )]
 
         # Update links
-        replacements = map( lambda x: ( x[0], self.url_update( x[1] ) ), internallinks )
+        replacements = [( x[0], self.url_update( x[1] ) ) for x in internallinks]
 
         # Update links in content
         content = links.replace_links( page.content, replacements, self.logger )
@@ -361,7 +367,7 @@ class PageLinksCleanupTask( MigrationTask ):
                 tmp[l[1]] = [l[0]]
 
         # Sort keys
-        keys = tmp.keys()
+        keys = list(tmp.keys())
         keys.sort()
 
         for k in keys:
@@ -416,7 +422,7 @@ class PageFilesCopyTask( PageLinksCleanupTask ):
                     # Create intermediate directories
                     try:
                         os.makedirs( head )
-                    except OSError, e:
+                    except OSError as e:
                         if e.errno != 17:
                             raise e
 
@@ -436,14 +442,14 @@ class PageFilesCopyTask( PageLinksCleanupTask ):
         Update links in a page according to the list of redirects.
         """
         pagelinks = links.extract_links( page.content )
-        pagelinks = zip( pagelinks, [links.normalize_link( x, self.bases ) for x in pagelinks] )
+        pagelinks = list(zip( pagelinks, [links.normalize_link( x, self.bases ) for x in pagelinks] ))
 
-        internallinks = filter( lambda x: links.is_internal_link( x[1], self.bases ), pagelinks )
-        filelinks = map( lambda x: ( x[0], links.to_absolute_link( x[1], self._pagebase( page ) ) ), internallinks )
-        filelinks = filter( lambda x: self._is_static_file( x[1] ), filelinks )
+        internallinks = [x for x in pagelinks if links.is_internal_link( x[1], self.bases )]
+        filelinks = [( x[0], links.to_absolute_link( x[1], self._pagebase( page ) ) ) for x in internallinks]
+        filelinks = [x for x in filelinks if self._is_static_file( x[1] )]
 
         # Update links
-        _replacements = map( lambda x: ( x[0], self.url_update( x[1] ) ), filelinks )
+        _replacements = [( x[0], self.url_update( x[1] ) ) for x in filelinks]
 
     def run(self):
         """

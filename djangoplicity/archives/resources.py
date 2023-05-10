@@ -5,6 +5,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
+from builtins import object
 import logging
 import os.path
 
@@ -15,7 +17,7 @@ from django.core.files.images import ImageFile
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.db import models
-from django.utils.encoding import smart_unicode, smart_str
+from django.utils.encoding import smart_text, smart_str
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
@@ -47,7 +49,7 @@ def _archive_instance_id( instance ):
             instance = instance.source
         return getattr( instance, instance.Archive.Meta.idfield )
     except AttributeError:
-        raise StandardError( _('Instance has no archive id. This may be because the instance has not been saved yet.') )
+        raise Exception( _('Instance has no archive id. This may be because the instance has not been saved yet.') )
 
 
 def get_instance_resource( obj, resource_name ):
@@ -57,7 +59,7 @@ def get_instance_resource( obj, resource_name ):
     from djangoplicity.archives.base import ArchiveModel
 
     if not isinstance( obj, ArchiveModel ):
-        raise ResourceError( "%s not an instance of ArchiveModel" % unicode( obj ) )
+        raise ResourceError( "%s not an instance of ArchiveModel" % str( obj ) )
 
     resattr = "%s%s" % ( obj.__class__.Archive.Meta.resource_fields_prefix, resource_name )
 
@@ -188,14 +190,14 @@ class ResourceManager(object):
                 raise ImproperlyConfigured( _('Argument type for Resource must be FileType class or subclass thereof.') )
 
             self.type = type
-            self.verbose_name = smart_unicode( type.verbose_name )
+            self.verbose_name = smart_text( type.verbose_name )
             self.field = type.field or None
             self.field_kwargs = type.field_kwargs or None
             self.exts = type.exts or []
             self.help_text = type.help_text or None
         else:
             self.type = None
-            self.verbose_name = smart_unicode( ugettext_noop(u'Resource') )
+            self.verbose_name = smart_text( ugettext_noop(u'Resource') )
             self.field = None
             self.field_kwargs = None
             self.exts = []
@@ -203,7 +205,7 @@ class ResourceManager(object):
 
         # Overwritten the file types values with user defined ones if they exists.
         if verbose_name is not None:
-            self.verbose_name = smart_unicode( verbose_name )
+            self.verbose_name = smart_text( verbose_name )
 
         if field is not None:
             self.field = field or self.field
@@ -223,7 +225,7 @@ class ResourceManager(object):
         return smart_str(str(self.verbose_name) or '')
 
     def __unicode__(self):
-        return smart_unicode(self.verbose_name or u'')
+        return smart_text(self.verbose_name or u'')
 
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self or "None")

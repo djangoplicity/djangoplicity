@@ -36,6 +36,7 @@ Models for the event calendar.
 Worth noting is the support for timezones on start/end dates.
 """
 
+from builtins import str
 from django.conf import settings
 from django.db import models
 from django.utils import dateformat, formats
@@ -43,6 +44,7 @@ from django.utils.translation import ugettext_lazy as _
 from djangoplicity.translation.models import TranslationModel
 from djangoplicity.utils.datetimes import timezone
 from pytz import all_timezones
+from six import python_2_unicode_compatible
 
 EVENT_TZS = [( tz, tz ) for tz in all_timezones]
 
@@ -51,6 +53,7 @@ EVENT_TZS = [( tz, tz ) for tz in all_timezones]
 #
 
 
+@python_2_unicode_compatible
 class EventType( TranslationModel ):
     slug = models.SlugField()
     name = models.CharField( max_length=255 )
@@ -66,7 +69,7 @@ class EventType( TranslationModel ):
     class Meta:
         ordering = ['name']
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
 
@@ -83,6 +86,7 @@ class EventTypeProxy(EventType):
         ordering = ['lang', 'name']
 
 
+@python_2_unicode_compatible
 class EventCountry( models.Model ):
     isocode = models.SlugField( max_length=2, verbose_name="ISO code" )
     name = models.CharField( max_length=255 )
@@ -91,10 +95,12 @@ class EventCountry( models.Model ):
         ordering = ['name']
         verbose_name_plural = _( 'event countries' )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
 
+
+@python_2_unicode_compatible
 class Event( models.Model ):
     title = models.CharField( max_length=255 )
     link = models.URLField( blank=True )
@@ -136,7 +142,7 @@ class Event( models.Model ):
             location = self.city
 
         if self.country:
-            c = unicode( self.country )
+            c = str( self.country )
             location += ", %s" % c if location else c
 
         return location
@@ -155,7 +161,7 @@ class Event( models.Model ):
     start_date_tz = property( _get_start_date_tz )
     end_date_tz = property( _get_end_date_tz )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     class Meta:

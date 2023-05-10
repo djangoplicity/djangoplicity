@@ -7,6 +7,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import object
 import os
 
 from django.conf import settings
@@ -14,7 +15,7 @@ from django.core.paginator import InvalidPage
 from django.urls import reverse, NoReverseMatch
 from django.http import Http404, HttpResponse
 from django.template import loader, TemplateDoesNotExist
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
@@ -327,9 +328,9 @@ class ArchiveBrowser( object ):
         crosslinks_subject = model._meta.verbose_name_plural
 
         crosslinks = []
-        crosslinks_string = _( 'Also see our %(products)s on ' ) % {'products': force_unicode( crosslinks_subject ).lower() }
+        crosslinks_string = _( 'Also see our %(products)s on ' ) % {'products': force_text( crosslinks_subject ).lower() }
         for website, url in crls:
-            str = _('%(products)s on %(website)s') % {'products': force_unicode(crosslinks_subject), 'website': website}
+            str = _('%(products)s on %(website)s') % {'products': force_text(crosslinks_subject), 'website': website}
             crosslinks.append( ( str, url ) )
             crosslinks_string += ( '<a href="%(url)s">%(website)s</a>, ' % {'website': website, 'url': url } )
 
@@ -408,7 +409,7 @@ class ArchiveBrowser( object ):
         #
         # Process callables in extra_context
         #
-        for key, value in extra_context.items():
+        for key, value in list(extra_context.items()):
             if callable( value ):
                 context[key] = value()
             else:

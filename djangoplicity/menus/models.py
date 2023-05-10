@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
@@ -37,6 +38,7 @@ from django.db.models import signals
 from django.utils import translation
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from six import python_2_unicode_compatible
 from djangoplicity.translation.models import get_path_for_language, get_language_from_path
 from mptt.models import MPTTModel
 from operator import itemgetter
@@ -54,6 +56,7 @@ class MenuDoesNotExist(Exception):
     pass
 
 
+@python_2_unicode_compatible
 class Menu( models.Model ):
     """
     A menu groups a list of menu items.
@@ -75,7 +78,7 @@ class Menu( models.Model ):
     # of 0 means no limits. This field can be overridden by the template.
     max_depth = models.PositiveSmallIntegerField( default=0, help_text=_( u'Defines the maximum number of levels allowed in the menu. A value of 0 means no limits. This field can be overridden by the template.' ) )
 
-    def __unicode__( self ):
+    def __str__( self ):
         """ """
         return self.name
 
@@ -83,6 +86,7 @@ class Menu( models.Model ):
         ordering = ( 'name', )
 
 
+@python_2_unicode_compatible
 class MenuItem( MPTTModel ):
     """
     Registered as Modified Preorder Tree Traversal (MPTT) model. See documentation of Django MPTT
@@ -102,9 +106,9 @@ class MenuItem( MPTTModel ):
     on_click = models.PositiveIntegerField( default=0, choices=CLICK_OPTIONS )
 
     # The root menu item, must be related to a menu.
-    menu = models.ForeignKey( Menu, blank=True, null=True, help_text=_( u'This field only have effect for the root menu item' ) )
+    menu = models.ForeignKey( Menu, blank=True, null=True, help_text=_( u'This field only have effect for the root menu item'), on_delete=models.CASCADE)
 
-    parent = models.ForeignKey( 'self', null=True, blank=True, related_name='children', help_text=_( u'Moving a node to a new parent, will place it as the last node. When moving a menu item, all of it sub-items will be moved as well.') )
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children', help_text=_( u'Moving a node to a new parent, will place it as the last node. When moving a menu item, all of it sub-items will be moved as well.'), on_delete=models.CASCADE)
 
     # Indicates that this is the primary menu item, for a given URL.
     # In case a menu contains several items with the same link, set
@@ -113,7 +117,7 @@ class MenuItem( MPTTModel ):
     # generation.
     is_primary = models.BooleanField( default=True, help_text=_( u'In case a menu contains several items with the same link, set this field to true and the others menu items field to false, to control which item is used for item highlighting and breadcrumb generation.') )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     class Meta:

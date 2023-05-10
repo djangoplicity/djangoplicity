@@ -31,12 +31,12 @@ class AnnouncementsTestCase(AdminTestCase):
     }
 
     def test_index_root(self):
-        for conf in self.conf.values():
+        for conf in list(self.conf.values()):
             response = self.client.get(conf['root'])
             self.assertEqual(response.status_code, 200)
 
     def test_queries(self):
-        for conf in self.conf.values():
+        for conf in list(self.conf.values()):
             options = conf['options']
             root = conf['root']
             views = conf['list_views']

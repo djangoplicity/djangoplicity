@@ -5,6 +5,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from builtins import object
 from django.core.exceptions import ImproperlyConfigured
 from django.template import Context, Template, loader
 from django.template.loader import render_to_string

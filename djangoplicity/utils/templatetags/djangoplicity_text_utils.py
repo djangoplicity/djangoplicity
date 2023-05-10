@@ -5,10 +5,12 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from builtins import str
 from django import template
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import stringfilter
-from BeautifulSoup import BeautifulSoup, BeautifulStoneSoup
+from bs4 import BeautifulSoup
+from djangoplicity.utils.html_cleanup import convert_html_entities
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
@@ -20,7 +22,7 @@ register = template.Library()
 def truncateparagraph_html(value):
     soup = BeautifulSoup(value)
     result = soup.find('p')
-    return unicode( result ).strip()
+    return str( result ).strip()
 
 
 @register.filter( name='remove_html' )
@@ -29,7 +31,7 @@ def remove_html_tags(value):
     Remove all HTML tags, convert HTML entities into
     unicode characters and strip leading/trailing whitespace.
     """
-    return unicode( BeautifulStoneSoup( strip_tags( value ), convertEntities=BeautifulStoneSoup.HTML_ENTITIES ) ).strip()
+    return convert_html_entities(strip_tags(value)).strip()
 
 
 def _remove_bold_italic( text ):
@@ -108,7 +110,7 @@ def underscore_to_space( value ):
 @register.filter
 def sp2nbsp( value ):
     try:
-        value = unicode( value )
+        value = str( value )
         value = value.replace( " ", "&nbsp;" )
         return mark_safe(value)
     except:
@@ -126,7 +128,7 @@ def truncatechars( value, arg ):
     {{ alongtext|truncatechars:20 }}
     """
     try:
-        value = unicode(value)
+        value = str(value)
         arg = int(arg)
     except:
         return value
@@ -155,5 +157,5 @@ def remove_html_except(value, arg):
     for tag in soup.findAll(True):
         if tag.name not in valid_tags:
             tag.hidden = True
-        tag.attrs = [(attr, val) for attr, val in tag.attrs if attr in valid_attrs]
+        tag.attrs = {attr: val for attr, val in tag.attrs.items() if attr in valid_attrs}
     return soup.renderContents().decode('utf8').replace('javascript:', '')

@@ -6,6 +6,7 @@
 # Authors:
 #   Mathias André <mandre@eso.org>
 
+from builtins import str
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE, DELETION
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -29,7 +30,7 @@ def add_admin_history(instance, message, user=None, flag='CHANGE'):
         user_id=user.pk,
         content_type_id=ContentType.objects.get_for_model(instance).pk,
         object_id=instance.pk,
-        object_repr=unicode(instance),
+        object_repr=str(instance),
         action_flag=flag,
         change_message=message
     )

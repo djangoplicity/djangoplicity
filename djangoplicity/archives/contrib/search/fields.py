@@ -30,6 +30,8 @@
 # POSSIBILITY OF SUCH DAMAGE
 from __future__ import unicode_literals
 
+from builtins import str
+from builtins import range
 from datetime import datetime
 from django.db.models import F, Q
 from django.db.utils import DatabaseError
@@ -57,6 +59,7 @@ class SearchField( fields.Field ):
     operator = 'icontains'
     help_text = ''
     logic_repr = {}
+    creation_counter = 0
 
     def __init__( self, model_field='', help_text=None, *args, **kwargs ):
         if model_field:
@@ -70,6 +73,10 @@ class SearchField( fields.Field ):
         if not help_text:
             help_text = self.help_text
         kwargs['help_text'] = help_text
+
+        # Increase the creation counter, and save our local copy.
+        self.creation_counter = SearchField.creation_counter
+        SearchField.creation_counter += 1
 
         super( SearchField, self ).__init__( *args, **kwargs )
 
@@ -257,7 +264,7 @@ class DateSearchField( SearchField, fields.DateField ):
     Default behaviour is =, ie exact date
     """
     model_field = 'release_date'
-    widget = LazySelectDateWidget( years=range( ADV_SEARCH_START_YEAR, datetime.now().year + 2 ) )
+    widget = LazySelectDateWidget( years=list(range( ADV_SEARCH_START_YEAR, datetime.now().year + 2)) )
 
     def repr( self, value ):
         if value:
@@ -289,7 +296,7 @@ class PrioritySearchField( SearchField, fields.ChoiceField ):
     def _value_repr( self, value ):
         for key, choice in self.choices:
             if value == str( key ):
-                return unicode(choice)
+                return str(choice)
 
 
 class MultiSearchField( SearchField ):

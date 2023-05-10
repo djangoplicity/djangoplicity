@@ -29,9 +29,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import datetime
 import logging
-import HTMLParser
+import html.parser
 
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -71,8 +74,10 @@ from djangoplicity.translation.models import TranslationModel, \
 from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
 from djangoplicity.utils.history import add_admin_history
+from six import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
     """
     Video archive model
@@ -192,6 +197,9 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
     magnet_uri = models.CharField( max_length=255, blank=True )
     # Magnet link for the bittorrent version of the original format
 
+    # giphy_url = models.URLField( max_length=255, blank=True )
+    # Giphy link for the GIF version of the video
+
     youtube_video_id = models.CharField(max_length=11, blank=True, null=True, verbose_name=_('YouTube VideoID'))
     use_youtube = models.BooleanField(default=False, verbose_name=_('Use YouTube player'))
 
@@ -213,7 +221,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
                 # Try to see if we have a workflow that we need to run.
                 (name, func) = settings.ARCHIVE_WORKFLOWS['media.video.rename']
                 # Try to import the module and run the function
-                module = __import__(name, globals(), locals(), [func, ], -1)
+                module = __import__(name, globals(), locals(), [func, ], 0)
                 getattr(module, func)(pk=self.pk, new_pk=new_pk)
         except (AttributeError, KeyError):
             pass
@@ -226,7 +234,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
 
         return result
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     class Meta:
@@ -456,7 +464,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
             'domain': get_current_site(None).domain,
         })
 
-        description = HTMLParser.HTMLParser().unescape(description)
+        description = html.parser.HTMLParser().unescape(description)
 
         # YouTube description are limited to 5000 characters, so we truncate
         # it a bit shorter
@@ -641,12 +649,13 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         return sorted(qs, key=lambda s: s.get_lang_display())
 
 
+@python_2_unicode_compatible
 class VideoSubtitle( ArchiveModel, models.Model ):
     """
     Model for storing subtitles for videos.
     """
     id = archive_fields.IdField()
-    video = TranslationForeignKey( Video )
+    video = TranslationForeignKey( Video, on_delete=models.CASCADE )
     lang = models.CharField( verbose_name=_( 'Language' ), max_length=7, choices=SUBTITLE_LANGUAGES, default=settings.LANGUAGE_CODE, db_index=True )
 
     def save( self, **kwargs ):
@@ -676,7 +685,7 @@ class VideoSubtitle( ArchiveModel, models.Model ):
             lambda: update_youtube_caption.delay(self.pk)
         )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return dict( SUBTITLE_LANGUAGES ).get( self.lang, self.lang )
 
     def update_youtube_caption(self, logger=None):
@@ -754,12 +763,13 @@ class VideoSubtitle( ArchiveModel, models.Model ):
             published = True
 
 
+@python_2_unicode_compatible
 class VideoAudioTrack( ArchiveModel, models.Model ):
     """
     Model for storing Audio tracks for videos.
     """
     id = archive_fields.IdField()
-    video = TranslationForeignKey( Video )
+    video = TranslationForeignKey( Video, on_delete=models.CASCADE )
     lang = models.CharField( verbose_name=_( 'Language' ), max_length=7, choices=SUBTITLE_LANGUAGES, default=settings.LANGUAGE_CODE, db_index=True )
 
     def save( self, **kwargs ):
@@ -780,7 +790,7 @@ class VideoAudioTrack( ArchiveModel, models.Model ):
 
         super( VideoAudioTrack, self ).save( **kwargs )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return dict( SUBTITLE_LANGUAGES ).get( self.lang, self.lang )
 
     class Meta:
@@ -799,12 +809,13 @@ class VideoAudioTrack( ArchiveModel, models.Model ):
             published = True
 
 
+@python_2_unicode_compatible
 class VideoBroadcastAudioTrack( ArchiveModel, models.Model ):
     """
     Model for storing Broadcast Audio tracks for videos.
     """
     id = archive_fields.IdField()
-    video = TranslationForeignKey(Video)
+    video = TranslationForeignKey(Video, on_delete=models.CASCADE)
     lang = models.CharField(verbose_name=_('Language'), max_length=7, choices=SUBTITLE_LANGUAGES, default=settings.LANGUAGE_CODE, db_index=True)
     type = models.CharField(verbose_name=_('Audio track type'), max_length=25, choices=SPLIT_AUDIO_TYPES)
 
@@ -826,7 +837,7 @@ class VideoBroadcastAudioTrack( ArchiveModel, models.Model ):
 
         super( VideoBroadcastAudioTrack, self ).save( **kwargs )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return '%s %s' % (self.get_type_display(), dict(SUBTITLE_LANGUAGES).get(self.lang, self.lang))
 
     class Meta:
@@ -845,12 +856,13 @@ class VideoBroadcastAudioTrack( ArchiveModel, models.Model ):
             published = True
 
 
+@python_2_unicode_compatible
 class VideoScript( ArchiveModel, models.Model ):
     """
     Model for storing scripts for videos.
     """
     id = archive_fields.IdField()
-    video = TranslationForeignKey(Video)
+    video = TranslationForeignKey(Video, on_delete=models.CASCADE)
     lang = models.CharField(verbose_name=_('Language'), max_length=7, choices=SUBTITLE_LANGUAGES, default=settings.LANGUAGE_CODE, db_index=True)
     # type = models.CharField(verbose_name=_('Audio track type'), max_length=25, choices=SPLIT_AUDIO_TYPES)
 
@@ -872,7 +884,7 @@ class VideoScript( ArchiveModel, models.Model ):
 
         super( VideoScript, self ).save( **kwargs )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return dict( SUBTITLE_LANGUAGES ).get( self.lang, self.lang )
 
     class Meta:
@@ -895,7 +907,7 @@ class VideoContact( Contact ):
     """
     Contact information for a video
     """
-    video = TranslationForeignKey( Video )
+    video = TranslationForeignKey( Video, on_delete=models.CASCADE )
 
     class Meta:
         verbose_name = _( u'Contact' )

@@ -1,3 +1,4 @@
+from __future__ import division
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -6,6 +7,10 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import hashlib
 import logging
 from math import ceil
@@ -17,7 +22,7 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save, post_delete, pre_save
-from django.utils.functional import curry
+from functools import partial
 
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.resources import ResourceManager
@@ -37,10 +42,10 @@ class FormatTokenGenerator( object ):
     @classmethod
     def create_token( cls, format, id ):
         m = hashlib.sha256()
-        m.update( settings.SECRET_KEY )
-        m.update( str( format ) )
-        m.update( str( id ) )
-        m.update( settings.SECRET_KEY )
+        m.update( settings.SECRET_KEY.encode('utf-8') )
+        m.update( str( format ).encode('utf-8') )
+        m.update( str( id ).encode('utf-8') )
+        m.update( settings.SECRET_KEY.encode('utf-8') )
         return m.hexdigest()
 
     @classmethod
@@ -264,7 +269,7 @@ def get_instance_resources(instance):
 
     resources = [
         get_instance_d2d_resource(instance, fmt, name, media_type)
-        for (name, (fmt, media_type)) in formats.items()
+        for (name, (fmt, media_type)) in list(formats.items())
     ]
 
     # Remove empty resources if any:
@@ -320,18 +325,18 @@ def get_resource_dimension(instance, resource_name):
         # Resource has a max dimension (restricts maximum width or height)
         if instance_width > instance_height:
             # Landscape
-            return [size, ceil(instance_height * size / instance_width)]
+            return [size, ceil(old_div(instance_height * size, instance_width))]
         else:
             # Portrait
-            return [ceil(instance_width * size / instance_height), size]
+            return [ceil(old_div(instance_width * size, instance_height)), size]
 
     if width and instance_width and instance_height:
         # Only width is defined
-        return [width, ceil(instance_height * width / instance_width)]
+        return [width, ceil(old_div(instance_height * width, instance_width))]
 
     if height and instance_width and instance_height:
         # Only height is defined
-        return [ceil(instance_width * height) / instance_height, height]
+        return [old_div(ceil(instance_width * height), instance_height), height]
 
     return [instance_width, instance_height]
 
@@ -551,9 +556,9 @@ def _propagate_fk_release_date( src_model_field ):
     _check_model( dest_class, with_owner=True )
 
     # Partially evaluate signal handlers
-    pre_source_updated_created = curry( fk_pre_source_updated_created_handler, src_attr )
-    source_updated_created = curry( fk_source_updated_created_handler, src_attr, dest_attr )
-    source_deleted = curry( fk_source_deleted_handler, src_attr, dest_class, dest_attr )
+    pre_source_updated_created = partial( fk_pre_source_updated_created_handler, src_attr )
+    source_updated_created = partial( fk_source_updated_created_handler, src_attr, dest_attr )
+    source_deleted = partial( fk_source_deleted_handler, src_attr, dest_class, dest_attr )
 
     # Connect signals
     pre_save.connect( pre_source_updated_created, sender=src_class, weak=False )
@@ -576,9 +581,9 @@ def _propagate_m2m_release_date( src_model_field ):
     _check_model( dest_class, with_owner=True )
 
     # Partially evaluate signal handlers
-    relation_created = curry( m2m_relation_created_handler, through_src_name, through_dest_name )
-    relation_deleted = curry( m2m_relation_deleted_handler, src_class, through_src_name, through_dest_name, dest_attr )
-    source_updated = curry( m2m_source_updated_handler, dest_class, src_attr )
+    relation_created = partial( m2m_relation_created_handler, through_src_name, through_dest_name )
+    relation_deleted = partial( m2m_relation_deleted_handler, src_class, through_src_name, through_dest_name, dest_attr )
+    source_updated = partial( m2m_source_updated_handler, dest_class, src_attr )
 
     # Connect signals
     post_save.connect( relation_created, sender=through_class, weak=False )
@@ -639,7 +644,7 @@ def _update_release_date( dest_instance, source_instance ):
 # ================
 # Signal handlers
 # ================
-# Note all signal handlers cannot be used without first partially evaluating (see django.utils.functional.curry)
+# Note all signal handlers cannot be used without first partially evaluating (see django.utils.functional.partial)
 
 def fk_pre_source_updated_created_handler( src_attr, sender, instance, raw=False, *args, **kwargs ):
     """

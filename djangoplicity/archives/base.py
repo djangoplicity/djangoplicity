@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -5,6 +6,9 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import filter
+from builtins import str
+from builtins import object
 import os
 import shutil
 import inspect
@@ -18,10 +22,11 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db import connection, models
 from django.db.models.base import ModelBase
-from django.db.models.fields import FieldDoesNotExist, CharField
+from django.db.models.fields import CharField
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import Signal
-from django.utils.functional import curry
+from functools import partial
 from django.utils.timezone import is_naive, make_aware
 from django.utils.translation import ugettext_lazy as _
 
@@ -32,6 +37,7 @@ from djangoplicity.archives.fields import ReleaseDateTimeField
 from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.archives.tasks import clear_archive_list_cache, \
     embargo_release_date_task
+from future.utils import with_metaclass
 
 
 __all__ = ( 'ArchiveModel', 'post_rename' )
@@ -46,10 +52,10 @@ def add_model_field( attrs, cls, name, *args, **kwargs ):
     attrs[name] = cls( **kwargs )
 
 
-def add_model_value( attrs, value, name ):
-    if name in attrs:
+def add_model_value( metaclass, value, name ):
+    if name in metaclass.__dict__:
         raise ImproperlyConfigured( _( 'Cannot add attribute to Model from Archive - attribute name %s already exists' % name ) )
-    attrs[name] = value
+    setattr(metaclass, name, value)
 
 
 def add_field( metaclass, attrs, name, default_value, fieldclass, **field_kwargs ):
@@ -57,14 +63,14 @@ def add_field( metaclass, attrs, name, default_value, fieldclass, **field_kwargs
         value = getattr( metaclass, name )
     except AttributeError:
         value = default_value
-        add_model_value( metaclass.__dict__, value, name )
+        add_model_value( metaclass, value, name )
 
     if value:
         try:
             field_name = getattr( metaclass, '%s_fieldname' % name )
         except AttributeError:
             field_name = name
-            add_model_value( metaclass.__dict__, field_name, '%s_fieldname' % name )
+            add_model_value( metaclass, field_name, '%s_fieldname' % name )
         add_model_field( attrs, fieldclass, field_name, **field_kwargs )
 
 
@@ -315,7 +321,7 @@ class ArchiveBase( ModelBase ):
             prefix = getattr( metaclass, 'resource_fields_prefix' )
         except AttributeError:
             prefix = 'resource_'
-            add_model_value( metaclass.__dict__, prefix, 'resource_fields_prefix' )
+            add_model_value( metaclass, prefix, 'resource_fields_prefix' )
 
         # Note if using archiveclass.__dict__ you won't get inherited fields.
         # Compared to dir( archiveclass )
@@ -337,7 +343,7 @@ class ArchiveBase( ModelBase ):
                 # Hence, accessing obj.resource_original will be a call to obj._get_resource( resource_name='original' )
                 # It returns a File object, so it can be used more or less as if it
                 # was a database FileField.
-                attrs[field_name] = property( curry( base_cls._get_resource, resource_name=attrname ) )
+                attrs[field_name] = property( partial( base_cls._get_resource, resource_name=attrname ) )
 
         #
         # Create class
@@ -349,7 +355,7 @@ class ArchiveBase( ModelBase ):
         # - This is done for convenience, when accessing a manager, and so that you
         #   don't need to give the name twice.
         #
-        for ( attrname, manager ) in resources.iteritems():
+        for ( attrname, manager ) in resources.items():
             manager.name = attrname
 
         #
@@ -371,7 +377,7 @@ class ArchiveBase( ModelBase ):
         return newclass
 
 
-class ArchiveModel( object ):
+class ArchiveModel( with_metaclass(ArchiveBase, object) ):
     """
     Super class for all Models that needs archive functionality.
 
@@ -394,7 +400,6 @@ class ArchiveModel( object ):
     metaclass (ArchiveBase), and hence nothing of the magic will be
     added unless ArchiveModel is specified as the first super class.
     """
-    __metaclass__ = ArchiveBase
 
     def save(self, *args, **kwargs ):
         if not self._state.adding and not self.pk:
@@ -454,7 +459,7 @@ class ArchiveModel( object ):
 
             for resource in related_resources:
                 if not resource.pk.startswith(self.pk):
-                    print '** Not renaming %s for %s' % (resource.pk, self.pk)
+                    print('** Not renaming %s for %s' % (resource.pk, self.pk))
                     continue
 
                 # Generate destination pk:
@@ -471,7 +476,7 @@ class ArchiveModel( object ):
 
         # Get list of translations (if any) and rename them
         if settings.USE_I18N and hasattr(self, 'Translation') and self.is_source():
-            for _lang, translation in self.get_translations(filter_kwargs={})['translations'].iteritems():
+            for _lang, translation in self.get_translations(filter_kwargs={})['translations'].items():
                 if not translation.pk.startswith(self.pk):
                     continue
 
@@ -504,7 +509,7 @@ class ArchiveModel( object ):
                 # get_translations():
                 proxytranslation = proxymodel.objects.get(pk=translation.pk)
                 proxytranslation.rename(destpk)
-                print '** Renaming %s Translation %s to %s' % (proxytranslation.__class__.__name__, translation.pk, destpk)
+                print('** Renaming %s Translation %s to %s' % (proxytranslation.__class__.__name__, translation.pk, destpk))
 
         # Update key in primary table
         sql = """UPDATE "%(table)s" SET "%(key)s"='%(new_key)s' WHERE "%(key)s"='%(old_key)s'"""
@@ -537,7 +542,7 @@ class ArchiveModel( object ):
 
         # Only delete resources for source objects
         resource_names = [
-            name for name, type_ in vars(self.Archive).items()
+            name for name, type_ in list(vars(self.Archive).items())
             if isinstance(type_, ResourceManager)
         ]
 
@@ -564,7 +569,7 @@ class ArchiveModel( object ):
         # Rename resources
         #
         resource_names = [
-            name for name, type_ in vars(self.Archive).items()
+            name for name, type_ in list(vars(self.Archive).items())
             if isinstance(type_, ResourceManager)
         ]
 
@@ -591,7 +596,7 @@ class ArchiveModel( object ):
         # Rename resources
         #
         resource_names = [
-            name for name, type_ in vars(self.Archive).items()
+            name for name, type_ in list(vars(self.Archive).items())
             if isinstance(type_, ResourceManager)
         ]
 

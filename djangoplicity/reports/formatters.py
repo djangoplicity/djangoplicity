@@ -5,8 +5,11 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import csv
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 
@@ -118,19 +121,21 @@ class CSVOutputFormatter( OutputFormatter ):
 
         try:
             # Write header
-            writer.writerow( [unicode(x).encode(encoding) for x in report_result.report.fields] )
+            writer.writerow( [str(x).encode(encoding) for x in report_result.report.fields] )
 
             # Write rows
             for row in report_result.rows:
+                import sys
                 cells = []
 
                 for x in row:
-                    if isinstance( x, str ):
-                        cells.append( unicode(x, encoding='utf8' ).encode(encoding) )
-                    elif isinstance( x, unicode ):
-                        cells.append( x.encode( encoding ) )
+                    if sys.version_info[0] < 3:
+                        if isinstance( x, str ):
+                            cells.append( x.encode( encoding ) )
+                        else:
+                            cells.append( str(x).encode(encoding) )
                     else:
-                        cells.append( unicode(x).encode(encoding) )
+                        cells.append(x)
 
                     # Replace newlines in fields to prevent problems with loading
                     # CSV file.
@@ -142,7 +147,7 @@ class CSVOutputFormatter( OutputFormatter ):
             return response
         except UnicodeError:
             return render(request, 'reports/csverror.html', {
-                    'url': request.path + '?' + urllib.urlencode( {'output': request.GET['output'], 'encoding': 'utf8' } )
+                    'url': request.path + '?' + urllib.parse.urlencode( {'output': request.GET['output'], 'encoding': 'utf8' } )
             })
 
 

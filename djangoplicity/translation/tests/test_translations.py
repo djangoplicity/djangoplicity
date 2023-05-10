@@ -149,14 +149,14 @@ def test_translation_objects_filters():
     assert Release.objects.language('da').exclude(Q(published=True), (Q(id__in=[t4.pk, t2.pk], title__startswith='Ha') | Q(pk__in=[t1.pk, t3.pk], title__contains='Organisation'))).count() == 3
 
     # Query Set methods
-    assert [x['title'] for x in Release.objects.order_by('title').values()] == \
+    assert [x['title'] for x in list(Release.objects.order_by('title').values())] == \
     [u'Hallo', u'Organisation Release', u'Photo Release', u'Science Release']
-    assert [x['title'] for x in Release.objects.language('da').order_by('title').values()] == \
+    assert [x['title'] for x in list(Release.objects.language('da').order_by('title').values())] == \
     [u'Hallo', u'Pressemeddelelse (Billed)', u'Pressemeddelelse (Organisation)', u'Pressemeddelelse (Videnskabelig)']
     assert len(Release.objects.values_list()) == 4
     assert Release.objects.language('da').defer('title').all().count() == 4
     assert Release.objects.language('da').none().count() == 0
-    assert [x['title'] for x in Release.objects.language('da').order_by('-title').values()] == \
+    assert [x['title'] for x in list(Release.objects.language('da').order_by('-title').values())] == \
     [u'Pressemeddelelse (Videnskabelig)', u'Pressemeddelelse (Organisation)', u'Pressemeddelelse (Billed)', u'Hallo']
 
     # Delete

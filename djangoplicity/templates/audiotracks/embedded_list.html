@@ -1,4 +1,4 @@
-{% load i18n staticfiles %}
+{% load i18n static %}
 {% if object.videoaudiotrack_set.all %}
 <h3 class="archivegrouptitle">{% trans "Audio" %}</h3>
 {% for track in object.videoaudiotrack_set.all %}

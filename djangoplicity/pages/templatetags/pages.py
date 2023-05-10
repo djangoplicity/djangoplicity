@@ -48,11 +48,11 @@ class EmbeddedPageNode( template.Node ):
             if self.page_key_variable:
                 key += self.page_key_variable.resolve(context)
             return embed_page_key( context['request'], key, no_unpublished=self.no_unpublished )
-        except PageNotFoundError, e:
+        except PageNotFoundError as e:
             return node_error( _(u"The embedded page could not be found.") )
-        except PageAuthorizationError, e:
+        except PageAuthorizationError as e:
             return node_error( _(u"User not authorized to view page.") )
-        except template.VariableDoesNotExist, e:
+        except template.VariableDoesNotExist as e:
             return node_error( _(u"Couldn't resolve request variable: %s") % e )
 
         return node_error( _(u"An unknown error occurred.") )
@@ -93,7 +93,7 @@ def user_can_edit(user, page):
     {% user_can_edit user page %}
     Returns True if the current user can edit the page
     """
-    if user.is_anonymous():
+    if user.is_anonymous:
         return False
 
     # If we don't have any configured PageGroup we assume

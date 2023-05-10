@@ -5,6 +5,9 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from past.builtins import cmp
+from builtins import range
+from builtins import object
 from datetime import datetime
 from django import forms
 from django.conf import settings
@@ -18,7 +21,7 @@ from django.urls import reverse, NoReverseMatch
 from django.db import transaction
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from functools import update_wrapper
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -177,8 +180,8 @@ def _check_embargo(model, obj, request):
 
 
 def _get_ordered(obj, klass):
-    fields = [(name, o) for name, o in obj.__dict__.items() if isinstance(o, klass)]
-    fields.sort(lambda (name1, obj1), (name2, obj2): cmp(obj1.creation_counter, obj2.creation_counter))
+    fields = [(name, o) for name, o in list(obj.__dict__.items()) if isinstance(o, klass)]
+    fields.sort(key=lambda field: field[1].creation_counter)
     return fields
 
 
@@ -255,7 +258,7 @@ class DisplaysAdmin ( ModelAdmin ):
         try:
             obj = self.get_queryset( request ).get( pk=unquote( object_id ) )
         except model.DoesNotExist:
-            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_unicode( opts.verbose_name ), 'key': escape( object_id )} )
+            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_text( opts.verbose_name ), 'key': escape( object_id )} )
 
         state = _check_embargo(model, obj, request)
         displays = self._get_displays( obj, {'state': state, 'request': request } )
@@ -264,7 +267,7 @@ class DisplaysAdmin ( ModelAdmin ):
             raise Http404()
 
         context = {
-            'title': _( 'Displays for %s' ) % force_unicode( opts.verbose_name ),
+            'title': _( 'Displays for %s' ) % force_text( opts.verbose_name ),
             'object_id': object_id,
             'is_popup': True,
             'media': self.media,
@@ -286,7 +289,7 @@ class DisplaysAdmin ( ModelAdmin ):
 
         context = {
             "title": "Displays",
-            "object_name": force_unicode( opts.verbose_name ),
+            "object_name": force_text( opts.verbose_name ),
             'displays': displays,
             "opts": opts,
             "media": self.media,
@@ -383,7 +386,7 @@ class DuplicateAdmin( ModelAdmin ):
         opts = obj._meta
         pk_value = obj._get_pk_val()
 
-        msg = _( 'The %(name)s "%(obj)s" was duplicated successfully.' ) % {'name': force_unicode( opts.verbose_name ), 'obj': force_unicode( obj )}
+        msg = _( 'The %(name)s "%(obj)s" was duplicated successfully.' ) % {'name': force_text( opts.verbose_name ), 'obj': force_text( obj )}
 
         self.message_user( request, msg )
         return HttpResponseRedirect( "../../%s/" % pk_value )
@@ -445,7 +448,7 @@ class DuplicateAdmin( ModelAdmin ):
             raise PermissionDenied
 
         if obj is None:
-            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_unicode( opts.verbose_name ), 'key': escape( object_id )} )
+            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_text( opts.verbose_name ), 'key': escape( object_id )} )
 
         DuplicateForm = self.get_duplicate_form( request, obj )
         if request.method == 'POST':
@@ -468,7 +471,7 @@ class DuplicateAdmin( ModelAdmin ):
         media = self.media + form.media
 
         context = {
-            'title': _( 'Duplicate %s' ) % force_unicode( opts.verbose_name ),
+            'title': _( 'Duplicate %s' ) % force_text( opts.verbose_name ),
             'form': form,
             'object_id': object_id,
             'original': obj,
@@ -602,7 +605,7 @@ class RenameAdmin (ModelAdmin):
         opts = obj._meta
         pk_value = obj._get_pk_val()
 
-        msg = _( 'The %(name)s "%(obj)s" was renamed successfully.' ) % {'name': force_unicode( opts.verbose_name ), 'obj': force_unicode( obj )}
+        msg = _( 'The %(name)s "%(obj)s" was renamed successfully.' ) % {'name': force_text( opts.verbose_name ), 'obj': force_text( obj )}
 
         self.message_user( request, msg )
         return HttpResponseRedirect( "../../../%s/" % pk_value )
@@ -650,7 +653,7 @@ class RenameAdmin (ModelAdmin):
             raise PermissionDenied
 
         if obj is None:
-            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_unicode( opts.verbose_name ), 'key': escape( object_id )} )
+            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_text( opts.verbose_name ), 'key': escape( object_id )} )
 
         RenameForm = self.get_rename_form( request, obj )
         if request.method == 'POST':
@@ -673,7 +676,7 @@ class RenameAdmin (ModelAdmin):
         media = self.media + form.media
 
         context = {
-            'title': _( 'Rename %s' ) % force_unicode( opts.verbose_name ),
+            'title': _( 'Rename %s' ) % force_text( opts.verbose_name ),
             'form': form,
             'object_id': object_id,
             'original': obj,
@@ -740,7 +743,7 @@ class SyncTranslationAdmin (ModelAdmin):
         opts = obj._meta
         pk_value = obj._get_pk_val()
 
-        msg = _( 'The translations in the same language family as %(name)s "%(obj)s" were updated successfully.' ) % {'name': force_unicode( opts.verbose_name ), 'obj': force_unicode( obj )}
+        msg = _( 'The translations in the same language family as %(name)s "%(obj)s" were updated successfully.' ) % {'name': force_text( opts.verbose_name ), 'obj': force_text( obj )}
 
         self.message_user( request, msg )
         return HttpResponseRedirect( "../../%s/" % pk_value )
@@ -783,7 +786,7 @@ class SyncTranslationAdmin (ModelAdmin):
             raise PermissionDenied
 
         if obj is None:
-            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_unicode( opts.verbose_name ), 'key': escape( object_id )} )
+            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_text( opts.verbose_name ), 'key': escape( object_id )} )
 
         if request.method == 'POST':
             with transaction.atomic():
@@ -792,7 +795,7 @@ class SyncTranslationAdmin (ModelAdmin):
             return self.response_synctranslation( request, obj )
 
         context = {
-            'title': _( 'Sync translations %s' ) % force_unicode( opts.verbose_name ),
+            'title': _( 'Sync translations %s' ) % force_text( opts.verbose_name ),
             'is_popup': (IS_POPUP_VAR in request.POST or IS_POPUP_VAR in request.GET),
             'obj': obj,
             'app_label': opts.app_label,
@@ -877,7 +880,7 @@ class MoveResourcesAdmin (ModelAdmin):
         opts = obj._meta
         pk_value = obj._get_pk_val()
 
-        msg = _( 'The resources of %(name)s "%(obj)s" was moved successfully.' ) % {'name': force_unicode( opts.verbose_name ), 'obj': force_unicode( obj )}
+        msg = _( 'The resources of %(name)s "%(obj)s" was moved successfully.' ) % {'name': force_text( opts.verbose_name ), 'obj': force_text( obj )}
 
         self.message_user( request, msg )
         return HttpResponseRedirect( "../../%s/" % pk_value )
@@ -934,7 +937,7 @@ class MoveResourcesAdmin (ModelAdmin):
             raise PermissionDenied
 
         if obj is None:
-            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_unicode( opts.verbose_name ), 'key': escape( object_id )} )
+            raise Http404( _( '%(name)s object with primary key %(key)r does not exist.' ) % {'name': force_text( opts.verbose_name ), 'key': escape( object_id )} )
 
         MoveForm = self.get_move_form( request, obj )
         if request.method == 'POST':
@@ -957,7 +960,7 @@ class MoveResourcesAdmin (ModelAdmin):
         media = self.media + form.media
 
         context = {
-            'title': _( 'Move %s resources' ) % force_unicode( opts.verbose_name ),
+            'title': _( 'Move %s resources' ) % force_text( opts.verbose_name ),
             'form': form,
             'object_id': object_id,
             'original': obj,
@@ -976,7 +979,7 @@ def view_link( urlprefix, translation=False ):
         if translation and obj.is_translation():
             kwargs = { 'lang': obj.lang }
         try:
-            return '<a href="%s">View</a>' % reverse_func( "%s_detail" % urlprefix, args=[obj.source.id if translation and obj.is_translation() else obj.id], **kwargs )
+            return mark_safe('<a href="%s">View</a>' % reverse_func( "%s_detail" % urlprefix, args=[obj.source.id if translation and obj.is_translation() else obj.id], **kwargs ))
         except NoReverseMatch:
             return ''
     f.short_description = _("Link")

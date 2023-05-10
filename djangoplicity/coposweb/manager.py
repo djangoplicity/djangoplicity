@@ -88,11 +88,15 @@ Refunds are transactions that are authorized and captured directly. In these cas
 the presented card really exists.
 """
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 import cgi
 import re
 import socket
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 
 def alpha( len, allow_none=True  ):
     """
@@ -271,9 +275,9 @@ class CoposWebTransaction(object):
         Create URL opener for sending a request to the COPOSweb service.
         """
         # Create authentication handler and URL opener
-        auth_handler = urllib2.HTTPBasicAuthHandler()
+        auth_handler = urllib.request.HTTPBasicAuthHandler()
         auth_handler.add_password( self.conf['auth_realm'], self.conf['auth_url'], self.conf['user'], self.conf['password'] )       
-        opener = urllib2.build_opener( auth_handler )
+        opener = urllib.request.build_opener( auth_handler )
         
         return opener
     
@@ -282,7 +286,7 @@ class CoposWebTransaction(object):
         URL encode the parameters.
         """
         # Encode POST data
-        return urllib.urlencode( self.params )
+        return urllib.parse.urlencode( self.params )
     
     def _post_request( self ):
         """
@@ -298,7 +302,7 @@ class CoposWebTransaction(object):
             f = opener.open( self.conf['url'], self._post_data() )
             response = f.read()
             f.close()
-        except ( urllib2.URLError, urllib2.HTTPError ), e:
+        except ( urllib.error.URLError, urllib.error.HTTPError ) as e:
             raise CoposWebError( "A communication problem with our credit card payment provider has occurred. Please come back later. Your card has not been charged.", exception=e )
         finally:
             socket.setdefaulttimeout( old_timeout )
@@ -323,7 +327,7 @@ class CoposWebTransaction(object):
             posherr = self.response.posherr
             if posherr != "0":
                 raise CoposWebTransactionError( self.response )
-        except AttributeError, e:
+        except AttributeError as e:
             raise CoposWebError( "A communication problem with our credit card payment provider has occurred. Please come back later. Your card has not been charged.", exception=e )
 
 
@@ -341,9 +345,9 @@ class TestTransaction( CoposWebTransaction ):
         Create URL opener for sending a request to the COPOSweb service.
         """
         # Create authentication handler and URL opener
-        auth_handler = urllib2.HTTPBasicAuthHandler()
+        auth_handler = urllib.request.HTTPBasicAuthHandler()
         auth_handler.add_password( self.conf['auth_realm'], self.conf['auth_url'], self.conf['user'], self.conf['password'] )       
-        opener = urllib2.build_opener( auth_handler )
+        opener = urllib.request.build_opener( auth_handler )
         
         return opener
     

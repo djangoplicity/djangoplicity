@@ -76,7 +76,7 @@ class AVMImageSerializer( Serializer ):
         def include_related( objs, mapping ):
             d = {}
             for obj in objs:
-                for field, tag in mapping.items():
+                for field, tag in list(mapping.items()):
                     try:
                         val = d[tag]
                     except KeyError:

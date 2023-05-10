@@ -30,9 +30,11 @@
 # POSSIBILITY OF SUCH DAMAGE
 #
 
-from BeautifulSoup import BeautifulSoup
+from future import standard_library
+standard_library.install_aliases()
+from bs4 import BeautifulSoup
 from django.contrib.redirects.models import Redirect
-from urlparse import urljoin, urlsplit, urlunsplit
+from urllib.parse import urljoin, urlsplit, urlunsplit
 
 # HTML 4.0 URI type attributes - see http://www.w3.org/TR/REC-html40/index/attributes.html
 LINK_ATTRS = ['href', 'src', 'action', 'cite', 'codebase', 'data', 'longdesc', 'usemap', 'profile', ]

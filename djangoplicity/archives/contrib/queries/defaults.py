@@ -5,6 +5,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
+from builtins import str
+from builtins import filter
 from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, FieldError
@@ -61,7 +63,7 @@ def param_extra_templates( param=None, selector=None ):
 
         if param in query_data:
             stringparam = selector( query_data[param], query ) if selector else query_data[param]
-            stringparam = unicode( stringparam )
+            stringparam = str( stringparam )
 
             return [
                     'archives/%s/%s/list_%s.html' % ( model._meta.object_name.lower(), query_name, stringparam ),
@@ -150,7 +152,7 @@ class EmbargoQuery( ArchiveQuery ):
 
     def has_permissions(self, request):
         """ Hook to determine if a request is allowed to view this query. """
-        return request.user.is_authenticated()
+        return request.user.is_authenticated
 
 
 class StagingQuery( ArchiveQuery ):
@@ -256,16 +258,20 @@ class CategoryQuery( ArchiveQuery ):
         try:
             # First try many to many fields, since there are only normally
             # only few of those.
-            field = filter( lambda x: x.name == name, model._meta.local_many_to_many )[0]
+            field = list(filter( lambda x: x.name == name, model._meta.local_many_to_many ))[0]
         except IndexError:
             # Nothing found so try ForeignKeys
             try:
-                field = filter( lambda x: x.name == name and isinstance(x, ForeignKey), model._meta.local_fields )[0]
+                field = list(filter( lambda x: x.name == name and isinstance(x, ForeignKey), model._meta.local_fields ))[0]
             except IndexError:
                 raise ImproperlyConfigured( 'Relation field does not exist on archive model.' )
 
-        # Both ForeignKey and ManyToManyField defines rel.to
-        return field.rel.to
+        # Both ForeignKey and ManyToManyField defines rel.to for django 1.11 and remote_field.model for django 2+
+        import django
+        if django.VERSION >= (2, 0):
+            return field.remote_field.model
+        else:
+            return field.rel.to
 
     def queryset( self, model, options, request, stringparam=None, **kwargs ):
         if not stringparam:

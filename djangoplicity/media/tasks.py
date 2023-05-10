@@ -29,6 +29,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from builtins import str
+from past.utils import old_div
 import codecs
 import datetime
 import os
@@ -50,7 +53,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.mail import send_mail, mail_managers
-from django.core.urlresolvers import reverse
 
 from djangoplicity.archives.contrib.serialization import XMPEmitter
 from djangoplicity.archives.resources import get_instance_resource, ResourceError
@@ -64,6 +66,12 @@ from djangoplicity.metadata.consts import get_file_type
 from djangoplicity.utils.history import add_admin_history
 from djangoplicity.utils.templatetags.djangoplicity_text_utils import remove_html_tags
 from djangoplicity.utils.sending_mail import mail_images_managers
+
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 LOCK_EXPIRE = 60 * 30  # 30 mins
 
@@ -95,7 +103,7 @@ def image_extras( image_id, sendtask_callback=None, sendtask_tasksetid=None ):
 
             if original_file:
                 # File size/type
-                fields['file_size'] = long( os.path.getsize( original_file ) / 1024 )
+                fields['file_size'] = int( old_div(os.path.getsize( original_file ), 1024) )
 
                 fields['file_type'] = get_file_type( original_file )
 
@@ -110,7 +118,7 @@ def image_extras( image_id, sendtask_callback=None, sendtask_tasksetid=None ):
 
                 fields['n_pixels'] = fields['width'] * fields['height']
 
-                for key, value in fields.items():
+                for key, value in list(fields.items()):
                     if value != getattr(im, key):
                         setattr(im, key, value)
                         update_fields.append(key)
@@ -187,7 +195,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
 
                 # Divide the number of includes files (frames) by the framerate
                 # to get the duration in seconds
-                fields['file_duration'] = len(z.infolist()) / v.frame_rate
+                fields['file_duration'] = old_div(len(z.infolist()), v.frame_rate)
 
                 # Assume the width and height is 8k, 4k or 2k unless it's already set
                 if resource == 'dome_8kmaster':
@@ -218,8 +226,8 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
                 # Use midentify to fetch a dict of key/values about the file
                 args = ['/usr/bin/mplayer', '-noconfig', 'all', '-cache-min', '0', '-vo', 'null', '-ao', 'null', '-frames', '0', '-identify', path]
                 try:
-                    output = Popen(args, stdout=PIPE, stderr=PIPE).communicate()[0].split('\n')
-                except OSError, e:
+                    output = Popen(args, stdout=PIPE, stderr=PIPE).communicate()[0].decode('utf-8').split('\n')
+                except OSError as e:
                     logger.error('Can\'t run mplayer identify command: "%s"' % ' '.join(args))
                     raise e
                 output_d = dict([data.split('=') for data in output if data.startswith('ID_')])
@@ -239,7 +247,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
             # We use int(duration) to drop the microseconds
             fields['file_duration'] = str(datetime.timedelta(seconds=int(fields['file_duration']))) + ':000'
 
-            for key, value in fields.items():
+            for key, value in list(fields.items()):
                 if value != getattr(v, key):
                     setattr(v, key, value)
                     update_fields.append(key)
@@ -297,9 +305,9 @@ def write_metadata(image_id, formats, cdn_sync=True):
     """
     Celery task for writing AVM metadata to file.
     """
-    if settings.SITE_ENVIRONMENT != 'prod':
-        logger.info('%s only runs on a production system', write_metadata.__name__)
-        return
+    # if settings.SITE_ENVIRONMENT != 'prod':
+    #    logger.info('%s only runs on a production system', write_metadata.__name__)
+    #    return
 
     # Imports
     from djangoplicity.media.models import Image
@@ -346,7 +354,9 @@ def write_metadata(image_id, formats, cdn_sync=True):
         logger.debug("Generated XMP for image %s" % image_id)
 
         # Write AVM to file
-        avm_to_file(filepath, avm.data, replace=False)
+        result = avm_to_file(filepath, avm.data, replace=False)
+        if not result:
+            raise Exception('There was an error while writing AVM for image %s to file %s' % (image_id, filepath))
         logger.info("Wrote AVM for image %s to %s" % (image_id, filepath))
 
         # Write custom EXIF Camera/Make to mark the image as a 360° pano
@@ -384,7 +394,7 @@ def fast_start(video_id, fmt, sendtask_callback=None, sendtask_tasksetid=None):
             if res:
                 os.system(MP4BOX_PATH + " -quiet -tmp %s -inter 500 %s" % (settings.TMP_DIR, res.path))
                 logger.info('Video %s set to fast start' % video_id)
-    except Exception, e:
+    except Exception as e:
         logger.warning("Exception: %s." % e)
 
     # send_task callback
@@ -436,7 +446,8 @@ def video_embed_subtitles( video_id, resource_name, sendtask_callback=None, send
 
     # The cache key consists of the task name and the MD5 digest
     # of the video id and format
-    fmt_digest = md5('%s%s' % (video_id, resource_name)).hexdigest()
+    to_hash = str('%s%s' % (video_id, resource_name)).encode("utf-8")
+    fmt_digest = md5(to_hash).hexdigest()
     lock_id = "video_embed_subtitles-lock-%s" % fmt_digest
 
     # cache.add fails if if the key already exists
@@ -495,7 +506,7 @@ def video_embed_subtitles( video_id, resource_name, sendtask_callback=None, send
                         res = get_instance_resource( v, resource_name )
                     except ResourceError:
                         logger.error( "%s is not a valid resource on video instances." % resource_name )
-                    except Exception, e:
+                    except Exception as e:
                         logger.error( "Error: %s" % e )
 
                     file = None

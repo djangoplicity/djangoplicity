@@ -7,6 +7,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
+from builtins import object
 import csv
 import sys
 from collections import deque
@@ -86,7 +88,7 @@ class OrderExporter( object ):
 
     @staticmethod
     def encode_list( items, encoding='ascii', handler='replace' ):
-        return [unicode( x ).encode( encoding, handler ) for x in items]
+        return [str( x ).encode( encoding, handler ) for x in items]
 
     @staticmethod
     def get_order_no( order ):

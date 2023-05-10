@@ -29,6 +29,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import range
+from builtins import object
 import json
 import logging
 import os
@@ -40,6 +42,7 @@ import time
 from requests.exceptions import ConnectionError
 
 from django.conf import settings
+from six import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
 
@@ -57,6 +60,7 @@ def chunks(l, n):
         yield l[i:i + n]
 
 
+@python_2_unicode_compatible
 class ContentServer(object):
     def __init__(self, name, formats=None, url='', remote_dir=''):
         '''
@@ -70,7 +74,7 @@ class ContentServer(object):
         self.name = name
         # We convert the list to sets for faster lookups
         self.formats = dict(
-            [(key, set(values)) for key, values in formats.items()]
+            [(key, set(values)) for key, values in list(formats.items())]
         )
         self.url = url
         self.remote_dir = remote_dir
@@ -80,7 +84,7 @@ class ContentServer(object):
     def __repr__(self):
         return self.name
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_url(self, resource, format_name):

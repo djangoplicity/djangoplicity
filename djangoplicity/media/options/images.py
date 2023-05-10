@@ -29,6 +29,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from past.utils import old_div
+from builtins import object
 import os
 
 from django.db.models import Case, Value, When, IntegerField
@@ -268,7 +271,7 @@ class ImageOptions( ArchiveOptions ):
             file_path = data["files"][data['formats'].index( 'original' )]
 
             obj.file_type = get_file_type( file_path )
-            obj.file_size = long(os.path.getsize( file_path )) / 1024
+            obj.file_size = old_div(int(os.path.getsize( file_path )), 1024)
 
             try:
                 obj.width, obj.height = identify_image(file_path)

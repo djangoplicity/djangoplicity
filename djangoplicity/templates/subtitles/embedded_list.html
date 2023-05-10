@@ -1,4 +1,4 @@
-{% load i18n staticfiles %}
+{% load i18n static %}
 {% if object.videosubtitle_set.all %}
 <h3 class="archivegrouptitle">{% trans "Subtitles" %}</h3>
 {% for sub in object.get_ordered_subtitles %}

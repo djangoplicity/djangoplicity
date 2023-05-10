@@ -66,7 +66,7 @@ class TestDatetimes(TestCase):
         cet = datetime(2011, 3, 24, 12, 00) # Central European Time
         cest = datetime(2011, 3, 30, 12, 00) # Central European Summer Time
         cest_brst = datetime(2011, 10, 18, 12, 00)
-        cet_brst = datetime(2011, 11, 01, 12, 00)
+        cet_brst = datetime(2011, 11, 0o1, 12, 00)
 
         assert time4lang(brst, 'pt-br').isoformat() == '2011-02-18T09:00:00-02:00'
         assert time4lang(brt, 'pt-br').isoformat() == '2011-02-22T08:00:00-03:00'
@@ -85,7 +85,7 @@ class UtilsTestCase(TestCase):
 
     def test_text(self):
         from djangoplicity.utils import text
-        self.assertEqual(text.named_entities(UnicodeEncodeError("utf-8", unicode("hola"), 1, 2, "yes" )), (u'&#111;', 2))
+        self.assertEqual(text.named_entities(UnicodeEncodeError("utf-8", u'hola', 1, 2, "yes" )), (u'&#111;', 2))
 
     def test_storage(self):
         from djangoplicity.utils import storage

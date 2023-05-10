@@ -29,12 +29,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import object
 from django.db import router
 from django.db.models.fields.related_descriptors import \
     ForwardManyToOneDescriptor, ReverseManyToOneDescriptor, \
     ManyToManyDescriptor, create_reverse_many_to_one_manager, \
     create_forward_many_to_many_manager
 from django.utils.functional import cached_property
+import django
 
 
 class TranslationDescriptor(object):
@@ -106,69 +108,135 @@ class TranslationForwardManyToOneDescriptor(ForwardManyToOneDescriptor, Translat
         super(TranslationForwardManyToOneDescriptor, self).__init__(field_with_rel)
 
     def __set__(self, instance, value):
-        '''
-        Copied and updated from ForwardManyToOneDescriptor (two ADDED sections)
-        '''
-        # An object must be an instance of the related class.
-        if value is not None and not isinstance(value, self.field.remote_field.model._meta.concrete_model):
-            raise ValueError(
-                'Cannot assign "%r": "%s.%s" must be a "%s" instance.' % (
-                    value,
-                    instance._meta.object_name,
-                    self.field.name,
-                    self.field.remote_field.model._meta.object_name,
+        # See: https://github.com/djangoplicity/djangoplicity/wiki/Django-2-Upgrades#translationforwardmanytoonedescriptor-object-has-no-attribute-cache_name
+        if django.VERSION >= (2, 0):
+            '''
+            Copied and updated from ForwardManyToOneDescriptor 2.2 (two ADDED sections)
+            '''
+            # An object must be an instance of the related class.
+            if value is not None and not isinstance(value, self.field.remote_field.model._meta.concrete_model):
+                raise ValueError(
+                    'Cannot assign "%r": "%s.%s" must be a "%s" instance.' % (
+                        value,
+                        instance._meta.object_name,
+                        self.field.name,
+                        self.field.remote_field.model._meta.object_name,
+                    )
                 )
-            )
-        elif value is not None:
-            if instance._state.db is None:
-                instance._state.db = router.db_for_write(instance.__class__, instance=value)
-            elif value._state.db is None:
-                value._state.db = router.db_for_write(value.__class__, instance=instance)
-            elif value._state.db is not None and instance._state.db is not None:
+            elif value is not None:
+                if instance._state.db is None:
+                    instance._state.db = router.db_for_write(instance.__class__, instance=value)
+                if value._state.db is None:
+                    value._state.db = router.db_for_write(value.__class__, instance=instance)
                 if not router.allow_relation(value, instance):
                     raise ValueError('Cannot assign "%r": the current database router prevents this relation.' % value)
+            
+            remote_field = self.field.remote_field
+            # If we're setting the value of a OneToOneField to None, we need to clear
+            # out the cache on any old related object. Otherwise, deleting the
+            # previously-related object will also cause this object to be deleted,
+            # which is wrong.
+            if value is None:
+                # Look up the previously-related object, which may still be available
+                # since we've not yet cleared out the related field.
+                # Use the cache directly, instead of the accessor; if we haven't
+                # populated the cache, then we don't care - we're only accessing
+                # the object to invalidate the accessor cache, so there's no
+                # need to populate the cache just to expire it again.
+                related = self.field.get_cached_value(instance, default=None)
 
-        # If we're setting the value of a OneToOneField to None, we need to clear
-        # out the cache on any old related object. Otherwise, deleting the
-        # previously-related object will also cause this object to be deleted,
-        # which is wrong.
-        if value is None:
-            # Look up the previously-related object, which may still be available
-            # since we've not yet cleared out the related field.
-            # Use the cache directly, instead of the accessor; if we haven't
-            # populated the cache, then we don't care - we're only accessing
-            # the object to invalidate the accessor cache, so there's no
-            # need to populate the cache just to expire it again.
-            related = getattr(instance, self.cache_name, None)
+                # If we've got an old related object, we need to clear out its
+                # cache. This cache also might not exist if the related object
+                # hasn't been accessed yet.
+                if related is not None:
+                    remote_field.set_cached_value(related, None)
 
-            # If we've got an old related object, we need to clear out its
-            # cache. This cache also might not exist if the related object
-            # hasn't been accessed yet.
-            if related is not None:
-                setattr(related, self.field.remote_field.get_cache_name(), None)
+                for lh_field, rh_field in self.field.related_fields:
+                    setattr(instance, lh_field.attname, None)
 
-            for lh_field, rh_field in self.field.related_fields:
-                setattr(instance, lh_field.attname, None)
+            # Set the values of the related field.
+            else:
+                for lh_field, rh_field in self.field.related_fields:
+                    setattr(instance, lh_field.attname, getattr(value, rh_field.attname))
 
-        # Set the values of the related field.
+            # ADDED: If value is translation object, then use the source
+            if self.only_sources and self.is_multilingual_object(value) and value.is_translation():
+                value = value.source
+            # ADDED (end)
+
+            # Set the related instance cache used by __get__ to avoid an SQL query
+            # when accessing the attribute we just set.
+            self.field.set_cached_value(instance, value)
+
+            # If this is a one-to-one relation, set the reverse accessor cache on
+            # the related object to the current instance to avoid an extra SQL
+            # query if it's accessed later on.
+            if value is not None and not remote_field.multiple:
+                remote_field.set_cached_value(value, instance)
         else:
-            for lh_field, rh_field in self.field.related_fields:
-                setattr(instance, lh_field.attname, getattr(value, rh_field.attname))
+            '''
+            Copied and updated from ForwardManyToOneDescriptor 1.11 (two ADDED sections)
+            '''
+            # An object must be an instance of the related class.
+            if value is not None and not isinstance(value, self.field.remote_field.model._meta.concrete_model):
+                raise ValueError(
+                    'Cannot assign "%r": "%s.%s" must be a "%s" instance.' % (
+                        value,
+                        instance._meta.object_name,
+                        self.field.name,
+                        self.field.remote_field.model._meta.object_name,
+                    )
+                )
+            elif value is not None:
+                if instance._state.db is None:
+                    instance._state.db = router.db_for_write(instance.__class__, instance=value)
+                elif value._state.db is None:
+                    value._state.db = router.db_for_write(value.__class__, instance=instance)
+                elif value._state.db is not None and instance._state.db is not None:
+                    if not router.allow_relation(value, instance):
+                        raise ValueError('Cannot assign "%r": the current database router prevents this relation.' % value)
 
-        # ADDED: If value is translation object, then use the source
-        if self.only_sources and self.is_multilingual_object(value) and value.is_translation():
-            value = value.source
-        # ADDED (end)
+            # If we're setting the value of a OneToOneField to None, we need to clear
+            # out the cache on any old related object. Otherwise, deleting the
+            # previously-related object will also cause this object to be deleted,
+            # which is wrong.
+            if value is None:
+                # Look up the previously-related object, which may still be available
+                # since we've not yet cleared out the related field.
+                # Use the cache directly, instead of the accessor; if we haven't
+                # populated the cache, then we don't care - we're only accessing
+                # the object to invalidate the accessor cache, so there's no
+                # need to populate the cache just to expire it again.
+                related = getattr(instance, self.cache_name, None)
 
-        # Set the related instance cache used by __get__ to avoid an SQL query
-        # when accessing the attribute we just set.
-        setattr(instance, self.cache_name, value)
+                # If we've got an old related object, we need to clear out its
+                # cache. This cache also might not exist if the related object
+                # hasn't been accessed yet.
+                if related is not None:
+                    setattr(related, self.field.remote_field.get_cache_name(), None)
 
-        # If this is a one-to-one relation, set the reverse accessor cache on
-        # the related object to the current instance to avoid an extra SQL
-        # query if it's accessed later on.
-        if value is not None and not self.field.remote_field.multiple:
-            setattr(value, self.field.remote_field.get_cache_name(), instance)
+                for lh_field, rh_field in self.field.related_fields:
+                    setattr(instance, lh_field.attname, None)
+
+            # Set the values of the related field.
+            else:
+                for lh_field, rh_field in self.field.related_fields:
+                    setattr(instance, lh_field.attname, getattr(value, rh_field.attname))
+
+            # ADDED: If value is translation object, then use the source
+            if self.only_sources and self.is_multilingual_object(value) and value.is_translation():
+                value = value.source
+            # ADDED (end)
+
+            # Set the related instance cache used by __get__ to avoid an SQL query
+            # when accessing the attribute we just set.
+            setattr(instance, self.cache_name, value)
+
+            # If this is a one-to-one relation, set the reverse accessor cache on
+            # the related object to the current instance to avoid an extra SQL
+            # query if it's accessed later on.
+            if value is not None and not self.field.remote_field.multiple:
+                setattr(value, self.field.remote_field.get_cache_name(), instance)
 
         # ADDED
         # If we're not dealing with the source field in a TranslationModel
@@ -243,7 +311,7 @@ class TranslationReverseManyToOneDescriptor(ReverseManyToOneDescriptor, Translat
 
         # Take care of special case (see documentation in __init__ for precise documentation)
         if instance_or_source != instance:
-            for key, value in manager.core_filters.items():
+            for key, value in list(manager.core_filters.items()):
                 if value is instance:
                     manager.core_filters[key] = instance_or_source
 
@@ -274,10 +342,10 @@ class TranslationManyToManyDescriptor(ManyToManyDescriptor, TranslationDescripto
     def related_manager_cls(self):
         '''
         Copied from ManyToManyDescriptor.related_manager_cls,
-        Replace model._default_manager.__class__ by self.get_manager_base_class(related_model=self.field.remote_field.to)
+        Replace model._default_manager.__class__ by self.get_manager_base_class(related_model=self.field.remote_field.model)
         '''
         return create_forward_many_to_many_manager(
-            self.get_manager_base_class(related_model=self.field.remote_field.to),  # Updated
+            self.get_manager_base_class(related_model=self.field.remote_field.model),  # Updated
             self.rel,
             reverse=self.reverse,
         )
@@ -327,13 +395,14 @@ def wrap_manager(manager, funcname, get_instance):
     func = getattr(manager, funcname, None)
 
     if func:
-        def wrapper(*objs):
+        # Upgrade to Django 2.2 **kwargs arguments are received and passed because of 'add' function requiring the through_defaults argument
+        def djp_many_related_manager_func_wrapper(*objs, **kwargs):
             if objs:
-                objs = [ get_instance(obj) for obj in objs]
-            return func(*objs)
-        wrapper.alters_data = True
+                objs = [get_instance(obj) for obj in objs]
+            return func(*objs, **kwargs)
+        djp_many_related_manager_func_wrapper.alters_data = True
 
-        setattr(manager, funcname, wrapper)
+        setattr(manager, funcname, djp_many_related_manager_func_wrapper)
     return manager
 
 

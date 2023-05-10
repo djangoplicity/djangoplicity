@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import object
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
@@ -188,6 +189,10 @@ class VideoOptions( ArchiveOptions ):
             'resources': ( 'old_video', ),
             'icons': { 'old_video': 'movie' }
         } ),
+        # (ugettext_noop(u'Giphy'), {
+        #     'resources': (video_giphy_url_link, ),
+        #     'icons': {'video_giphy_url_link': 'giphy'}
+        # }),
     )
 
     detail_views = (
@@ -394,7 +399,7 @@ class VideoSubtitleOptions (ArchiveOptions):
         res, invalid = find_importables( archive_import_root, archive_model, archive_options, exclude_id=None )
         newdict = {}
 
-        for k, entry in res.iteritems():
+        for k, entry in res.items():
 
             try:
                 vidid = k[:-2]
@@ -433,7 +438,7 @@ class VideoAudioTrackOptions (ArchiveOptions):
         res, invalid = find_importables( archive_import_root, archive_model, archive_options, exclude_id=None )
         newdict = {}
 
-        for k, entry in res.iteritems():
+        for k, entry in res.items():
 
             try:
                 vidid = k[:-2]
@@ -462,7 +467,7 @@ class VideoBroadcastAudioTrackOptions (ArchiveOptions):
         res, invalid = find_importables( archive_import_root, archive_model, archive_options, exclude_id=None )
         newdict = {}
 
-        for k, entry in res.iteritems():
+        for k, entry in res.items():
 
             try:
                 vidid = k[:-2]

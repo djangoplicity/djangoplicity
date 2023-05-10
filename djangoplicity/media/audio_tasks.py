@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 import datetime
 import glob
 import logging
@@ -159,7 +160,7 @@ def get_audio_duration(app_label, module_name, pk):
     args = ['/usr/bin/mplayer', '-noconfig', 'all', '-cache-min', '0', '-vo', 'null', '-ao', 'null', '-frames', '0', '-identify', path]
     try:
         output = Popen(args, stdout=PIPE, stderr=PIPE).communicate()[0].split('\n')
-    except OSError, e:
+    except OSError as e:
         logger.error('Can\'t run mplayer identify command: "%s"', ' '.join(args))
         raise e
     output_d = dict([data.split('=') for data in output if data.startswith('ID_')])

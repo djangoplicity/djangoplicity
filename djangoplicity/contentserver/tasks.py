@@ -37,14 +37,18 @@ from importlib import import_module
 
 from django.conf import settings
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse
-
 from djangoplicity.archives.loading import get_archives
 from djangoplicity.celery.serialtaskset import str_keys
 from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
 
 logger = get_task_logger(__name__)
 
+
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse
+else:
+    from django.core.urlresolvers import reverse
 
 @task
 def sync_content_server(module_path, cls_name, instance_id, formats=None,
@@ -99,7 +103,7 @@ def check_content_server_resources(last=40):
     from djangoplicity.contentserver.models import ContentDeliveryModel
 
     # Get list of CDNs which use a remote archive
-    cdns = [c for c in settings.MEDIA_CONTENT_SERVERS.values() if c.remote_archive]
+    cdns = [c for c in list(settings.MEDIA_CONTENT_SERVERS.values()) if c.remote_archive]
 
     # Get list of Archive models which inherit from ContentDeliveryModel
     models = [m for m, _o in get_archives() if issubclass(m, ContentDeliveryModel)]

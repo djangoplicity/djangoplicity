@@ -29,10 +29,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from django.conf import settings
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
+from six import python_2_unicode_compatible
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.contrib import types
@@ -47,6 +49,7 @@ from djangoplicity.translation.models import TranslationModel, \
 from djangoplicity.translation.fields import TranslationForeignKey
 
 
+@python_2_unicode_compatible
 class ImageComparison( ArchiveModel, TranslationModel ):
     """
     Image comparisons allows to compare two images with a nice
@@ -62,15 +65,15 @@ class ImageComparison( ArchiveModel, TranslationModel ):
     description = metadatafields.AVMDescriptionField()
     credit = metadatafields.AVMCreditField( default=DEFAULT_CREDIT_FUNC )
 
-    image_before = TranslationForeignKey( Image, related_name='imagecomparison_before_set', null=True )
-    image_after = TranslationForeignKey( Image, related_name='imagecomparison_after_set', null=True )
+    image_before = TranslationForeignKey( Image, related_name='imagecomparison_before_set', null=True, on_delete=models.CASCADE )
+    image_after = TranslationForeignKey( Image, related_name='imagecomparison_after_set', null=True, on_delete=models.CASCADE )
 
     def __init__( self, *args, **kwargs ):
         super( ImageComparison, self ).__init__( *args, **kwargs )
         if not self.credit:
             self.credit = DEFAULT_CREDIT
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.title
 
     def height_ratio( self ):

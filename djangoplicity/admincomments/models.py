@@ -33,8 +33,10 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from six import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class AdminComment( models.Model ):
     """
     Generic modelf for storing comments about another object. Most useful as
@@ -48,10 +50,10 @@ class AdminComment( models.Model ):
     comment = models.TextField( blank=True )
 
     # User who created the comment - is set automatically by admin form
-    user = models.ForeignKey( User, null=True, blank=True, editable=False )
+    user = models.ForeignKey( User, null=True, blank=True, editable=False, on_delete=models.CASCADE)
 
     # Content type of generic relation - see content types framework
-    content_type = models.ForeignKey( ContentType )
+    content_type = models.ForeignKey( ContentType, on_delete=models.CASCADE)
 
     # Object id of generic relation (using slug to allow relations to models with Char PK) - see content types framework
     object_id = models.SlugField()
@@ -59,7 +61,7 @@ class AdminComment( models.Model ):
     # Generic foreign key to object being commented on - see content types framework
     content_object = GenericForeignKey( 'content_type', 'object_id' )
 
-    def __unicode__(self):
+    def __str__(self):
         ctx = { 'timestamp': self.timestamp.isoformat(), 'content_type': self.content_type, 'username': self.user.username if self.user else '' }
         if self.user:
             return u"%(timestamp)s: %(content_type)s comment by %(username)s" % ctx

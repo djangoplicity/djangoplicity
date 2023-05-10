@@ -36,7 +36,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.db.models import signals
 from django.utils.translation import ugettext_lazy as _
-
+from six import python_2_unicode_compatible
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.translation import TranslationProxyMixin
@@ -57,6 +57,7 @@ from djangoplicity.translation.models import TranslationForeignKey, \
 # This was we can easily get all POTWs for a given language
 
 
+@python_2_unicode_compatible
 class PictureOfTheWeek( ArchiveModel, TranslationModel ):
     """
     Model representing that an picture of the week. The model
@@ -64,9 +65,9 @@ class PictureOfTheWeek( ArchiveModel, TranslationModel ):
     set will be propagate to the image/video model.
     """
     id = archive_fields.IdField()
-    image = TranslationForeignKey( Image, blank=True, null=True, only_sources=False )
-    video = TranslationForeignKey( Video, blank=True, null=True, only_sources=False )
-    comparison = models.ForeignKey( ImageComparison, blank=True, null=True )
+    image = TranslationForeignKey( Image, blank=True, null=True, only_sources=False, on_delete=models.CASCADE )
+    video = TranslationForeignKey( Video, blank=True, null=True, only_sources=False, on_delete=models.CASCADE )
+    comparison = models.ForeignKey( ImageComparison, blank=True, null=True, on_delete=models.CASCADE )
     auto_update = True
 
     def visual(self):
@@ -133,7 +134,7 @@ class PictureOfTheWeek( ArchiveModel, TranslationModel ):
         except IndexError:
             raise cls.DoesNotExist
 
-    def __unicode__(self):
+    def __str__(self):
         v = self.visual()
         return "%s - %s" % (self.id, v.title) if v else self.id
 

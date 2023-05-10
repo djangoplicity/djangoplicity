@@ -5,6 +5,7 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
 import six
 from datetime import timedelta, date as pdate
 from dateutil.parser import parse
@@ -62,7 +63,7 @@ def time4lang(value, arg=settings.LANGUAGE_CODE):
             return timezone(value, timezones[arg])
         else:
             return timezone(value)
-    except Exception, e:
+    except Exception as e:
         return e.message
 
 

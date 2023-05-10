@@ -5,6 +5,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
+from builtins import object
 from os.path import basename
 
 from datetime import datetime
@@ -19,7 +21,7 @@ from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template import loader
 from django.template.loader import render_to_string
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.http import urlunquote
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.views.generic import DetailView, ListView
@@ -60,7 +62,7 @@ def _authorize_request( request, options, obj, published=None, next=None ):
 
     staging_rights = options.has_staging_perms( request, obj )
     if not staging_rights:
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseForbidden(render_to_string('403.html', request=request))
         else:
             return redirect_to_login( next=next )
@@ -85,7 +87,7 @@ def _authorize_request_releasedate( request, options, obj, release_date=None, em
         if embargo_date > now:
             staging_rights = options.has_staging_perms( request, obj )
             if not staging_rights:
-                if request.user.is_authenticated():
+                if request.user.is_authenticated:
                     return HttpResponseForbidden(render_to_string('403.html', request=request ))
                 else:
                     return redirect_to_login( next=next )
@@ -95,7 +97,7 @@ def _authorize_request_releasedate( request, options, obj, release_date=None, em
             staging_rights = options.has_staging_perms( request, obj )
             embargo_rights = options.has_embargo_perms( request, obj )
             if not ( staging_rights or embargo_rights ):
-                if request.user.is_authenticated():
+                if request.user.is_authenticated:
                     return HttpResponseForbidden(render_to_string('403.html', request=request ))
                 else:
                     return redirect_to_login( next=next )
@@ -214,7 +216,7 @@ def process_object_downloads( obj, options ):
         thumbnails = []
         if 'thumbnails' in group[1]:
             tnails = group[1]["thumbnails"]
-            for tr, l in tnails.items():
+            for tr, l in list(tnails.items()):
                 resource_t = getattr( obj, '%s%s' % (obj.Archive.Meta.resource_fields_prefix, tr), False )
                 if resource_t:
                     resource_l = getattr( obj, '%s%s' % (obj.Archive.Meta.resource_fields_prefix, l), False )
@@ -369,7 +371,7 @@ class GenericDetailView( object ):
 
         crosslinks = []
         for website, url in crls:
-            str = _('%(products)s on %(website)s') % {'products': force_unicode(crosslinks_subject), 'website': website}
+            str = _('%(products)s on %(website)s') % {'products': force_text(crosslinks_subject), 'website': website}
             crosslinks.append((str, url))
 
         #
@@ -408,7 +410,7 @@ class GenericDetailView( object ):
         #
         # Process callables in extra context
         #
-        for k, value in extra_context.items():
+        for k, value in list(extra_context.items()):
             if callable(value):
                 context[k] = value()
             else:
@@ -687,7 +689,7 @@ def archive_list( request, model=None, options=None, query_name=None, query=None
     # Authorize view
     #
     if not query.has_permissions( request ):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseForbidden(render_to_string('403.html', request=request ))
         else:
             return redirect_to_login( next=request.get_full_path() )

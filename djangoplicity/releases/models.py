@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from datetime import datetime
 
 from django.conf import settings
@@ -39,7 +40,7 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
 from django.utils.translation import ugettext_lazy as _, ugettext
-
+from six import python_2_unicode_compatible
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.contrib import types
 from djangoplicity.archives.resources import ResourceManager
@@ -61,6 +62,7 @@ from djangoplicity.media.models.comparisons import ImageComparison
 # Deprecated: Once eso.cl is migrated this model
 # and relations to it should be removed, and
 
+@python_2_unicode_compatible
 class Country( models.Model ):
     isocode = models.CharField( max_length=2, primary_key=True, verbose_name=_('ISO Code') )
     url_prefix = models.CharField( max_length=255, verbose_name=_('URL Prefix') )
@@ -72,7 +74,7 @@ class Country( models.Model ):
         warnings.warn( "Use of ReleaseTranslation and Country has been deprecated.", DeprecationWarning )
         super( Country, self ).__init__( *args, **kwargs )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -83,7 +85,7 @@ class Country( models.Model ):
 # =======================================
 # Press releases
 # =======================================
-
+@python_2_unicode_compatible
 class ReleaseType( models.Model ):
     """
     A press release can be categorized into different types of
@@ -96,7 +98,7 @@ class ReleaseType( models.Model ):
     name = models.CharField( max_length=100, blank=True )
     # Display name of the release type.
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:
@@ -104,6 +106,7 @@ class ReleaseType( models.Model ):
         verbose_name = _('Press Release Type')
 
 
+@python_2_unicode_compatible
 class Release( ArchiveModel, TranslationModel ):
     #
     # Field definitions
@@ -113,7 +116,7 @@ class Release( ArchiveModel, TranslationModel ):
     old_ids = models.CharField(verbose_name=_("Old Ids"), max_length=50, blank=True, help_text=_(u'For backwards compatibility: Historic ids of this press release.') )
 
     # Type of the release - see ReleaseType model for more information.
-    release_type = TranslationForeignKey( ReleaseType, blank=False, null=False, default=1 )
+    release_type = TranslationForeignKey( ReleaseType, blank=False, null=False, default=1 , on_delete=models.CASCADE)
 
     # Title of of the press release
     title = models.CharField( max_length=255, db_index=True, help_text=_(u"Title is shown in browser window. Use a good informative title, since search engines normally display the title on their result pages.") )
@@ -169,7 +172,7 @@ class Release( ArchiveModel, TranslationModel ):
 
     kids_description = models.TextField( blank=True )
 
-    kids_image = models.ForeignKey( Image, blank=True, null=True, related_name='kids_image_release_set', help_text=_(u'Use this to override the default Release image.') )
+    kids_image = models.ForeignKey( Image, blank=True, null=True, related_name='kids_image_release_set', help_text=_(u'Use this to override the default Release image.'), on_delete=models.CASCADE )
 
     def get_embargo_login( self ):
         return settings.ARCHIVE_EMBARGO_LOGIN
@@ -282,7 +285,7 @@ class Release( ArchiveModel, TranslationModel ):
     def get_absolute_url(self):
         return translation_reverse( 'releases_detail', args=[str( self.id if self.is_source() else self.source.id )], lang=self.lang )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.id
 
     class Translation:
@@ -414,7 +417,7 @@ class ReleaseContact( ExtendedContact ):
     """
     Source release contacts (global for all translations as well)
     """
-    release = TranslationForeignKey( Release, only_sources=True )
+    release = TranslationForeignKey( Release, only_sources=True , on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _(u'contact')
@@ -426,7 +429,7 @@ class ReleaseTranslationContact( ExtendedContact ):
     A contact specific for a PR translation (these contacts are shown before
     the source release's contacts.
     """
-    release = TranslationForeignKey( Release, only_sources=False )
+    release = TranslationForeignKey( Release, only_sources=False , on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _(u'translation contact')
@@ -436,21 +439,21 @@ class ReleaseTranslationContact( ExtendedContact ):
 # =======================================
 # Related images, videos and stock images
 # =======================================
-
+@python_2_unicode_compatible
 class RelatedRelease( models.Model  ):
     """
     Abstract model to link another archive item (e.g. visuals) to a release. The Model should be
     subclassed and used as a many-to-many intermediary model::
 
         class RelatedReleaseImage( RelatedRelease ):
-            archive_item = models.ForeignKey( Image, verbose_name=('Image') )
+            archive_item = models.ForeignKey( Image, verbose_name=('Image'), on_delete=models.CASCADE )
 
             class Meta:
                 verbose_name = _('...')
     """
 
     # The release to link with another archive item.
-    release = TranslationForeignKey( Release, verbose_name=_('Related release'), only_sources=True )
+    release = TranslationForeignKey( Release, verbose_name=_('Related release'), on_delete=models.CASCADE, only_sources=True )
 
     order = models.PositiveSmallIntegerField( blank=True, null=True )
     # Used to define an order for the archive items, in case this should not be via the alphabetic order of the id.
@@ -464,8 +467,8 @@ class RelatedRelease( models.Model  ):
     # Define if the visual should be hidden if used for e.g. the kiosk
     hide = models.BooleanField( default=False, verbose_name=_('Hide on kiosk') )
 
-    def __unicode__(self):
-        return ugettext("Archive Item for Release %s" % (unicode(self.release.id)))
+    def __str__(self):
+        return ugettext("Archive Item for Release %s" % (str(self.release.id)))
 
     class Meta:
         abstract = True
@@ -473,23 +476,23 @@ class RelatedRelease( models.Model  ):
 
 class ReleaseImage( RelatedRelease ):
     """ Images related to a release. """
-    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Image') )
+    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Image'), on_delete=models.CASCADE)
     zoomable = models.BooleanField( default=False, verbose_name=_('Zoomable if main') )
 
 
 class ReleaseVideo( RelatedRelease ):
     """ Images related to a release. """
-    archive_item = TranslationForeignKey( Video, verbose_name=_('Related Video') )
+    archive_item = TranslationForeignKey( Video, verbose_name=_('Related Video'), on_delete=models.CASCADE)
 
 
 class ReleaseStockImage( RelatedRelease ):
     """ Stock Images related to a release. """
-    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Stock Image') )
+    archive_item = TranslationForeignKey( Image, verbose_name=_('Related Stock Image'), on_delete=models.CASCADE )
 
 
 class ReleaseImageComparison( RelatedRelease ):
     """ Stock Images related to a release. """
-    archive_item = TranslationForeignKey( ImageComparison, verbose_name=_('Related Image Comparison') )
+    archive_item = TranslationForeignKey( ImageComparison, verbose_name=_('Related Image Comparison'), on_delete=models.CASCADE )
 
 
 # =======================================
@@ -500,8 +503,8 @@ class ReleaseImageComparison( RelatedRelease ):
 # this model is no longer needed.
 
 class ReleaseTranslation( models.Model ):
-    release = models.ForeignKey( Release )
-    country = models.ForeignKey( Country )
+    release = models.ForeignKey( Release, on_delete=models.CASCADE)
+    country = models.ForeignKey( Country, on_delete=models.CASCADE)
     url_suffix = models.CharField( max_length=255, verbose_name=_('URL Suffix') )
 
     def __init__(self, *args, **kwargs ):

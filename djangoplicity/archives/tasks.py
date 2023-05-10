@@ -7,6 +7,7 @@
 #
 
 from __future__ import with_statement
+from builtins import str
 import glob
 import hashlib
 import os
@@ -51,8 +52,8 @@ def move_file( src, dst, overwrite=True, sendtask_callback=None, sendtask_taskse
                 os.makedirs( dirname )
 
         shutil.move( src, dst )
-    except Exception, e:
-        logger.warning( unicode( e ) )
+    except Exception as e:
+        logger.warning( str( e ) )
 
     # send_task callback
     if sendtask_callback:
@@ -90,7 +91,7 @@ def move_resources( src, dst, overwrite=True, archive_id=None, exclude=[], sendt
         if s not in exclude:
             try:
                 _move_resource( os.path.join( src, s ), os.path.join( dst, s ), archive_id )
-            except Exception, e:
+            except Exception as e:
                 error = e
                 logger.exception( "Error moving format %s" % s )
         else:
@@ -152,13 +153,13 @@ def delete_resources( app_label, module_name, object_id, resources, sendtask_cal
 def _create_dir( path ):
     try:
         os.makedirs( path )
-    except Exception, e:
+    except Exception as e:
         raise e
 
 def _get_dirs( path ):
     """ Get all subdirectories in path """
     files = os.listdir( path )
-    return filter( lambda x: os.path.isdir( os.path.join( path, x ) ), files )
+    return [x for x in files if os.path.isdir( os.path.join( path, x ) )]
 
 
 def _get_missing( src, dst ):
@@ -205,7 +206,7 @@ def _move_resource( srcpath, dstpath, archive_id ):
             # Move source to dst
 
             shutil.move( fsrcpath, fdstpath )
-    except Exception, e:
+    except Exception as e:
         raise e
 
 
@@ -284,7 +285,7 @@ def compute_checksums(app_label, module_name, pk, min_size=104857600,
 
         h = hashlib.sha256()
 
-        with open(resource.path) as f:
+        with open(resource.path, 'rb') as f:
             while True:
                 buf = f.read(2**20)  # Read 1MB at a time
                 if not buf:

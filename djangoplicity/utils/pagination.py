@@ -1,3 +1,4 @@
+from __future__ import division
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -6,9 +7,12 @@
 #   Luis Clara Gomes <lcgomes@eso.org>
 #
 
+from builtins import range
+from builtins import object
+from past.utils import old_div
 from django.urls import reverse
 from django.conf import settings
-from django.core.paginator import Paginator as corePaginator, QuerySetPaginator as coreQSetPaginator
+from django.core.paginator import Paginator as corePaginator
 
 
 def _adj_range(adjacent_pages, page_obj, page_range):
@@ -49,7 +53,7 @@ class DjangoplicityPaginator (corePaginator):
         return _adj_range(self.adjacent_pages, page_obj, self.page_range)
 
 
-class DjangoplicityQuerySetPaginator (coreQSetPaginator):
+class DjangoplicityQuerySetPaginator (corePaginator):
     def __init__(self, *args, **kwargs):
         self.adjacent_pages = kwargs.get("adjacent_pages", None)
         if not self.adjacent_pages:
@@ -84,7 +88,7 @@ class Paginator (object):
         leftlimit = page * paginate_by
 
         items_in_page = paginate_by
-        pagecount = int(total / paginate_by)
+        pagecount = int(old_div(total, paginate_by))
         if int(pagecount) == int(page):
             items_in_page = total % paginate_by
 

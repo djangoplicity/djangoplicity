@@ -30,6 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 
+from builtins import str
 import os
 from django.conf import settings
 from django.contrib import messages
@@ -200,7 +201,7 @@ def manage_archive_imports(request, archive_model, archive_options):
                     user_id=request.user.pk,
                     content_type_id=ContentType.objects.get_for_model(obj).pk,
                     object_id=obj_id,
-                    object_repr=unicode(obj),
+                    object_repr=str(obj),
                     action_flag=CHANGE,
                     change_message=change_message
                 )
@@ -230,7 +231,7 @@ def manage_archive_imports(request, archive_model, archive_options):
                         mark_safe(u"File was successfully imported and is being processed in a background job."))
 
     # Note any id that has been imported, will have been removed from here.
-    initial = files.values()
+    initial = list(files.values())
     initial.sort(key=lambda x: x['id'])
 
     formset = FormSet(initial=initial)

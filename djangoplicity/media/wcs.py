@@ -29,12 +29,16 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
-from BeautifulSoup import BeautifulStoneSoup
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from past.utils import old_div
+from djangoplicity.utils.html_cleanup import convert_html_entities
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.utils.html import strip_tags
-from django.utils.encoding import force_unicode
-import urllib
+from django.utils.encoding import force_text
+import urllib.request, urllib.parse, urllib.error
 
 WWT_BASE_URL = "http://www.worldwidetelescope.org/wwtweb/ShowImage.aspx?"
 
@@ -43,14 +47,14 @@ def prepare_str( s, html=False ):
     """
     Clean string for any mark-up so that string can be shown by other applications (WWT/XMP).
     """
-    s = force_unicode( s )
+    s = force_text( s )
     if html:
         s = strip_tags(s)
         s = s.replace("\r\n", " ")
         s = s.replace("\n", " ")
         s = s.replace("\r", " ")
         if s:
-            s = BeautifulStoneSoup( s, convertEntities=BeautifulStoneSoup.HTML_ENTITIES ).contents[0]
+            s = convert_html_entities(s)
     return s.encode('utf8')
 
 
@@ -62,12 +66,12 @@ def rescale_wcs( new_w, new_h, ref_w, ref_h, ref_x, ref_y, scale_x, scale_y):
         - Only one scale is returned and in arcseconds/pixel instead of degree/pixel
     """
     # Ratio (pixel aspect ratio must be the same, so ratio can be calculated like below)
-    ratio = max( float( new_w ), float( new_h ) ) / max( float( ref_w ), float( ref_h ) )
+    ratio = old_div(max( float( new_w ), float( new_h ) ), max( float( ref_w ), float( ref_h ) ))
 
     return (
         float( ref_x ) * ratio,
         float( ref_y ) * ratio,
-        abs( float( scale_x ) ) * 3600 / ratio,
+        old_div(abs( float( scale_x ) ) * 3600, ratio),
     )
 
 
@@ -180,6 +184,6 @@ def wwt_show_image_url( im ):
         params['credits'] = ""
         params['creditsUrl'] = "http://%s%s" % ( Site.objects.get_current().domain, im.get_absolute_url() )
 
-        return "%s%s" % ( WWT_BASE_URL, urllib.urlencode( params ) )
+        return "%s%s" % ( WWT_BASE_URL, urllib.parse.urlencode( params ) )
     except Exception:
         return None

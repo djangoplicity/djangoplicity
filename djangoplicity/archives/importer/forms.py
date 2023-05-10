@@ -95,7 +95,7 @@ class UploadFileForm ( forms.Form ):
         Write uploaded files to import directory.
         """
         for f in request.FILES.getlist('files'):
-            destination = open( os.path.join( path_to_save, f.name ), 'w+' )
+            destination = open( os.path.join( path_to_save, f.name ), 'wb' )
             for chunk in f.chunks():
                 destination.write( chunk )
             destination.close()

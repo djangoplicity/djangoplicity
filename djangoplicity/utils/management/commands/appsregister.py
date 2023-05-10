@@ -1,3 +1,4 @@
+from __future__ import print_function
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -21,6 +22,6 @@ class Command(BaseCommand):
         for app in settings.INSTALLED_APPS:
             try:
                 __import__("%s.appregister" % app)
-                print "Found appregister in %s" % app
+                print("Found appregister in %s" % app)
             except ImportError:
                 continue

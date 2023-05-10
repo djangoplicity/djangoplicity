@@ -59,7 +59,7 @@ def to_avm(data, parent=None):
     '''
     if isinstance(data, dict):
         new_dict = OrderedDict()
-        for key, value in data.items():
+        for key, value in list(data.items()):
             if parent == 'Collections' and key in AVM_TAGS:
                 key = AVM_TAGS[key]
             new_dict[key] = to_avm(value, parent=key)

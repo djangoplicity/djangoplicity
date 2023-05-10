@@ -97,7 +97,7 @@ def admin_factory( model, options, exclude=['release_date', 'embargo_date', 'cre
         return tmp
 
     def exclude_fields( fs ):
-        return filter( lambda x: x not in exclude, fs )
+        return [x for x in fs if x not in exclude]
 
     product_list_display = check_fields( [ 'id', 'list_link_thumbnail', ] )
     product_list_filter = exclude_fields( exclude_fields( ['published', 'priority'] ) )
@@ -222,7 +222,7 @@ def admin_factory( model, options, exclude=['release_date', 'embargo_date', 'cre
 
     # Find all fields not being shown
     local_fields = [x.name for x in model._meta.local_fields]
-    missing_fields = filter( lambda x: x not in fields + exclude, local_fields )
+    missing_fields = [x for x in local_fields if x not in fields + exclude]
 
     if missing_fields:
         product_fieldsets += [( name, { 'fields': tuple( missing_fields ) } ), ]

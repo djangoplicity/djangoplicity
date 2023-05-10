@@ -8,6 +8,7 @@ import djangoplicity.archives.translation
 import djangoplicity.archives.fields
 import djangoplicity.metadata.translation.fields
 import djangoplicity.translation.fields
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -100,8 +101,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('ratio', models.FloatField()),
-                ('color', models.ForeignKey(to='media.Color')),
-                ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image')),
+                ('color', models.ForeignKey(to='media.Color', on_delete=django.db.models.deletion.CASCADE)),
+                ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },
@@ -123,9 +124,9 @@ class Migration(migrations.Migration):
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
                 ('release_date_owner', models.SlugField(null=True, blank=True)),
-                ('image_after', djangoplicity.translation.fields.TranslationForeignKey(related_name='imagecomparison_after_set', to='media.Image', null=True)),
-                ('image_before', djangoplicity.translation.fields.TranslationForeignKey(related_name='imagecomparison_before_set', to='media.Image', null=True)),
-                ('source', djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='media.ImageComparison', null=True, only_sources=False)),
+                ('image_after', djangoplicity.translation.fields.TranslationForeignKey(related_name='imagecomparison_after_set', to='media.Image', null=True, on_delete=django.db.models.deletion.CASCADE)),
+                ('image_before', djangoplicity.translation.fields.TranslationForeignKey(related_name='imagecomparison_before_set', to='media.Image', null=True, on_delete=django.db.models.deletion.CASCADE)),
+                ('source', djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='media.ImageComparison', null=True, only_sources=False, on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'ordering': ('-priority', '-release_date'),
@@ -140,7 +141,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255, blank=True)),
                 ('email', models.CharField(max_length=255, blank=True)),
                 ('telephone', models.CharField(max_length=255, blank=True)),
-                ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image')),
+                ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'Contact',
@@ -158,9 +159,9 @@ class Migration(migrations.Migration):
                 ('temporal_start_time', djangoplicity.metadata.archives.fields.AVMTemporalStartTimeField(help_text="Start time of the exposure in ISO 8601 format 'yyyy-mm-ddThh:mm' (UT; time portion is optional). One Temporal.StartTime entry per exposure.", null=True, verbose_name='Temporal Start Time', blank=True)),
                 ('temporal_integration_time', djangoplicity.metadata.archives.fields.AVMTemporalIntegrationTimeField(help_text='The exposure time in seconds. One Temporal.IntegrationTime entry per exposure.', max_length=23, null=True, verbose_name='Temporal Integration Time', blank=True)),
                 ('dataset_id', djangoplicity.metadata.archives.fields.AVMDatasetIDField(help_text='Identifier for the source FITS dataset for each exposure in the image. If available, this can be a VO-compliant reference to the dataset [ivo://AuthorityID/ResourceKey]. One DatasetID entry per exposure.', max_length=255, null=True, verbose_name='Dataset ID', blank=True)),
-                ('facility', djangoplicity.metadata.archives.fields.AVMFacilityField(blank=True, to='metadata.Facility', help_text='Telescopes or observatories used for the observations.', null=True, verbose_name='Facility')),
-                ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image')),
-                ('instrument', djangoplicity.metadata.archives.fields.AVMInstrumentField(blank=True, to='metadata.Instrument', help_text='Instrument used to collect the data. One Instrument entry per exposure.', null=True, verbose_name='Instrument')),
+                ('facility', djangoplicity.metadata.archives.fields.AVMFacilityField(blank=True, to='metadata.Facility', help_text='Telescopes or observatories used for the observations.', null=True, verbose_name='Facility', on_delete=django.db.models.deletion.CASCADE)),
+                ('image', djangoplicity.translation.fields.TranslationForeignKey(to='media.Image', on_delete=django.db.models.deletion.CASCADE)),
+                ('instrument', djangoplicity.metadata.archives.fields.AVMInstrumentField(blank=True, to='metadata.Instrument', help_text='Instrument used to collect the data. One Instrument entry per exposure.', null=True, verbose_name='Instrument', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'Exposure',
@@ -178,9 +179,9 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=False, db_index=True, verbose_name='Published')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('comparison', models.ForeignKey(blank=True, to='media.ImageComparison', null=True)),
-                ('image', djangoplicity.translation.fields.TranslationForeignKey(blank=True, to='media.Image', null=True, only_sources=False)),
-                ('source', djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='media.PictureOfTheWeek', null=True, only_sources=False)),
+                ('comparison', models.ForeignKey(blank=True, to='media.ImageComparison', null=True, on_delete=django.db.models.deletion.CASCADE)),
+                ('image', djangoplicity.translation.fields.TranslationForeignKey(blank=True, to='media.Image', null=True, only_sources=False, on_delete=django.db.models.deletion.CASCADE)),
+                ('source', djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='media.PictureOfTheWeek', null=True, only_sources=False, on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'ordering': ('-release_date',),
@@ -228,7 +229,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
                 ('release_date_owner', models.SlugField(null=True, blank=True)),
                 ('facility', djangoplicity.metadata.translation.fields.TranslationFacilityManyToManyField(help_text='Telescopes or observatories used for the observations.', to='metadata.Facility', null=True, verbose_name='Facility', blank=True)),
-                ('source', djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='media.Video', null=True, only_sources=False)),
+                ('source', djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='media.Video', null=True, only_sources=False, on_delete=django.db.models.deletion.CASCADE)),
                 ('subject_category', djangoplicity.metadata.translation.fields.TranslationAVMSubjectCategoryField(help_text='The type(s) of object or objects in the resource, or general subject matter of an image, taken from a controlled vocabulary taxonomy.', to='metadata.TaxonomyHierarchy', null=True, verbose_name='Subject Category', blank=True)),
                 ('subject_name', djangoplicity.metadata.translation.fields.TranslationAVMSubjectNameField(help_text='Proper names/catalog numbers for key objects/subjects in the image field.', to='metadata.SubjectName', null=True, verbose_name='Subject Name', blank=True)),
                 ('tagging_status', djangoplicity.translation.fields.TranslationManyToManyField(to='metadata.TaggingStatus', blank=True)),
@@ -247,7 +248,7 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=False, db_index=True, verbose_name='Published')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video')),
+                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'Video Audio Track',
@@ -262,7 +263,7 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=False, db_index=True, verbose_name='Published')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video')),
+                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'Video Broadcast Audio Track',
@@ -276,7 +277,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255, blank=True)),
                 ('email', models.CharField(max_length=255, blank=True)),
                 ('telephone', models.CharField(max_length=255, blank=True)),
-                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video')),
+                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'Contact',
@@ -291,7 +292,7 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=False, db_index=True, verbose_name='Published')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video')),
+                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'Video Subtitle',
@@ -301,7 +302,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pictureoftheweek',
             name='video',
-            field=djangoplicity.translation.fields.TranslationForeignKey(blank=True, to='media.Video', null=True, only_sources=False),
+            field=djangoplicity.translation.fields.TranslationForeignKey(blank=True, to='media.Video', null=True, only_sources=False, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -313,7 +314,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='image',
             name='source',
-            field=djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='media.Image', null=True, only_sources=False),
+            field=djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='media.Image', null=True, only_sources=False, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.CreateModel(

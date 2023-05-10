@@ -1,10 +1,13 @@
+from builtins import str
+from past.builtins import basestring
+from builtins import object
 from datetime import datetime
 import json
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.encoding import smart_unicode
-from django.utils.functional import curry
+from django.utils.encoding import smart_text
+from functools import partial
 
 from djangoplicity.utils.datetimes import timezone
 
@@ -97,7 +100,7 @@ class SimpleSerializer( Serializer ):
         if hasattr( self, "get_%s_values" % field ):
             func = getattr( self, "get_%s_values" % field )
         elif hasattr( obj, field ):
-            func = curry( self._get_related_objects, field=field )
+            func = partial( self._get_related_objects, field=field )
 
         if not func:
             raise ImproperlyConfigured( "%s has no method get_%s_values neither does %s have a field %s" % ( self.__class__.__name__, field, obj.__class__.__name__, field ) )
@@ -144,7 +147,7 @@ class SimpleSerializer( Serializer ):
         """
         Prime cache with all related objects
         """
-        for field, _val in self.related_cache.items():
+        for field, _val in list(self.related_cache.items()):
             reldescriptor = getattr( model, field )
 
             through_model_fieldname = reldescriptor.field.related.m2m_reverse_field_name()
@@ -192,11 +195,13 @@ class XMPEmitter( Emitter ):
         pass
 
     def emit( self, serialization, type='str' ):
+        import sys
+
         try:
             from libavm import AVMMeta
             avm = AVMMeta(version="1.2")
             avm_enabled = True
-        except:
+        except ImportError:
             avm = {}
             avm_enabled = False
 
@@ -204,8 +209,11 @@ class XMPEmitter( Emitter ):
         if not isinstance( datadict, dict ):
             raise SerializationError( "XMP emitter expected a dictionary but got a %s." % type( datadict ) )
 
-        for k, v in datadict.items():
+        for k, v in list(datadict.items()):
             try:
+                if sys.version_info[0] >= 3:
+                    if isinstance(v, bytes):
+                        v = v.decode()
                 avm[k] = v
             except KeyError:
                 # Skip custom fields in serializer not defined in AVM
@@ -249,7 +257,7 @@ class JSONEmitter( Emitter ):
             return encoder( v )
 
         try:
-            return unicode( v )
+            return str( v )
         except:
             pass
 
@@ -274,18 +282,18 @@ class ICalEmitter( Emitter ):
 
         for e in serialization.data:
             event = Event()
-            event.add( 'summary', smart_unicode( e['summary'] ) )
-            event.add( 'description', smart_unicode( e['description'] ) )
+            event.add( 'summary', smart_text( e['summary'] ) )
+            event.add( 'description', smart_text( e['description'] ) )
             event.add( 'dtstart', e['dtstart'] )
             event.add( 'dtend', e['dtend'] )
             event.add( 'dtstamp', e['dtstamp'] )
 
             if 'location' in e:
-                event['location'] = vText( smart_unicode( e['location'] ) )
+                event['location'] = vText( smart_text( e['location'] ) )
 
             cal.add_component( event )
 
-        return cal.as_string()
+        return cal.to_ical()
 
     def response( self, response ):
         response['Content-Disposition'] = "attachment; filename=calendar.ics"

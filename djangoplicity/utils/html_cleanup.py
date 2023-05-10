@@ -46,3 +46,23 @@ CustomCleaner.add_nofollow = False
 
 def clean_html(content):
     return sanitize(content, CustomCleaner)
+
+def convert_html_entities(value):
+    '''
+    Converts HTML entities like &amp; to unicode characters like &
+    See:
+    https://www.semicolonworld.com/question/42860/decode-html-entities-in-python-string
+    https://docs.python.org/3/library/html.html#html.unescape
+    '''
+    try:
+        # Python 2.6-2.7 
+        from HTMLParser import HTMLParser
+        html = HTMLParser()
+    except ImportError:
+        # Python 3
+        try:
+            from html.parser import HTMLParser
+            html = HTMLParser()
+        except ImportError:
+            import html
+    return html.unescape(value)

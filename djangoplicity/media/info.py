@@ -29,11 +29,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from __future__ import division
+from past.utils import old_div
 import math
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import NoReverseMatch, reverse
 from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, ugettext
@@ -42,6 +43,12 @@ from djangoplicity.archives.contrib.info import boolean_property
 from djangoplicity.media.models import Video
 from djangoplicity.translation.models import TranslationModel
 
+
+import django
+if django.VERSION >= (2, 0):
+    from django.urls import reverse, NoReverseMatch
+else:
+    from django.core.urlresolvers import NoReverseMatch, reverse
 
 # =================
 # Utility functions
@@ -78,14 +85,14 @@ def _distance( x ):
     will be 0 or 5).
     """
     l = int( math.log10( x ) )
-    x1 = x / math.pow(10, l)  # x, scale to [0,10[ (i.e one digit)
-    x2 = x / math.pow(10, l - 1)  # x, scale to [0,100[ (i.e two digits)
+    x1 = old_div(x, math.pow(10, l))  # x, scale to [0,10[ (i.e one digit)
+    x2 = old_div(x, math.pow(10, l - 1))  # x, scale to [0,100[ (i.e two digits)
 
     digit2 = int(x2 + 0.5) - 10 * int(x1)  # second digit
     digit2_05 = int(digit2 / 5.0 + 0.5) * 5.0   # second digit, rounded to 0 or 5
 
     x_round2_05 = ( int(x1) + digit2_05 / 10.0 ) * math.pow( 10, l )  # x, with 2nd digit rounded to 0 or 5
-    x_error2_05 = abs( ( x_round2_05 - x ) / x )  # error on x_round2_05
+    x_error2_05 = abs( old_div(( x_round2_05 - x ), x) )  # error on x_round2_05
     x_round2 = int( x2 + 0.5 ) * math.pow( 10, l - 1 )  # x, with 2nd digit rounded
 
     if x_error2_05 <= 0.07:
@@ -320,6 +327,19 @@ def image_magnet_uri_link( obj ):
     else:
         return None
 image_magnet_uri_link.short_description = _( 'Magnet Fullsize Original' )
+
+
+# def video_giphy_url_link( obj ):
+#     """  Generate a video's giphy_url"""
+#     if obj.giphy_url:
+#         return {
+#             'url': obj.giphy_url,
+#             'extra_attrs': None,
+#             'size': None
+#         }
+#     else:
+#         return None
+# video_giphy_url_link.short_description = _( 'giphy resource' )
 
 
 def video_magnet_uri_link( obj ):

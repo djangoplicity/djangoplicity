@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+from __future__ import print_function
 import sys
 import os
 from django.conf import settings
@@ -18,10 +19,10 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 # OperationalError: could not receive data from server: Bad file descriptor
 # As a workaround we disable the settings if running in celery
 if 'celery' in sys.argv[0]:
-   print 'Djangoplicity: Disabling CONN_MAX_AGE'
+   print('Djangoplicity: Disabling CONN_MAX_AGE')
    settings.DATABASES['default']['CONN_MAX_AGE'] = 0
 
 
 @app.task(bind=True)
 def debug_task(self):
-    print 'Request: {0!r}'.format(self.request)
+    print('Request: {0!r}'.format(self.request))

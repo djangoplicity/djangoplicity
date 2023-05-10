@@ -7,6 +7,8 @@
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
 
+from builtins import str
+from builtins import object
 import operator
 
 from django.conf import settings
@@ -18,6 +20,7 @@ from django.shortcuts import redirect
 from djangoplicity.archives.contrib.search.queryparser import \
     AstronomyQueryParser
 from djangoplicity.archives.views import archive_detail
+from functools import reduce
 #from django.db.models.query import QuerySet
 #from django.utils.text import smart_split
 
@@ -161,7 +164,7 @@ class ArchiveOptions(object):
         Determine if the given request is authorized to view embargoed archive items.
         By default any logged in user can login.
         """
-        return request.user.is_authenticated()
+        return request.user.is_authenticated
 
     @staticmethod
     def has_admin_perms( request, obj=None ):

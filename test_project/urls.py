@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls import url, include
+from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import login
 from djangoplicity.releases.models import Release
@@ -25,13 +26,18 @@ from djangoplicity.announcements.models import Announcement, WebUpdate
 from djangoplicity.announcements.options import AnnouncementOptions, WebUpdateOptions
 from test_project.admin import admin_site, adminlogs_site
 
+import django
+if django.VERSION >= (2, 0):
+    from django.contrib.auth.views import LoginView as login
+else:
+    from django.contrib.auth.views import login
 
 urlpatterns = [
     # Djangoplicity Administration
-    url(r'^admin/', include(admin_site.urls), {'extra_context': {'ADMIN_SITE': True}}),
-    url(r'^admin/cache/', include('djangoplicity.cache.urls', namespace="admincache_site", app_name="cache")),
-    url(r'^admin/history/', include('djangoplicity.adminhistory.urls', namespace="adminhistory_site", app_name="history")),
-    url(r'^admin/system/', include(adminlogs_site.urls), {'extra_context': {'ADMINLOGS_SITE': True}}),
+    url(r'^admin/', admin_site.urls, {'extra_context': {'ADMIN_SITE': True}}),
+    url(r'^admin/cache/', include(('djangoplicity.cache.urls', 'cache'), namespace='admincache_site')),
+    url(r'^admin/history/', include(('djangoplicity.adminhistory.urls', 'history'), namespace='adminhistory_site')),
+    url(r'^admin/system/', adminlogs_site.urls, {'extra_context': {'ADMINLOGS_SITE': True}}),
     url(r'^admin/', include('djangoplicity.metadata.wtmlimport.urls'), {'extra_context': {'ADMIN_SITE': True}}),
     url(r'^admin/import/', include('djangoplicity.archives.importer.urls')),
     url(r'^tinymce/', include('tinymce.urls')),
@@ -62,7 +68,7 @@ urlpatterns = [
 
     # User Auth
     url( r'^login/$', login, { 'template_name': 'login.html' } ),
-    
+
     # ETC
     url(r'^eventcalendar/', include('djangoplicity.eventcalendar.urls')),
     url( r'^facebook/', include('djangoplicity.iframe.urls')  ),

@@ -37,10 +37,12 @@ from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext as _
+from six import python_2_unicode_compatible
 
 logger = logging.getLogger(__name__)
 
 
+@python_2_unicode_compatible
 class RemoteArchive(models.Model):
     url = ''  # URL of the remote Archive JSON, {pk} is a placeholder for the archive PK
     archive_title = None
@@ -64,7 +66,7 @@ class RemoteArchive(models.Model):
         except (TypeError, KeyError):
             raise AttributeError
 
-    def __unicode__(self):
+    def __str__(self):
         return self.id
 
     def get_absolute_url(self):

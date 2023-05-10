@@ -1,4 +1,4 @@
-{% load i18n staticfiles %}{% for resources in resources_groups %}
+{% load i18n static %}{% for resources in resources_groups %}
 {% if resources.downloads %}
 <div{% if resources.name == "Ultra HD" %} style="background-color: #ffe8e8"{% endif %}>
 {% if resources.name %}<h3  class="archivegrouptitle" >{% trans resources.name %}{% if resources.name == "Ultra HD" %} <a style="font-size: 14px" href="/public/videoformats/">(info)</a>{% endif %}</h3>{% endif %}

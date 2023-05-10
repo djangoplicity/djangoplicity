@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 # Djangoplicity
 # Copyright 2007-2008 ESA/Hubble
 #
@@ -9,8 +10,8 @@ from django.test import TestCase
 from djangoplicity.test.testcases import AdminTestCase
 from django.http import Http404
 
-from models import Report, ReportGroup
-from engine import ReportEngine, ReportExecutionError, ReportResult
+from .models import Report, ReportGroup
+from .engine import ReportEngine, ReportExecutionError, ReportResult
 
 
 class ReportsAdminTestCase(AdminTestCase):

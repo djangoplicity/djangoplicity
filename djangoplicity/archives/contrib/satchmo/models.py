@@ -10,6 +10,7 @@
 """
 """
 
+from builtins import str
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
@@ -159,7 +160,7 @@ class ShopModel( models.Model ):
         try:
             category = Category.objects.get( site=Site.objects.get_current(), slug=self._get_subtype().lower() )
         except Category.DoesNotExist:
-            category = Category( site=Site.objects.get_current(), slug=self._get_subtype().lower(), name=unicode( self._meta.verbose_name_plural ).title() )
+            category = Category( site=Site.objects.get_current(), slug=self._get_subtype().lower(), name=str( self._meta.verbose_name_plural ).title() )
             category.save()
 
         if add:
@@ -210,19 +211,19 @@ class ShopModel( models.Model ):
             free_attr_opt.save()
 
         job_attr = ProductAttribute.objects.get_or_create( product=product, option=job_attr_opt )[0]
-        job_attr.value = unicode( self.job if self.job else self.default_job() )
+        job_attr.value = str( self.job if self.job else self.default_job() )
         job_attr.save()
 
         jsp_attr = ProductAttribute.objects.get_or_create( product=product, option=jsp_attr_opt )[0]
-        jsp_attr.value = unicode( self.jsp if self.jsp else self.default_jsp() )
+        jsp_attr.value = str( self.jsp if self.jsp else self.default_jsp() )
         jsp_attr.save()
 
         account_attr = ProductAttribute.objects.get_or_create( product=product, option=account_attr_opt )[0]
-        account_attr.value = unicode( self.account_no if self.account_no else self.default_account_no() )
+        account_attr.value = str( self.account_no if self.account_no else self.default_account_no() )
         account_attr.save()
 
         free_attr = ProductAttribute.objects.get_or_create( product=product, option=free_attr_opt )[0]
-        free_attr.value = unicode( 'YES' if self.free else 'NO' )
+        free_attr.value = str( 'YES' if self.free else 'NO' )
         free_attr.save()
 
     def clean( self ):

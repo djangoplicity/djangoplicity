@@ -1,8 +1,12 @@
+from builtins import str
+from builtins import map
+from builtins import range
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.http import urlencode
+from six import python_2_unicode_compatible
 
 from djangoplicity.metadata import consts
 
@@ -25,6 +29,7 @@ else:
     reverse_kwargs = lambda: {}
 
 
+@python_2_unicode_compatible
 class Contact( models.Model):
     """
     Contact model for storing the following AVM tags:
@@ -51,7 +56,7 @@ class Contact( models.Model):
            ...
 
        class AVMContact( Contact ):
-           avm_model = models.ForeignKey( AVMModel, null=True, blank=True )
+           avm_model = models.ForeignKey( AVMModel, null=True, blank=True , on_delete=models.CASCADE)
 
 
     You can then include the AVMContact in the administration interface for AVMModel
@@ -63,7 +68,7 @@ class Contact( models.Model):
 
     telephone = models.CharField( max_length=255, blank=True )
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:
@@ -104,6 +109,7 @@ class ExtendedContact( Contact ):
         ordering = ['name']
 
 
+@python_2_unicode_compatible
 class TaxonomyHierarchy( models.Model ):
     """
     Model representation for AVM Image Taxonomy Hierarchy.
@@ -144,7 +150,7 @@ class TaxonomyHierarchy( models.Model ):
         #        remove t
         return NotImplementedError()
 
-    def __unicode__( self ):
+    def __str__( self ):
         if self.top_level == 'X':
             return u'X - %s' % self.name
         return self.name
@@ -195,7 +201,7 @@ class TaxonomyHierarchy( models.Model ):
 
     def avm_code( self ):
         elements = ( self.top_level, self.level1, self.level2, self.level3, self.level4, self.level5, )
-        return ".".join( map( str, filter( lambda x: x is not None, elements ) ) )
+        return ".".join( map( str, [x for x in elements if x is not None] ) )
     avm_code.short_description = _( "AVM Code" )
 
     class Meta:
@@ -204,6 +210,7 @@ class TaxonomyHierarchy( models.Model ):
         verbose_name_plural = 'Taxonomy Hierarchy'
 
 
+@python_2_unicode_compatible
 class AVMStringListModel( models.Model ):
     """
     Abstract model used to hold a list of values to be referenced by other models.
@@ -225,7 +232,7 @@ class AVMStringListModel( models.Model ):
         else:
             return None
 
-    def __unicode__( self ):
+    def __str__( self ):
         return self.name
 
     class Meta:
@@ -259,14 +266,15 @@ class SubjectName( AVMStringListModel ):
         ordering = ('name',)
 
 
+@python_2_unicode_compatible
 class Publication( models.Model ):
     """
     AVM 1.2 extension (TBC)
     """
     bibcode = models.CharField( max_length=19, verbose_name=_("Bibliographic Code"), help_text=_("ADS Bibliographic Code - see http://adsdoc.harvard.edu/abs_doc/help_pages/data.html#bibcodes") )
 
-    def __unicode__(self):
-        return unicode(self.bibcode)
+    def __str__(self):
+        return str(self.bibcode)
 
     def get_absolute_url(self):
         """ Return link to ESO Telescope Bibliography """
@@ -279,40 +287,43 @@ class Publication( models.Model ):
         ordering = ('-bibcode',)
 
 
+@python_2_unicode_compatible
 class ObservationProposal( models.Model ):
     """
     AVM 1.2 extension (TBC)
     """
     proposal_id = models.CharField( max_length=255, verbose_name=_("Program/Proposal ID"), help_text=_("The observation proposal ID from the specific observatory.") )
 
-    def __unicode__(self):
-        return unicode(self.proposal_id)
+    def __str__(self):
+        return str(self.proposal_id)
 
     class Meta:
         ordering = ('proposal_id',)
 
 
+@python_2_unicode_compatible
 class CategoryType( models.Model ):
     name = models.CharField( max_length=255, unique=True )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
         ordering = ('name',)
 
 
+@python_2_unicode_compatible
 class Category( models.Model ):
     """
     Model for storing web categories.
     """
     url = models.SlugField( db_index=True, blank=False, null=False, verbose_name=_("URL"), )
-    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies.") )
+    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies."), on_delete=models.CASCADE)
     name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Title of query to be displayed to the user.") )
     logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
     enabled = models.BooleanField( default=True, )
 
-    def __unicode__(self):
+    def __str__(self):
         result = self.name
         if not self.enabled:
             result += ' (disabled)'
@@ -329,14 +340,15 @@ class Category( models.Model ):
         verbose_name_plural = _('Web Categories')
 
 
+@python_2_unicode_compatible
 class Program(models.Model):
     """
     Model for storing Programs
     """
     url = models.SlugField( db_index=True, blank=False, null=False, verbose_name=_("URL"), )
+    type = models.ForeignKey( CategoryType, help_text=_("Defines to which archive this query applies."), on_delete=models.CASCADE )
+    name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Title of query to be displayed to the user.") )
     types = models.ManyToManyField(CategoryType, help_text=_("Defines to which types this program applies."))
-    name = models.CharField(max_length=255, blank=False, null=False,
-                             help_text=_("Title of query to be displayed to the user."))
     logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
     enabled = models.BooleanField(default=True, )
 
@@ -357,6 +369,7 @@ class Program(models.Model):
         verbose_name_plural = _('Programs')
 
 
+@python_2_unicode_compatible
 class TaggingStatus( models.Model ):
     """
     Model for tagging images with a tagging state
@@ -364,7 +377,7 @@ class TaggingStatus( models.Model ):
     slug = models.SlugField( unique=True )
     name = models.CharField( unique=True, max_length=255 )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:

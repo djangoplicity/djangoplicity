@@ -5,6 +5,7 @@ from django.db import models, migrations
 import djangoplicity.archives.fields
 import djangoplicity.archives.base
 import djangoplicity.translation.fields
+import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
@@ -22,7 +23,7 @@ class Migration(migrations.Migration):
                 ('published', models.BooleanField(default=False, db_index=True, verbose_name='Published')),
                 ('last_modified', models.DateTimeField(auto_now=True, verbose_name='Last modified')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video')),
+                ('video', djangoplicity.translation.fields.TranslationForeignKey(to='media.Video', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'verbose_name': 'Video Script',

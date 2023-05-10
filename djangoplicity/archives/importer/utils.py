@@ -148,7 +148,7 @@ def find_importables( archive_import_root, archive_model, archive_options, exclu
     #
 
     # Dict mapping object ids to objcets
-    objects = dict( [( x.pk, x ) for x in archive_model.objects.filter( pk__in=files.keys() )] )
+    objects = dict( [( x.pk, x ) for x in archive_model.objects.filter( pk__in=list(files.keys()) )] )
     # Flag indicating if model options has special method to extract metadata from file.
     # Import form
     blank_form = getattr( archive_options.Import, 'form', GenericImportForm )()
@@ -175,9 +175,9 @@ def find_importables( archive_import_root, archive_model, archive_options, exclu
         data = {}
         if hasattr( archive_options.Import, 'metadata' ) and archive_options.Import.metadata in files[obj_id]['formats']:
             if 'handle_metadata' in dir( archive_options ) and callable( archive_options.handle_metadata ):
-                data = archive_options.handle_metadata( files[obj_id]['files'][files[obj_id]['formats'].index( archive_options.Import.metadata )], locked=file_data.keys() + files[obj_id].keys() )
+                data = archive_options.handle_metadata( files[obj_id]['files'][files[obj_id]['formats'].index( archive_options.Import.metadata )], locked=list(file_data.keys()) + list(files[obj_id].keys()) )
             else:
-                data = handle_metadata( files[obj_id]['files'][files[obj_id]['formats'].index( archive_options.Import.metadata )], locked=file_data.keys() + files[obj_id].keys() )
+                data = handle_metadata( files[obj_id]['files'][files[obj_id]['formats'].index( archive_options.Import.metadata )], locked=list(file_data.keys()) + list(files[obj_id].keys()) )
         data.update( file_data )  # Overwrite any conflicting data which has been extracted from the file metadata
 
         # Check priority, published, title, date_modifiwed
@@ -215,7 +215,7 @@ def handle_metadata( filename, locked=[] ):
 
         out_dict = {}
 
-        for dj, av in DJANGOPLICITY2AVM.iteritems():
+        for dj, av in DJANGOPLICITY2AVM.items():
             if dj not in locked:
                 if dict.get( av, False ):
                     out_dict[dj] = dict[av]

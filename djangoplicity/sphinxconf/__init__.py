@@ -15,6 +15,7 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
+from builtins import str
 import sys
 import os
 import datetime
@@ -22,10 +23,11 @@ import datetime
 
 def read_version():
     try:
+        return None  # TODO: This is failing, remove this module if required or make it work
         import paver.svn
         svninfo = paver.svn.info(path='../')
         return str( svninfo['revision'] )
-    except Exception, e:
+    except Exception as e:
         raise SystemExit(
             "Error: you must run setup from the root directory (%s)" % str(e))
 

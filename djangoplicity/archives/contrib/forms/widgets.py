@@ -8,7 +8,7 @@
 from django.conf import settings
 from django.forms.utils import flatatt
 from django import forms
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 
 __all__ = ( 'PriorityWidget', )
@@ -41,7 +41,7 @@ class PriorityWidget( forms.HiddenInput ):
     def is_hidden(self):
         return False
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if attrs is None:
             attrs = {}
         final_attrs = self.build_attrs(attrs,
@@ -55,7 +55,7 @@ class PriorityWidget( forms.HiddenInput ):
             value = ''
         if value != '':
             # Only add the 'value' attribute if a value is non-empty.
-            final_attrs['value'] = force_unicode(value)
+            final_attrs['value'] = force_text(value)
 
         attrs = {
             'slider_attrs': flatatt(slider_attrs),

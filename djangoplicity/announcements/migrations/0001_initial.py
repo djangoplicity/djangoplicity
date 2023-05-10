@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.db.models.deletion
 import djangoplicity.archives.base
 import djangoplicity.archives.translation
 import djangoplicity.translation.fields
@@ -48,8 +49,8 @@ class Migration(migrations.Migration):
                 ('main_visual', models.BooleanField(default=False)),
                 ('override_id', models.SlugField(null=True, verbose_name='Override ID', blank=True)),
                 ('hide', models.BooleanField(default=False, verbose_name='Hide on kiosk')),
-                ('announcement', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related announcement', to='announcements.Announcement')),
-                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Image', to='media.Image')),
+                ('announcement', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related announcement', to='announcements.Announcement', on_delete=django.db.models.deletion.CASCADE)),
+                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Image', to='media.Image', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -76,8 +77,8 @@ class Migration(migrations.Migration):
                 ('main_visual', models.BooleanField(default=False)),
                 ('override_id', models.SlugField(null=True, verbose_name='Override ID', blank=True)),
                 ('hide', models.BooleanField(default=False, verbose_name='Hide on kiosk')),
-                ('announcement', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related announcement', to='announcements.Announcement')),
-                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Video', to='media.Video')),
+                ('announcement', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related announcement', to='announcements.Announcement', on_delete=django.db.models.deletion.CASCADE)),
+                ('archive_item', djangoplicity.translation.fields.TranslationForeignKey(verbose_name='Related Video', to='media.Video', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -115,13 +116,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='webupdate',
             name='type',
-            field=models.ForeignKey(to='announcements.WebUpdateType'),
+            field=models.ForeignKey(to='announcements.WebUpdateType', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='announcement',
             name='announcement_type',
-            field=djangoplicity.translation.fields.TranslationForeignKey(default=None, blank=True, to='announcements.AnnouncementType', null=True),
+            field=djangoplicity.translation.fields.TranslationForeignKey(default=None, blank=True, to='announcements.AnnouncementType', null=True, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -139,7 +140,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='announcement',
             name='source',
-            field=djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='announcements.Announcement', null=True, only_sources=False),
+            field=djangoplicity.translation.fields.TranslationForeignKey(related_name='translations', verbose_name='Translation source', blank=True, to='announcements.Announcement', null=True, only_sources=False, on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
         migrations.CreateModel(

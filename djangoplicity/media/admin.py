@@ -29,13 +29,15 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
+from builtins import object
 from django.conf import settings
 from django.contrib import admin
 from django.db.models import Q
 from django.forms import ModelForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 
 from djangoplicity.announcements.admin import announcementinlineadmin
@@ -225,9 +227,9 @@ class ChangeCreditForm(forms.Form):
 # Image admin
 # ============================================
 class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, CropAdmin, ArchiveAdmin, SetCategoryMixin, ContentDeliveryAdmin ):
-    list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'credit', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
-    list_editable = ( 'priority', 'title', 'credit')
-    list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', 'type', TaggingStatusExcludeListFilter, MissingExposureFilter, 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready' )
+    list_display = ( 'id', 'release_date_owner', 'release_date', 'embargo_date', 'get_credit', 'list_link_thumbnail', 'title', 'width', 'height', 'priority', 'published', 'featured', 'last_modified', 'created', view_link('images') )
+    list_editable = ( 'priority', 'title',)
+    list_filter = ( 'published', 'featured', 'last_modified', 'created', 'tagging_status', 'type', TaggingStatusExcludeListFilter, MissingExposureFilter, 'web_category', 'spatial_quality', 'file_type', 'colors', 'content_server', 'content_server_ready', 'credit' )
     filter_horizontal = ( 'web_category', 'subject_category', 'subject_name', 'tagging_status', 'proposal', 'publication')
     search_fields = ( 'id', 'title', 'headline', 'description', 'credit', )
     fieldsets = (
@@ -250,6 +252,12 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     readonly_fields = ('id', 'content_server_ready')
     actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_resync_resources', 'edit_bulk_credit_action']
     inlines = [ ImageExposureInlineAdmin, ImageContactInlineAdmin ]
+
+    def get_credit(self, obj):
+        return obj.credit
+
+    get_credit.short_description = _("Credits")
+    get_credit.allow_tags = True
 
     def edit_bulk_credit_action(self, request, queryset):
         if request.method == 'POST':
@@ -278,8 +286,8 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
             for obj in queryset:
                 write_metadata.delay( obj.id, IMAGE_AVM_FORMATS )
             self.message_user( request, _("Writing AVM to selected images.") )
-        except Exception, e:
-            self.message_user( request, _("This djangoplicity installation does not support writing AVM to images (%s)." % unicode( e ) ) )
+        except Exception as e:
+            self.message_user( request, _("This djangoplicity installation does not support writing AVM to images (%s)." % str( e ) ) )
     action_write_avm.short_description = _("Write AVM to images")
 
     def action_avm_content_review( self, request, queryset ):
@@ -300,7 +308,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
 
         context = {
             "title": title,
-            "object_name": force_unicode( opts.verbose_name ),
+            "object_name": force_text( opts.verbose_name ),
             'objects': queryset,
             "opts": opts,
             "app_label": app_label,
@@ -406,8 +414,8 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
                 for f in settings.VIDEOS_SUBTITLES_FORMATS:
                     video_embed_subtitles.delay( obj.pk, f)
             self.message_user( request, _("Updating subtitles for selected videos.") )
-        except Exception, e:
-            self.message_user( request, _("Error while updating subtitles." % unicode( e ) ) )
+        except Exception as e:
+            self.message_user( request, _("Error while updating subtitles." % str( e ) ) )
 
     action_update_subtitles.short_description = "Update subtitles"
 
@@ -597,7 +605,7 @@ class PictureOfTheWeekAdmin( dpadmin.DjangoplicityModelAdmin, POTWDisplaysAdmin,
 
     def visual_title( self, obj ):
         v = obj.visual()
-        return unicode( v ) if v else ""
+        return str( v ) if v else ""
     visual_title.short_description = _(u'Title')
 
     def visual_type( self, obj ):

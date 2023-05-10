@@ -14,7 +14,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'BeautifulSoup',
+        'BeautifulSoup4',
+        'django<=3.1',
         'django-ace == 1.0.4',
         'django-mptt == 0.9.1',
         'django-recaptcha == 1.4.0',
@@ -25,8 +26,7 @@ setup(
         'oauth2client',
         'html2text == 3.200.3',
         'htmllaundry',
-        'icalendar == 2.1',
-        'ipython == 5.5.0',  # Last version compatible with python 2.7
+        'icalendar == 3.8',
         'Pillow',
         'pycountry == 1.16',
         'ephem == 3.7.6.0',
@@ -34,17 +34,18 @@ setup(
         'pytest-django',
         'python-dateutil',
         'python-memcached == 1.59',
-        'python-xmp-toolkit == 1.0.2',
+        'python-xmp-toolkit == 2.0.1',
         'pytz',
         'requests',
         'ndg-httpsclient',  # Extra for requests
         'setuptools',
-        'Wand == 0.4.4',
+        'Wand == 0.6.5',
         'piexif',
         'pika == 1.2.1',
         'openpyxl',
         'django-tinymce4-lite == 1.7.2',
-        'python-avm-library @ git+https://github.com/djangoplicity/python-avm-library.git@release/python2#subdirectory=libavm'
+        'six == 1.16.0',
+        'python-avm-library @ git+https://github.com/djangoplicity/python-avm-library.git@master#subdirectory=libavm'
     ],
     # metadata for upload to PyPI
     author='European Southern Observatory',

@@ -31,6 +31,7 @@
 
 from __future__ import division
 
+from builtins import str
 import json
 from collections import OrderedDict
 
@@ -118,7 +119,7 @@ class CropView(UpdateView):
                     # We convert the aspect to unicode as JSON uses
                     # strings as keys, and to make sure we use a doted decimal
                     # instead of coma, regardless of the rendering language
-                    aspect = unicode(aspect)
+                    aspect = str(aspect)
 
                     try:
                         offset = offsets[aspect]
@@ -135,7 +136,7 @@ class CropView(UpdateView):
                             'width': width,
                             'height': height,
                             'offset': int(round(offset * ratio)),
-                            'ratio': unicode(ratio),
+                            'ratio': str(ratio),
                         }
 
         context['crop_formats'] = crop_formats
@@ -151,7 +152,7 @@ class CropView(UpdateView):
         messages.add_message(request, messages.INFO, 'Crop offsets updated.')
 
         offsets = {}
-        for k, v in request.POST.items():
+        for k, v in list(request.POST.items()):
             if not k.startswith('offset-'):
                 continue
 

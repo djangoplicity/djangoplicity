@@ -29,6 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
+from builtins import str
 from django.contrib.sites.models import Site
 from django.db.models import Q
 from django.utils.feedgenerator import Rss201rev2Feed
