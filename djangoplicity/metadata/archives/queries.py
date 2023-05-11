@@ -4,7 +4,7 @@
 # Authors:
 #   Lars Holm Nielsen <lnielsen@eso.org>
 #   Luis Clara Gomes <lcgomes@eso.org>
-
+from datetime import datetime
 from django.conf import settings
 from django.core.exceptions import FieldError, ImproperlyConfigured
 from django.db.models import Q
@@ -76,7 +76,7 @@ class ProgramQuery(CategoryQuery):
         if not stringparam:
             raise Http404
         try:
-            program = Program.objects.get(url=stringparam, type__name=self.category_type)
+            program = Program.objects.get(url=stringparam, types__name__iexact=self.category_type)
         except Program.DoesNotExist:
             # URL of non existing category specified.
             raise Http404
@@ -106,3 +106,13 @@ class ProgramQuery(CategoryQuery):
         else:
             return self._verbose_name
 
+
+class ProgramPublicQuery(ProgramQuery):
+
+    def queryset(self, model, options, request, **kwargs):
+        now = datetime.now()
+        (qs, query_data) = super(ProgramPublicQuery, self).queryset(model, options, request, **kwargs)
+        qs = self._filter_datetime(qs, now, 'release_date', False, True)
+        qs = self._filter_datetime(qs, now, 'embargo_date', False, True)
+        qs = qs.filter(published=True)
+        return (qs, query_data)

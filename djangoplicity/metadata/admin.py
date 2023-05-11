@@ -89,13 +89,18 @@ class CategoryAdmin( admin.ModelAdmin ):
 
 
 class ProgramAdmin( admin.ModelAdmin ):
-    list_display = ( 'url', 'name', 'type', 'logo_url', 'enabled')
+    list_display = ( 'url', 'name', 'display_program_types', 'logo_url', 'enabled')
     list_editable = ( 'name', )
-    list_filter = ( 'type', )
+    list_filter = ( 'types', )
     search_fields = ( 'name', 'url', )
     fieldsets = (
-                    ( None, {'fields': ( 'name', 'url', 'type', 'enabled' ,'logo_url') } ),
+                    ( None, {'fields': ( 'name', 'url', 'types', 'enabled' ,'logo_url') } ),
                 )
+    filter_horizontal = ('types', )
+
+    def display_program_types(self, obj):  # noqa
+        return ', '.join([program_type.name for program_type in obj.types.all()])
+
 
 class TaggingStatusAdmin( admin.ModelAdmin ):
     list_display = ( 'slug', 'name',)

@@ -42,7 +42,8 @@ from djangoplicity.archives.contrib.admin import DisplaysAdmin, ArchiveAdmin, \
 from djangoplicity.archives.contrib.admin.defaults import \
     TranslationDuplicateAdmin, SyncTranslationAdmin
 from djangoplicity.contrib.admin import DjangoplicityModelAdmin, CleanHTMLAdmin
-
+from djangoplicity.metadata.admin_actions import SetProgramMixin
+from djangoplicity.metadata.models import Program
 
 # ============================================
 # Inline admin generators
@@ -127,9 +128,12 @@ class AnnouncementDisplaysAdmin(DisplaysAdmin):
     options = AnnouncementOptions
 
 
-class AnnouncementAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, AnnouncementDisplaysAdmin, RenameAdmin, ArchiveAdmin ):
-    list_display = ( 'id', 'announcement_type', 'title', 'published', 'featured', 'release_date', 'embargo_date', 'last_modified', view_link( 'announcements' ), )
-    list_filter = ( 'announcement_type', 'published', 'featured', 'last_modified', 'release_date', 'embargo_date', )
+class AnnouncementAdmin(DjangoplicityModelAdmin, CleanHTMLAdmin, AnnouncementDisplaysAdmin, RenameAdmin, ArchiveAdmin,
+                        SetProgramMixin):
+    list_display = ('id', 'announcement_type', 'title', 'get_programs', 'published', 'featured', 'release_date',
+                    'embargo_date', 'last_modified', view_link( 'announcements'), )
+    list_filter = ('announcement_type', 'published', 'featured', 'last_modified', 'release_date', 'embargo_date',
+                   'programs')
     list_editable = ( 'announcement_type', 'title',)
     search_fields = ( 'id', 'title', 'description', 'announcement_type__name', )
     date_hierarchy = 'release_date'
@@ -140,16 +144,28 @@ class AnnouncementAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, AnnouncementDi
                     ( None, {'fields': ( 'id', ('announcement_type', )), } ),
                     ( 'Language', {'fields': ( 'lang', ) } ),
                     ( 'Publishing', {'fields': ( 'published', 'featured', 'release_date', 'embargo_date'  ), } ),
+                    ('Programs', {'fields': ('programs',)}),
                     ( 'Archive', {'fields': ( 'title', 'subtitle', 'description', 'links', 'contacts' ), } ),
                 )
     inlines = [
         AnnouncementImageInlineAdmin, AnnouncementVideoInlineAdmin,
         AnnouncementImageComparisonInlineAdmin
     ]
+    filter_horizontal = ('programs',)
 
     def get_queryset( self, request ):
         qs = super( AnnouncementAdmin, self ).get_queryset( request )
         return ArchiveAdmin.limit_access( self, request, qs )
+
+    def get_actions(self, request):
+        """
+        Dynamically add admin actions for setting the programs
+        """
+        actions = super(AnnouncementAdmin, self).get_actions(request)
+        actions.update(
+            dict([self._make_program_action(c) for c in Program.objects.filter(
+                types__name='Announcements').order_by('name')]))
+        return actions
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         '''

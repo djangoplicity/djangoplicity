@@ -36,9 +36,10 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import post_save, pre_save
 from django.utils.translation import ugettext_lazy as _, ugettext
-
+from djangoplicity.metadata.models import Program
 from djangoplicity.announcements import archive_settings
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel
@@ -149,6 +150,8 @@ class Announcement( ArchiveModel, TranslationModel ):
     related_videos = TranslationManyToManyField( Video, through='AnnouncementVideo' )
     related_comparisons = TranslationManyToManyField(ImageComparison,
         through='AnnouncementImageComparison', only_sources=True)
+    programs = TranslationManyToManyField(Program, limit_choices_to=Q(types__name__iexact='Announcements'), blank=True,
+                                          only_sources=True)
 
     announcement_type = TranslationForeignKey( AnnouncementType, blank=True, null=True, default=None, on_delete=models.CASCADE)
 
