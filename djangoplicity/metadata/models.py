@@ -329,8 +329,8 @@ class Category( models.Model ):
             result += ' (disabled)'
         return result
 
-    def get_absolute_url(self, type='releases'):
-        return reverse_func('%s_query_category' % type.lower,
+    def get_absolute_url(self):
+        return reverse_func('%s_query_category' % self.type.name.lower(),
                 args=[self.url], **reverse_kwargs())
 
     class Meta:
