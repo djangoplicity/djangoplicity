@@ -352,7 +352,7 @@ class Program(models.Model):
     logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
     enabled = models.BooleanField(default=True, )
 
-    def __unicode__(self):
+    def __str__(self):
         result = self.name
         if not self.enabled:
             result += ' (disabled)'
