@@ -154,3 +154,33 @@ class ICalWebUpdateSerializer( SimpleSerializer ):
 
     def get_dtstamp_value( self, obj ):
         return self.append_timezone( obj.release_date )
+
+
+class MiniAnnouncementSerializer(SimpleSerializer):
+    fields = (
+        'id',
+        'title',
+        'subtitle',
+        'description',
+        'contacts',
+        'links',
+        'release_date',
+        'lang',
+        'main_visual',
+    )
+
+    related_fields = (
+    )
+
+    related_cache = (
+    )
+
+    def get_main_visual_value(self, obj):
+        images = related_archive_items(Announcement.related_images, obj)
+        # By default related_archive_items put 'main visual' images first
+        # so we can simply return the first one
+        if images:
+            return images[0].id
+
+    def get_announcement_date_value(self, obj):
+        return self.append_timezone(obj.release_date)

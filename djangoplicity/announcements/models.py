@@ -296,6 +296,7 @@ class Announcement( ArchiveModel, TranslationModel ):
                 ('media_image', 'release_date_owner'),
                 ('media_video', 'release_date_owner'),
                 ('media_imagecomparison', 'release_date_owner'),
+                ('announcements_announcement_programs', 'announcement_id')
             )
             sort_fields = ['last_modified', 'release_date']
             clean_html_fields = ['description', 'links', 'contacts']

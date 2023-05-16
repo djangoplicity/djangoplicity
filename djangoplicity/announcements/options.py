@@ -33,7 +33,7 @@ from builtins import object
 from django.utils.translation import ugettext_noop
 from djangoplicity.announcements.models import Announcement, AnnouncementProxy
 from djangoplicity.announcements.serializers import AnnouncementSerializer, \
-    ICalAnnouncementSerializer, WebUpdateSerializer, ICalWebUpdateSerializer
+    ICalAnnouncementSerializer, WebUpdateSerializer, ICalWebUpdateSerializer, MiniAnnouncementSerializer
 from djangoplicity.archives.options import ArchiveOptions
 from djangoplicity.archives.contrib import security
 from djangoplicity.archives.contrib.browsers import ListBrowser, \
@@ -121,7 +121,7 @@ class AnnouncementOptions( ArchiveOptions ):
     class Queries( object ):
         default = AllPublicQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Announcements"), feed_name="default" )
         program = ProgramPublicQuery(relation_field='programs',
-                                     browsers=('normal', 'json'),
+                                     browsers=('normal', 'json', 'minijson'),
                                      verbose_name=ugettext_noop("Announcement: %(title)s"),
                                      extra_templates=[],
                                      category_type='Announcements', feed_name='programs')
@@ -135,6 +135,8 @@ class AnnouncementOptions( ArchiveOptions ):
         normal = ListBrowser()
         viewall = ListBrowser( verbose_name=ugettext_noop( u'View all' ), paginate_by=100 )
         json = SerializationBrowser( serializer=AnnouncementSerializer, emitter=JSONEmitter, paginate_by=20, display=False, verbose_name=ugettext_noop( "JSON" ) )
+        minijson = SerializationBrowser(serializer=MiniAnnouncementSerializer, emitter=JSONEmitter, paginate_by=10,
+                                        display=False, include_pagination_data_in_response=True, verbose_name=_("JSON"))
         ical = SerializationBrowser( serializer=ICalAnnouncementSerializer, emitter=ICalEmitter, paginate_by=100, display=False, verbose_name=ugettext_noop( "iCal" ) )
 
     class ResourceProtection ( object ):
