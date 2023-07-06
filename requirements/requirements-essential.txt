@@ -47,4 +47,4 @@ django-pipeline==1.6.14
 Faker==3.0.1
 
 # The Django Debug Toolbar is a configurable set of panels that display various debug information
-django-debug-toolbar==1.11
+django-debug-toolbar==1.11.1
