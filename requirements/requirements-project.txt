@@ -1,2 +1,2 @@
 # Celery Monitoring
-flower==0.9.3
+flower==1.2.0
