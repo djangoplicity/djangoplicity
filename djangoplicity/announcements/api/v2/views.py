@@ -1,32 +1,32 @@
-from djangoplicity.releases.models import Release
-from djangoplicity.releases.options import ReleaseOptions
+from djangoplicity.announcements.models import Announcement
+from djangoplicity.announcements.options import AnnouncementOptions
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.pagination import PageNumberPagination
 
-from .serializers import ReleaseMiniSerializer, ReleaseSerializer
+from .serializers import AnnouncementMiniSerializer, AnnouncementSerializer
 from rest_framework import permissions, mixins
 from rest_framework.viewsets import GenericViewSet
 from django_filters import rest_framework as filters
 
 
-class ReleasesPagination(PageNumberPagination):
+class AnnouncementPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 50
 
 
-class ReleaseFilter(filters.FilterSet):
+class AnnouncementFilter(filters.FilterSet):
     program = filters.CharFilter(field_name="programs__url")
 
     class Meta:
-        model = Release
+        model = Announcement
         fields = ['program']
 
 
 class ReleaseViewMixin:
     def get_queryset(self):
-        qs, query_data = ReleaseOptions.Queries.default.queryset(Release, ReleaseOptions, self.request)
+        qs, query_data = AnnouncementOptions.Queries.default.queryset(Announcement, AnnouncementOptions, self.request)
         return qs
 
 
@@ -40,22 +40,22 @@ class ReleaseViewMixin:
         OpenApiParameter(
             "page_size",
             OpenApiTypes.INT,
-            description=f"Number of results to return per page. Max: {ReleasesPagination.max_page_size}, Default: {ReleasesPagination.page_size}"
+            description=f"Number of results to return per page. Max: {AnnouncementPagination.max_page_size}, Default: {AnnouncementPagination.page_size}"
         ),
     ],
 )
-class ReleaseListView(mixins.ListModelMixin, ReleaseViewMixin, GenericViewSet):
+class AnnouncementListView(mixins.ListModelMixin, ReleaseViewMixin, GenericViewSet):
     permission_classes = [permissions.AllowAny]
-    queryset = Release.objects.none()
-    serializer_class = ReleaseMiniSerializer
-    pagination_class = ReleasesPagination
+    queryset = Announcement.objects.none()
+    serializer_class = AnnouncementMiniSerializer
+    pagination_class = AnnouncementPagination
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = ReleaseFilter
+    filterset_class = AnnouncementFilter
 
 
-class ReleaseDetailView(mixins.RetrieveModelMixin, ReleaseViewMixin, GenericViewSet):
+class AnnouncementDetailView(mixins.RetrieveModelMixin, ReleaseViewMixin, GenericViewSet):
     permission_classes = [permissions.AllowAny]
-    queryset = Release.objects.none()
-    serializer_class = ReleaseSerializer
+    queryset = Announcement.objects.none()
+    serializer_class = AnnouncementSerializer
 
 
