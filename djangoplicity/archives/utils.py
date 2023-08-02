@@ -9,6 +9,8 @@ from __future__ import division
 
 from builtins import str
 from builtins import range
+from typing import List
+
 from past.utils import old_div
 from builtins import object
 import hashlib
@@ -28,6 +30,8 @@ from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.translation.models import TranslationModel
 from djangoplicity.utils.d2d import D2dDict
+
+from .typings import ArchiveSerializedFormat
 
 
 class FormatTokenGenerator( object ):
@@ -296,6 +300,27 @@ def get_instance_archives_urls(instance):
 
         urls[x] = resource.absolute_url
     return urls
+
+
+def get_instance_archives_urls_list(instance) -> List[ArchiveSerializedFormat]:
+    '''
+    Returns a list of all existing Archives URL for a given instance
+    '''
+    formats = []
+    for x in dir(instance.Archive):
+        if not isinstance(getattr(instance.Archive, x), ResourceManager):
+            continue
+
+        resource = getattr(instance, 'resource_%s' % x)
+
+        if not resource:
+            continue
+
+        formats.append({
+            "format": x,
+            "url": resource.absolute_url
+        })
+    return formats
 
 
 def get_resource_dimension(instance, resource_name):

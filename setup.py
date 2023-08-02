@@ -19,7 +19,7 @@ setup(
         'django-ace == 1.0.4',
         'django-mptt == 0.9.1',
         'django-recaptcha == 1.4.0',
-        'djangorestframework == 3.9.1',  # Used for pages, fixed version as 3.6 causes conflict with collectstatic
+        'djangorestframework>=3.14.0,<3.15.0',  # Used for pages, fixed version as 3.6 causes conflict with collectstatic
         'django-signals-ahoy',  # Used by satchmo/models.py
         'django-redis',
         'google-api-python-client == 1.7.4',
@@ -45,6 +45,8 @@ setup(
         'openpyxl',
         'django-tinymce4-lite == 1.7.2',
         'six == 1.16.0',
+        'drf_spectacular>=0.26.2,<0.27.0',
+        'django-filter>=21.1,<24.0',
         'python-avm-library @ git+https://github.com/djangoplicity/python-avm-library.git@master#subdirectory=libavm'
     ],
     # metadata for upload to PyPI
