@@ -31,8 +31,6 @@ from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.translation.models import TranslationModel
 from djangoplicity.utils.d2d import D2dDict
 
-from .typings import ArchiveSerializedFormat
-
 
 class FormatTokenGenerator( object ):
     """
@@ -302,25 +300,20 @@ def get_instance_archives_urls(instance):
     return urls
 
 
-def get_instance_archives_urls_list(instance) -> List[ArchiveSerializedFormat]:
+# Similar to get_instance_archives_urls, but this returns all possible resources even if they are None
+def get_all_instance_archives_urls(instance):
     '''
     Returns a list of all existing Archives URL for a given instance
     '''
-    formats = []
+    urls = {}
     for x in dir(instance.Archive):
         if not isinstance(getattr(instance.Archive, x), ResourceManager):
             continue
 
         resource = getattr(instance, 'resource_%s' % x)
 
-        if not resource:
-            continue
-
-        formats.append({
-            "format": x,
-            "url": resource.absolute_url
-        })
-    return formats
+        urls[x] = resource.absolute_url if resource else None
+    return urls
 
 
 def get_resource_dimension(instance, resource_name):

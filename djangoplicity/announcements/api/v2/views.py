@@ -1,5 +1,6 @@
 from djangoplicity.announcements.models import Announcement
 from djangoplicity.announcements.options import AnnouncementOptions
+from djangoplicity.translation.api.v2.views import TranslationAPIViewMixin, DEFAULT_API_TRANSLATION_MODE
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.pagination import PageNumberPagination
@@ -24,9 +25,14 @@ class AnnouncementFilter(filters.FilterSet):
         fields = ['program']
 
 
-class ReleaseViewMixin:
+class AnnouncementViewMixin:
     def get_queryset(self):
-        qs, query_data = AnnouncementOptions.Queries.default.queryset(Announcement, AnnouncementOptions, self.request)
+        qs, query_data = AnnouncementOptions.Queries.default.queryset(
+            Announcement,
+            AnnouncementOptions,
+            self.request,
+            mode=self.request.GET.get('translation_mode', DEFAULT_API_TRANSLATION_MODE)
+        )
         return qs
 
 
@@ -44,7 +50,7 @@ class ReleaseViewMixin:
         ),
     ],
 )
-class AnnouncementListView(mixins.ListModelMixin, ReleaseViewMixin, GenericViewSet):
+class AnnouncementListView(mixins.ListModelMixin, AnnouncementViewMixin, TranslationAPIViewMixin, GenericViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Announcement.objects.none()
     serializer_class = AnnouncementMiniSerializer
@@ -53,9 +59,7 @@ class AnnouncementListView(mixins.ListModelMixin, ReleaseViewMixin, GenericViewS
     filterset_class = AnnouncementFilter
 
 
-class AnnouncementDetailView(mixins.RetrieveModelMixin, ReleaseViewMixin, GenericViewSet):
+class AnnouncementDetailView(mixins.RetrieveModelMixin, AnnouncementViewMixin, TranslationAPIViewMixin, GenericViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Announcement.objects.none()
     serializer_class = AnnouncementSerializer
-
-

@@ -1,5 +1,7 @@
 from djangoplicity.releases.models import Release
 from djangoplicity.releases.options import ReleaseOptions
+from djangoplicity.translation.api.v2.views import TranslationAPIViewMixin
+from djangoplicity.translation.api.v2.views import DEFAULT_API_TRANSLATION_MODE
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.pagination import PageNumberPagination
@@ -26,7 +28,12 @@ class ReleaseFilter(filters.FilterSet):
 
 class ReleaseViewMixin:
     def get_queryset(self):
-        qs, query_data = ReleaseOptions.Queries.default.queryset(Release, ReleaseOptions, self.request)
+        qs, query_data = ReleaseOptions.Queries.default.queryset(
+            Release,
+            ReleaseOptions,
+            self.request,
+            mode=self.request.GET.get('translation_mode', DEFAULT_API_TRANSLATION_MODE)
+        )
         return qs
 
 
@@ -44,7 +51,7 @@ class ReleaseViewMixin:
         ),
     ],
 )
-class ReleaseListView(mixins.ListModelMixin, ReleaseViewMixin, GenericViewSet):
+class ReleaseListView(mixins.ListModelMixin, ReleaseViewMixin, TranslationAPIViewMixin, GenericViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Release.objects.none()
     serializer_class = ReleaseMiniSerializer
@@ -53,9 +60,7 @@ class ReleaseListView(mixins.ListModelMixin, ReleaseViewMixin, GenericViewSet):
     filterset_class = ReleaseFilter
 
 
-class ReleaseDetailView(mixins.RetrieveModelMixin, ReleaseViewMixin, GenericViewSet):
+class ReleaseDetailView(mixins.RetrieveModelMixin, ReleaseViewMixin, TranslationAPIViewMixin, GenericViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Release.objects.none()
     serializer_class = ReleaseSerializer
-
-

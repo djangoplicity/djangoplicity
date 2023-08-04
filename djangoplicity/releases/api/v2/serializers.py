@@ -1,29 +1,26 @@
-from typing import Optional, TypedDict, List
-
 from djangoplicity.utils.datetimes import timezone
+from django.contrib.sites.models import Site
 
 from django.conf import settings
 from djangoplicity.releases.models import Release, ReleaseContact
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from djangoplicity.archives.utils import related_archive_items, get_instance_archives_urls_list
+from djangoplicity.archives.utils import related_archive_items, get_all_instance_archives_urls
 
-from djangoplicity.archives.typings import ArchiveSerializedFormat
 from djangoplicity.media.api.v2.serializers import ImageSerializer, VideoSerializer
 from djangoplicity.metadata.api.v2.serializers import ProgramSerializer
-
-
-class SerializedVisual(TypedDict):
-    id: str
-    formats: List[ArchiveSerializedFormat]
 
 
 class ReleaseSerializerMixin(serializers.Serializer):
     release_date = serializers.SerializerMethodField()
     release_type = serializers.StringRelatedField()
+    url = serializers.SerializerMethodField()
 
     def get_release_date(self, obj):
         return timezone(obj.release_date, tz=settings.TIME_ZONE)
+
+    def get_url(self, obj):
+        return f"https://{Site.objects.get_current().domain}{obj.get_absolute_url()}"
 
 
 class ReleaseContactSerializer(serializers.ModelSerializer):
@@ -44,6 +41,7 @@ class ReleaseMiniSerializer(ReleaseSerializerMixin, serializers.ModelSerializer)
         fields = [
             'id',
             'lang',
+            'url',
             'release_type',
             'title',
             'subtitle',
@@ -53,14 +51,12 @@ class ReleaseMiniSerializer(ReleaseSerializerMixin, serializers.ModelSerializer)
             'main_image',
         ]
 
-    def get_main_image(self, obj) -> Optional[SerializedVisual]:
+    @extend_schema_field(ImageSerializer)
+    def get_main_image(self, obj):
         images = related_archive_items(Release.related_images, obj)
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
         if images:
-            return {
-                "id": images[0].id,
-                "formats": get_instance_archives_urls_list(images[0]),
-            }
+            return ImageSerializer(images[0]).data
 
 
 class ReleaseSerializer(ReleaseSerializerMixin, serializers.ModelSerializer):
@@ -72,7 +68,7 @@ class ReleaseSerializer(ReleaseSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Release
         fields = [
-            'id', 'lang', 'title', 'release_type', 'subtitle', 'headline', 'release_date', 'description',
+            'id', 'lang', 'url', 'title', 'release_type', 'subtitle', 'headline', 'release_date', 'description',
             'notes', 'more_information', 'links', 'disclaimer', 'programs', 'images', 'videos', 'contacts'
         ]
 
