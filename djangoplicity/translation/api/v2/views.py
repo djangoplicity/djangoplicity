@@ -14,7 +14,7 @@ DEFAULT_API_TRANSLATION_MODE = 'language'
             "lang",
             OpenApiTypes.STR,
             enum=[lang[0] for lang in settings.LANGUAGES],
-            description=f'The language to use, used along with "translation_mode", default: user "preferred_language"'
+            description=f'The language to use, used along with "translation_mode", default: user "preferred_language" cookie'
         ),
         OpenApiParameter(
             "translation_mode",
