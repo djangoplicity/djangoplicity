@@ -45,3 +45,27 @@ class SnapType(FileType):
     verbose_name = ugettext_noop(u'Snap Application (.snap)')
     exts = ['snap']
     content_type = 'application/octet-stream'
+
+
+class TarType(FileType):
+    verbose_name = ugettext_noop(u'Tarball (.tar)')
+    exts = ['tar']
+    content_type = 'application/x-tar'
+
+
+class TarGzType(FileType):
+    verbose_name = ugettext_noop(u'Gzip Tarball Archive (.tar.gz)')
+    exts = ['tar.gz']
+    content_type = 'application/gzip'
+
+
+class TarBz2Type(FileType):
+    verbose_name = ugettext_noop(u'Bz2 Tarball Archive (.tar.bz2)')
+    exts = ['tar.bz2']
+    content_type = 'application/x-bzip2'
+
+
+class TzType(FileType):
+    verbose_name = ugettext_noop(u'Compressed Tarball (.tz)')
+    exts = ['tz']
+    content_type = 'application/x-tar'

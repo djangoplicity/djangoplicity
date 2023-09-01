@@ -117,6 +117,10 @@ class UploadFileForm ( forms.Form ):
             if uploaded_file and format:
                 # Find extension of uploaded files
                 ( obj_id, ext ) = os.path.splitext( uploaded_file.name )
+                # tar.gz and tar.bz files
+                if ext == '.gz' or ext == '.bz2':
+                    (obj_id, ext2) = os.path.splitext(obj_id)
+                    ext = ext2 + ext
 
                 # Check maximum length for original files
                 try:

@@ -17,6 +17,7 @@ __all__ = (
     'PowerpointPresentationType',
     'PowerpointSlideshowType',
     'DocType',
+    'DocxType',
     'TxtType',
     'IllustratorType',
     'InDesignType',
@@ -25,7 +26,9 @@ __all__ = (
     'PPTType',
     'PPSType',
     'Model3dObjType',
-    'Model3dC4DType'
+    'Model3dC4DType',
+    'StyType',
+    'TexType',
 )
 
 
@@ -74,6 +77,11 @@ class DocType( FileType ):
     exts = ['doc']
 
 
+class DocxType( FileType ):
+    verbose_name = ugettext_noop(u'Microsoft Word File')
+    exts = ['docx']
+
+
 class PPTType( FileType ):
     verbose_name = ugettext_noop(u'Powerpoint Presentation')
     exts = ['ppt']
@@ -107,3 +115,13 @@ class Model3dObjType( FileType ):
 class Model3dC4DType( FileType ):
     verbose_name = ugettext_noop( u'Maxon Cinema 4D (.c4d)' )
     exts = ['c4d', 'zip']
+
+
+class StyType(FileType):
+    verbose_name = ugettext_noop(u'LaTeX Style')
+    exts = ['sty']
+
+
+class TexType( FileType ):
+    verbose_name = ugettext_noop(u'LaTeX Document')
+    exts = ['tex']

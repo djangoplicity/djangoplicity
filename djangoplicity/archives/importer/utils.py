@@ -114,6 +114,10 @@ def find_importables( archive_import_root, archive_model, archive_options, exclu
         # Get files in directory or creates the directory if it doesn't exists.
         for f in _get_files( fmt_directory ):
             ( obj_id, ext ) = os.path.splitext( f )
+            # tar.gz and tar.bz files
+            if ext == '.gz' or ext == '.bz2':
+                (obj_id, ext2) = os.path.splitext(obj_id)
+                ext = ext2 + ext
             cleanid = re.sub(disallowed_characters_regex, "", obj_id)
             fpath = os.path.join(fmt_directory, f)
 
