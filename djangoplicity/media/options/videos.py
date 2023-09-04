@@ -400,7 +400,7 @@ class VideoSubtitleOptions (ArchiveOptions):
         newdict = {}
 
         for k, entry in res.items():
-
+            vidid = None
             try:
                 vidid = k[:-2]
                 lang = k[-2:]
@@ -412,7 +412,9 @@ class VideoSubtitleOptions (ArchiveOptions):
                 newdict[k] = entry
 
             except Video.DoesNotExist:
-                pass
+                if 'files' in entry:
+                    for f in entry['files']:
+                        invalid.append(f'Video with the file ID "{vidid}" does not exists: {f} (Last two characters of the file name is the language code)')
 
         return (newdict, invalid)
 
