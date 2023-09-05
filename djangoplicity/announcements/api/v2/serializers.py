@@ -1,28 +1,14 @@
-from django.contrib.sites.models import Site
-from djangoplicity.utils.datetimes import timezone
-
-from django.conf import settings
 from djangoplicity.announcements.models import Announcement
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from djangoplicity.archives.utils import related_archive_items
 
-from djangoplicity.media.api.v2.serializers import ImageSerializer, VideoSerializer
+from djangoplicity.media.api.v2.serializers import ImageMiniSerializer, VideoMiniSerializer
 from djangoplicity.metadata.api.v2.serializers import ProgramSerializer
+from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
 
-class AnnouncementSerializerMixin(serializers.Serializer):
-    release_date = serializers.SerializerMethodField()
-    url = serializers.SerializerMethodField()
-
-    def get_release_date(self, obj):
-        return timezone(obj.release_date, tz=settings.TIME_ZONE)
-
-    def get_url(self, obj):
-        return f"https://{Site.objects.get_current().domain}{obj.get_absolute_url()}"
-
-
-class AnnouncementMiniSerializer(AnnouncementSerializerMixin, serializers.ModelSerializer):
+class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
     main_image = serializers.SerializerMethodField()
     programs = ProgramSerializer(many=True)
 
@@ -39,15 +25,15 @@ class AnnouncementMiniSerializer(AnnouncementSerializerMixin, serializers.ModelS
             'main_image',
         ]
 
-    @extend_schema_field(ImageSerializer())
+    @extend_schema_field(ImageMiniSerializer())
     def get_main_image(self, obj):
         images = related_archive_items(Announcement.related_images, obj)
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
         if images:
-            return ImageSerializer(images[0]).data
+            return ImageMiniSerializer(images[0]).data
 
 
-class AnnouncementSerializer(AnnouncementSerializerMixin, serializers.ModelSerializer):
+class AnnouncementSerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     videos = serializers.SerializerMethodField()
     programs = ProgramSerializer(many=True)
@@ -70,12 +56,12 @@ class AnnouncementSerializer(AnnouncementSerializerMixin, serializers.ModelSeria
             'videos',
         ]
 
-    @extend_schema_field(ImageSerializer(many=True))
+    @extend_schema_field(ImageMiniSerializer(many=True))
     def get_images(self, obj):
         images = related_archive_items(Announcement.related_images, obj)
-        return ImageSerializer(images, many=True).data
+        return ImageMiniSerializer(images, many=True).data
 
-    @extend_schema_field(VideoSerializer(many=True))
+    @extend_schema_field(VideoMiniSerializer(many=True))
     def get_videos(self, obj):
         videos = related_archive_items(Announcement.related_videos, obj)
-        return VideoSerializer(videos, many=True).data
+        return VideoMiniSerializer(videos, many=True).data
