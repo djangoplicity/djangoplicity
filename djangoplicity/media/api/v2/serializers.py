@@ -22,6 +22,7 @@ class ImageSerializerMixin(ArchiveSerializerMixin):
 class VideoSerializerMixin(ArchiveSerializerMixin):
     duration = serializers.SerializerMethodField()
     formats = serializers.SerializerMethodField()
+    categories = CategorySerializer(many=True, source='web_category')
 
     def get_duration(self, obj) -> Optional[str]:
         return timestring_to_seconds(obj.file_duration) if obj.file_duration else None
@@ -48,4 +49,16 @@ class ImageSerializer(ImageSerializerMixin, serializers.ModelSerializer):
 class VideoMiniSerializer(VideoSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ['id', 'url', 'source', 'title', 'featured', 'duration', 'youtube_video_id', 'use_youtube', 'formats']
+        fields = [
+            'id', 'url', 'lang', 'source', 'title', 'featured', 'duration', 'categories', 'youtube_video_id',
+            'use_youtube', 'formats'
+        ]
+
+
+class VideoSerializer(VideoSerializerMixin, serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = [
+            'id', 'url', 'lang', 'source', 'title', 'headline', 'description', 'categories', 'type', 'credit',
+            'release_date', 'featured', 'duration', 'youtube_video_id', 'use_youtube', 'formats'
+        ]
