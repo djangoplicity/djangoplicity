@@ -39,7 +39,12 @@ def archive_search_form( request, model=None, options=None, **kwargs ):
     asf = AdvancedSearchForm( options=options, request=request )
 
     if request.GET and asf.form.is_valid():
-        return redirect( "%s?%s" % ( asf.url_list(), request.GET.urlencode() ) )
+        # Remove empty values from request.GET
+        params = request.GET.copy()
+        for k, v in request.GET.lists():
+            if not v or v == ['']:
+                del params[k]
+        return redirect( "%s?%s" % ( asf.url_list(), params.urlencode() ) )
 
     context = {
             'options': options,
