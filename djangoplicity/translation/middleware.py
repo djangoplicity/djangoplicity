@@ -225,7 +225,7 @@ class LocaleMiddleware(object):
 
                     if querystring:
                         # Add query string to redirect path if any
-                        path += '?' + querystring + nocache_query
+                        path += '?' + querystring + '&' + nocache_query
                     elif nocache_query:
                         path += '?' + nocache_query
 

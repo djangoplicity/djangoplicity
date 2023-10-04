@@ -57,7 +57,8 @@ class AdvancedSearchForm( object ):
     def __init__(self, options, request=None):
         self.options = options
 
-        if request and request.GET:
+        # Check if request.GET has at least one attribute different than 'nocache'
+        if request and (len(request.GET) > 1 or (len(request.GET) == 1 and 'nocache' not in request.GET)):
             self.form = self._build_form(data=request.GET)
         else:
             self.form = self._build_form()
