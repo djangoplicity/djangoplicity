@@ -43,7 +43,7 @@ from djangoplicity.archives.contrib.search.consts import ADV_SEARCH_START_YEAR, 
     VIDEO_DIMS, VIDEO_SIZES, FOV_CHOICES
 from djangoplicity.archives.contrib.search.widgets import LazySelectDateWidget
 from djangoplicity.archives.contrib.search.utils import _get_facilities, \
-    _get_instruments, _get_categories
+    _get_instruments, _get_categories, _get_web_categories
 from djangoplicity.metadata.consts import TYPE_CHOICES
 
 
@@ -348,6 +348,21 @@ class AVMImageFacilitySearchField( MultiSearchField, fields.MultipleChoiceField 
         return _get_facilities()
 
     choices = property(_get_choices, fields.ChoiceField._set_choices)
+
+
+class WebCategorySearchField( MultiSearchField, fields.MultipleChoiceField ):
+    model_field = 'web_category__id'
+    operator = 'exact'
+    help_text = _( 'Leave unselected for all results.' )
+
+    def _get_choices(self):
+        return _get_web_categories(self.category_type)
+
+    choices = property(_get_choices, fields.ChoiceField._set_choices)
+
+    def __init__(self, category_type, *args, **kwargs):
+        self.category_type = category_type
+        super(WebCategorySearchField, self).__init__(*args, **kwargs)
 
 
 class AVMFacilitySearchField( MultiSearchField, fields.MultipleChoiceField ):

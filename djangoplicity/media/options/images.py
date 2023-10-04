@@ -49,7 +49,7 @@ from djangoplicity.archives.contrib.search.fields import ImageSizeSearchField, \
     SeparatorField, IdSearchField, RelatedIdSearchField, DateSinceSearchField, \
     DateUntilSearchField, TextSearchField, AVMSubjectNameSearchField, \
     AVMTypeSearchField, AVMSubjectCategorySearchField, BooleanSearchField, \
-    ManyToManySearchField, FOVSearchField
+    ManyToManySearchField, FOVSearchField, WebCategorySearchField
 from djangoplicity.archives.contrib.serialization.serializers import XMPEmitter, \
     JSONEmitter
 from djangoplicity.archives.importer.import_actions import move_resources, \
@@ -166,7 +166,8 @@ class ImageOptions( ArchiveOptions ):
         description = TextSearchField( label=_( "Description" ), model_field='description' )
         credit = TextSearchField( label=_( "Credit" ), model_field='credit' )
         type = AVMTypeSearchField( label=_( "Type" ), )
-        category = AVMSubjectCategorySearchField( label=_( "Category" ), )
+        web_category = WebCategorySearchField(category_type='Images', label=_( "Web Category" ), model_field='web_category__id' )
+        category = AVMSubjectCategorySearchField( label=_( "Subject Category" ), )
         zoomable = BooleanSearchField( model_field='zoomify', label=_("Zoomable available") )
         wallpapers = BooleanSearchField( model_field='wallpapers', label=_("Wallpaper available") )
         colours = ManyToManySearchField( label=_( "Colours" ), model_field='colors__id', choices_func=lambda: [( c.id, _( c.name ) ) for c in Color.objects.all() ] )

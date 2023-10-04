@@ -33,7 +33,7 @@ from django.core.cache import cache
 from django.db.utils import DatabaseError
 
 from djangoplicity.metadata.models import Facility, Instrument, \
-    TaxonomyHierarchy, SubjectName
+    TaxonomyHierarchy, SubjectName, Category
 
 CACHE_TIMEOUT = 300
 
@@ -75,6 +75,21 @@ def _get_categories():
     if not res:
         try:
             return [( i.id, i.name ) for i in TaxonomyHierarchy.objects.exclude( level1=101 )]
+        except DatabaseError:
+            return []
+
+        cache.set(key, res, CACHE_TIMEOUT)
+
+    return res
+
+
+def _get_web_categories(category_type):
+    key = __name__ + '_get_web_categories__' + category_type
+    res = cache.get(key)
+
+    if not res:
+        try:
+            return [( i.id, i.name ) for i in Category.objects.filter(type__name=category_type)]
         except DatabaseError:
             return []
 
