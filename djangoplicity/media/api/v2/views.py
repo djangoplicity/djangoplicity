@@ -2,6 +2,7 @@ from djangoplicity.media.options import ImageOptions, VideoOptions
 from djangoplicity.media.models import Image, Video
 from djangoplicity.translation.api.v2.views import TranslationAPIViewMixin
 from djangoplicity.translation.api.v2.views import DEFAULT_API_TRANSLATION_MODE
+from djangoplicity.metadata.models import Facility
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.pagination import PageNumberPagination
@@ -20,10 +21,11 @@ class MediaPagination(PageNumberPagination):
 
 class ImageFilter(filters.FilterSet):
     category = filters.CharFilter(field_name="web_category__url")
+    facility = filters.ModelMultipleChoiceFilter(field_name="imageexposure__facility", queryset=Facility.objects.filter(published=True))
 
     class Meta:
         model = Image
-        fields = ['category']
+        fields = ['category', 'facility']
 
 
 class VideoFilter(filters.FilterSet):
