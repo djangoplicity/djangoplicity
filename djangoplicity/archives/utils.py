@@ -30,6 +30,7 @@ from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.translation.models import TranslationModel
 from djangoplicity.utils.d2d import D2dDict
+from djangoplicity.archives.typings import ArchiveResource
 
 
 class FormatTokenGenerator( object ):
@@ -206,7 +207,7 @@ def get_instance_archives(instance):
         getattr(instance, 'resource_%s' % x) is not None]
 
 
-def get_instance_resources(instance):
+def get_instance_resources(instance) -> List[ArchiveResource]:
     '''
     Return D2D compatible resources list
     '''

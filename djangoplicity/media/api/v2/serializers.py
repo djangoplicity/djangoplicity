@@ -1,9 +1,10 @@
-from typing import Optional
+from typing import List, Optional
 
 from rest_framework import serializers
 from djangoplicity.media.models import Image, Video
 
-from djangoplicity.archives.utils import get_all_instance_archives_urls
+from djangoplicity.archives.utils import get_all_instance_archives_urls, get_instance_resources
+from djangoplicity.archives.typings import ArchiveResource
 from djangoplicity.utils.datetimes import timestring_to_seconds
 from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
@@ -38,12 +39,18 @@ class ImageMiniSerializer(ImageSerializerMixin, serializers.ModelSerializer):
 
 
 class ImageSerializer(ImageSerializerMixin, serializers.ModelSerializer):
+    subject_name = serializers.StringRelatedField(many=True)
+    resources = serializers.SerializerMethodField()
+
     class Meta:
         model = Image
         fields = [
             'id', 'url', 'lang', 'source', 'title', 'headline', 'description', 'categories', 'type', 'credit',
-            'release_date', 'width', 'height', 'featured', 'formats'
+            'release_date', 'width', 'height', 'featured', 'subject_name', 'resources', 'formats'
         ]
+
+    def get_resources(self, obj) -> List[ArchiveResource]:
+        return get_instance_resources(obj)
 
 
 class VideoMiniSerializer(VideoSerializerMixin, serializers.ModelSerializer):
