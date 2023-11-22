@@ -840,7 +840,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         wallpaper2 = ImageResourceManager(derived='publicationtiff', type=types.Wallpaper2Type)
         wallpaper3 = ImageResourceManager(derived='publicationtiff', type=types.Wallpaper3Type)
         wallpaper4 = ImageResourceManager(derived='publicationtiff', type=types.Wallpaper4Type)
-        wallpaper5 = ImageResourceManager(derived='publicationtiff', type=types.Wallpaper5Type)
+        wallpaper5 = ImageResourceManager(derived='original', type=types.Wallpaper5Type)
         news = ImageResourceManager(derived='publicationtiff', type=types.NewsJpegType)
         newsmini = ImageResourceManager(derived='publicationtiff', type=types.NewsMiniJpegType)
         newsfeature = ImageResourceManager(derived='publicationtiff', type=types.NewsFeatureType)
