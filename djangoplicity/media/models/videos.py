@@ -441,7 +441,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
                 # We mark the video as unlisted and send a notification
                 send_mail('WARNING: Video ' + self.pk + ' should be marked as public by '
                     'release_date_action but release date is in the future!',
-                    '', 'no-reply@eso.org', ['Gurvan.Bazin@eso.org'])
+                    '', settings.DEFAULT_FROM_EMAIL, settings.MANAGERS)
                 self.update_youtube_privacy('unlisted')
                 return
 
