@@ -94,9 +94,14 @@ class ProgramAdmin( admin.ModelAdmin ):
     list_filter = ( 'types', )
     search_fields = ( 'name', 'url', )
     fieldsets = (
-                    ( None, {'fields': ( 'name', 'url', 'types', 'enabled' ,'logo_url') } ),
-                )
-    filter_horizontal = ('types', )
+        (None, {
+            'fields': ('name', 'url', 'types', 'enabled' ,'logo_url')
+        }),
+        ('Advance Settings', {
+            'fields': ('related_programs', 'join_in_browser'), 'classes': ('collapse',)
+        }),
+    )
+    filter_horizontal = ('types', 'related_programs' )
 
     def display_program_types(self, obj):  # noqa
         return ', '.join([program_type.name for program_type in obj.types.all()])

@@ -81,9 +81,17 @@ class ProgramQuery(CategoryQuery):
             # URL of non existing category specified.
             raise Http404
 
-        params = {
-            self.relation_field: program,
-        }
+        viewmode_name = request.resolver_match.kwargs.get('viewmode_name', 'normal')
+
+        if program.join_in_browser and viewmode_name in [element.strip() for element in program.join_in_browser.split(',')]:
+            related_programs = program.related_programs.filter(enabled=True)
+            params = {
+                '%s__in' % self.relation_field: [program] + list(related_programs),
+            }
+        else:
+            params = {
+                self.relation_field: program,
+            }
 
         q_obj = Q(**params)
         # hack: added source if model has source attr so that translation lookups work
@@ -96,8 +104,8 @@ class ProgramQuery(CategoryQuery):
         # We want to call the queryset from the parent of CategoryQuery and not
         # of ProgramQuery
         # pylint: disable=E1003
-        (qs, _query_data) = super(ProgramQuery, self).queryset(model, options, request, stringparam, **kwargs)
-        qs = qs.filter(q_obj)
+        # (qs, _query_data) = super(ProgramQuery, self).queryset(model, options, request, stringparam, **kwargs)
+        qs = model.objects.filter(q_obj)
         return (qs, {'program': program})
 
     def verbose_name(self, program=None, **kwargs ):
