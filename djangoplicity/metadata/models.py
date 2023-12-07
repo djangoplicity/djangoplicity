@@ -350,6 +350,13 @@ class Program(models.Model):
     types = models.ManyToManyField(CategoryType, help_text=_("Defines to which types this program applies."), related_name='+')
     logo_url = models.URLField(verbose_name="Logo URL", blank=True, null=True, max_length=255)
     enabled = models.BooleanField(default=True, )
+    join_in_browser = models.CharField(
+        help_text=_('Add the type of views where you want to merge the programs'),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+    related_programs = models.ManyToManyField('self', verbose_name='Join with Programs', blank=True)
 
     def __str__(self):
         result = self.name
