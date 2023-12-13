@@ -95,7 +95,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         'hd_1080p25_screen', 'hd_1080_screen', 'dome_preview', 'hd_broadcast_720p25',
         'dome_2kplayback', 'dome_4kplayback', 'hd_and_apple', 'medium_podcast',
         'ext_highres', 'ext_playback', 'old_video', 'vr_16kmaster', 'vr_8kmaster',
-        'vr_4kmaster'
+        'vr_4kmaster', 'vr_2k_sos', 'ultra_hd_8k_h265', 'ultra_hd_8k_broadcast'
     )
 
     priority = archive_fields.PriorityField( help_text=_( u'Assessment of the quality of the image (100 highest, 0 lowest). Higher priority images are ranked higher in search results than lower priority images.' ) )
@@ -290,6 +290,10 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         ultra_hd_h265 = ResourceManager( type=types.UltraHDH265Type, verbose_name=_(u"4K Ultra HD Preview H.265") )
         ultra_hd_broadcast = ResourceManager( type=types.UltraHDBroadcastType, verbose_name=_(u"4K Ultra HD Broadcast") )
 
+        # Ultra HD 8k
+        ultra_hd_8k_h265 = ResourceManager(type=types.UltraHD8kPreviewH265, verbose_name=_('8K Preview H.265'))
+        ultra_hd_8k_broadcast = ResourceManager(type=types.UltraHD8kBroadcast, verbose_name=_('8K Broadcast'))
+
         # Dome
         dome_8kmaster = ResourceManager( type=types.Dome8kMasterType, verbose_name=_(u"Fulldome 8k Master") )
         dome_4kmaster = ResourceManager( type=types.Dome4kMasterType, verbose_name=_(u"Fulldome 4k Master") )
@@ -311,6 +315,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         vr_8k = ResourceManager(type=types.VR8kType, verbose_name=_(u'VR 8k'))
         vr_8kmaster= ResourceManager(type=types.VR8kMasterType, verbose_name=_(u'VR 8k Master'))
         vr_16kmaster= ResourceManager(type=types.VR16kMasterType, verbose_name=_(u'VR 16k Master'))
+        vr_2k_sos = ResourceManager(type=types.VR2kSoSType, verbose_name=_(u'2k SoS'))
 
         # Broadcast formats
         hd_broadcast_720p25 = ResourceManager( type=types.BroadcastType, verbose_name=_(u"HD Broadcast 720p/25") )  # hd720p25_brodcast

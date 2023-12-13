@@ -162,6 +162,13 @@ class VR16kMasterType(FileType):
     height = 8192
 
 
+class VR2kSoSType(FileType):
+    verbose_name = ugettext_noop(u'2k SoS')
+    exts = ['mp4']
+    width = 2048
+    height = 1024
+
+
 class CylindricalPreviewType(FileType):
     verbose_name = ugettext_noop(u'Cylindrical VR Preview')
     exts = ['mp4']
@@ -207,6 +214,20 @@ class UltraHDBroadcastType(FileType):
 class BroadcastSDType(FileType):
     verbose_name = ugettext_noop(u'Brodcast SD')
     exts = ['mxf', 'avi', 'mov']  # mov to be removed
+
+
+class UltraHD8kPreviewH265(FileType):
+    verbose_name = ugettext_noop(u'8K Preview H.265')
+    exts = ['mp4']
+    width = 7680
+    height = 4320
+
+
+class UltraHD8kBroadcast(FileType):
+    verbose_name = ugettext_noop(u'8K  Broadcast')
+    exts = ['mov']
+    width = 7680
+    height = 4320
 
 
 class SubtitleType (FileType):

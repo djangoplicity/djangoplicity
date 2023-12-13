@@ -160,10 +160,10 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
         # Identify the format with the largest resolution
         for resource in ('cylindrical_16kmaster', 'dome_8kmaster',
                          'cylindrical_8kmaster', 'vr_8k', 'vr_4k',
-                         'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster',
-                         'dome_2kplayback', 'dome_4kplayback'
-                         'dome_4kmaster', 'cylindrical_4kmaster',
-                         'ultra_hd_broadcast', 'ultra_hd', 'dome_2kmaster',
+                         'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster', 'vr_2k_sos',
+                         'dome_2kplayback', 'dome_4kplayback', 'dome_4kmaster',
+                         'cylindrical_4kmaster','ultra_hd_broadcast', 'ultra_hd',
+                         'dome_2kmaster', 'ultra_hd_8k_h265', 'ultra_hd_8k_broadcast',
                          'hd_1080p25_screen', 'hd_1080_screen', 'hd_1080_broadcast',
                          'dome_preview', 'hd_broadcast_720p25', 'hd_and_apple',
                          'large_qt', 'broadcast_sd', 'medium_flash', 'medium_podcast',
@@ -222,6 +222,15 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
                 elif resource == 'vr_16kmaster':
                     fields['width'] = v.width or 16384
                     fields['height'] = v.height or 8192
+                elif resource == 'vr_2k_sos':
+                    fields['width'] = v.width or 2048
+                    fields['height'] = v.height or 1024
+                elif resource == 'ultra_hd_8k_h265':
+                    fields['width'] = v.width or 7680
+                    fields['height'] = v.height or 4320
+                elif resource == 'ultra_hd_8k_broadcast':
+                    fields['width'] = v.width or 7680
+                    fields['height'] = v.height or 4320
             else:
                 # Use midentify to fetch a dict of key/values about the file
                 args = ['/usr/bin/mplayer', '-noconfig', 'all', '-cache-min', '0', '-vo', 'null', '-ao', 'null', '-frames', '0', '-identify', path]
