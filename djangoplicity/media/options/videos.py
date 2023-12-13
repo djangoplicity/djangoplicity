@@ -265,6 +265,7 @@ class VideoOptions( ArchiveOptions ):
             ( 'dome_mov', ( '.mov', '.mp4' ) ),
             ( 'vr_8k', ( '.mp4', ) ),
             ( 'vr_8k', ( '.mp4', ) ),
+            ('vr_2k_sos', ('.mp4',)),
             ( 'dome_preview', ( '.mp4', ) ),
             # Cylindrical
             ( 'cylindrical_preview', ( '.mp4', ) ),
@@ -275,6 +276,9 @@ class VideoOptions( ArchiveOptions ):
             ( 'ultra_hd_broadcast', ( '.avi', ) ),
             ( 'ultra_hd_h265', ( '.mkv', '.mp4' ) ),
             ( 'ultra_hd', ( '.mp4', ) ),
+            # 8k
+            ('ultra_hd_8k_h265', ('.mp4',)),
+            ('ultra_hd_8k_broadcast', ('.mov',)),
             # HD
             ( 'hd_and_apple', ( '.mp4', '.m4v' ) ),
             ( 'hd_1080p25_screen', ( '.mp4' ) ),
