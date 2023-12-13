@@ -22,7 +22,7 @@ setup(
         'djangorestframework>=3.14.0,<3.15.0',  # Used for pages, fixed version as 3.6 causes conflict with collectstatic
         'django-signals-ahoy',  # Used by satchmo/models.py
         'django-redis',
-        'google-api-python-client == 1.7.4',
+        'google-api-python-client>=1.7.4,<=2.92.0',
         'oauth2client',
         'html2text == 3.200.3',
         'htmllaundry',
