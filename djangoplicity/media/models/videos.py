@@ -95,7 +95,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         'hd_1080p25_screen', 'hd_1080_screen', 'dome_preview', 'hd_broadcast_720p25',
         'dome_2kplayback', 'dome_4kplayback', 'hd_and_apple', 'medium_podcast',
         'ext_highres', 'ext_playback', 'old_video', 'vr_16kmaster', 'vr_8kmaster',
-        'vr_4kmaster', 'vr_2k_sos', 'ultra_hd_8k_h265', 'ultra_hd_8k_broadcast'
+        'vr_4kmaster'
     )
 
     priority = archive_fields.PriorityField( help_text=_( u'Assessment of the quality of the image (100 highest, 0 lowest). Higher priority images are ranked higher in search results than lower priority images.' ) )
