@@ -162,7 +162,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
                          'cylindrical_8kmaster', 'vr_8k', 'vr_4k',
                          'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster', 'vr_2k_sos',
                          'dome_2kplayback', 'dome_4kplayback', 'dome_4kmaster',
-                         'cylindrical_4kmaster','ultra_hd_broadcast', 'ultra_hd',
+                         'cylindrical_4kmaster', 'ultra_hd_broadcast', 'ultra_hd',
                          'dome_2kmaster', 'ultra_hd_8k_h265', 'ultra_hd_8k_broadcast',
                          'hd_1080p25_screen', 'hd_1080_screen', 'hd_1080_broadcast',
                          'dome_preview', 'hd_broadcast_720p25', 'hd_and_apple',
