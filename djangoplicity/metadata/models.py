@@ -11,7 +11,8 @@ from six import python_2_unicode_compatible
 from djangoplicity.metadata import consts
 
 
-SIMBAD_URL = "http://simbad.u-strasbg.fr/simbad/sim-id"
+SIMBAD_URL = "https://simbad.u-strasbg.fr/simbad/sim-id"
+
 
 if hasattr(settings, 'TELBIB'):
     TELBIB = settings.TELBIB
