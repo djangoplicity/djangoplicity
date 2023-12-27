@@ -11,7 +11,7 @@
 {%endfor%}
 {% for r in resources.downloads %}
 <div class="archive_download">
-    <span class="archive_dl_icon"><img src="{% static "icons/icon_"|add:r.icon|add:".png" %}" /></span>
+    <span class="archive_dl_icon"><img src="{% static "icons/icon_"|add:r.icon|add:".png" %}" alt="Icon" /></span>
     <span class="archive_dl_text"><a href="{{ r.url }}"{{r.extra_attrs}}>{% trans r.title %}</a></span>
     {% if r.size %}<span class="archive_dl_size"><div>
         {% if r.size > 104857600 %}
