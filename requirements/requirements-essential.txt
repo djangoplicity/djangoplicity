@@ -42,3 +42,5 @@ future
 
 # Asset packaging library for Django
 django-pipeline==1.6.14
+
+#boto3
