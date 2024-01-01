@@ -138,10 +138,10 @@ class CDN77ContentServer(ContentServer):
         self.remote_archive = True
         self.purge_queue = 'cdn77-purge'
         self.prefetch_queue = 'cdn77-prefetch'
-        self.aws_access_key_id = aws_access_key_id,
-        self.aws_secret_access_key = aws_secret_access_key,
-        self.aws_storage_bucket_name = aws_storage_bucket_name,
-        self.aws_s3_region_name = aws_s3_region_name,
+        self.aws_access_key_id = aws_access_key_id
+        self.aws_secret_access_key = aws_secret_access_key
+        self.aws_storage_bucket_name = aws_storage_bucket_name
+        self.aws_s3_region_name = aws_s3_region_name
         self.aws_s3_endpoint_url = aws_s3_endpoint_url
         self.aws_s3_custom_domain = aws_s3_custom_domain
 
