@@ -157,10 +157,19 @@ class CDN77ContentServer(ContentServer):
                 'passwd': 'password',
             }
         '''
-        r = requests.post(self.api_url + method, data=params)
+        headers = {
+            'Authorization': 'Bearer {}'.format(self.api_password)
+        }
+        r = requests.post(
+            #  self.api_url + method,
+            self.api_url + method,
+            data=json.dumps(params),
+            headers=headers
+        )
 
-        if r.status_code != requests.codes.ok:
+        if not r.ok:
             logger.error('Failed API call for "%s" with params: %s', method, params)
+            logger.error(u'ERROR {}: {}'.format(r.status_code, r.text))
             return None
 
         result = r.json()
@@ -168,9 +177,9 @@ class CDN77ContentServer(ContentServer):
         if result is None:
             raise Exception('Failed API call: "%s"' % method)
 
-        if result['status'] == 'error':
-            raise Exception('Failed API call "%s" "%s" "%s"' %
-                            method, params, result)
+        # if result['status'] == 'error':
+        #     raise Exception('Failed API call "%s" "%s" "%s"' %
+        #                     method, params, result)
 
         logger.info('Started %s for %s on %s, "%s", request: %s',
                     method, self.name, self.cdn_id, result['description'],
@@ -323,18 +332,20 @@ class CDN77ContentServer(ContentServer):
             logger.debug('Will %s urls: %s', action, ', '.join(urls))
             for urls_chunk in chunks(urls, 1800):
                 logger.info('%s %d URLs', action, len(urls_chunk))
-                params['url[]'] = urls_chunk
-                self._api('data/%s' % action, params)
+                params['paths'] = urls_chunk
+                method = 'cdn/{}/job/{}'.format(self.cdn_id, action)
+                self._api(method, params)
 
         # If necessary also purge/prefetch the large files onto the secondary CDN
         if self.url_bigfiles and urls_bigfiles:
             logger.debug('Will %s urls_bigfiles: %s', action, ', '.join(urls_bigfiles))
-            params['cdn_id'] = self.cdn_id_bigfiles
+            #params['cdn_id'] = self.cdn_id_bigfiles
 
             for urls_chunk in chunks(urls_bigfiles, 1800):
                 logger.info('%s %d URLs', action, len(urls_chunk))
-                params['url[]'] = urls_chunk
-                self._api('data/%s' % action, params)
+                params['paths'] = urls_chunk
+                method = 'cdn/{}/job/{}'.format(self.cdn_id_bigfiles, action)
+                self._api(method, params)
 
     def sync_resources(self, instance, formats=None, delay=False, prefetch=True, purge=True):
         '''
