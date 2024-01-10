@@ -25,7 +25,8 @@ setup(
         'google-api-python-client>=1.7.4,<=2.92.0',
         'oauth2client',
         'html2text == 3.200.3',
-        'htmllaundry',
+        'htmllaundry == 2.2',
+        'lxml == 4.9.3', # Used by htmllaundry
         'icalendar == 3.8',
         'Pillow',
         'pycountry == 1.16',
