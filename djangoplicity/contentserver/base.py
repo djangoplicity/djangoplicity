@@ -451,7 +451,7 @@ class CDN77ContentServer(ContentServer):
                         # Get mimetype of object
                         mime_type = MimeTypes().guess_type(resource.path)
                         ExtraArgs = {}
-                        if mime_type:
+                        if mime_type[0]:
                             ExtraArgs.update({'ContentType': mime_type[0]})
                         s3.upload_file(resource.path, self.aws_storage_bucket_name, remote_path, ExtraArgs)
                         logger.info('Uploaded %s to %s', resource.path, remote_path)
