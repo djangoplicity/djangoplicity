@@ -429,10 +429,12 @@ class CDN77ContentServer(ContentServer):
                             # Get mimetype of object
                             local_path = os.path.join(root, file)
                             mime_type = MimeTypes().guess_type(local_path)
+                            ExtraArgs = {}
+                            if mime_type:
+                                ExtraArgs.update({'ContentType': mime_type[0]})
                             s3_key = os.path.join(remote_path, os.path.relpath(local_path, resource.path))
                             # Upload the file
-                            s3.upload_file(local_path, self.aws_storage_bucket_name, s3_key,
-                                           ExtraArgs={'ContentType': mime_type[0]})
+                            s3.upload_file(local_path, self.aws_storage_bucket_name, s3_key, ExtraArgs)
 
                     logger.info('Uploaded directory %s to %s:%s', resource.name, self.aws_s3_endpoint_url,
                                 remote_path)
@@ -448,8 +450,10 @@ class CDN77ContentServer(ContentServer):
                     try:
                         # Get mimetype of object
                         mime_type = MimeTypes().guess_type(resource.path)
-                        s3.upload_file(resource.path, self.aws_storage_bucket_name, remote_path,
-                                       ExtraArgs={'ContentType': mime_type[0]})
+                        ExtraArgs = {}
+                        if mime_type:
+                            ExtraArgs.update({'ContentType': mime_type[0]})
+                        s3.upload_file(resource.path, self.aws_storage_bucket_name, remote_path, ExtraArgs)
                         logger.info('Uploaded %s to %s', resource.path, remote_path)
                     except Exception as e:
                         logger.error(Exception)
