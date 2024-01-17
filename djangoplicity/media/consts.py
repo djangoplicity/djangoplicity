@@ -348,4 +348,5 @@ SPLIT_AUDIO_TYPES = (
     ('surround', 'Surround 5.1'),
     ('split_surround', 'Split surround 5.1'),
     ('712surround', '7.1.2 Surround'),
+    ('audio_description', 'Audio Description'),
 )
