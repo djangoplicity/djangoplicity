@@ -53,6 +53,8 @@ def wavelength( l ):
     Format a wavelength given in nanometers.
     """
     try:
+        if not l:
+            return ""
         # Initialization
         l = float( l )
         l_p, l_txt = ( 0, 'nm' )
