@@ -29,23 +29,22 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
-from builtins import range
-from builtins import object
+
 import json
 import logging
 import os
 import pika
-import pysftp
 import requests
 import subprocess
 import time
+import boto3
+from builtins import range
+from builtins import object
 from requests.exceptions import ConnectionError
-
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
-
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
-
+from mimetypes import MimeTypes
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +122,9 @@ class CDN77ContentServer(ContentServer):
 
     def __init__(self, name, formats=None, url='', url_bigfiles='', remote_dir='', host='', username='', password='',
                  api_login='', api_password='', apiv3_token='', cdn_id='', cdn_id_bigfiles='', cdnv3_id='',
-                 cdnv3_id_bigfiles=''):
+                 cdnv3_id_bigfiles='', aws_access_key_id='',
+                 aws_secret_access_key='', aws_storage_bucket_name='', aws_s3_region_name='',
+                 aws_s3_endpoint_url='', aws_s3_custom_domain=''):
         super(CDN77ContentServer, self).__init__(name, formats, url, remote_dir)
         self.url_bigfiles = url_bigfiles
         self.api_url = 'https://api.cdn77.com/v2.0/'
@@ -143,6 +144,12 @@ class CDN77ContentServer(ContentServer):
         self.remote_archive = True
         self.purge_queue = 'cdn77-purge'
         self.prefetch_queue = 'cdn77-prefetch'
+        self.aws_access_key_id = aws_access_key_id
+        self.aws_secret_access_key = aws_secret_access_key
+        self.aws_storage_bucket_name = aws_storage_bucket_name
+        self.aws_s3_region_name = aws_s3_region_name
+        self.aws_s3_endpoint_url = aws_s3_endpoint_url
+        self.aws_s3_custom_domain = aws_s3_custom_domain
 
     def _api(self, method, params):
         '''
@@ -176,49 +183,9 @@ class CDN77ContentServer(ContentServer):
         if result is None:
             raise Exception('Failed API call: "%s"' % method)
 
-        # if result['status'] == 'error':
-        #     raise Exception('Failed API call "%s" "%s" "%s"' %
-        #         method, params, result)
-
         logger.info('Started %s for %s on %s", request: %s', method, self.name, self.cdn_id, result['id'])
 
         return result
-
-#
-#       if urls:
-#           if purge:
-#               # Purge the URLs first
-#               result = self._api('data/purge', params)
-#               if result is None:
-#                   # API call failed
-#                   return False
-#
-#               if result['status'] == 'error':
-#                   logger.error('Failed purge for %s on %s: "%s"',
-#                       instance.id, self.name, result)
-#                   return False
-#
-#               logger.info('Started purge for %s on %s(%s), %s: "%s", request: %s',
-#                   instance.id, self.name, self.cdn_id, urls, result['description'], result['request_id'])
-#
-#           result = self._api('data/prefetch', params)
-#
-#           if result is None:
-#               # API call failed
-#               return False
-#
-#           if result['status'] == 'error':
-#               logger.error('Failed prefetch for %s on %s: "%s"',
-#                   instance.id, self.name, result)
-#               return False
-#
-#           logger.info('Started prefetch for %s on %s(%s), %s: "%s", request: %s',
-#               instance.id, self.name, self.cdn_id, urls, result['description'], result['request_id'])
-#
-#       # If necessary also prefetch the large files onto the secondary CDN
-#       if self.url_bigfiles and urls_bigfiles:
-#           params['url[]'] = urls_bigfiles
-#           params['cdn_id'] = self.cdn_id_bigfiles
 
     def get_url(self, resource, format_name):
         # If a large file URL is specified and the resource is > 2GB
@@ -255,8 +222,7 @@ class CDN77ContentServer(ContentServer):
         urls_bigfiles = []
         for fmt in formats:
             # Get the local resource (if any)
-            resource = getattr(instance, '%s%s' %
-                (instance.Archive.Meta.resource_fields_prefix, fmt), None)
+            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt), None)
 
             if not resource:
                 continue
@@ -397,7 +363,12 @@ class CDN77ContentServer(ContentServer):
 
         # TODO: should set content_server_ready to false while we sync.
 
-        with pysftp.Connection(self.host, username=self.username, password=self.password) as sftp:
+        # Amazon S3 connection.
+        s3 = boto3.client('s3', aws_access_key_id=self.aws_access_key_id,
+                          aws_secret_access_key=self.aws_secret_access_key,region_name=self.aws_s3_region_name,
+                          endpoint_url=self.aws_s3_endpoint_url)
+        # Validate connection
+        if s3:
             for fmt in formats:
                 if fmt == 'zoomify':
                     # The photoshop server calls 'zoomable' 'zoomify'
@@ -430,59 +401,60 @@ class CDN77ContentServer(ContentServer):
 
                 # Check that the remote directory exists, and create it if necessary
                 remote_dir = os.path.dirname(remote_path)
-                if not sftp.exists(remote_dir):
-                    logger.info('Creating missing directory: %s:%s', self.host, remote_dir)
-                    sftp.makedirs(remote_dir)
+                directories = s3.list_objects_v2(Bucket=self.aws_storage_bucket_name, Delimiter='/', Prefix=remote_dir + '/')
+                if not 'CommonPrefixes' in directories and not 'Contents' in directories:
+                    logger.info('Creating missing directory: %s:%s', self.aws_s3_endpoint_url, remote_dir)
+                    s3.put_object(Bucket=self.aws_storage_bucket_name, Key=remote_dir + '/')
+                else:
+                    logger.info('Existing folder: %s', remote_dir)
 
-                # CD to the correct directory and upload the file
-                with sftp.cd():
-                    sftp.cwd(remote_dir)
-                    if os.path.isdir(resource.path):
-                        logger.info('Uploading directory %s to %s:%s', resource.name, self.host, remote_path)
-                        # We don't use sftp.put_r to upload directories as even though pysftps' doc
-                        # says that it will not complain if the target dir already exists, in practice it
-                        # raises an IOError
+                # Upload folders and files
+                if os.path.isdir(resource.path):
 
-                        # Make sure that we won't rsync to the root:
-                        if remote_path == self.remote_dir:
-                            raise Exception('remote_path is equal to root dir: %s', remote_path)
+                    logger.info('Uploading directory %s to %s:%s', resource.name, self.aws_s3_endpoint_url,
+                                remote_path)
 
-                        cmd = [
-                            'rsync',
-                            '-a',
-                            '--delete',
-                            '%s/' % resource.path,
-                            '%s@%s:%s/' % (self.username, self.host, remote_path),
-                        ]
+                    for root, dirs, files in os.walk(resource.path+'/'):
+                        # Iterate to create the folders
+                        for dir_name in dirs:
+                            local_path = os.path.join(root, dir_name)
+                            s3_key = os.path.join(remote_path, os.path.relpath(local_path, resource.path+'/'), '')
 
-                        # In case there is an error with rsync we retry up to
-                        # 50 times
-                        i = 0
-                        while True:
-                            retcode = subprocess.call(cmd)
-                            if retcode == 0:
-                                break
+                            # Create the folder in S3
+                            s3.put_object(Bucket=self.aws_storage_bucket_name, Key=s3_key)
 
-                            if i < 50:
-                                logger.info('Rsync exited with code %d, trying again.', retcode)
-                                time.sleep(2)
-                            else:
-                                raise Exception('Rsync exited with code %d, check logs', retcode)
+                        # Iterate to upload the files on each folder
+                        for file in files:
+                            # Get mimetype of object
+                            local_path = os.path.join(root, file)
+                            mime_type = MimeTypes().guess_type(local_path)
+                            s3_key = os.path.join(remote_path, os.path.relpath(local_path, resource.path))
+                            # Upload the file
+                            s3.upload_file(local_path, self.aws_storage_bucket_name, s3_key,
+                                           ExtraArgs={'ContentType': mime_type[0]})
 
-                            i += 1
-                    else:
-                        logger.info('Uploading %s to %s:%s', resource.name, self.host, remote_dir)
-                        attempts = 0
-                        while True:
-                            # In case the sftp fails we try again up to 10x
-                            try:
-                                sftp.put(resource.path)
-                                break
-                            except IOError as e:
-                                logger.info('IOError on %d attempt, retrying sftp.put()', attempts)
-                                attempts += 1
-                                if attempts > 10:
-                                    raise e
+                    logger.info('Uploaded directory %s to %s:%s', resource.name, self.aws_s3_endpoint_url,
+                                remote_path)
+                else:
+                    """Upload a file to an S3 bucket
+                    :param file_name: File to upload
+                    :param bucket: Bucket to upload to
+                    :param object_name: S3 object name. If not specified then file_name is used
+                    :return: True if file was uploaded, else False
+                    """
+
+                    # Upload a file to an S3 bucket
+                    try:
+                        # Get mimetype of object
+                        mime_type = MimeTypes().guess_type(resource.path)
+                        s3.upload_file(resource.path, self.aws_storage_bucket_name, remote_path,
+                                       ExtraArgs={'ContentType': mime_type[0]})
+                        logger.info('Uploaded %s to %s', resource.path, remote_path)
+                    except Exception as e:
+                        logger.error(Exception)
+                        logger.info('Could not upload %s to %s', resource.path)
+        else:
+            logger.info('Could not connect to S3 filer')
 
         # We set the content server to ready as soon as the files are
         # synchronised, we don't have to wait until it's purged/prefetched
@@ -491,7 +463,7 @@ class CDN77ContentServer(ContentServer):
         instance.__class__.objects.filter(pk=instance.pk).update(
             content_server_ready=True)
         logger.info('Enabled content_server_ready for %s %s: %s',
-            instance.__class__.__name__, instance.id, self.name)
+                    instance.__class__.__name__, instance.id, self.name)
 
         if prefetch or purge:
             self._queue_purge_prefetch(instance, formats, delay, prefetch, purge)

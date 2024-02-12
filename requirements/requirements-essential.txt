@@ -42,3 +42,6 @@ future
 
 # Asset packaging library for Django
 django-pipeline==1.6.14
+
+#AWS S3 SDK
+boto3==1.34.10
