@@ -3,8 +3,8 @@
 <h3 class="archivegrouptitle">{% trans "Audio" %}</h3>
 {% for track in object.videoaudiotrack_set.all %}
 <div class="archive_download">
-    <span class="archive_dl_icon"><img src="{% static "icons/icon_audio.png" %}" /></span>
-    <span class="archive_dl_text"><a href="{{ track.resource_audio.url }}"{{track.resource_audio.extra_attrs}}>{{track|safe}}</a></span>
+    <span class="archive_dl_icon"><img src="{% static "icons/icon_audio.png" %}"  alt="Audio Icon"/></span>
+    <span class="archive_dl_text"><a href="{{ track.resource_audio.url }}"{{track.resource_audio.extra_attrs}} aria-label="{{ track|safe }}">{{track|safe}}</a></span>
     {% if track.resource_audio.size %}<span class="archive_dl_size"><div>{{track.resource_audio.size|filesizeformat}}</div></span>{% endif %}
 </div>
 {% endfor %}
