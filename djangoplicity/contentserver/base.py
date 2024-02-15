@@ -176,14 +176,9 @@ class CDN77ContentServer(ContentServer):
 
         if result is None:
             raise Exception('Failed API call: "%s"' % method)
-
-        # if result['status'] == 'error':
-        #     raise Exception('Failed API call "%s" "%s" "%s"' %
-        #                     method, params, result)
-
-        logger.info('Started %s for %s on %s, "%s", request: %s',
-                    method, self.name, self.cdn_id, result['description'],
-                    result['request_id'])
+        
+        logger.info('Started %s for %s on %s, request: %s',
+                    method, self.name, self.cdn_id, result['id'])
 
         return result
 
