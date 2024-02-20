@@ -55,7 +55,7 @@ from djangoplicity.metadata.archives.queries import ProgramPublicQuery
 from djangoplicity.metadata.models import Instrument
 from djangoplicity.releases import views
 from djangoplicity.releases.info import releaseid, oldreleaseids, telbib, principal_investigator
-from djangoplicity.releases.models import ReleaseProxy, Release
+from djangoplicity.releases.models import ReleaseProxy, Release, ReleaseType
 from djangoplicity.releases.serializers import ReleaseSerializer, \
     ICalReleaseSerializer, MiniReleaseSerializer
 
@@ -160,6 +160,11 @@ class ReleaseOptions( ArchiveOptions ):
 
     class AdvancedSearch (object):
         facility = AVMFacilitySearchField( label=_( "Facility used" ) )
+        release_type = ManyToManySearchField(
+            label=_("Release Type"),
+            model_field='release_type',
+            choices_func=lambda: [(i.id, _(i.name)) for i in ReleaseType.objects.all()]
+        )
         instruments = ManyToManySearchField( label=_( "Instruments" ), model_field='instruments__id', choices_func=lambda: [( i.id, _( i.name ) ) for i in Instrument.objects.all() ] )
         additional_search_items = SeparatorField( label=_("Additional search terms") )
         id = IdSearchField( label=_('Release ID') )
