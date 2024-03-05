@@ -1,2 +1,2 @@
 {% extends "archives/index_normal.html" %}
-{% block index_image_cell %}<td class="imagerow" width="25%"><a href="{{ item.get_absolute_url }}"><img src="{{ item.image.resource_thumbs.url }}" width="122" alt="{{item.title}}" /></a></td>{% endblock %}
+{% block index_image_cell %}<td class="imagerow" width="25%"><a href="{{ item.get_absolute_url }}" aria-label="{{ item.title }}"><img src="{{ item.image.resource_thumbs.url }}" width="122" alt="{{item.title}}" /></a></td>{% endblock %}

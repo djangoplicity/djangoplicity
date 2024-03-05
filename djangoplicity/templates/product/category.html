@@ -26,7 +26,7 @@
 <div style="widhth: 100%; clear: both;">
 <table class="archive_normal" width="100%">
 {% for list in category.get_active_children|split_list:"3" %}
-<tr>{% for category in list %}<td class="imagerow" width="33"><a href="{{ category.get_absolute_url }}"><img src="{{ MEDIA_URL }}images/shopcategories/{{ category.slug }}.png" width="122" alt="{{category.name}}" /></a></td>{% endfor %}</tr>
+<tr>{% for category in list %}<td class="imagerow" width="33"><a href="{{ category.get_absolute_url }}" aria-label="{{ category.name }}"><img src="{{ MEDIA_URL }}images/shopcategories/{{ category.slug }}.png" width="122" alt="{{category.name}}" /></a></td>{% endfor %}</tr>
 <tr>{% for category in list %}<td class="titlerow" width="33">{{category.name}}</td>{% endfor %}</tr>
 <tr><td colspan='4' class='breaker'></td></tr>
 {% endfor %}
@@ -38,10 +38,10 @@
 <table class="archive_normal" width="100%">
 {% for list in products|split_list:"3" %}
 <tr>{% for product in list %}{% archiveitem product as item %}
-<td class="imagerow" width="33">{% if item.resource_thumb %}<a href="{{ product.get_absolute_url }}"><img src="{{ item.resource_thumb.url }}" width="122" alt="{{item.title}}" /></a>{% else %}{% thumbnail product.main_image.picture 122x122 as image %}<a href="{{ product.get_absolute_url }}"><img src="{{image}}" width="122" alt="{{product.name}}" /></a>{% endthumbnail %}{% endif %}</td>{% endarchiveitem %}{% endfor %}
+<td class="imagerow" width="33">{% if item.resource_thumb %}<a href="{{ product.get_absolute_url }}" aria-label="{{ item.title }}"><img src="{{ item.resource_thumb.url }}" width="122" alt="{{item.title}}" /></a>{% else %}{% thumbnail product.main_image.picture 122x122 as image %}<a href="{{ product.get_absolute_url }}" aria-label="{{ product.name }}"><img src="{{image}}" width="122" alt="{{product.name}}" /></a>{% endthumbnail %}{% endif %}</td>{% endarchiveitem %}{% endfor %}
 </tr>
 <tr>{% for product in list %}{% archiveitem product as item %}
-<td class="pricerow"><span class="price" align="right">Price:&nbsp;{{ item.price|currency }}{%if item.free %}<br/><a href="{% url 'free_order_form' %}"><img src="{{MEDIA_URL}}/educators-small.png" alt="Educators" width="60" /></a>{%endif%}</span></td>{% endarchiveitem %}{% endfor %}
+<td class="pricerow"><span class="price" align="right">Price:&nbsp;{{ item.price|currency }}{%if item.free %}<br/><a href="{% url 'free_order_form' %}" aria-label="Educators"><img src="{{MEDIA_URL}}/educators-small.png" alt="Educators" width="60" /></a>{%endif%}</span></td>{% endarchiveitem %}{% endfor %}
 </tr>
 <tr class="titlerow">{% for product in list %}{% archiveitem product as item %}
 <td class="titlerow">{% if item %}{{item.title}}{% else %}{{product.name}}{% endif %}</td>{% endarchiveitem %}{% endfor %}

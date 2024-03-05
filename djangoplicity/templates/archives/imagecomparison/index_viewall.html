@@ -6,7 +6,7 @@
 <table class="archive_normal" width="100%">
 {% for list in object_list|split_list:"7" %}
 <tr>{% for item in list %}
-<td class="imagerow" width="14.2"><a href="{{ item.get_absolute_url }}"><img src="{{ item.resource_mini.url }}" style="max-width:50px;max-height:50px;" alt="{{item.title}}" /></a></td>{% endfor %}
+<td class="imagerow" width="14.2"><a href="{{ item.get_absolute_url }}" aria-label="{{ item.title }}"><img src="{{ item.resource_mini.url }}" style="max-width:50px;max-height:50px;" alt="{{item.title}}" /></a></td>{% endfor %}
 </tr>
 {% endfor %}
 </table>
