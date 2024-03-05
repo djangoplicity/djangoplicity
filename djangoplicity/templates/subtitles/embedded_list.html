@@ -4,8 +4,8 @@
 {% for sub in object.get_ordered_subtitles %}
     {% if sub.resource_srt %}
     <div class="archive_download">
-        <span class="archive_dl_icon"><img src="{% static "icons/icon_txt.gif" %}" /></span>
-        <span class="archive_dl_text"><a href="{{ sub.resource_srt.url }}"{{sub.resource_srt.extra_attrs}}>{{sub|safe}}</a></span>
+        <span class="archive_dl_icon"><img src="{% static "icons/icon_txt.gif" %}" alt="txt Icon"/></span>
+        <span class="archive_dl_text"><a href="{{ sub.resource_srt.url }}"{{sub.resource_srt.extra_attrs}} aria-label="{{sub|safe}}">{{sub|safe}}</a></span>
         {% if sub.resource_srt.size %}<span class="archive_dl_size"><div>{{sub.resource_srt.size|filesizeformat}}</div></span>{% endif %}
     </div>
     {% endif %}
