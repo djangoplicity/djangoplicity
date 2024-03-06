@@ -22,10 +22,13 @@ class MediaPagination(PageNumberPagination):
 class ImageFilter(filters.FilterSet):
     category = filters.CharFilter(field_name="web_category__url")
     facility = filters.ModelMultipleChoiceFilter(field_name="imageexposure__facility", queryset=Facility.objects.filter(published=True))
+    title = filters.CharFilter(field_name="title", lookup_expr="icontains")
+    description = filters.CharFilter(field_name="description", lookup_expr="icontains")
+    headline = filters.CharFilter(field_name="headline", lookup_expr="icontains")
 
     class Meta:
         model = Image
-        fields = ['category', 'facility']
+        fields = ['category', 'facility', 'title', 'description', 'headline']
 
 
 class VideoFilter(filters.FilterSet):
