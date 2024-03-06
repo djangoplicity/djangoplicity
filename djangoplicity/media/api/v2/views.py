@@ -6,7 +6,7 @@ from djangoplicity.metadata.models import Facility
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.pagination import PageNumberPagination
-
+from django.db.models import Q
 from .serializers import ImageSerializer, ImageMiniSerializer, VideoSerializer, VideoMiniSerializer
 from rest_framework import permissions, mixins
 from rest_framework.viewsets import GenericViewSet
@@ -22,13 +22,20 @@ class MediaPagination(PageNumberPagination):
 class ImageFilter(filters.FilterSet):
     category = filters.CharFilter(field_name="web_category__url")
     facility = filters.ModelMultipleChoiceFilter(field_name="imageexposure__facility", queryset=Facility.objects.filter(published=True))
-    title = filters.CharFilter(field_name="title", lookup_expr="icontains")
-    description = filters.CharFilter(field_name="description", lookup_expr="icontains")
-    headline = filters.CharFilter(field_name="headline", lookup_expr="icontains")
+    search = filters.CharFilter(method='search_filter')
 
     class Meta:
         model = Image
-        fields = ['category', 'facility', 'title', 'description', 'headline']
+        fields = ['category', 'facility']
+
+    def search_filter(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                Q(title__icontains=value) |
+                Q(description__icontains=value) |
+                Q(headline__icontains=value)
+            )
+        return queryset
 
 
 class VideoFilter(filters.FilterSet):
