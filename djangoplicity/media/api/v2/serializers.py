@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, TypedDict
 
 from rest_framework import serializers
 from djangoplicity.media.models import Image, Video
@@ -11,6 +11,9 @@ from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 from djangoplicity.metadata.api.v2.serializers import CategorySerializer
 from .typings import ImageFormatsURLs, VideoFormatsURLs
 
+
+IMAGE__TINY_FORMATS = ['thumb300y', 'screen', 'thumb700x']
+ImageTinyFormatsURLs = TypedDict('ImageFormatsURLs', dict(map(lambda x: (x, Optional[str]), IMAGE__TINY_FORMATS)))
 
 class ImageSerializerMixin(ArchiveSerializerMixin):
     formats = serializers.SerializerMethodField()
@@ -36,6 +39,17 @@ class ImageMiniSerializer(ImageSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = ['id', 'url', 'lang', 'source', 'title', 'width', 'height', 'featured', 'categories', 'formats']
+        
+        
+class ImageTinySerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
+    formats = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Image
+        fields = ['id', 'url', 'lang', 'title', 'width', 'height', 'formats']
+
+    def get_formats(self, obj) -> ImageTinyFormatsURLs:
+        return get_all_instance_archives_urls(obj, IMAGE__TINY_FORMATS)
 
 
 class ImageSerializer(ImageSerializerMixin, serializers.ModelSerializer):

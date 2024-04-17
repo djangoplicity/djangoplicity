@@ -302,18 +302,23 @@ def get_instance_archives_urls(instance):
 
 
 # Similar to get_instance_archives_urls, but this returns all possible resources even if they are None
-def get_all_instance_archives_urls(instance):
+def get_all_instance_archives_urls(instance, formats = None):
     '''
     Returns a list of all existing Archives URL for a given instance
     '''
     urls = {}
-    for x in dir(instance.Archive):
-        if not isinstance(getattr(instance.Archive, x), ResourceManager):
-            continue
+    if formats:
+        for fmt in formats:
+            resource = getattr(instance, 'resource_%s' % fmt)
+            urls[fmt] = resource.absolute_url if resource else None
+    else:
+        for x in dir(instance.Archive):
+            if not isinstance(getattr(instance.Archive, x), ResourceManager):
+                continue
 
-        resource = getattr(instance, 'resource_%s' % x)
+            resource = getattr(instance, 'resource_%s' % x)
 
-        urls[x] = resource.absolute_url if resource else None
+            urls[x] = resource.absolute_url if resource else None
     return urls
 
 
