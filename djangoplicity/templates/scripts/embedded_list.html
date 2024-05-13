@@ -5,8 +5,8 @@
     {% for object in object.videoscript_set.all %}
         {% if object.resource_script %}
         <div class="archive_download">
-            <span class="archive_dl_icon"><img src="{% static "icons/icon_doc.png" %}" /></span>
-            <span class="archive_dl_text"><a href="{{ object.resource_script.url }}"{{ object.resource_script.extra_attrs }}>{{ object|safe }}</a></span>
+            <span class="archive_dl_icon"><img src="{% static "icons/icon_doc.png" %}" alt="Document Icon"/></span>
+            <span class="archive_dl_text"><a href="{{ object.resource_script.url }}"{{ object.resource_script.extra_attrs }} aria-label="{{ object|safe }}">{{ object|safe }}</a></span>
             {% if object.resource_script.size %}<span class="archive_dl_size"><div>{{ object.resource_script.size|filesizeformat }}</div></span>{% endif %}
         </div>
         {% endif %}
