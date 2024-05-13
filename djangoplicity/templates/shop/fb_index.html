@@ -13,19 +13,19 @@
 {% block header %}
     <div class="top">
         <div class="topl">ESO Shop</div>
-        <div class="but topr"><a href="{{wall_url}}" target="_parent">Wall</a></div>
+        <div class="but topr"><a href="{{wall_url}}" target="_parent" aria-label="wall">Wall</a></div>
         <div class="cl"></div>
     </div>
-    <a href="https://www.eso.org/public/shop/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/tab-esoshop-blank.png"></img></a>
+    <a href="https://www.eso.org/public/shop/" aria-label="esoshop"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/tab-esoshop-blank.png"></img></a>
 
     <div class="top">
         <div class="topl">&nbsp;</div>
         <div class="topr">Follow us on:
-        <a href="http://twitter.com/ESO_Observatory"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/twitter-ico.png"></img></a>
-        <a href="http://www.youtube.com/ESOObservatory/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/youtube-ico.png"></img></a>
-        <a href="http://www.vimeo.com/esoastronomy"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/vimeo-ico.png"></img></a>
-        <a href="http://www.flickr.com/photos/esoastronomy/"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/flickr-ico.png"></img></a>
-        <a href="https://podcasts.apple.com/us/podcast/esocast-hd/id295471183"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/itunes-ico.png"></img></a>
+        <a href="http://twitter.com/ESO_Observatory" aria-label="Twitter Icon"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/twitter-ico.png"></img></a>
+        <a href="http://www.youtube.com/ESOObservatory/" aria-label="youtube Icon"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/youtube-ico.png"></img></a>
+        <a href="http://www.vimeo.com/esoastronomy" aria-label="Vimeo Icon"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/vimeo-ico.png"></img></a>
+        <a href="http://www.flickr.com/photos/esoastronomy/" aria-label="Flickr Icon"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/flickr-ico.png"></img></a>
+        <a href="https://podcasts.apple.com/us/podcast/esocast-hd/id295471183" aria-label="Itunes Icon"><img class="nopad" src="{{ MEDIA_URL}}djangoplicity/images/fb/social-icons/itunes-ico.png"></img></a>
 
         </div>
         <div class="cl"></div>
@@ -42,7 +42,7 @@
 <table class="archive_normal" width="100%">
 {% for list in all_products_list|split_list:"3" %}
 <tr>{% for product in list %}{% archiveitem product as item %}
-<td class="imagerow" width="33">{% if item.resource_thumb %}<a href="{{ product.get_absolute_url }}"><img src="{{ item.resource_thumb.url }}" width="122" alt="{{item.title}}" /></a>{% else %}{% thumbnail product.main_image.picture 122x122 as image %}<a href="{{ product.get_absolute_url }}"><img src="{{image}}" width="122" alt="{{product.name}}" /></a>{% endthumbnail %}{% endif %}</td>{% endarchiveitem %}{% endfor %}
+<td class="imagerow" width="33">{% if item.resource_thumb %}<a href="{{ product.get_absolute_url }}" aria-label="{{ item.title }}"><img src="{{ item.resource_thumb.url }}" width="122" alt="{{item.title}}" /></a>{% else %}{% thumbnail product.main_image.picture 122x122 as image %}<a href="{{ product.get_absolute_url }}" aria-label="{{product.name}}"><img src="{{image}}" width="122" alt="{{product.name}}" /></a>{% endthumbnail %}{% endif %}</td>{% endarchiveitem %}{% endfor %}
 </tr>
 <tr>{% for product in list %}
 <td class="pricerow" width="33"><span class="price" align="right">Price:&nbsp;{{ product.unit_price|currency }}</span></td>{% endfor %}
@@ -54,7 +54,7 @@
 {% endfor %}
 </table>
 
-<p>See all products from the ESO Shop <a href="https://www.eso.org/public/shop/">here</a>.</p>
+<p>See all products from the ESO Shop <a href="https://www.eso.org/public/shop/" aria-label="here">here</a>.</p>
 {% endif %}
 
 
