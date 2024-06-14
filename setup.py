@@ -17,7 +17,7 @@ setup(
         'BeautifulSoup4',
         'django<=3.1',
         'django-ace == 1.0.4',
-        'django-mptt == 0.9.1',
+        'django-mptt == 0.13.4',
         'django-recaptcha == 1.4.0',
         'djangorestframework>=3.14.0,<3.15.0',  # Used for pages, fixed version as 3.6 causes conflict with collectstatic
         'django-signals-ahoy',  # Used by satchmo/models.py
