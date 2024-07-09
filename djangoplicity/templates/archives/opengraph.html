@@ -23,8 +23,10 @@
     {% endif %}
     {% if object.headline %}
         <meta property="og:description" content="{{ object.headline }}" />
+        <meta name="description" content="{{ object.headline }}" />
     {% elif object.title %}
         <meta property="og:description" content="{{ object.title }}" />
+        <meta name="description" content="{{ object.title }}" />
     {% endif %}
     {% if object.resource_medium_podcast %}
         <meta property="og:video:secure_url" content="{{ object.resource_medium_podcast.absolute_url }}" />
