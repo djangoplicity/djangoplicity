@@ -164,9 +164,15 @@ class VR16kMasterType(FileType):
 
 class VR2kSoSType(FileType):
     verbose_name = ugettext_noop(u'2k SoS')
-    exts = ['mp4']
+    exts = ['mp4', 'zip']
     width = 2048
     height = 1024
+
+class VR4kSoSType(FileType):
+    verbose_name = ugettext_noop(u'4k SoS')
+    exts = ['mp4', 'zip']
+    width = 4096
+    height = 2048
 
 
 class CylindricalPreviewType(FileType):

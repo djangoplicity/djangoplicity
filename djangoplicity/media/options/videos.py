@@ -265,7 +265,8 @@ class VideoOptions( ArchiveOptions ):
             ( 'dome_mov', ( '.mov', '.mp4' ) ),
             ( 'vr_8k', ( '.mp4', ) ),
             ( 'vr_8k', ( '.mp4', ) ),
-            ('vr_2k_sos', ('.mp4',)),
+            ('vr_2k_sos', ('.mp4', '.zip')),
+            ('vr_4k_sos', ('.mp4', '.zip')),
             ( 'dome_preview', ( '.mp4', ) ),
             # Cylindrical
             ( 'cylindrical_preview', ( '.mp4', ) ),

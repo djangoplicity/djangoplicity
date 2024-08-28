@@ -160,7 +160,7 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
         # Identify the format with the largest resolution
         for resource in ('cylindrical_16kmaster', 'dome_8kmaster',
                          'cylindrical_8kmaster', 'vr_8k', 'vr_4k',
-                         'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster', 'vr_2k_sos',
+                         'vr_16kmaster', 'vr_8kmaster', 'vr_4kmaster', 'vr_2k_sos', 'vr_4k_sos',
                          'dome_2kplayback', 'dome_4kplayback', 'dome_4kmaster',
                          'cylindrical_4kmaster', 'ultra_hd_broadcast', 'ultra_hd',
                          'dome_2kmaster', 'ultra_hd_8k_h265', 'ultra_hd_8k_broadcast',
@@ -225,6 +225,9 @@ def video_extras(app_label, model_name, pk, sendtask_callback=None, sendtask_tas
                 elif resource == 'vr_2k_sos':
                     fields['width'] = v.width or 2048
                     fields['height'] = v.height or 1024
+                elif resource == 'vr_4k_sos':
+                    fields['width'] = v.width or 4096
+                    fields['height'] = v.height or 2048
                 elif resource == 'ultra_hd_8k_h265':
                     fields['width'] = v.width or 7680
                     fields['height'] = v.height or 4320

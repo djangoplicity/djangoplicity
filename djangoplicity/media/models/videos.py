@@ -316,6 +316,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         vr_8kmaster= ResourceManager(type=types.VR8kMasterType, verbose_name=_(u'VR 8k Master'))
         vr_16kmaster= ResourceManager(type=types.VR16kMasterType, verbose_name=_(u'VR 16k Master'))
         vr_2k_sos = ResourceManager(type=types.VR2kSoSType, verbose_name=_(u'2k SoS'))
+        vr_4k_sos = ResourceManager(type=types.VR4kSoSType, verbose_name=_(u'4k SoS'))
 
         # Broadcast formats
         hd_broadcast_720p25 = ResourceManager( type=types.BroadcastType, verbose_name=_(u"HD Broadcast 720p/25") )  # hd720p25_brodcast
