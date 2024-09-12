@@ -263,6 +263,11 @@ class ImageOptions( ArchiveOptions ):
         if 'credit' in form_values:
             obj.credit = form_values['credit']
 
+        # Remove image metadata on import
+        if form_values['remove_metadata']:
+            from libavm.utils import avm_to_file
+            avm_to_file(data["files"][data['formats'].index('original')], {}, replace=True)
+
         # File Metadata extraction
         try:
             file_path = data["files"][data['formats'].index( 'original' )]

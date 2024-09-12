@@ -49,6 +49,7 @@ class ImageImportForm( GenericImportForm ):
     """
     zoomify = forms.BooleanField( required=False, initial=True )
     wallpapers = forms.BooleanField( required=False, initial=True )
+    remove_metadata = forms.BooleanField(required=False, initial=True)
 
     def __init__(self, *args, **kwargs):
         '''
