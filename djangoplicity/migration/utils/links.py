@@ -66,7 +66,7 @@ def extract_links( html ):
     """
     Extract all links from HTML
     """
-    soup = BeautifulSoup( html )
+    soup = BeautifulSoup( html, 'lxml')
 
     # Find all tags with an attribute that can contain links
     linktags = soup.findAll( lambda tag: _check_tag( tag )  )

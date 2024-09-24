@@ -174,7 +174,7 @@ class HTMLPageDocument( PageDocument ):
         Parse spacetelescope.org HTML page.
         """
         super( HTMLPageDocument, self ).parse()
-        self.soup = BeautifulSoup( self._file_contents )
+        self.soup = BeautifulSoup( self._file_contents, 'lxml')
         self._parsed = True
 
     def title(self):

@@ -20,7 +20,7 @@ register = template.Library()
 
 @register.filter( name='truncateparagraph_html' )
 def truncateparagraph_html(value):
-    soup = BeautifulSoup(value)
+    soup = BeautifulSoup(value, 'lxml')
     result = soup.find('p')
     return str( result ).strip()
 
@@ -37,7 +37,7 @@ def remove_html_tags(value):
 def _remove_bold_italic( text ):
     TAGS_OUT = ['em', 'i', 'u', 'b', 'strong']
 
-    soup = BeautifulSoup(text)
+    soup = BeautifulSoup(text, 'lxml')
 
     for tag in soup.findAll(True):
         if tag.name in TAGS_OUT:
@@ -153,7 +153,7 @@ def remove_html_except(value, arg):
         valid_tags = None
     valid_attrs = 'href src'.split()
 
-    soup = BeautifulSoup(value)
+    soup = BeautifulSoup(value, 'lxml')
     for tag in soup.findAll(True):
         if tag.name not in valid_tags:
             tag.hidden = True
