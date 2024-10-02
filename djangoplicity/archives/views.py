@@ -340,6 +340,10 @@ class GenericDetailView( object ):
         Render the detail page for the object taking into account
         the current state and admin rights.
         """
+
+        # Get additional_content from kwargs
+        additional_context = kwargs.get('additional_context', None)
+
         #
         # Extra context setup
         #
@@ -406,6 +410,9 @@ class GenericDetailView( object ):
             'crosslinks_subject': crosslinks_subject,
             'right_column_page': right_column_page,
         }
+
+        if additional_context:
+            context.update(additional_context)
 
         #
         # Process callables in extra context
