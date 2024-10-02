@@ -172,6 +172,7 @@ class ImageOptions( ArchiveOptions ):
         wallpapers = BooleanSearchField( model_field='wallpapers', label=_("Wallpaper available") )
         colours = ManyToManySearchField( label=_( "Colours" ), model_field='colors__id', choices_func=lambda: [( c.id, _( c.name ) ) for c in Color.objects.all() ] )
         fov = FOVSearchField( label=_( "Field of View" ) )
+        constellation = TextSearchField( label=_( "Constellation" ), model_field='constellation' )
 
         class Meta:
             verbose_name = ugettext_noop("Advanced Image Search")

@@ -40,7 +40,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _, ugettext
 
 from djangoplicity.archives.contrib.info import boolean_property
-from djangoplicity.media.models import Video
 from djangoplicity.translation.models import TranslationModel
 
 
@@ -264,6 +263,12 @@ def distance( obj ):
 
 
 def constellation(obj):
+    if hasattr(obj, 'constellation'):
+        return obj.constellation
+    return calculate_constellation(obj)
+
+
+def calculate_constellation(obj):
     try:
         import ephem
     except ImportError:
@@ -366,6 +371,7 @@ wwt_link.short_description = _("View in WorldWide Telescope")
 
 
 def shadowbox_link( resource, default_width, default_height, player=None ):
+    from djangoplicity.media.models import Video
     """ Make a shadow box link """
     def shadowbox_link( obj ):  # pylint: disable=W0621
         if getattr( obj, "resource_%s" % resource ):

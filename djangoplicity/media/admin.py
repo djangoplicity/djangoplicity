@@ -238,7 +238,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
         ( _(u'Language'), {'fields': ( 'lang', ) } ),
         ( _(u'Status'), {'fields': ( 'tagging_status', ), 'classes': ('collapse',) } ),
         ( _(u'Content Metadata'), {'fields': ( 'title', 'headline', 'description', 'credit', 'web_category', 'subject_category', 'subject_name', 'distance_ly', 'distance_ly_is_accurate', 'distance_z', 'distance_notes', 'type', 'proposal', 'publication'), 'classes': ('collapse',) } ),
-        ( _(u'Coordinate Metadata'), {'fields': ( 'spatial_coordinate_frame', 'spatial_equinox', 'spatial_reference_value', 'spatial_reference_dimension',
+        ( _(u'Coordinate Metadata'), {'fields': ( 'spatial_coordinate_frame', 'spatial_equinox', 'spatial_reference_value', 'constellation', 'spatial_reference_dimension',
             'spatial_reference_pixel', 'spatial_scale', 'spatial_rotation', 'spatial_coordsystem_projection', 'spatial_quality', 'spatial_notes', ), 'classes': ('collapse',) } ),
         ( _(u'Creator Metadata'), {'fields': ( 'creator', 'creator_url', 'contact_address', 'contact_city', 'contact_state_province', 'contact_postal_code', 'contact_country', 'rights', ), 'classes': ('collapse',) } ),
         ( _(u'Publisher Metadata'), {'fields': ( 'publisher', 'publisher_id', ), 'classes': ('collapse',) } ),
@@ -250,7 +250,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     )
     ordering = ('-last_modified', )
     richtext_fields = ('description', 'credit')
-    readonly_fields = ('id', 'content_server_ready')
+    readonly_fields = ('id', 'content_server_ready', 'constellation')
     actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_resync_resources', 'edit_bulk_credit_action']
     inlines = [ ImageExposureInlineAdmin, ImageContactInlineAdmin ]
 

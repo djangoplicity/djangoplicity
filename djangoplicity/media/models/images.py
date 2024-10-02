@@ -76,6 +76,7 @@ from djangoplicity.translation.fields import TranslationForeignKey, \
     TranslationManyToManyField
 from djangoplicity.archives.importer.utils import rerun_import_actions
 from djangoplicity.archives.loading import get_archive_modeloptions
+from djangoplicity.media.info import calculate_constellation
 
 import django
 if django.VERSION >= (2, 0):
@@ -487,6 +488,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     spatial_quality = metadatafields.AVMSpatialQualityField()
     spatial_notes = metadatafields.AVMSpatialNotesField()
     spatial_fits_header = metadatafields.AVMSpatialNotesField()
+    constellation = models.CharField( max_length=255, blank=True, null=True, help_text=_('Constellation calculated from the spatial_reference_value'))
 
     def _field_to_python( self, attr ):
         return self.__class__._meta.get_field(attr).from_internal( getattr( self, attr ) )
@@ -688,6 +690,10 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         # will fail so we manually set it
         if not self.created:  # pylint: disable=E0203
             self.created = datetime.datetime.today()
+
+        calculated_constellation = calculate_constellation(self)
+        if calculated_constellation and calculated_constellation != self.constellation:
+            self.constellation = calculated_constellation
 
         super( Image, self ).save( *args, **kwargs )
 
