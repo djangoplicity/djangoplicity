@@ -24,14 +24,14 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-{% if form.errors and not form.non_field_errors and not form.this_is_the_login_form.errors %}
+{% if form.errors and not form.non_field_errors %}
 <p class="errornote">
 {% blocktrans count form.errors.items|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
 </p>
 {% endif %}
 
-{% if form.non_field_errors or form.this_is_the_login_form.errors %}
-{% for error in form.non_field_errors|add:form.this_is_the_login_form.errors %}
+{% if form.non_field_errors %}
+{% for error in form.non_field_errors %}
 <p class="errornote">
     {{ error }}
 </p>
@@ -41,13 +41,12 @@
 <div id="content-main">
 <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
   <div class="form-row">
-    {% if not form.this_is_the_login_form.errors %}{{ form.username.errors }}{% endif %}
+    {{ form.username.errors }}
     <label for="id_username" class="required">{% trans 'Username:' %}</label> {{ form.username }}
   </div>
   <div class="form-row">
-    {% if not form.this_is_the_login_form.errors %}{{ form.password.errors }}{% endif %}
-    <label for="id_password" class="required">{% trans 'Password:' %}</label>  <input type="password" name="password" id="id_password" autocomplete="off"/>
-    <input type="hidden" name="this_is_the_login_form" value="1" />
+    {{ form.password.errors }}
+    <label for="id_password" class="required">{% trans 'Password:' %}</label><input type="password" name="password" id="id_password" autocomplete="off"/>
     <input type="hidden" name="next" value="{{ next }}" />
   </div>
   <div class="submit-row">
