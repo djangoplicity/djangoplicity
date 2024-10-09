@@ -48,7 +48,7 @@ from djangoplicity.archives.utils import propagate_release_date, \
     release_date_change_check
 from djangoplicity.media.models import Image, Video
 from djangoplicity.metadata.translation import fields as metadatafields_trans
-from djangoplicity.metadata.models import ExtendedContact, Program
+from djangoplicity.metadata.models import ExtendedContact, Program, ProgramLogoLineup
 from djangoplicity.translation.models import TranslationModel, \
     translation_reverse
 from djangoplicity.translation.fields import TranslationForeignKey, \
@@ -126,6 +126,8 @@ class Release( ArchiveModel, TranslationModel ):
 
     programs = TranslationManyToManyField(Program, limit_choices_to=Q(types__name='Releases'), blank=True,
                                           only_sources=True)
+
+    program_logo_lineup = TranslationForeignKey(ProgramLogoLineup, blank=True, null=True, on_delete=models.SET_NULL)
 
     # Name of the Principal Investigator
     principal_investigator = models.CharField( max_length=255, blank= True, null=True, help_text=_(u'Name of the principal investigator') )

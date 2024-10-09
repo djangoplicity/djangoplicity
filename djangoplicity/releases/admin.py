@@ -206,7 +206,7 @@ class ReleaseAdmin( DjangoplicityModelAdmin, CleanHTMLAdmin, ReleaseDisplaysAdmi
                     ( None, {'fields': ( 'id', ('release_type'), 'release_city' ) } ),
                     ( 'Language', {'fields': ( 'lang', ) } ),
                     ( 'Publishing', {'fields': ( 'published', ('release_date', 'embargo_date', ),), } ),
-                    ( 'Programs', {'fields': ('programs',) }),
+                    ( 'Programs', {'fields': ('programs', 'program_logo_lineup') }),
                     ( 'Release', {'fields': ( 'title', 'subtitle', 'headline', 'description', 'notes', 'more_information', 'links', 'disclaimer' ), } ),
                     ( 'Classification', {'fields': ( 'subject_category', 'subject_name', 'facility', 'instruments', 'publications' ), 'description': mark_safe("<strong>Typical subject category:</strong><ol><li>Solar System: Planet, Interplanetary Body, Star, Sky Phenomenon, Technology</li><li>Milky Way: Planet, Interplanetary Body, Star, Nebula</li><li>Local Universe (z&lt;=0.1): Star, Nebula, Galaxy</li><li>Early Universe (z&gt;0.1): Galaxy, Cosmology</li><li>Unspecified: any (non-astronomical in nature - e.g. artwork and photographic)</li><li>Local use only: Mission Graphics</li><ol>") } ),
                     ( 'Kids', {'fields': ( 'kids_title', 'kids_description', 'kids_image') } ),

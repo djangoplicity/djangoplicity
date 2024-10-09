@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from djangoplicity.metadata.models import TaxonomyHierarchy, SubjectName, Facility, Instrument, Category, Publication, \
-    ObservationProposal, TaggingStatus, Program
+    ObservationProposal, TaggingStatus, Program, ProgramLogoLineup
 
 
 class TaxonomyHierarchyAdmin( admin.ModelAdmin ):
@@ -107,6 +107,18 @@ class ProgramAdmin( admin.ModelAdmin ):
         return ', '.join([program_type.name for program_type in obj.types.all()])
 
 
+class ProgramLogoLineupAdmin( admin.ModelAdmin ):
+    list_display = ('program', 'name' , 'logo_lineup_url')
+    list_editable = ('name',)
+    list_filter = ('program',)
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'program', 'logo_lineup_url')
+        }),
+    )
+    search_fields = ( 'name', 'program',)
+
+
 class TaggingStatusAdmin( admin.ModelAdmin ):
     list_display = ( 'slug', 'name',)
     list_editable = ( 'name', )
@@ -124,6 +136,7 @@ def register_with_admin( admin_site ):
     admin_site.register( Instrument, InstrumentAdmin )
     admin_site.register( Category, CategoryAdmin )
     admin_site.register( Program, ProgramAdmin )
+    admin_site.register( ProgramLogoLineup, ProgramLogoLineupAdmin )
     admin_site.register( Publication, PublicationAdmin )
     admin_site.register( ObservationProposal, ObservationProposalAdmin )
     admin_site.register( TaggingStatus, TaggingStatusAdmin )

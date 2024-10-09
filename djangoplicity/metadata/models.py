@@ -377,6 +377,24 @@ class Program(models.Model):
 
 
 @python_2_unicode_compatible
+class ProgramLogoLineup(models.Model):
+    """
+    Model for storing Programs
+    """
+    program = models.ForeignKey('Program', on_delete=models.CASCADE)
+    name = models.CharField( max_length=255, blank=False, null=False, help_text=_("Name of the logo line-up") )
+    logo_lineup_url = models.URLField(verbose_name="Logo line-up URL", blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.name} ({self.program.name})"
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name = _('Program Logo Lineup')
+        verbose_name_plural = _('Programs Logo Lineups')
+
+
+@python_2_unicode_compatible
 class TaggingStatus( models.Model ):
     """
     Model for tagging images with a tagging state
