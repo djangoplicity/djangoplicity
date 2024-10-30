@@ -145,6 +145,7 @@ class Announcement( ArchiveModel, TranslationModel ):
     description = archive_fields.DescriptionField()
     contacts = models.TextField( blank=True, help_text=_( u'Contacts' ) )
     links = models.TextField( blank=True, help_text=_( u'Links' ) )
+    is_e_and_e = models.BooleanField( default=False, verbose_name=_('Is E&E'), help_text=_('Check this if the announcement is for the special E&E category and newsletter') )
     featured = models.BooleanField( default=True )
     related_images = TranslationManyToManyField( Image, through='AnnouncementImage' )
     related_videos = TranslationManyToManyField( Video, through='AnnouncementVideo' )

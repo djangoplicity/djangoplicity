@@ -131,9 +131,9 @@ class AnnouncementDisplaysAdmin(DisplaysAdmin):
 class AnnouncementAdmin(DjangoplicityModelAdmin, CleanHTMLAdmin, AnnouncementDisplaysAdmin, RenameAdmin, ArchiveAdmin,
                         SetProgramMixin):
     list_display = ('id', 'announcement_type', 'title', 'get_programs', 'published', 'featured', 'release_date',
-                    'embargo_date', 'last_modified', view_link( 'announcements'), )
+                    'embargo_date', 'last_modified', 'is_e_and_e', view_link( 'announcements'), )
     list_filter = ('announcement_type', 'published', 'featured', 'last_modified', 'release_date', 'embargo_date',
-                   'programs')
+                   'programs', 'is_e_and_e')
     list_editable = ( 'announcement_type', 'title',)
     search_fields = ( 'id', 'title', 'description', 'announcement_type__name', )
     date_hierarchy = 'release_date'
@@ -143,7 +143,7 @@ class AnnouncementAdmin(DjangoplicityModelAdmin, CleanHTMLAdmin, AnnouncementDis
     fieldsets = (
                     ( None, {'fields': ( 'id', ('announcement_type', )), } ),
                     ( 'Language', {'fields': ( 'lang', ) } ),
-                    ( 'Publishing', {'fields': ( 'published', 'featured', 'release_date', 'embargo_date'  ), } ),
+                    ( 'Publishing', {'fields': ( 'published', 'featured', 'is_e_and_e', 'release_date', 'embargo_date'  ), } ),
                     ('Programs', {'fields': ('programs',)}),
                     ( 'Archive', {'fields': ( 'title', 'subtitle', 'description', 'links', 'contacts' ), } ),
                 )
