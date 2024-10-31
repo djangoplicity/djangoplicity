@@ -51,6 +51,7 @@ from djangoplicity.archives.contrib.serialization import JSONEmitter, \
 from djangoplicity.archives.contrib.templater import DisplayTemplate
 from djangoplicity.archives.utils import related_archive_items, main_visual_translated
 from djangoplicity.archives.views import SerializationDetailView
+from djangoplicity.announcements.queries import AnnouncementsAllPublicQuery, AnnouncementsFeaturedQuery, AnnouncementsProgramsQuery, AnnouncementsEAndEQuery
 from djangoplicity.media.info import object_id
 from djangoplicity.metadata.archives.queries import ProgramPublicQuery
 
@@ -119,13 +120,14 @@ class AnnouncementOptions( ArchiveOptions ):
     search_fields = ( 'id', 'title', 'description', 'contacts', 'links', )
 
     class Queries( object ):
-        default = AllPublicQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Announcements"), feed_name="default" )
-        program = ProgramPublicQuery(relation_field='programs',
+        default = AnnouncementsAllPublicQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Announcements"), feed_name="default" )
+        program = AnnouncementsProgramsQuery(relation_field='programs',
                                      browsers=('normal', 'json', 'minijson'),
                                      verbose_name=ugettext_noop("Announcement: %(title)s"),
                                      extra_templates=[],
                                      category_type='Announcements', feed_name='programs')
-        featured = FeaturedQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Featured Announcements"), feed_name="default", include_in_urlpatterns=False )
+        featured = AnnouncementsFeaturedQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Featured Announcements"), feed_name="default", include_in_urlpatterns=False )
+        e_and_e = AnnouncementsEAndEQuery( browsers=('normal', 'json', 'minijson'), verbose_name=ugettext_noop("E&E Announcements") )
         embargo = EmbargoQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Embargoed Announcements") )
         staging = StagingQuery( browsers=( 'normal', 'viewall', 'json', 'ical' ), verbose_name=ugettext_noop("Announcements (Staging)") )
         year = YearQuery( browsers=( 'normal', 'viewall' ), verbose_name=ugettext_noop("Announcements %d"), feed_name="default" )
