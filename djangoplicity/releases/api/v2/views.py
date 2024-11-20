@@ -5,6 +5,7 @@ from djangoplicity.translation.api.v2.views import DEFAULT_API_TRANSLATION_MODE
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
 
 from .serializers import ReleaseMiniSerializer, ReleaseSerializer
 from rest_framework import permissions, mixins
@@ -20,10 +21,21 @@ class ReleasesPagination(PageNumberPagination):
 
 class ReleaseFilter(filters.FilterSet):
     program = filters.CharFilter(field_name="programs__url")
+    search = filters.CharFilter(method='search_filter')
 
     class Meta:
         model = Release
         fields = ['program']
+
+    def search_filter(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                Q(title__icontains=value) |
+                Q(subtitle__icontains=value) |
+                Q(headline__icontains=value) |
+                Q(description__icontains=value)
+            )
+        return queryset
 
 
 class ReleaseViewMixin:
@@ -43,6 +55,11 @@ class ReleaseViewMixin:
             "program",
             OpenApiTypes.STR,
             description="The program identifier, e.g: kpno, rubin, gemini, ctio, csdc, noao, useltp, noirlab"
+        ),
+        OpenApiParameter(
+            "search",
+            OpenApiTypes.STR,
+            description="Search by title, subtitle, headline or description"
         ),
         OpenApiParameter(
             "page_size",
