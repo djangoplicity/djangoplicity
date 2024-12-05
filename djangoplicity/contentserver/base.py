@@ -39,6 +39,8 @@ import pysftp
 import requests
 import subprocess
 import time
+import boto3
+from botocore.config import Config as BotocoreConfig
 from requests.exceptions import ConnectionError
 
 from django.conf import settings
@@ -111,6 +113,81 @@ class ContentServer(object):
         Returns a list of URLs which returned an error
         '''
         return []
+
+
+class S3ContentServer(ContentServer):
+    supports_all_formats = True
+    name = 'S3'
+
+    def __init__(self, bucket, access_key_id=None, access_key_secret=None, region_name=None):
+        config = None
+        if region_name:
+            config = BotocoreConfig(region_name=region_name)
+        self.s3_client = boto3.client('s3', aws_access_key_id=access_key_id, aws_secret_access_key=access_key_secret, config=config)
+        self.bucket = bucket
+
+    def get_url(self, resource, format_name):
+        return 'https://%s.s3.amazonaws.com/media' % (self.bucket,)
+
+    def to_s3_path(self, local_path):
+        remote_path = local_path.replace(settings.BASE_DIR, '')
+        if remote_path.startswith('/'):
+            remote_path = remote_path[1:]
+        return remote_path
+
+    def sync_resources(self, instance, formats=None, *args, **kwargs):
+        from djangoplicity.archives.utils import get_all_possible_instance_formats
+
+        archive_formats = get_all_possible_instance_formats(instance)
+        formats = formats or archive_formats
+
+        for fmt in formats:
+            # Get the local resource (if any)
+            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt), None)
+
+            if not resource:
+                continue
+
+            # Skip the resource if it's a filewith size 0
+            if os.path.isfile(resource.path) and resource.size == 0:
+                logger.warning('S3ContentServer: Skipping empty file: %s', resource.path)
+                continue
+            
+            remote_path = self.to_s3_path(resource.path)
+            # There are some archive types thatt are directories, like the zoomable and the virtualtours
+            if os.path.isdir(resource.path):
+                logger.info('S3ContentServer: Uploading directory %s to %s:%s', resource.name, self.bucket, remote_path)
+                
+                # Make sure that we won't rsync to the root:
+                if remote_path == instance.Archive.Meta.root or remote_path == '/' or remote_path == '':
+                    raise Exception('S3ContentServer: remote_path is in root: %s', remote_path)
+
+                for root, dirs, files in os.walk(resource.path):
+                    for filename in files:
+                        local_path = os.path.join(root, filename)
+                        self.s3_client.upload_file(local_path, self.bucket, self.to_s3_path(local_path))
+            else:
+                logger.info('S3ContentServer: Uploading %s to bucket %s:%s', resource.name, self.bucket, remote_path)
+                # TODO: Improve content type detection
+                content_type = 'application/octet-stream'
+                if resource.name.endswith('.jpg') or resource.name.endswith('.jpeg'):
+                    content_type = 'image/jpeg'
+                elif resource.name.endswith('.png'):
+                    content_type = 'image/png'
+                elif resource.name.endswith('.gif'):
+                    content_type = 'image/gif'
+                elif resource.name.endswith('.mp4'):
+                    content_type = 'video/mp4'
+                self.s3_client.upload_file(resource.path, self.bucket, remote_path, ExtraArgs={'ContentType': content_type})
+
+        # We set the content server to ready as soon as the files are
+        # synchronised, we don't have to wait until it's purged/prefetched
+        # We don't want to trigger signals when setting content_server_ready,
+        # so we use update instead of using instance.save():
+        instance.__class__.objects.filter(pk=instance.pk).update(
+            content_server_ready=True)
+        logger.info('S3ContentServer: Enabled content_server_ready for %s %s',
+            instance.__class__.__name__, instance.id)
 
 
 class CDN77ContentServer(ContentServer):
