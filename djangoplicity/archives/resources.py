@@ -265,13 +265,16 @@ class ResourceManager(object):
                 content_server = None
 
             if content_server:
-                archive_class_name = '%s.%s' % (instance.__module__, instance.__class__.__name__)
-                try:
-                    archive_formats = content_server.formats[archive_class_name]
-                except KeyError:
-                    # No content server defined for this format
-                    archive_formats = []
-                if self.name in archive_formats:
+                supports_all_formats = getattr(content_server, 'supports_all_formats', False)
+                archive_formats = []
+                if not supports_all_formats:
+                    archive_class_name = '%s.%s' % (instance.__module__, instance.__class__.__name__)
+                    try:
+                        archive_formats = content_server.formats[archive_class_name]
+                    except:
+                        # No content server defined for this format
+                        archive_formats = []
+                if supports_all_formats or self.name in archive_formats:
                     new_location = os.path.join(storage.location, instance.Archive.Meta.root)
                     url = os.path.join(content_server.get_url(resource, self.name), instance.Archive.Meta.root)
                     storage = FileSystemStorage(base_url=url, location=new_location)
