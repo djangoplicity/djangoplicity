@@ -1,0 +1,40 @@
+{% load i18n %}
+{% spaceless %}
+{% include 'archives/embargo_notice.html' %}
+<h1>{{ object.title }}</h1>
+
+{% if object.resource_original %}
+    <div class="archive-image popup" style="background-color: hsl(0, 0%, 90%)">
+        <a class="popup" href="{{ object.resource_original.url }}" title="{{ object.title }}" aria-label="{{ object.title }}" />
+            <div class="image-container">
+                <img class="img-responsive" src="{{ object.resource_original.url }}" width="320" border="0" alt="{{ object.title }}" />
+            </div>
+        </a>
+    </div>
+{% elif object.resource_medium %}
+<div class="archive-image popup">
+    {% if object.resource_screen %}
+        <a class="popup" href="{{ object.resource_screen.url }}" title="{{ object.title }}" aria-label="{{ object.title }}" />
+            <div class="image-container">
+                <img class="img-responsive" src="{{ object.resource_screen.url }}" width="320" border="0" alt="{{ object.title }}" />
+            </div>
+        </a>
+    {% else %}
+        <div class="image-container">
+            <img class="img-responsive" src="{{ object.resource_medium.url }}" width="320" border="0" alt="{{ object.title }}" />
+        </div>
+    {% endif %}
+</div>
+{% endif %}
+<p>{{ object.description|safe }}</p>
+{% comment %}
+We don't display the "not available for sale" message for calendars as we
+have individual archive items for each months, and though it's not possible
+to buy a single month, we don't want people to think that the whole calendar
+is not available for sale
+{% endcomment %}
+
+{% include 'archives/extra_description.html' %}
+{% include 'archives/credit.html' %}
+{% include 'archives/extra_footer.html' %}
+{% endspaceless %}
