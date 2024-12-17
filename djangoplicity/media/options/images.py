@@ -33,10 +33,11 @@ from __future__ import division
 from past.utils import old_div
 from builtins import object
 import os
+import boto3
 
 from django.db.models import Case, Value, When, IntegerField
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
-
+from django.conf import settings
 from djangoplicity.archives.contrib import security
 from djangoplicity.archives.contrib.browsers import NormalBrowser, \
     ViewAllBrowser, SerializationBrowser
@@ -273,7 +274,15 @@ class ImageOptions( ArchiveOptions ):
             file_path = data["files"][data['formats'].index( 'original' )]
 
             obj.file_type = get_file_type( file_path )
-            obj.file_size = old_div(int(os.path.getsize( file_path )), 1024)
+            if getattr(settings, 'S3_STORAGE_ENABLED', False):
+                s3_client = boto3.client('s3')
+                s3_path = file_path.replace(settings.BASE_DIR, '')
+                if s3_path[0] == '/':
+                    s3_path = s3_path[1:]
+                file_size = int(s3_client.head_object(Bucket=settings.AWS_S3_BUCKET_NAME, Key=s3_path).get('ContentLength'))
+                obj.file_size = old_div(file_size, 1024)
+            else:
+                obj.file_size = old_div(int(os.path.getsize( file_path )), 1024)
 
             try:
                 obj.width, obj.height = identify_image(file_path)

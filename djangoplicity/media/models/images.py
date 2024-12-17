@@ -816,7 +816,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
             m = re.match( '([a-z0-9]+)_image_token', name )
             if m:
                 return self.get_PASSTHROUGH_image_token( m.group(1) )
-        raise AttributeError
+        raise AttributeError(name)
 
     # ========================================================================
     # Classes

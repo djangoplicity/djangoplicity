@@ -33,7 +33,7 @@
 import os
 import re
 from datetime import datetime
-
+import boto3
 from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.template.defaultfilters import date as date_filter
@@ -46,6 +46,13 @@ def _get_files( path ):
     """
     Get files in a specified directory (creating the directory if it does not exists).
     """
+    if getattr(settings, 'S3_STORAGE_ENABLED', False):
+        s3 = boto3.client('s3')
+        path = path.replace(settings.BASE_DIR, '')
+        if path.startswith('/'):
+            path = path[1:]
+        return [os.path.basename(obj['Key']) for obj in s3.list_objects_v2(Bucket=settings.AWS_S3_BUCKET_NAME, Prefix=path).get('Contents', [])]
+    
     if not os.path.exists( path ):
         os.makedirs( path )
     return os.listdir( path )
@@ -192,7 +199,15 @@ def find_importables( archive_import_root, archive_model, archive_options, exclu
         if 'title' not in data and 'title' in blank_form.fields:
             data['title'] = obj_id
         if 'date_modified' not in data and 'date_modified' in blank_form.fields:
-            data['date_modified'] = date_filter( datetime.fromtimestamp( os.path.getmtime( files[obj_id]['files'][0] ) ), arg='r' )
+            if getattr(settings, 'S3_STORAGE_ENABLED', False):
+                s3 = boto3.client('s3')
+                path = files[obj_id]['files'][0].replace(settings.BASE_DIR, '')
+                if path.startswith('/'):
+                    path = path[1:]
+                last_modified_s3 = s3.head_object(Bucket=settings.AWS_S3_BUCKET_NAME, Key=path)['LastModified'].timestamp()
+                data['date_modified'] = date_filter(datetime.fromtimestamp(last_modified_s3), arg='r')
+            else:
+                data['date_modified'] = date_filter( datetime.fromtimestamp( os.path.getmtime( files[obj_id]['files'][0] ) ), arg='r' )
 
         data.update( files[obj_id] )
         data['formats'] = "; ".join( data['formats'] )

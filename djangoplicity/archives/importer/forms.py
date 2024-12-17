@@ -32,10 +32,12 @@
 import os
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 
 from djangoplicity.archives.contrib.forms import PriorityField
 from djangoplicity.contrib.admin import widgets
+import boto3
 
 
 class GenericImportForm( forms.Form ):
@@ -94,6 +96,17 @@ class UploadFileForm ( forms.Form ):
         """
         Write uploaded files to import directory.
         """
+        if getattr(settings, 'S3_STORAGE_ENABLED', False):
+            s3 = boto3.client('s3')
+            for file in request.FILES.getlist('files'):
+                # In S3 we don't need the full path including the BASE_DIR, in this case only from import/..
+                s3_file_path = os.path.join(path_to_save, file.name).replace(settings.BASE_DIR, '')
+                # Remove the first / if it exists
+                if s3_file_path[0] == '/':
+                    s3_file_path = s3_file_path[1:]
+                s3.upload_fileobj(file, settings.AWS_S3_BUCKET_NAME, s3_file_path)
+            return
+        
         for f in request.FILES.getlist('files'):
             destination = open( os.path.join( path_to_save, f.name ), 'wb' )
             for chunk in f.chunks():
