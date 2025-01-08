@@ -836,8 +836,8 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     class Archive:
         original = ImageResourceManager(type=types.OriginalImageType)
         publicationtiff40k = ImageResourceManager(derived='original', type=types.PublicationTiff40KType)
-        publicationtiff25k = ImageResourceManager(derived='publicationtiff40k', type=types.PublicationTiff25KType)
-        publicationtiff10k = ImageResourceManager(derived='publicationtiff25k', type=types.PublicationTiff10KType)
+        publicationtiff25k = ImageResourceManager(type=types.PublicationTiff25KType)
+        publicationtiff10k = ImageResourceManager(type=types.PublicationTiff10KType)
         publicationtiff = ImageResourceManager(derived='original', type=types.PublicationTiffType)
         large = ImageResourceManager(derived='original', type=types.LargeJpegType)
         publicationjpg = ImageResourceManager(derived='publicationtiff', type=types.PublicationJpegType)
