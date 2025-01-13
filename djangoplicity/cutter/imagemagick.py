@@ -60,10 +60,10 @@ logger = logging.getLogger(__name__)
 
 # TODO: get path from settings?
 IM_PATH = '/usr/bin/'
-IM_LIMITS = '-limit memory 1GiB -limit map 1GiB -limit thread 4'
+IM_LIMITS = '-limit memory 2GiB -limit map 2GiB -limit thread 4'
 IM_TMP_DIR = settings.TMP_DIR
 
-CONVERT_DEFAULTS = '-quiet -depth 8 -colorspace sRGB'
+CONVERT_DEFAULTS = '-quiet -depth 8 -colorspace sRGB +antialias'
 if os.path.isdir(IM_TMP_DIR):
     CONVERT_DEFAULTS += ' -define registry:temporary-path={}'.format(IM_TMP_DIR)
 
