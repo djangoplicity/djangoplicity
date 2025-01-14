@@ -1,6 +1,18 @@
 OPENSEADRAGON CHANGELOG
 =======================
 
+2.4.1:
+
+* You can now turn off the default canvas image smoothing, if you want sharp pixels when zoomed in past 100% (#1507, #1593, #1595, #1647, #1648)
+* Fixed problem with navigator highlight rectangle when returning from full screen with a custom navigator location (#1515)
+* Added option to set rotation increment for nav buttons and keyboard (#1524)
+* Fixed issue with flipping and opacity with multi-image (#1549)
+* Removed vestigial button group label element that was causing issues for accessibility tools (#1560)
+* Fixed a bug causing Viewer.areControlsEnabled to throw an exception (#1562)
+* Added tileFormat option to IIIFTileSource so you can specify the tile format (#1625)
+* Now using canonical URIs more consistently in IIIF to make caching and processing time easier on the server side (#1625)
+* Added support for IIIF's new preferredFormats property (#1656)
+
 2.4.0:
 
 * BREAKING CHANGE: Viewer's canvas-double-click event is now fired before it initiates the zoom (#1288)
