@@ -127,6 +127,8 @@ class S3ContentServer(ContentServer):
         self.bucket = bucket
 
     def get_url(self, resource, format_name):
+        if hasattr(settings, 'AWS_S3_BASE_URL'):
+            return settings.AWS_S3_BASE_URL
         return 'https://%s.s3.amazonaws.com/media' % (self.bucket,)
 
     def to_s3_path(self, local_path):
