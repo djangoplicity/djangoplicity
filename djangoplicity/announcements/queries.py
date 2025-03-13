@@ -7,7 +7,6 @@ class AnnouncementsAllPublicQuery(AllPublicQuery):
     '''
     def queryset(self, model, options, request, **kwargs):
         (qs, query_data) = super(AnnouncementsAllPublicQuery, self).queryset(model, options, request, **kwargs)
-        qs = qs.filter(is_e_and_e=False)
         return (qs, query_data)
     
 

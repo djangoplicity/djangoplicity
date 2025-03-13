@@ -21,10 +21,11 @@ class AnnouncementPagination(PageNumberPagination):
 class AnnouncementFilter(filters.FilterSet):
     program = filters.CharFilter(field_name="programs__url")
     search = filters.CharFilter(method='search_filter')
+    is_e_and_e = filters.BooleanFilter(field_name="is_e_and_e")
 
     class Meta:
         model = Announcement
-        fields = ['program']
+        fields = ['program','is_e_and_e']
 
     def search_filter(self, queryset, name, value):
         if value:
@@ -58,6 +59,11 @@ class AnnouncementViewMixin:
             "search",
             OpenApiTypes.STR,
             description="Search by title, subtitle, or description"
+        ),
+        OpenApiParameter(
+            "is_e_and_e",
+            OpenApiTypes.BOOL,
+            description="If you select “true”, you will receive the E&E category announcements."
         ),
         OpenApiParameter(
             "page_size",
