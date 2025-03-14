@@ -39,12 +39,23 @@ class AnnouncementFilter(filters.FilterSet):
 
 class AnnouncementViewMixin:
     def get_queryset(self):
-        qs, query_data = AnnouncementOptions.Queries.default.queryset(
-            Announcement,
-            AnnouncementOptions,
-            self.request,
-            mode=self.request.GET.get('translation_mode', DEFAULT_API_TRANSLATION_MODE)
-        )
+        is_e_and_e = self.request.GET.get('is_e_and_e')
+        
+        if is_e_and_e and is_e_and_e.lower() == 'true':
+            qs, query_data = AnnouncementOptions.Queries.e_and_e.queryset(
+                Announcement,
+                AnnouncementOptions,
+                self.request,
+                mode=self.request.GET.get('translation_mode', DEFAULT_API_TRANSLATION_MODE)
+            )
+        else:
+            qs, query_data = AnnouncementOptions.Queries.default.queryset(
+                Announcement,
+                AnnouncementOptions,
+                self.request,
+                mode=self.request.GET.get('translation_mode', DEFAULT_API_TRANSLATION_MODE)
+            )
+
         return qs
 
 
