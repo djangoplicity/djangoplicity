@@ -74,7 +74,8 @@ class AnnouncementViewMixin:
         OpenApiParameter(
             "is_e_and_e",
             OpenApiTypes.BOOL,
-            description="If you select “true”, you will receive the E&E category announcements."
+            description="If you select “true”, you will receive the E&E category announcements.",
+            default=False 
         ),
         OpenApiParameter(
             "page_size",
