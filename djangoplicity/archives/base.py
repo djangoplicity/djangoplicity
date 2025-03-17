@@ -315,7 +315,7 @@ class ArchiveBase( ModelBase ):
         add_field(metaclass, attrs, 'checksums', dict, JSONField, **{'blank': True, 'null': True})
 
         #
-        # Resource short-cuts
+        # Resource shortcuts, like resource_original, resource_screen, etc.
         #
         try:
             prefix = getattr( metaclass, 'resource_fields_prefix' )
