@@ -61,8 +61,8 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
     path and class names and import them dynamically
     '''
 
-    if settings.SITE_ENVIRONMENT != 'prod':
-        logger.info('%s only runs on a production system', sync_content_server.__name__)
+    if not getattr(settings, 'DEFAULT_MEDIA_CONTENT_SERVER', None):
+        logger.info('%s skipping: settings.DEFAULT_MEDIA_CONTENT_SERVER not enabled', sync_content_server.__name__)
         return
 
     # Dynamically import the class

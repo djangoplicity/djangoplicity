@@ -198,6 +198,13 @@ def related_archive_items( src_model_field, obj, has_main_visual=True ):
     return archive_items
 
 
+def get_all_possible_instance_formats(instance):
+    '''
+    Returns a list of all existing Archives for a given instance
+    '''
+    return [x for x in dir(instance.Archive) if isinstance(getattr(instance.Archive, x), ResourceManager )]
+
+
 def get_instance_archives(instance):
     '''
     Returns a list of all existing Archives for a given instance
