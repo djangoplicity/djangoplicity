@@ -46,7 +46,7 @@ class ImageTinySerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ['id', 'url', 'lang', 'title', 'width', 'height', 'formats']
+        fields = ['id', 'url', 'lang', 'source', 'title', 'width', 'height', 'formats']
 
     def get_formats(self, obj) -> ImageTinyFormatsURLs:
         return get_all_instance_archives_urls(obj, IMAGE__TINY_FORMATS)
