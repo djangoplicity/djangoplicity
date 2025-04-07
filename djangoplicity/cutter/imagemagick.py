@@ -529,8 +529,12 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         if not os.path.exists(tmp_path):
             logger.debug('Creating MPC file: %s', tmp_path)
             # -background none is to keep the transparency untouched (if any)
-            args = CONVERT.split() + [source.path, '-alpha', 'Deactivate',
-                '-flatten', tmp_path]
+            args = CONVERT.split() + [source.path]
+            if hasattr(fmt.type, 'exts') and fmt.type.exts and fmt.type.exts[0] == 'jpg':
+                args += ['-background', 'white', '-alpha', 'remove']
+            else:
+                args += ['-alpha', 'Deactivate']
+            args += ['-flatten', tmp_path]
             logger.debug(' '.join(args))
 
             convert = Popen(args)
