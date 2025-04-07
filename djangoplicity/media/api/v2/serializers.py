@@ -20,7 +20,11 @@ class ImageSerializerMixin(ArchiveSerializerMixin):
     categories = CategorySerializer(many=True, source='web_category')
 
     def get_formats(self, obj) -> ImageFormatsURLs:
-        return get_all_instance_archives_urls(obj)
+        urls = get_all_instance_archives_urls(obj)
+        for key, url in urls.items():
+            if url and 'storage.noirlab.edu' in url:
+                urls[key] = url.replace('storage.noirlab.edu', 'noirlab.edu/public')
+        return urls
 
 
 class VideoSerializerMixin(ArchiveSerializerMixin):
@@ -32,7 +36,11 @@ class VideoSerializerMixin(ArchiveSerializerMixin):
         return timestring_to_seconds(obj.file_duration) if obj.file_duration else None
 
     def get_formats(self, obj) -> VideoFormatsURLs:
-        return get_all_instance_archives_urls(obj)
+        urls = get_all_instance_archives_urls(obj)
+        for key, url in urls.items():
+            if url and 'storage.noirlab.edu' in url:
+                urls[key] = url.replace('storage.noirlab.edu', 'noirlab.edu/public')
+        return urls
 
 
 class ImageMiniSerializer(ImageSerializerMixin, serializers.ModelSerializer):
@@ -49,7 +57,11 @@ class ImageTinySerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
         fields = ['id', 'url', 'lang', 'source', 'title', 'width', 'height', 'formats']
 
     def get_formats(self, obj) -> ImageTinyFormatsURLs:
-        return get_all_instance_archives_urls(obj, IMAGE__TINY_FORMATS)
+        urls = get_all_instance_archives_urls(obj, IMAGE__TINY_FORMATS)
+        for key, url in urls.items():
+            if url and 'storage.noirlab.edu' in url:
+                urls[key] = url.replace('storage.noirlab.edu', 'noirlab.edu/public')
+        return urls
 
 
 class ImageSerializer(ImageSerializerMixin, serializers.ModelSerializer):
@@ -64,7 +76,11 @@ class ImageSerializer(ImageSerializerMixin, serializers.ModelSerializer):
         ]
 
     def get_resources(self, obj) -> List[ArchiveResource]:
-        return get_instance_resources(obj)
+        resources = get_instance_resources(obj)
+        for resource in resources:
+            if resource['URL'] and 'storage.noirlab.edu' in resource['URL']:
+                resource['URL'] = resource['URL'].replace('storage.noirlab.edu', 'noirlab.edu/public')
+        return resources
 
 
 class VideoMiniSerializer(VideoSerializerMixin, serializers.ModelSerializer):
