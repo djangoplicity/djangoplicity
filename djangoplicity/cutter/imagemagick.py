@@ -71,8 +71,7 @@ if os.path.isdir(IM_TMP_DIR):
 CONVERT = '%s %s %s' % (os.path.join(IM_PATH, 'convert'), IM_LIMITS, CONVERT_DEFAULTS)
 IDENTIFY = '%s %s' % (os.path.join(IM_PATH, 'identify'), IM_LIMITS)
 
-SRGB_PROFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                           'icc', 'sRGB-IEC61966-2.1.icc')
+SRGB_PROFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),'icc', 'sRGB-IEC61966-2.1.icc')
 
 
 def _format_is_lte_size(fmt, size):
@@ -268,12 +267,18 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
     while True:
         # Generate tiles for given tier
         logger.debug('Generating tiles for Zoomify tier %d', tiers)
-        args = CONVERT.split() + [
+
+        args = CONVERT.split() # Get arguments list
+
+        args += ['-profile', SRGB_PROFILE] #Add sRGB profile to image
+
+        args += [
             source, '-flatten', '-crop', '256x256', '-strip', '-set',
             'filename:tile', '%[fx:page.x/256]-%[fx:page.y/256]', '+repage',
             '+adjoin', '-quality', '85',
             '%s/%d-%%[filename:tile].jpg' % (tiles_dir, tiers)
         ]
+
         logger.debug(' '.join(args))
 
         convert = Popen(args)
