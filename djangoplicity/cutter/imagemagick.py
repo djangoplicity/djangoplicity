@@ -62,7 +62,8 @@ logger = logging.getLogger(__name__)
 # TODO: get path from settings?
 IM_PATH = '/usr/bin/'
 IM_LIMITS = '-limit memory 6GiB -limit map 6GiB -limit thread 8'
-IM_TMP_DIR = settings.TMP_DIR
+IM_TMP_DIR = os.path.join(settings.TMP_DIR, 'imagemagick')
+os.makedirs(IM_TMP_DIR, exist_ok=True)
 
 CONVERT_DEFAULTS = '-quiet -depth 8 -colorspace sRGB +antialias'
 if os.path.isdir(IM_TMP_DIR):
@@ -238,6 +239,31 @@ def _order_formats(model, formats):
 
     return OrderedDict(res)
 
+def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
+    source = archive.resource_original.path
+    subdir = 'zoomable'
+    zoomable_dir = os.path.join(tmp_dir, subdir)
+    if not os.path.exists(zoomable_dir):
+        os.makedirs(zoomable_dir)
+
+    logger.info(f"Generating zoomify tiles using VIPS for {source} into tmpdir: {zoomable_dir}")
+    args = ['vips', 'dzsave', source, zoomable_dir, '--basename', subdir, '--suffix', '.jpg[Q=90]', '--layout', 'zoomify', '--strip']
+    logger.info(' '.join(args))
+    convert = Popen(args)
+    convert.communicate()
+
+    # Remove old files and put the new files in place
+    target = os.path.join(dest_dir, 'zoomable', archive.pk)
+    if not os.path.exists(target):
+        logger.debug('Creating missing target directory: %s', target)
+        os.makedirs(target)
+    if os.path.exists(target):
+        logger.info('Deleting old zoomify "%s"', target)
+        shutil.rmtree(target)
+
+    logger.debug('Moving "%s" to "%s"', zoomable_dir, target)
+    shutil.move(zoomable_dir, target)
+
 
 def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
     '''
@@ -266,7 +292,7 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
 
     while True:
         # Generate tiles for given tier
-        logger.debug('Generating tiles for Zoomify tier %d', tiers)
+        logger.info('Generating tiles for Zoomify tier %d', tiers)
 
         args = CONVERT.split() # Get arguments list
 
@@ -295,7 +321,7 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
             source, '-resize', '50%', next_tier_source
         ]
 
-        logger.debug('Generating source for tier %d', tiers)
+        logger.info('Generating source for tier %d', tiers)
         logger.debug(' '.join(args))
         convert = Popen(args)
         convert.communicate()
@@ -475,7 +501,10 @@ def process_image_derivatives(app_label, module_name, pk, formats,
 
         if fmt.type.verbose_name == 'Zoomable':
             logger.info('Generating "%s" for %s', fmt.name, archive.pk)
-            _generate_zoomify(archive, width, height, tmp_dir, dest_dir)
+            if hasattr(settings, 'DP_IMAGES_ZOOMIFY_WITH_VIPS') and settings.DP_IMAGES_ZOOMIFY_WITH_VIPS is True:
+                _generate_zoomify_vips(archive, tmp_dir, dest_dir)
+            else:
+                _generate_zoomify(archive, width, height, tmp_dir, dest_dir)
             continue
 
         if not fmt.type.exts:
