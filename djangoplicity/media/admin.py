@@ -251,7 +251,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     ordering = ('-last_modified', )
     richtext_fields = ('description', 'credit')
     readonly_fields = ('id', 'content_server_ready', 'constellation')
-    actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_resync_resources', 'edit_bulk_credit_action']
+    actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_reimport_zoomable', 'action_resync_resources', 'edit_bulk_credit_action']
     inlines = [ ImageExposureInlineAdmin, ImageContactInlineAdmin ]
 
     def get_credit(self, obj):
@@ -325,6 +325,11 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
         actions = super( ImageAdmin, self ).get_actions( request )
         actions.update( dict( [self._make_web_category_action( c ) for c in Category.objects.filter( type__name='Images' ).order_by( 'name' )] ) )
         return actions
+
+    def action_reimport_zoomable(self, request, queryset):
+        # Call action_reimport with formats=['zoomable']
+        return super(ImageAdmin, self).action_reimport(request, queryset, formats=['zoomable'])
+    action_reimport_zoomable.short_description = _("Re-generate zoomable")
 
     class Media:
         css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field

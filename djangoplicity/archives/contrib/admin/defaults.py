@@ -110,7 +110,7 @@ class ArchiveAdmin( object ):
         return self._toggle_attribute( "free", request, objects, "For free" )
     action_toggle_free.short_description = "Toggle for free state"
 
-    def action_reimport(self, request, queryset):
+    def action_reimport(self, request, queryset, formats=None):
         model, options = get_archive_modeloptions(self.model._meta.app_label, self.model._meta.model_name)
         error_ids = []
         message = ""
@@ -119,6 +119,8 @@ class ArchiveAdmin( object ):
                 extra_conf = {'user_id': request.user.pk}
             else:
                 extra_conf = {}
+            if formats:
+                extra_conf['formats'] = formats
             for obj in queryset:
                 rerun_import_actions(model, options, obj, extra_conf=extra_conf)
 

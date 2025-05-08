@@ -96,8 +96,12 @@ def process_image_derivatives():
         except KeyError:
             imported_formats = None
 
+        formats = None
+        if conf.get('formats', None):
+            formats = conf.get('formats')
+
         args = [obj._meta.app_label, obj._meta.model_name, conf.get('user_id'),
-            [obj.pk], None, imported_formats]
+            [obj.pk], formats, imported_formats]
 
         taskset.add('djangoplicity.cutter.tasks.process_images_derivatives', args=args)
 
