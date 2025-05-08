@@ -246,8 +246,16 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
     if not os.path.exists(zoomable_dir):
         os.makedirs(zoomable_dir)
 
-    logger.info(f"Generating zoomify tiles using VIPS for {source} into tmpdir: {zoomable_dir}")
-    args = ['vips', 'dzsave', source, zoomable_dir, '--basename', subdir, '--suffix', '.jpg[Q=90]', '--layout', 'zoomify', '--strip']
+    # Create temporary image with sRGB profile using VIPS
+    sRGBSource = os.path.join(tmp_dir, f"{archive.pk}_srgb.v")
+    logger.info(f"Creating temporary image with sRGB profile for {source}")
+    args = ['vips', 'icc_transform', source, sRGBSource, SRGB_PROFILE]
+    logger.info(' '.join(args))
+    convert = Popen(args)
+    convert.communicate()
+
+    logger.info(f"Generating zoomify tiles using VIPS for {sRGBSource} into tmpdir: {zoomable_dir}")
+    args = ['vips', 'dzsave', sRGBSource, zoomable_dir, '--basename', subdir, '--suffix', '.jpg[Q=90]', '--layout', 'zoomify', '--strip']
     logger.info(' '.join(args))
     convert = Popen(args)
     convert.communicate()
@@ -263,6 +271,10 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
 
     logger.debug('Moving "%s" to "%s"', zoomable_dir, target)
     shutil.move(zoomable_dir, target)
+
+    # Clean up temporary file
+    if os.path.exists(sRGBSource):
+        os.remove(sRGBSource)
 
 
 def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
