@@ -119,16 +119,25 @@ class S3ContentServer(ContentServer):
     supports_all_formats = True
     name = 'S3'
 
-    def __init__(self, bucket, access_key_id=None, access_key_secret=None, region_name=None):
+    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None):
         config = None
         if region_name:
             config = BotocoreConfig(region_name=region_name)
         self.s3_client = boto3.client('s3', aws_access_key_id=access_key_id, aws_secret_access_key=access_key_secret, config=config)
         self.bucket = bucket
+        self.base_url = base_url
+        self.bigfiles_base_url = bigfiles_base_url
+        self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
 
     def get_url(self, resource, format_name):
-        if hasattr(settings, 'AWS_S3_BASE_URL'):
-            return settings.AWS_S3_BASE_URL
+        if format_name == 'zoomable':
+            # Zoomable are a special case as they don't have a resource.size
+            return self.url
+        if self.bigfiles_base_url and resource.size > self.bigfiles_limit:
+            return self.bigfiles_base_url
+        if self.base_url:
+            return self.base_url
+        
         return 'https://%s.s3.amazonaws.com/media' % (self.bucket,)
 
     def to_s3_path(self, local_path):
