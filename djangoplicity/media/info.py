@@ -280,6 +280,10 @@ def calculate_constellation(obj):
         return ''
     try:
         _abbr, const = ephem.constellation([ephem.hours(a), ephem.degrees(b)])
+        if const:
+            clean_const = const.replace(" ", "").lower()
+            constellation_url = ('<a href=\"https://noirlab.edu/public/education/constellations/%s\">%s</a>' % (clean_const,ugettext(const)))
+            return mark_safe( constellation_url )
     except SystemError:
         return ''
     return const
