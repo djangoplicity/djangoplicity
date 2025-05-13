@@ -130,7 +130,8 @@ class S3ContentServer(ContentServer):
         self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
 
     def get_url(self, resource, format_name):
-        if self.bigfiles_base_url and resource.size > self.bigfiles_limit and format_name != 'zoomable':
+        # The zoomable is a directory so it doesn't have resource.size, that's why it's tested first
+        if format_name != 'zoomable' and self.bigfiles_base_url and resource.size > self.bigfiles_limit:
             return self.bigfiles_base_url
         if self.base_url:
             return self.base_url
