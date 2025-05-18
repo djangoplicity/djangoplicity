@@ -577,7 +577,11 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
     def resource_url(self, resource='original' ):
         try:
             if resource == 'original':
-                return "http://%s%s" % (get_current_site(None).domain, self.resource_original.url)
+                if not self.resource_original.url.startswith('http'):
+                    url = "http://%s%s" % (get_current_site(None).domain, self.resource_original.url)
+                else:
+                    url = self.resource_original.url
+                return url
             else:
                 attr = "resource_" % resource
                 if hasattr(self, attr):
