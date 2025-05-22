@@ -578,7 +578,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         try:
             if resource == 'original':
                 if not self.resource_original.url.startswith('http'):
-                    url = "http://%s%s" % (get_current_site(None).domain, self.resource_original.url)
+                    url = "https://%s%s" % (get_current_site(None).domain, self.resource_original.url)
                 else:
                     url = self.resource_original.url
                 return url
