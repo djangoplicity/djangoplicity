@@ -453,6 +453,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
             taskset = SerialSendTaskSet()
             taskset.add('media.generate_thumbnail', args=['media', 'Video', obj.pk], kwargs={'force_generation': True})
             taskset.add('djangoplicity.cutter.tasks.process_images_derivatives', args=['media', 'Video', request.user.pk, [obj.pk]])
+            taskset.add('djangoplicity.contentserver.tasks.sync_content_server', args=['djangoplicity.media.models.videos', 'Video', obj.pk])
             taskset.send_task()
         self.message_user(request, _('Generating thumbnail of videos'))
 

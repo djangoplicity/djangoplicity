@@ -78,7 +78,7 @@ def rename_resource_ext( fmt, old_ext, new_ext ):
     return action
 
 
-def process_image_derivatives():
+def process_image_derivatives(add_imported_formats=[]):
     '''
     Generate an action to make derivatives from images.
     '''
@@ -99,6 +99,10 @@ def process_image_derivatives():
         formats = None
         if conf.get('formats', None):
             formats = conf.get('formats')
+
+        if add_imported_formats:
+            imported_formats = imported_formats if imported_formats else []
+            imported_formats = imported_formats + add_imported_formats
 
         args = [obj._meta.app_label, obj._meta.model_name, conf.get('user_id'),
             [obj.pk], formats, imported_formats]
