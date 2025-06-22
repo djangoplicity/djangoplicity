@@ -702,10 +702,11 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         super( Image, self ).save( *args, **kwargs )
 
         # Run background tasks on image
-        if run_tasks and self.is_source() and 'loaddata' not in sys.argv:
-            image_extras.delay( self.id )
-            image_color.delay( self.id )
-            write_metadata.delay( self.id, IMAGE_AVM_FORMATS )
+        # TODO, run these tasks only when the related fields are updated, currently even when updating related press releases these are triggered
+        # if run_tasks and self.is_source() and 'loaddata' not in sys.argv:
+        #     image_extras.delay( self.id )
+        #     image_color.delay( self.id )
+        #     write_metadata.delay( self.id, IMAGE_AVM_FORMATS )
 
     def reimport_resources(self, user=None):
         model, options = get_archive_modeloptions(self._meta.app_label, self._meta.model_name)
