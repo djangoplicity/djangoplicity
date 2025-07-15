@@ -699,14 +699,60 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         if calculated_constellation and calculated_constellation != self.constellation:
             self.constellation = calculated_constellation
 
+        # --- AVM-related fields change detection, it needs to be calculated before the save so we can compare the values ---
+        avm_fields_changed = self.isAVMDataUpdated()
+        
         super( Image, self ).save( *args, **kwargs )
 
         # Run background tasks on image
-        # TODO, run these tasks only when the related fields are updated, currently even when updating related press releases these are triggered
-        # if run_tasks and self.is_source() and 'loaddata' not in sys.argv:
-        #     image_extras.delay( self.id )
-        #     image_color.delay( self.id )
-        #     write_metadata.delay( self.id, IMAGE_AVM_FORMATS )
+        if run_tasks and avm_fields_changed and self.is_source() and 'loaddata' not in sys.argv:
+            image_extras.delay( self.id )
+            image_color.delay( self.id )
+            write_metadata.delay( self.id, IMAGE_AVM_FORMATS )
+
+    def isAVMDataUpdated(self):
+        # Get all AVM fields for this model
+        avm_fields = [f.name for f in self._meta.get_fields() if hasattr(f, 'avm_category')]
+        # Add ManyToMany fields that are AVM fields (e.g. proposal, publication)
+        avm_fields += [f.name for f in self._meta.many_to_many if hasattr(f, 'avm_category')]
+        # Remove duplicates
+        avm_fields = list(set(avm_fields))
+        print(avm_fields)
+
+        # Check if any AVM field has changed
+        if self.pk is not None:
+            try:
+                old_instance = self.__class__.objects.get(pk=self.pk)
+                for field in avm_fields:
+                    old_value = getattr(old_instance, field, None)
+                    new_value = getattr(self, field, None)
+                    print('Checking field: ' + field)
+                    print(old_value)
+                    print(new_value)
+                    if old_value != new_value:
+                        return True
+            except self.__class__.DoesNotExist:
+                return True  # New instance, treat as changed
+        else:
+            return True  # New instance, treat as changed
+
+        # Check related ImageExposure objects (if any)
+        if hasattr(self, 'imageexposure_set'):
+            for exposure in self.imageexposure_set.all():
+                if exposure.pk is not None:
+                    try:
+                        old_exposure = exposure.__class__.objects.get(pk=exposure.pk)
+                        for f in exposure._meta.get_fields():
+                            if hasattr(f, 'avm_category'):
+                                old_value = getattr(old_exposure, f.name, None)
+                                new_value = getattr(exposure, f.name, None)
+                                if old_value != new_value:
+                                    return True
+                    except exposure.__class__.DoesNotExist:
+                        return True  # New exposure, treat as changed
+                else:
+                    return True  # New exposure, treat as changed
+        return False
 
     def reimport_resources(self, user=None):
         model, options = get_archive_modeloptions(self._meta.app_label, self._meta.model_name)
