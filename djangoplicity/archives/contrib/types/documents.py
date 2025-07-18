@@ -27,6 +27,9 @@ __all__ = (
     'PPSType',
     'Model3dObjType',
     'Model3dC4DType',
+    'Model3dSPZType',
+    'Model3dFBXType',
+    'Model3dBlendType',
     'StyType',
     'TexType',
 )
@@ -116,6 +119,17 @@ class Model3dC4DType( FileType ):
     verbose_name = ugettext_noop( u'Maxon Cinema 4D (.c4d)' )
     exts = ['c4d', 'zip']
 
+class Model3dSPZType(FileType):
+    verbose_name = ugettext_noop(u'Gaussian Splat (.spz)')
+    exts = ['spz', 'zip']
+
+class Model3dFBXType(FileType):
+    verbose_name = ugettext_noop(u'Autodesk FBX (.fbx)')
+    exts = ['fbx', 'zip']
+
+class Model3dBlendType(FileType):
+    verbose_name = ugettext_noop(u'Blender (.blend)')
+    exts = ['blend', 'zip']
 
 class StyType(FileType):
     verbose_name = ugettext_noop(u'LaTeX Style')
