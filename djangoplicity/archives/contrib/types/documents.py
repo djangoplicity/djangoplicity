@@ -27,7 +27,7 @@ __all__ = (
     'PPSType',
     'Model3dObjType',
     'Model3dC4DType',
-    'Model3dSPZType',
+    'Model3dPLYType',
     'Model3dFBXType',
     'Model3dBlendType',
     'StyType',
@@ -119,9 +119,9 @@ class Model3dC4DType( FileType ):
     verbose_name = ugettext_noop( u'Maxon Cinema 4D (.c4d)' )
     exts = ['c4d', 'zip']
 
-class Model3dSPZType(FileType):
-    verbose_name = ugettext_noop(u'Gaussian Splat (.spz)')
-    exts = ['spz', 'zip']
+class Model3dPLYType(FileType):
+    verbose_name = ugettext_noop(u'Polygon File Format (.ply)')
+    exts = ['ply', 'zip']
 
 class Model3dFBXType(FileType):
     verbose_name = ugettext_noop(u'Autodesk FBX (.fbx)')

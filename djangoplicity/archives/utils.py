@@ -274,7 +274,7 @@ def get_instance_resources(instance) -> List[ArchiveResource]:
             ('Obj', ('model_3d_obj', 'Model')),
             ('FBX', ('model_3d_fbx', 'Model')),
             ('BLEND', ('model_3d_blend', 'Model')),
-            ('SPZ', ('model_3d_spz', 'Model')),
+            ('PLY', ('model_3d_ply', 'Model')),
             ('Thumbnail', ('thumb', 'Image')),
         ])
     else:
