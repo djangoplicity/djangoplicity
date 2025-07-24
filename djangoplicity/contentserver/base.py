@@ -95,12 +95,6 @@ class ContentServer(object):
         '''
         return self.url
 
-    def get_file_size(self, resource):
-        """
-        Dummy method for getting file size. Should be overridden by subclasses if needed.
-        """
-        return None
-
     def sync_resources(self, instance, formats=None, delay=False, prefetch=True, purge=True):
         '''
         Synchronise the resources of the given instance to the content server
@@ -135,20 +129,6 @@ class S3ContentServer(ContentServer):
         self.bigfiles_base_url = bigfiles_base_url
         self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
 
-    def get_file_size(self, resource):
-        """
-        Get the file size from S3 for the given resource.
-        Returns the file size in bytes, or None if not found.
-        """
-        s3_key = self.to_s3_path(resource.path)
-        try:
-            response = self.s3_client.head_object(Bucket=self.bucket, Key=s3_key)
-            return response['ContentLength']
-        except Exception as e:
-            import logging
-            logging.getLogger(__name__).warning(f"Could not get S3 file size for {s3_key}: {e}")
-            return None
-
     def get_url(self, resource, format_name):
         # The zoomable is a directory so it doesn't have resource.size, that's why it's tested first
         if format_name != 'zoomable' and self.bigfiles_base_url and resource.size > self.bigfiles_limit:
@@ -177,7 +157,7 @@ class S3ContentServer(ContentServer):
             if not resource:
                 continue
 
-            # Skip the resource if it's a file with size 0
+            # Skip the resource if it's a filewith size 0
             if os.path.isfile(resource.path) and resource.size == 0:
                 logger.warning('S3ContentServer: Skipping empty file: %s', resource.path)
                 continue

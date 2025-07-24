@@ -265,15 +265,14 @@ def process_object_downloads( obj, options ):
                                 'name': m.name,
                                 'title': m.verbose_name,
                                 'url': r.url,
-                                'size': get_resource_size(obj, r), # This one causes the IOError when it tries to get the r.size of the local file as fallback
+                                'size': r.size,
                                 'icon': icon or 'default',
                                 'extra_attrs': '',
                                 'checksum': get_instance_checksum(obj, rname),
                                 'filename': basename(r.name) if r.name else '',
                             })
                         except IOError:
-                            # The file doesn't not exists on the Content Server, and also it is not readable, in ends in here when the get_resource_size causes the IOError when reading resource.size
-                            # we exclude it from the list because if we cannot calculate the size then it's not existing
+                            # File is not readable, we exclude it from the list
                             continue
         else:
             downloads = None
@@ -287,30 +286,6 @@ def process_object_downloads( obj, options ):
         groups.append(download)
 
     return groups
-
-
-def get_resource_size(obj, resource):
-    """
-    Returns the size of the resource, using the content server if available and ready.
-    Falls back to the local resource size if not.
-    """
-    try:
-        media_servers = getattr(settings, 'MEDIA_CONTENT_SERVERS', None)
-        if (
-            media_servers and
-            hasattr(obj, 'content_server') and obj.content_server and
-            hasattr(obj, 'content_server_ready') and obj.content_server_ready and
-            obj.content_server in media_servers
-        ):
-            content_server = media_servers[obj.content_server]
-            if hasattr(content_server, 'get_file_size'):
-                size = content_server.get_file_size(resource)
-                if size is not None:
-                    return size
-    except Exception as e:
-        print(f"Could not get resource size from content server: {e}")
-    # Fallback to local size
-    return resource.size
 
 
 class GenericDetailView( object ):
