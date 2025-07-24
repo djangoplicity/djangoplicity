@@ -246,8 +246,8 @@ class ResourceManager(object):
         for e in self.exts:
             name = '%s.%s' % (base, e)
             localname = '%s.%s' % (localbase, e)
+            ext = e
             if storage.exists(localname):
-                ext = e
                 resource = fileclass(name, storage)
                 break
         else:
@@ -256,7 +256,7 @@ class ResourceManager(object):
                 resource = fileclass(name, storage)
 
         # Check whether a content server is defined for this resource
-        if resource and hasattr(instance, 'content_server') and instance.content_server and instance.content_server_ready:
+        if hasattr(instance, 'content_server') and instance.content_server and instance.content_server_ready:
             try:
                 content_server = MEDIA_CONTENT_SERVERS[instance.content_server]
             except KeyError:
