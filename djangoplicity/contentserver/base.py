@@ -173,7 +173,7 @@ class S3ContentServer(ContentServer):
 
         for fmt in formats:
             # Get the local resource (if any)
-            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt), None)
+            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt + '_only_local_files'), None)
 
             if not resource:
                 continue
@@ -351,7 +351,7 @@ class CDN77ContentServer(ContentServer):
         for fmt in formats:
             # Get the local resource (if any)
             resource = getattr(instance, '%s%s' %
-                (instance.Archive.Meta.resource_fields_prefix, fmt), None)
+                (instance.Archive.Meta.resource_fields_prefix, fmt + '_only_local_files'), None)
 
             if not resource:
                 continue
@@ -502,7 +502,7 @@ class CDN77ContentServer(ContentServer):
                     continue
 
                 # Get the local resource (if any)
-                resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt), None)
+                resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt + '_only_local_files'), None)
 
                 if not resource:
                     continue
@@ -612,7 +612,7 @@ class CDN77ContentServer(ContentServer):
                 continue
 
             # Get the local resource (if any)
-            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt), None)
+            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt + '_only_local_files'), None)
 
             if not resource:
                 continue

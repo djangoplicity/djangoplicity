@@ -344,7 +344,7 @@ class ArchiveBase( ModelBase ):
                 # It returns a File object, so it can be used more or less as if it
                 # was a database FileField.
                 attrs[field_name] = property( partial( base_cls._get_resource, resource_name=attrname ) )
-                attrs[field_name + '_only_content_server'] = property( partial( base_cls._get_resource_only_content_server, resource_name=attrname ) )
+                attrs[field_name + '_only_local_files'] = property( partial( base_cls._get_resource_only_local_files, resource_name=attrname ) )
 
         #
         # Create class
@@ -730,21 +730,21 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
 
         return self._resource_cache[resource_name]
     
-    def _get_resource_only_content_server( self, resource_name ):
+    def _get_resource_only_local_files( self, resource_name ):
         """
         Get resource (a subclass of File) for the specified resource_name.
 
         Result is cached for future accesses to the same resource.
         """
 
-        if not hasattr( self, '_resource_cache_only_content_server' ):
-            self._resource_cache_only_content_server = {}
+        if not hasattr( self, '_resource_cache_only_local_files' ):
+            self._resource_cache_only_local_files = {}
 
-        if resource_name not in self._resource_cache_only_content_server:
+        if resource_name not in self._resource_cache_only_local_files:
             manager = getattr( self.Archive, resource_name )
-            self._resource_cache_only_content_server[resource_name] = manager.get_resource_for_instance( self, only_content_server = True )
+            self._resource_cache_only_local_files[resource_name] = manager.get_resource_for_instance( self, only_local_files = True )
 
-        return self._resource_cache_only_content_server[resource_name]
+        return self._resource_cache_only_local_files[resource_name]
 
     def clear_resource_cache(self):
         '''

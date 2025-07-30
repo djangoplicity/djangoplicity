@@ -502,7 +502,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         if formats and fmt_name not in formats:
             # We only (re)generate formats derived from if they are asked
             # for explicitely and don't already exist
-            if getattr(archive, 'resource_%s' % fmt_name):
+            if getattr(archive, 'resource_%s' % fmt_name + '_only_local_files'):
                 continue
 
         # TODO: 8/16 bits?
@@ -534,7 +534,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         else:
             # If the original file is smaller than the derived format then
             # we use it instead
-            source = getattr(archive, 'resource_%s' % derived)
+            source = getattr(archive, 'resource_%s' % derived + '_only_local_files')
             source_fmt = getattr(model.Archive, derived )
 
             # Use the original if it is smaller than the derived format

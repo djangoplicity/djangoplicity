@@ -217,9 +217,9 @@ def process_object_downloads( obj, options ):
         if 'thumbnails' in group[1]:
             tnails = group[1]["thumbnails"]
             for tr, l in list(tnails.items()):
-                resource_t = getattr( obj, '%s%s' % (obj.Archive.Meta.resource_fields_prefix, tr + '_only_content_server'), False )
+                resource_t = getattr( obj, '%s%s' % (obj.Archive.Meta.resource_fields_prefix, tr), False )
                 if resource_t:
-                    resource_l = getattr( obj, '%s%s' % (obj.Archive.Meta.resource_fields_prefix, l + '_only_content_server'), False )
+                    resource_l = getattr( obj, '%s%s' % (obj.Archive.Meta.resource_fields_prefix, l), False )
                     if resource_l:
                         thumb = (resource_t.url, resource_l.url)
                     else:
@@ -257,7 +257,7 @@ def process_object_downloads( obj, options ):
                         downloads.append( attrs )
                 else:
                     m = getattr( obj.Archive, rname, False )
-                    r = getattr( obj, '%s%s' % (obj.Archive.Meta.resource_fields_prefix, rname + '_only_content_server'), False )
+                    r = getattr( obj, '%s%s' % (obj.Archive.Meta.resource_fields_prefix, rname), False )
 
                     if m and r:
                         try:

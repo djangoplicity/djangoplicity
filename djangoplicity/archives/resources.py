@@ -230,10 +230,10 @@ class ResourceManager(object):
     def __repr__(self):
         return "<%s: %s>" % (self.__class__.__name__, self or "None")
 
-    def get_resource_for_instance( self, instance, fileclass=ResourceFile, only_content_server=False ):
+    def get_resource_for_instance( self, instance, fileclass=ResourceFile, only_local_files=False ):
         """
         Hook for getting the file (resource) for a model instance (can be any model instance).
-        only_content_server informs us if we need to check the local resources or not, this is useful for showing files that are ONLY in the content server like S3 and not locally
+        only_local_files informs us if we need to check the local resources or not, this is useful for showing files that are ONLY in the content server like S3 and not locally
         """
         # Note 'name' has been ingested into the ResourceManager by ArchiveBase
         localbase = os.path.join( _root_for_instance( instance, self.name ), _archive_instance_id( instance ) )
@@ -256,7 +256,7 @@ class ResourceManager(object):
                 # No extension, but the file exists
                 resource = fileclass(name, storage)
 
-        resource_validated_for_content_server = True if only_content_server else resource is not None
+        resource_validated_for_content_server = resource is not None if only_local_files else True
         # Check whether a content server is defined for this resource
         if resource_validated_for_content_server and hasattr(instance, 'content_server') and instance.content_server and instance.content_server_ready:
             try:
@@ -309,11 +309,11 @@ class ImageResourceManager( ResourceManager ):
 
         super( ImageResourceManager, self ).__init__( *args, **kwargs )
 
-    def get_resource_for_instance( self, instance, fileclass=ImageResourceFile, only_content_server=False ):
+    def get_resource_for_instance( self, instance, fileclass=ImageResourceFile, only_local_files=False ):
         """
         Hook for getting the file for this specific resource.
         """
-        return super( ImageResourceManager, self ).get_resource_for_instance( instance, fileclass=ImageResourceFile, only_content_server=only_content_server )
+        return super( ImageResourceManager, self ).get_resource_for_instance( instance, fileclass=ImageResourceFile, only_local_files=only_local_files )
 
 
 class AudioResourceManager(ResourceManager):
