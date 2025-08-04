@@ -58,11 +58,11 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
     Admin interface for ContentServerResource model
     """
     list_display = [
-        'id', 'content_object_link', 'object_id', 'format', 'extension', 'resource_size_display',
+        'id', 'content_object_link', 'content_type', 'object_id', 'format', 'extension', 'resource_size_display',
         'content_server', 'is_active', 'created_at', 'updated_at', 'content_server_link'
     ]
     list_filter = [
-        'format', 'is_directory', 'is_active', 'content_server', 'created_at'
+        'format', 'is_directory', 'is_active', 'content_server', 'content_type'
     ]
     search_fields = [
         'content_server_path', 'format', 'extension', 'checksum'
