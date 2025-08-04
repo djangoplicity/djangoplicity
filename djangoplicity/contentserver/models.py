@@ -30,10 +30,14 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 import logging
+import os
 
 from django.conf import settings
 from django.db import models
 from django.forms import fields
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.core.validators import MinValueValidator
 
 from djangoplicity.contentserver.tasks import sync_content_server
 
@@ -74,6 +78,132 @@ class ContentServerField(models.CharField):
         )
 
 
+class ContentServerResource(models.Model):
+    """
+    Generic model to track content server resources that can be linked to any model.
+    
+    This model stores metadata about resources stored in content servers including:
+    - Format (original, thumbs, screen, ultra_hd), resource size, checksum
+    - Generic foreign key to link to any model
+    - Creation and modification timestamps
+    """
+    
+    # Core resource information
+    format = models.CharField(max_length=30, help_text="The archive format (e.g. original, thumbs, screen, ultra_hd)")
+    extension = models.CharField(max_length=20, blank=True, help_text="File extension (e.g., .tif, .png, .mp4)")
+    resource_size = models.BigIntegerField(
+        validators=[MinValueValidator(0)],
+        help_text="Resource size in bytes"
+    )
+    checksum = models.CharField(max_length=128, blank=True, null=True, help_text="Resource checksum (MD5/SHA256)")
+    
+    # Content server information
+    content_server = ContentServerField(max_length=255, blank=True, default=_get_default_content_server)
+    content_server_path = models.CharField(max_length=500, help_text="Full path on content server")
+    
+    # Generic foreign key to link to any model
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.SlugField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    
+    # Resource type
+    is_directory = models.BooleanField(default=False, help_text="Whether this resource is a directory")
+    
+    # Status and tracking
+    is_active = models.BooleanField(default=True, help_text="Whether the resource is currently active")
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    uploaded_at = models.DateTimeField(null=True, blank=True, help_text="When the resource was uploaded")
+    
+    class Meta:
+        verbose_name = 'Content Server Resource'
+        verbose_name_plural = 'Content Server Resources'
+        indexes = [
+            models.Index(fields=['content_type', 'object_id']),
+            models.Index(fields=['format']),
+            models.Index(fields=['is_directory']),
+            models.Index(fields=['is_active']),
+            models.Index(fields=['created_at']),
+        ]
+    
+    def __str__(self):
+        resource_type = "Directory" if self.is_directory else "File"
+        return f"{resource_type} ({self.format}) - {self.content_server_path}"
+    
+    def save(self, *args, **kwargs):        
+        # Auto-extract extension from content_server_path if not provided
+        if not self.extension and self.content_server_path and not self.is_directory:
+            _, ext = os.path.splitext(self.content_server_path)
+            if ext:
+                self.extension = ext.lower()[1:]  # Remove the leading dot
+        
+        print(f"Saving ContentServerResource: format={self.format}, path={self.content_server_path}, size={self.resource_size}, checksum={self.checksum}")
+        super().save(*args, **kwargs)
+    
+    @classmethod
+    def get_resources_for_model(cls, model_instance):
+        """
+        Get all content server resources for a given model instance
+        """
+        content_type = ContentType.objects.get_for_model(model_instance)
+        return cls.objects.filter(
+            content_type=content_type,
+            object_id=model_instance.pk,
+            is_active=True
+        )
+    
+    @classmethod
+    def get_resources_by_format(cls, model_instance, format_type):
+        """
+        Get content server resources for a given model instance and format
+        """
+        content_type = ContentType.objects.get_for_model(model_instance)
+        return cls.objects.filter(
+            content_type=content_type,
+            object_id=model_instance.pk,
+            format=format_type,
+            is_active=True
+        )
+    
+    @classmethod
+    def get_files_for_model(cls, model_instance):
+        """
+        Get file resources for a given model instance
+        """
+        content_type = ContentType.objects.get_for_model(model_instance)
+        return cls.objects.filter(
+            content_type=content_type,
+            object_id=model_instance.pk,
+            is_directory=False,
+            is_active=True
+        )
+    
+    @classmethod
+    def get_directories_for_model(cls, model_instance):
+        """
+        Get directory resources for a given model instance
+        """
+        content_type = ContentType.objects.get_for_model(model_instance)
+        return cls.objects.filter(
+            content_type=content_type,
+            object_id=model_instance.pk,
+            is_directory=True,
+            is_active=True
+        )
+    
+    def mark_as_deleted(self):
+        """Mark the resource as deleted (soft delete)"""
+        self.is_active = False
+        self.save(update_fields=['is_active', 'updated_at'])
+    
+    def reactivate(self):
+        """Reactivate a deleted resource"""
+        self.is_active = True
+        self.save(update_fields=['is_active', 'updated_at'])
+
+
 class ContentDeliveryModel(models.Model):
     '''
     Base class that archive that use a content server must inherit from
@@ -81,6 +211,7 @@ class ContentDeliveryModel(models.Model):
     content_server = ContentServerField(max_length=255, blank=True,
         default=_get_default_content_server)
     content_server_ready = models.BooleanField(default=False)
+    content_server_resources = GenericRelation(ContentServerResource)
 
     class Meta:
         abstract = True
