@@ -145,21 +145,21 @@ class S3ContentServer(ContentServer):
         Returns the file size in bytes, or None if not found.
         """
         s3_path = self.to_s3_path(resource.path)
-        content_server_resource = ContentServerResource.objects.filter(content_server_path=s3_path).first()
+        content_server_resource = ContentServerResource.objects.filter(content_server_path=s3_path, is_active=True).first()
         if content_server_resource and content_server_resource.resource_size:
+            print(f"S3 LOCAL FILE SIZE?: {s3_path}")
             return content_server_resource.resource_size
         try:
             response = self.s3_client.head_object(Bucket=self.bucket, Key=s3_path)
-            print(f"S3 FILE SIZE?: {s3_path}")
+            print(f"S3 REMOTE FILE SIZE?: {s3_path}")
             return response['ContentLength']
         except Exception as e:
             import logging
             logging.getLogger(__name__).warning(f"Could not get S3 file size for {s3_path}: {e}")
             return None
 
-    def get_url(self, resource, format_name, resource_size=None):
-        if not resource_size:
-            resource_size = self.get_file_size(resource) if resource else None
+    def get_url(self, resource, format_name):
+        resource_size = self.get_file_size(resource) if resource else None
         # The zoomable is a directory so it doesn't have resource.size, that's why it's tested first
         if resource_size and format_name != 'zoomable' and self.bigfiles_base_url and resource_size > self.bigfiles_limit:
             return self.bigfiles_base_url

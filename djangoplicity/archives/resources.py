@@ -284,6 +284,9 @@ class ResourceManager(object):
                     
                     # Try to get the extension from the existing records in the database ContentServerResource
                     resource_record_found = False
+                    if hasattr(instance, 'get_source'):
+                        # If it's a Translation model, get the original source which is linked to the resources
+                        instance = instance.get_source()
                     for resource_obj in instance.content_server_resources.all():
                         if resource_obj.format == self.name and resource_obj.is_active:
                             ext = resource_obj.extension

@@ -308,16 +308,6 @@ def get_resource_size(obj, resource):
             obj.content_server in media_servers
         ):
             content_server = media_servers[obj.content_server]
-            # First, check if we have a ContentServerResource record for this resource
-            resource_path = content_server.to_content_server_path(resource.path)
-            
-            # Look for existing resource record by iterating through content_server_resources
-            for resource_obj in obj.content_server_resources.all():
-                if (resource_obj.content_server_path == resource_path and 
-                    resource_obj.is_active and 
-                    resource_obj.resource_size):
-                    # Return the cached size from database - no expensive content server call needed
-                    return resource_obj.resource_size
             
             if hasattr(content_server, 'get_file_size'):
                 size = content_server.get_file_size(resource)
