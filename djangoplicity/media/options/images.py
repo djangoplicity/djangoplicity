@@ -116,7 +116,7 @@ class ImageOptions( ArchiveOptions ):
         'id', 'title', 'headline', 'description', 'subject_name__name', 'subject_name__alias', 'credit', 'type',
     )
 
-    prefetch_related = ('pictureoftheweek_set', )
+    prefetch_related = ('pictureoftheweek_set', 'content_server_resources')
     archive_list_only_fields = (
         'id', 'title', 'width', 'height', 'credit', 'lang', 'source',
         'content_server', 'content_server_ready'

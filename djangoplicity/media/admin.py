@@ -251,7 +251,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     ordering = ('-last_modified', )
     richtext_fields = ('description', 'credit')
     readonly_fields = ('id', 'content_server_ready', 'constellation')
-    actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_reimport_zoomable', 'action_resync_resources', 'edit_bulk_credit_action']
+    actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_reimport_zoomable', 'action_resync_content_server_resources_model', 'action_resync_resources', 'edit_bulk_credit_action']
     inlines = [ ImageExposureInlineAdmin, ImageContactInlineAdmin ]
 
     def get_credit(self, obj):

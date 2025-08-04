@@ -40,6 +40,9 @@ from django.core.mail import send_mail
 from djangoplicity.archives.loading import get_archives
 from djangoplicity.celery.serialtaskset import str_keys
 from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
+from django.contrib.contenttypes.models import ContentType
+from djangoplicity.archives.utils import get_all_possible_instance_formats, get_instance_checksum, initialize_resource
+
 
 logger = get_task_logger(__name__)
 
@@ -79,8 +82,84 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
         try:
             content_server = MEDIA_CONTENT_SERVERS[instance.content_server]
             content_server.sync_resources(instance, formats, delay, prefetch, purge)
+            sync_content_server_resources_model(module_path, cls_name, instance_id)
         except KeyError:
-            logger.warning('Unkown content server: "%s" for %s: "%s"',
+            logger.warning('Unknown content server: "%s" for %s: "%s"',
+                instance.content_server, cls, instance.id)
+
+    # send_task callback
+    if sendtask_callback:
+        args, kwargs = sendtask_callback  # pylint: disable=W0633
+        current_app.send_task(*args, **str_keys(kwargs))
+
+
+@task
+def sync_content_server_resources_model(module_path, cls_name, instance_id, sendtask_callback=None, sendtask_tasksetid=None):
+    '''
+    This task will create or update the records in the ContentServerResource model 
+    which is used to know which files are available in the content server, 
+    and also the extensions, file sizes, etc
+    '''
+    from djangoplicity.contentserver.models import ContentServerResource
+
+    # Dynamically import the class
+    module = import_module(module_path)
+    cls = getattr(module, cls_name)
+
+    try:
+        instance = cls.objects.get(id=instance_id)
+    except cls.DoesNotExist:
+        logger.warning('Could not find archive "%s" (%s)', instance_id, cls)
+        return
+
+    if hasattr(instance, 'content_server') and instance.content_server and instance.content_server_ready:
+        try:
+            content_server = MEDIA_CONTENT_SERVERS[instance.content_server]
+            if not content_server.requires_local_files:
+                content_type = ContentType.objects.get_for_model(instance)
+                formats = get_all_possible_instance_formats(instance)
+
+                for format in formats:
+                    # Create or update ContentServerResource record for future use
+                    try:
+                        resource_manager = getattr(instance.Archive, format, None)
+                        resource_path = None
+                        is_directory = False
+                        # Try all extensions to know if the file with the extension already exist in the content server
+                        for content_server_ext in resource_manager.exts:
+                            resource = initialize_resource(instance, format, content_server_ext)
+                            if content_server.resource_exists(resource):
+                                resource_path = content_server.to_content_server_path(resource.path)
+                                size = content_server.get_file_size(resource)
+                                break
+                        else:
+                            # Fallback to check if directory exists, like for zoomable
+                            resource = initialize_resource(instance, format)
+                            if content_server.resource_exists(resource):
+                                resource_path = content_server.to_content_server_path(resource.path)
+                                size = 0
+                                is_directory = True
+                        
+                        if resource_path:
+                            # Create or update the ContentServerResource
+                            ContentServerResource.objects.update_or_create(
+                                content_type=content_type,
+                                object_id=instance.pk,
+                                content_server_path=resource_path,
+                                defaults={
+                                    'format': format,
+                                    'resource_size': size,
+                                    'checksum': get_instance_checksum(instance, format),
+                                    'content_server': instance.content_server,
+                                    'is_directory': is_directory,
+                                    'is_active': True
+                                }
+                            )
+                        
+                    except Exception as e:
+                        print(f"Could not create/update ContentServerResource: {e}")
+        except KeyError:
+            logger.warning('Unknown content server: "%s" for %s: "%s"',
                 instance.content_server, cls, instance.id)
 
     # send_task callback

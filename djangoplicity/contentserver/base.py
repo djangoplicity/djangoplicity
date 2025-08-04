@@ -64,6 +64,8 @@ def chunks(l, n):
 
 @python_2_unicode_compatible
 class ContentServer(object):
+    requires_local_files = True # Wether the content server requires the local copy of the files or not, this is not the case for S3 which can work if the local files exists or not
+    
     def __init__(self, name, formats=None, url='', remote_dir=''):
         '''
         * name: Human friendly name of the Content server
@@ -123,6 +125,7 @@ class ContentServer(object):
 
 class S3ContentServer(ContentServer):
     supports_all_formats = True
+    requires_local_files = False
     name = 'S3'
 
     def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None):
@@ -136,21 +139,27 @@ class S3ContentServer(ContentServer):
         self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
 
     def get_file_size(self, resource):
+        from djangoplicity.contentserver.models import ContentServerResource
         """
         Get the file size from S3 for the given resource.
         Returns the file size in bytes, or None if not found.
         """
-        s3_key = self.to_s3_path(resource.path)
+        s3_path = self.to_s3_path(resource.path)
+        content_server_resource = ContentServerResource.objects.filter(content_server_path=s3_path).first()
+        if content_server_resource and content_server_resource.resource_size:
+            return content_server_resource.resource_size
         try:
-            response = self.s3_client.head_object(Bucket=self.bucket, Key=s3_key)
+            response = self.s3_client.head_object(Bucket=self.bucket, Key=s3_path)
+            print(f"S3 FILE SIZE?: {s3_path}")
             return response['ContentLength']
         except Exception as e:
             import logging
-            logging.getLogger(__name__).warning(f"Could not get S3 file size for {s3_key}: {e}")
+            logging.getLogger(__name__).warning(f"Could not get S3 file size for {s3_path}: {e}")
             return None
 
-    def get_url(self, resource, format_name):
-        resource_size = self.get_file_size(resource) if resource else None
+    def get_url(self, resource, format_name, resource_size=None):
+        if not resource_size:
+            resource_size = self.get_file_size(resource) if resource else None
         # The zoomable is a directory so it doesn't have resource.size, that's why it's tested first
         if resource_size and format_name != 'zoomable' and self.bigfiles_base_url and resource_size > self.bigfiles_limit:
             return self.bigfiles_base_url
@@ -158,6 +167,38 @@ class S3ContentServer(ContentServer):
             return self.base_url
         
         return 'https://%s.s3.amazonaws.com/media' % (self.bucket,)
+
+    def resource_exists(self, resource):
+        s3_path = self.to_s3_path(resource.path)
+        print('S3 RESOURCE EXISTS?: ' + s3_path)
+        # If the s3_path does not have an extension, treat it as a directory
+        if '.' not in s3_path.split('/')[-1]:
+            return self.directory_exists(s3_path)
+        return self.file_exists(s3_path)
+
+    def file_exists(self, s3_path):
+        """
+        Check if a file exists in the S3 bucket at the given s3_path.
+        Returns True if the file exists, False otherwise.
+        """
+        try:
+            self.s3_client.head_object(Bucket=self.bucket, Key=s3_path)
+            return True
+        except self.s3_client.exceptions.NoSuchKey:
+            return False
+        except Exception:
+            # For any other error (e.g., forbidden, etc.), treat as not found
+            return False
+        
+    def directory_exists(self, dir):
+        if not dir.endswith('/'):
+            dir += '/'
+        
+        response = self.s3_client.list_objects_v2(Bucket=self.bucket, Prefix=dir, MaxKeys=1)
+        return 'Contents' in response
+
+    def to_content_server_path(self, local_path):
+        return self.to_s3_path(local_path)
 
     def to_s3_path(self, local_path):
         remote_path = local_path.replace(settings.BASE_DIR, '')

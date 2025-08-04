@@ -247,8 +247,8 @@ class ResourceManager(object):
         for e in self.exts:
             name = '%s.%s' % (base, e)
             localname = '%s.%s' % (localbase, e)
-            ext = e
             if storage.exists(localname):
+                ext = e
                 resource = fileclass(name, storage)
                 break
         else:
@@ -281,11 +281,22 @@ class ResourceManager(object):
                     url = os.path.join(content_server.get_url(resource, self.name), instance.Archive.Meta.root)
                     storage = FileSystemStorage(base_url=url, location=new_location)
                     base = os.path.join(self.name, _archive_instance_id( instance ))
-                    if ext:
-                        base += '.%s' % ext
+                    
+                    # Try to get the extension from the existing records in the database ContentServerResource
+                    resource_record_found = False
+                    for resource_obj in instance.content_server_resources.all():
+                        if resource_obj.format == self.name and resource_obj.is_active:
+                            ext = resource_obj.extension
+                            resource_record_found = True
+                            break
 
-                    # We updated the based and storage so we update the resource object:
-                    resource = fileclass(base, storage)
+                    if resource_record_found:
+                        # The resource if found, then we can return it using the content server URL
+                        if ext:
+                            # The extension is found either when the local files exists or when the ContentServerResource record is found
+                            base += '.%s' % ext
+                        # We updated the based and storage so we update the resource object:
+                        resource = fileclass(base, storage)
 
         return resource
 

@@ -18,6 +18,7 @@ import logging
 from math import ceil
 from os.path import isfile
 from time import sleep
+import os
 
 from django.conf import settings
 from django.core.cache import cache
@@ -31,6 +32,8 @@ from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.translation.models import TranslationModel
 from djangoplicity.utils.d2d import D2dDict
 from djangoplicity.archives.typings import ArchiveResource
+from djangoplicity.archives.resources import ResourceFile, _archive_instance_id, _root_for_instance
+from django.core.files.storage import FileSystemStorage
 
 
 class FormatTokenGenerator( object ):
@@ -212,6 +215,14 @@ def get_instance_archives(instance):
     return [x for x in dir(instance.Archive) if
         isinstance(getattr(instance.Archive, x), ResourceManager ) and
         getattr(instance, 'resource_%s' % x) is not None]
+
+
+def initialize_resource(instance, format, ext=None):
+    localbase = os.path.join( _root_for_instance(instance, format), _archive_instance_id(instance) )
+    storage = FileSystemStorage()
+    if ext:
+        localbase += '.' + ext
+    return ResourceFile(localbase, storage)
 
 
 def get_instance_resources(instance) -> List[ArchiveResource]:
