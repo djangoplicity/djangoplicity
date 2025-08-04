@@ -402,7 +402,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     ordering = ('-last_modified', )
     richtext_fields = ('description', 'credit', )
     readonly_fields = ('content_server_ready', )
-    actions = ['action_toggle_published', 'action_toggle_featured', 'action_update_subtitles', 'action_reimport', 'action_video_extras', 'action_resync_resources', 'action_youtube_upload', 'action_generate_thumbnail']
+    actions = ['action_toggle_published', 'action_toggle_featured', 'action_update_subtitles', 'action_reimport', 'action_video_extras', 'action_resync_resources', 'action_resync_content_server_resources_model', 'action_youtube_upload', 'action_generate_thumbnail']
     inlines = [ VideoContactInlineAdmin ]
 
     class Media:
