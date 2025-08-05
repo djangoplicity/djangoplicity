@@ -147,7 +147,6 @@ class S3ContentServer(ContentServer):
         s3_path = self.to_s3_path(resource.path)
         content_server_resource = ContentServerResource.objects.filter(content_server_path=s3_path, is_active=True).first()
         if content_server_resource and content_server_resource.resource_size:
-            print(f"S3 LOCAL FILE SIZE?: {s3_path}")
             return content_server_resource.resource_size
         try:
             response = self.s3_client.head_object(Bucket=self.bucket, Key=s3_path)
@@ -225,7 +224,7 @@ class S3ContentServer(ContentServer):
                 continue
             
             remote_path = self.to_s3_path(resource.path)
-            # There are some archive types thatt are directories, like the zoomable and the virtualtours
+            # There are some archive types that are directories, like the zoomable and the virtualtours
             if os.path.isdir(resource.path):
                 logger.info('S3ContentServer: Uploading directory %s to %s:%s', resource.name, self.bucket, remote_path)
                 
