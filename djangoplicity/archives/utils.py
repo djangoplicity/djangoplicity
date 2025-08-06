@@ -391,7 +391,10 @@ def get_instance_d2d_resource(instance, resource_name, name, media_type):
         web_categories = []
 
     # Skip non-file resources (e.g. zoomable):
-    if not resource or not isfile(resource.path):
+    if not resource:
+        return {}
+    
+    if not getattr(resource, 'is_from_content_server', False) and not isfile(resource.path):
         return {}
 
     if instance.__class__.__name__ == 'Image':
@@ -440,7 +443,7 @@ def get_instance_d2d_resource(instance, resource_name, name, media_type):
         ('ResourceType', name),
         ('MediaType', media_type),
         ('URL', resource.absolute_url),
-        ('FileSize', resource.size),
+        ('FileSize', get_resource_size(instance, resource)),
         ('Dimensions', get_resource_dimension(instance, resource_name)),
         ('HorizontalFOV', fov_x),
         ('VerticalFOV', fov_y),
@@ -461,13 +464,16 @@ def get_instance_d2d_resources(instance):
         resource = getattr(instance, 'resource_%s' % x)
 
         # Skip non-file resources (e.g. zoomable):
-        if not resource or not isfile(resource.path):
+        if not resource:
+            continue
+
+        if not getattr(resource, 'is_from_content_server', False) and not isfile(resource.path):
             continue
 
         result.append(D2dDict([
             ('ResourceType', x),
             ('URL', resource.absolute_url),
-            ('FileSize', resource.size),
+            ('FileSize', get_resource_size(instance, resource)),
         ]))
 
         # Checking the size apparently opens the file, we close it to prevent
@@ -475,6 +481,51 @@ def get_instance_d2d_resources(instance):
         resource.close()
 
     return result
+
+
+def get_resource_size(obj, resource):
+    """
+    Returns the size of the resource, checking ContentServerResource first to avoid expensive content server calls.
+    Falls back to content server get_file_size if no record exists, then to local resource size.
+    
+    Args:
+        obj: The model instance
+        resource: The resource object
+        format_type: The format of the resource (e.g., 'original', 'thumbs', 'screen', 'ultra_hd')
+    """
+    try:
+        media_servers = getattr(settings, 'MEDIA_CONTENT_SERVERS', None)
+        if (
+            media_servers and
+            hasattr(obj, 'content_server') and obj.content_server and
+            hasattr(obj, 'content_server_ready') and obj.content_server_ready and
+            obj.content_server in media_servers
+        ):
+            content_server = media_servers[obj.content_server]
+            # First, check if we have a ContentServerResource record for this resource
+            resource_path = content_server.to_content_server_path(resource.path)
+            
+            # Look for existing resource record by iterating through content_server_resources
+            source = obj
+            if hasattr(obj, 'get_source'):
+                # If it's a Translation model, get the original source which is linked to the resources
+                source = obj.get_source()
+            for resource_obj in source.content_server_resources.all():
+                if (resource_obj.content_server_path == resource_path and 
+                    resource_obj.is_active and 
+                    resource_obj.resource_size):
+                    # Return the cached size from database - no expensive content server call needed
+                    return resource_obj.resource_size
+            
+            if hasattr(content_server, 'get_file_size'):
+                size = content_server.get_file_size(resource)
+                if size is not None:
+                    return size
+    except Exception as e:
+        print(f"Could not get resource size from content server: {e}")
+    
+    # Fallback to local size
+    return resource.size
 
 
 def get_instance_checksum(instance, resource_name):
