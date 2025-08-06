@@ -159,7 +159,8 @@ class S3ContentServer(ContentServer):
 
     def get_url(self, resource, format_name):
         # Resources like zoomable are directories, so they doesn't have resource.size, that's this is tested first
-        resource_size = self.get_file_size(resource) if resource and not self.is_directory(resource) else None
+        # resource_size = self.get_file_size(resource) if resource and not self.is_directory(resource) else None
+        resource_size = None
         if resource_size and self.bigfiles_base_url and resource_size > self.bigfiles_limit:
             return self.bigfiles_base_url
         if self.base_url:
