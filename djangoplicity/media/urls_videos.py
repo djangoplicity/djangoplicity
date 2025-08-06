@@ -36,7 +36,7 @@ from djangoplicity.media.d2d.views import D2dVideoList
 from djangoplicity.media.options import VideoOptions
 
 urlpatterns = [
-    # url(r'd2d/$', D2dVideoList.as_view()),
+    url(r'd2d/$', D2dVideoList.as_view()),
 ]
 
 urlpatterns += urlpatterns_for_options( VideoOptions )
