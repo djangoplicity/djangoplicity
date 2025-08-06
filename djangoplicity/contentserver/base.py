@@ -158,24 +158,20 @@ class S3ContentServer(ContentServer):
             return None
 
     def get_url(self, resource, format_name):
-        # Resources like zoomable are directories, so they doesn't have resource.size, that's this is tested first
-        resource_size = self.get_file_size(resource) if resource and not self.is_directory(resource) else None
-        if resource_size and self.bigfiles_base_url and resource_size > self.bigfiles_limit:
+        resource_size = self.get_file_size(resource) if resource else None
+        # The zoomable is a directory so it doesn't have resource.size, that's why it's tested first
+        if resource_size and format_name != 'zoomable' and self.bigfiles_base_url and resource_size > self.bigfiles_limit:
             return self.bigfiles_base_url
         if self.base_url:
             return self.base_url
         
         return 'https://%s.s3.amazonaws.com/media' % (self.bucket,)
 
-    def is_directory(self, resource):
-        s3_path = self.to_s3_path(resource.path)
-        # If the s3_path does not have an extension, treat it as a directory
-        return '.' not in s3_path.split('/')[-1]
-
     def resource_exists(self, resource):
         s3_path = self.to_s3_path(resource.path)
         print('S3 RESOURCE EXISTS?: ' + s3_path)
-        if self.is_directory(resource):
+        # If the s3_path does not have an extension, treat it as a directory
+        if '.' not in s3_path.split('/')[-1]:
             return self.directory_exists(s3_path)
         return self.file_exists(s3_path)
 
