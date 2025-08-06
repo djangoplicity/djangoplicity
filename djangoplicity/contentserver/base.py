@@ -145,12 +145,12 @@ class S3ContentServer(ContentServer):
         Returns the file size in bytes, or None if not found.
         """
         s3_path = self.to_s3_path(resource.path)
-        content_server_resource = ContentServerResource.objects.filter(content_server_path=s3_path, is_active=True).first()
-        if content_server_resource and content_server_resource.resource_size:
-            return content_server_resource.resource_size
+        resource_size = ContentServerResource.objects.filter(content_server_path=s3_path, is_active=True).values_list('resource_size', flat=True).first()
+        if resource_size:
+            return resource_size
         try:
+            logger.info(f"S3 REMOTE FILE SIZE?: {s3_path}")
             response = self.s3_client.head_object(Bucket=self.bucket, Key=s3_path)
-            print(f"S3 REMOTE FILE SIZE?: {s3_path}")
             return response['ContentLength']
         except Exception as e:
             import logging
