@@ -17,6 +17,7 @@ from django.contrib.sites.models import Site
 from django.core.cache import cache
 
 from django.http import Http404
+from djangoplicity.archives.utils import get_resource_size
 from djangoplicity.feeds import conf as feedsconf
 from djangoplicity.feeds.feeds import DjangoplicityFeed
 
@@ -194,14 +195,14 @@ class DjangoplicityArchiveFeed( DjangoplicityFeed ):
             return file.absolute_url
         return None
 
-    def item_enclosure_length( self, item ):
+    def item_enclosure_length(self, item):
         """
         File size of meia enclosure
         """
-        file = self._get_resource( item )
+        file = self._get_resource(item)
         if file:
-            size = int( file.size )
-            if not file.closed:
+            size = int(get_resource_size(item, file))
+            if not getattr(file, 'is_from_content_server', False) and not file.closed:
                 file.close()
             return size
         else:
