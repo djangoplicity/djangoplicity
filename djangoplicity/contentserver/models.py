@@ -126,6 +126,7 @@ class ContentServerResource(models.Model):
             models.Index(fields=['is_directory']),
             models.Index(fields=['is_active']),
             models.Index(fields=['created_at']),
+            models.Index(fields=['content_server_path', 'is_active']),
         ]
     
     def __str__(self):
