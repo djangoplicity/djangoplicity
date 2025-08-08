@@ -41,6 +41,7 @@ from djangoplicity.media.models import Image, Video, PictureOfTheWeek
 from djangoplicity.media.options import ImageOptions, VideoOptions, \
     PictureOfTheWeekOptions
 from djangoplicity.utils.datetimes import timestring_to_seconds
+from djangoplicity.archives.utils import get_resource_size
 
 
 class VideoFeed( DjangoplicityArchiveFeed ):
@@ -241,13 +242,13 @@ class PictureOfTheWeekFeed( DjangoplicityArchiveFeed ):
         if item.image:
             im = item.image
             if im.resource_screen:
-                return int(im.resource_screen.size)
+                return int(get_resource_size(item.image, im.resource_screen))
             else:
                 return None
         elif item.video:
             vi = item.video
             if vi.resource_hd_and_apple:
-                return int(vi.resource_hd_and_apple.size)
+                return int(get_resource_size(item.image, vi.resource_hd_and_apple))
             else:
                 return None
 
