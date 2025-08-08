@@ -44,6 +44,7 @@ from botocore.config import Config as BotocoreConfig
 from requests.exceptions import ConnectionError
 
 from django.conf import settings
+from django.core.cache import cache
 from six import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
@@ -127,6 +128,8 @@ class S3ContentServer(ContentServer):
     supports_all_formats = True
     requires_local_files = False
     name = 'S3'
+    resource_size_cache_timeout = 60 * 5  # seconds
+    resource_size_cache_negative_timeout = 60 * 3  # seconds for failures/missing
 
     def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None):
         config = None
@@ -141,26 +144,53 @@ class S3ContentServer(ContentServer):
     def get_file_size(self, resource):
         from djangoplicity.contentserver.models import ContentServerResource
         """
-        Get the file size from S3 for the given resource.
+        Get the file size from cache/DB/S3 for the given resource.
         Returns the file size in bytes, or None if not found.
         """
         s3_path = self.to_s3_path(resource.path)
-        resource_size = ContentServerResource.objects.filter(content_server_path=s3_path, is_active=True).values_list('resource_size', flat=True).first()
-        if resource_size:
+        cache_key = f"s3_resource_size:{self.bucket}:{s3_path}"
+
+        cached_value = cache.get(cache_key)
+        if cached_value is not None:
+            if cached_value == -1:
+                return None
+            return cached_value
+
+        # Try DB first
+        resource_size = ContentServerResource.objects.filter(
+            content_server_path=s3_path, is_active=True
+        ).values_list('resource_size', flat=True).first()
+
+        if resource_size is not None:
+            cache.set(cache_key, resource_size, timeout=self.resource_size_cache_timeout)
             return resource_size
+
+        # Fall back to S3 HEAD request
         try:
             logger.info(f"S3 REMOTE FILE SIZE?: {s3_path}")
             response = self.s3_client.head_object(Bucket=self.bucket, Key=s3_path)
-            return response['ContentLength']
+            size = response['ContentLength']
+            cache.set(cache_key, size, timeout=self.resource_size_cache_timeout)
+            return size
         except Exception as e:
             import logging
             logging.getLogger(__name__).warning(f"Could not get S3 file size for {s3_path}: {e}")
+            # Negative cache to avoid repeated DB/S3 calls for a while
+            cache.set(cache_key, -1, timeout=self.resource_size_cache_negative_timeout)
             return None
 
     def get_url(self, resource, format_name):
         # Resources like zoomable are directories, so they doesn't have resource.size, that's this is tested first
-        # resource_size = self.get_file_size(resource) if resource and not self.is_directory(resource) else None
         resource_size = None
+        if resource and not self.is_directory(resource):
+            # For common image formats that are known to be small, avoid the remote size lookup
+            try:
+                _, extension = os.path.splitext(resource.path or '')
+            except Exception:
+                extension = ''
+            extension = extension.lower()
+            if extension not in ('.jpg', '.png'):
+                resource_size = self.get_file_size(resource)
         if resource_size and self.bigfiles_base_url and resource_size > self.bigfiles_limit:
             return self.bigfiles_base_url
         if self.base_url:
