@@ -107,21 +107,21 @@ class ReleaseOptions( ArchiveOptions ):
     )
 
     class Queries( object ):
-        default = AllPublicQuery( browsers=( 'normal', 'viewall', 'json', 'minijson', 'ical' ), verbose_name=ugettext_noop("Press Releases"), feed_name="default", select_related='release_type' )
+        default = AllPublicQuery( browsers=( 'normal', 'viewall', 'minijson', 'ical' ), verbose_name=ugettext_noop("Press Releases"), feed_name="default", select_related='release_type' )
         program = ProgramPublicQuery(relation_field='programs',
-                                     browsers=('normal', 'json', 'minijson' ),
+                                     browsers=('normal', 'minijson' ),
                                      verbose_name=ugettext_noop("Press Releases: %(title)s"),
                                      extra_templates=[],
                                      category_type='Releases', feed_name='programs')
-        embargo = EmbargoQuery( browsers=( 'normal', 'viewall', 'json', 'minijson', 'ical'  ), verbose_name=ugettext_noop("Embargoed Press Releases"), select_related='release_type' )
-        staging = StagingQuery( browsers=( 'normal', 'viewall', 'json', 'minijson', 'ical'  ), verbose_name=ugettext_noop("Press Releases (staging)"), select_related='release_type' )
-        year = YearQuery( browsers=( 'normal', 'viewall', 'json', 'minijson', 'ical' ), verbose_name=ugettext_noop("Press Releases %d"), feed_name="default", select_related='release_type' )
-        search = AdvancedSearchQuery( browsers=( 'normal', 'viewall', 'json' ), verbose_name=ugettext_noop("Advanced press release search"), searchable=False )
+        embargo = EmbargoQuery( browsers=( 'normal', 'viewall', 'minijson', 'ical'  ), verbose_name=ugettext_noop("Embargoed Press Releases"), select_related='release_type' )
+        staging = StagingQuery( browsers=( 'normal', 'viewall', 'minijson', 'ical'  ), verbose_name=ugettext_noop("Press Releases (staging)"), select_related='release_type' )
+        year = YearQuery( browsers=( 'normal', 'viewall', 'minijson', 'ical' ), verbose_name=ugettext_noop("Press Releases %d"), feed_name="default", select_related='release_type' )
+        search = AdvancedSearchQuery( browsers=( 'normal', 'viewall' ), verbose_name=ugettext_noop("Advanced press release search"), searchable=False )
 
     class Browsers( object ):
         normal = ListBrowser()
         viewall = ListBrowser( verbose_name=ugettext_noop('View all'), paginate_by=100 )
-        json = SerializationBrowser( serializer=ReleaseSerializer, emitter=JSONEmitter, paginate_by=20, display=False, verbose_name=_( "JSON" ) )
+        # json = SerializationBrowser( serializer=ReleaseSerializer, emitter=JSONEmitter, paginate_by=20, display=False, verbose_name=_( "JSON" ) )
         minijson = SerializationBrowser( serializer=MiniReleaseSerializer, emitter=JSONEmitter, paginate_by=10, display=False, include_pagination_data_in_response=True, verbose_name=_( "JSON" ) )
         ical = SerializationBrowser( serializer=ICalReleaseSerializer, emitter=ICalEmitter, paginate_by=100, display=False, verbose_name=_( "iCal" ) )
 
