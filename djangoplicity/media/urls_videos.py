@@ -30,13 +30,18 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 from django.conf.urls import url
+from django.conf import settings
 
 from djangoplicity.archives.urls import urlpatterns_for_options
 from djangoplicity.media.d2d.views import D2dVideoList
 from djangoplicity.media.options import VideoOptions
 
-urlpatterns = [
-    url(r'd2d/$', D2dVideoList.as_view()),
-]
+urlpatterns = []
+
+# Only include d2d URL if not disabled by setting
+if getattr(settings, 'ENABLE_D2D_FEEDS', True):
+    urlpatterns.append(
+        url(r'd2d/$', D2dVideoList.as_view())
+    )
 
 urlpatterns += urlpatterns_for_options( VideoOptions )

@@ -30,6 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 from django.conf.urls import url
+from django.conf import settings
 
 from djangoplicity.archives.urls import urlpatterns_for_options
 from djangoplicity.media.d2d.views import D2dImageList
@@ -38,7 +39,12 @@ from djangoplicity.media.views import image_passthrough
 
 urlpatterns = [
     url( r'^download/(?P<token>[-\w]+)/(?P<format>[-\w]+)/(?P<id>[-\w]+)\.(?P<ext>[-\w]+)$', image_passthrough, name='images_passthrough' ),
-    url(r'd2d/$', D2dImageList.as_view()), # Any image URL that ends with d2d/ goes to this REST Framework view
 ]
+
+# Only include d2d URL if not disabled by setting
+if getattr(settings, 'ENABLE_D2D_FEEDS', True):
+    urlpatterns.append(
+        url(r'd2d/$', D2dImageList.as_view()), # Any image URL that ends with d2d/ goes to this REST Framework view
+    )
 
 urlpatterns += urlpatterns_for_options( ImageOptions )
