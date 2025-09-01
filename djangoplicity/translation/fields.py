@@ -96,7 +96,7 @@ class TranslationForeignKey(ForeignKey):
         ForwardManyToOneDescriptor is replaced by TranslationForwardManyToOneDescriptor and
         only_sources passed as argument
         '''
-        super(RelatedField, self).contribute_to_class(cls, name, private_only=private_only, **kwargs)  # pylint: disable=E1003
+        super(TranslationForeignKey, self).contribute_to_class(cls, name, private_only=private_only, **kwargs)  # pylint: disable=E1003
 
         self.opts = cls._meta
 
