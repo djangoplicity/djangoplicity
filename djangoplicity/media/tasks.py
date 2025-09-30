@@ -816,7 +816,7 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendta
         if position == 'middle':
             position = int(v.duration_in_seconds() / 2)
 
-        cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 {output}'.format(position=position, input=path, output=output)
+        cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 -vf "format=rgb24" {output}'.format(position=position, input=path, output=output)
         if force_generation:
             cmd += ' -y' # To overwrite image
         else:
