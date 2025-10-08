@@ -15,7 +15,7 @@ def replace_storage_domain(url: str, program: str):
         return url 
 
     if program == GEMINI_SLUG:
-        url = url.replace(TEST_DOMAIN, GEMINI_DOMAIN)
+        url = url.replace(DEFAULT_STORAGE_DOMAIN, GEMINI_DOMAIN)
         return url
     
     return url
