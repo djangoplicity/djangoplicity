@@ -11,6 +11,8 @@ from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 from djangoplicity.metadata.api.v2.serializers import CategorySerializer
 from .typings import ImageFormatsURLs, VideoFormatsURLs
 
+from djangoplicity.utils.domain_rewrite import has_gemini_category, replace_gemini_domains
+
 
 IMAGE__TINY_FORMATS = ['thumb300y', 'screen', 'thumb700x']
 ImageTinyFormatsURLs = TypedDict('ImageFormatsURLs', dict(map(lambda x: (x, Optional[str]), IMAGE__TINY_FORMATS)))
@@ -39,17 +41,38 @@ class ImageMiniSerializer(ImageSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = ['id', 'url', 'lang', 'source', 'title', 'width', 'height', 'featured', 'categories', 'formats']
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
         
+        context = self.context or {}
+
+        if context.get('has_gemini_program') or has_gemini_category(data.get('categories', [])):
+            data = replace_gemini_domains(data)
         
+        return data
+
 class ImageTinySerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
     formats = serializers.SerializerMethodField()
+    categories = CategorySerializer(many=True, source='web_category')
 
     class Meta:
         model = Image
-        fields = ['id', 'url', 'lang', 'source', 'title', 'width', 'height', 'formats']
+        fields = ['id', 'url', 'lang', 'source', 'title', 'width', 'height', 'categories', 'formats']
 
     def get_formats(self, obj) -> ImageTinyFormatsURLs:
         return get_all_instance_archives_urls(obj, IMAGE__TINY_FORMATS)
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        if has_gemini_category(data.get('categories', [])):
+            data = replace_gemini_domains(data)
+
+        # Remove categories from tiny serializer output
+        data.pop('categories', None)
+
+        return data
 
 
 class ImageSerializer(ImageSerializerMixin, serializers.ModelSerializer):
@@ -65,7 +88,18 @@ class ImageSerializer(ImageSerializerMixin, serializers.ModelSerializer):
 
     def get_resources(self, obj) -> List[ArchiveResource]:
         return get_instance_resources(obj)
+    
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        context = self.context or {}
+
+        if context.get('has_gemini_program') or has_gemini_category(data.get('categories', [])):
+            data = replace_gemini_domains(data)
+        
+        return data
+    
 
 class VideoMiniSerializer(VideoSerializerMixin, serializers.ModelSerializer):
     class Meta:
@@ -76,6 +110,16 @@ class VideoMiniSerializer(VideoSerializerMixin, serializers.ModelSerializer):
         ]
 
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        context = self.context or {}
+
+        if context.get('has_gemini_program') or has_gemini_category(data.get('categories', [])):
+            data = replace_gemini_domains(data)
+
+        return data
+
 class VideoSerializer(VideoSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Video
@@ -83,3 +127,14 @@ class VideoSerializer(VideoSerializerMixin, serializers.ModelSerializer):
             'id', 'url', 'lang', 'source', 'title', 'headline', 'description', 'categories', 'type', 'credit',
             'release_date', 'featured', 'duration', 'youtube_video_id', 'use_youtube', 'formats'
         ]
+
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        context = self.context or {}
+
+        if context.get('has_gemini_program') or has_gemini_category(data.get('categories', [])):
+            data = replace_gemini_domains(data)
+
+        return data
