@@ -7,7 +7,7 @@ from djangoplicity.media.api.v2.serializers import ImageMiniSerializer, VideoMin
 from djangoplicity.metadata.api.v2.serializers import ProgramSerializer
 from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
-from djangoplicity.utils.domain_rewrite import has_gemini_program
+from djangoplicity.utils.domain_rewrite import has_gemini_program_request
 
 
 class ReleaseSerializerMixin(ArchiveSerializerMixin):
@@ -47,7 +47,9 @@ class ReleaseMiniSerializer(ReleaseSerializerMixin, serializers.ModelSerializer)
         images = related_archive_items(Release.related_images, obj)
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
         if images:
-            has_gemini_program_flag = has_gemini_program(obj.programs.all())
+            request = self.context.get('request')
+
+            has_gemini_program_flag = has_gemini_program_request(request)
             context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
 
             return ImageMiniSerializer(images[0], context=context).data
@@ -69,17 +71,9 @@ class ReleaseSerializer(ReleaseSerializerMixin, serializers.ModelSerializer):
     @extend_schema_field(ImageMiniSerializer(many=True))
     def get_images(self, obj):
         images = related_archive_items(Release.related_images, obj)
-
-        has_gemini_program_flag = has_gemini_program(obj.programs.all())
-        context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
-        
-        return ImageMiniSerializer(images, many=True, context=context).data
+        return ImageMiniSerializer(images, many=True).data
 
     @extend_schema_field(VideoMiniSerializer(many=True))
     def get_videos(self, obj):
         videos = related_archive_items(Release.related_videos, obj)
-
-        has_gemini_program_flag = has_gemini_program(obj.programs.all())
-        context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
-
-        return VideoMiniSerializer(videos, many=True, context=context).data
+        return VideoMiniSerializer(videos, many=True).data
