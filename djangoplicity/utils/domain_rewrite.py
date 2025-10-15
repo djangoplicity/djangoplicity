@@ -21,20 +21,29 @@ def replace_storage_domain(url: str, program: str):
     return url
 
 
-def has_gemini_category(categories: List[Dict[str, Any]]) -> bool:
-    """Return True if any category dict has slug 'gemini'."""
-    return any(
-        cat.get("slug", "").lower() == GEMINI_SLUG 
-        for cat in (categories or [])
-    )
+def has_gemini_category_request(request) -> bool:
+    """
+    Return True if the request query parameter `category` equals 'gemini'.
+    """
+
+    if not request:
+        return False
+
+    category_param = request.query_params.get('category')
+    return isinstance(category_param, str) and category_param.lower() == GEMINI_SLUG
 
 
-def has_gemini_program(programs) -> bool:
-    """Return True if any related program has slug 'gemini'."""
-    return any(
-        getattr(p, "url", "").lower() == GEMINI_SLUG 
-        for p in programs
-    )
+def has_gemini_program_request(request) -> bool:
+    """
+    Return True if the request query parameter `program` equals 'gemini'.
+    Handles missing request or missing query_params gracefully.
+    """
+    if not request:
+        return False
+
+    program_param = request.query_params.get('program')
+    return isinstance(program_param, str) and program_param.lower() == GEMINI_SLUG
+
 
 def replace_gemini_domains(data: Dict[str, Any], key: str = GEMINI_SLUG) -> Dict[str, Any]:
     """
