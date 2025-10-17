@@ -71,6 +71,20 @@ class ReleaseViewMixin:
             self.request,
             mode=self.request.GET.get('translation_mode', DEFAULT_API_TRANSLATION_MODE)
         )
+
+        qs = qs.select_related(
+            'release_type',
+            'kids_image',
+        ).prefetch_related(
+            'programs',
+            'subject_category',
+            'subject_name',
+            'facility',
+            'releasecontact_set',
+            'related_images',
+            'related_videos',
+            'stock_images'
+        )
         return qs
     
     def get_permissions(self):
