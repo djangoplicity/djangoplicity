@@ -56,6 +56,8 @@ class AnnouncementViewMixin:
                 mode=self.request.GET.get('translation_mode', DEFAULT_API_TRANSLATION_MODE)
             )
 
+        qs = qs.select_related('announcement_type').prefetch_related('programs')
+
         return qs
 
 
