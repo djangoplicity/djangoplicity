@@ -7,6 +7,9 @@ from djangoplicity.media.api.v2.serializers import ImageMiniSerializer, VideoMin
 from djangoplicity.metadata.api.v2.serializers import ProgramSerializer
 from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
+from django.core.cache import cache
+
+from django.conf import settings
 
 class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
     main_image = serializers.SerializerMethodField()
@@ -27,10 +30,25 @@ class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerial
 
     @extend_schema_field(ImageMiniSerializer())
     def get_main_image(self, obj):
+        cache_key = f"announcement_main_image_{obj.id}"
+        cache_timeout = getattr(settings, 'ANNOUNCEMENTS_CACHE_TIMEOUT', 60 * 60 * 2) # 2 hours
+
+        cached = cache.get(cache_key)
+
+        if cached is not None:
+            return cached
+
         images = related_archive_items(Announcement.related_images, obj)
+
+        if not images:
+            cache.set(cache_key, None, timeout=cache_timeout) 
+            return None
+
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
-        if images:
-            return ImageMiniSerializer(images[0]).data
+        data = ImageMiniSerializer(images[0]).data
+
+        cache.set(cache_key, data, timeout=cache_timeout)
+        return data
 
 
 class AnnouncementSerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
