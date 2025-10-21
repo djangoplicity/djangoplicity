@@ -94,6 +94,44 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
 
 
 @task
+def download_from_content_server(module_path, cls_name, instance_id, formats=None, include_directories=False, 
+    sendtask_callback=None, sendtask_tasksetid=None):
+    '''
+    Task that will download the resources from the content server (S3) to the local directories
+    if they don't exist locally. This is the opposite of sync_content_server.
+    Directory resources (like zoomable) are skipped by default unless include_directories=True.
+    Django Classes can't be serialized easily, so we pass instead the module
+    path and class names and import them dynamically
+    '''
+
+    if not getattr(settings, 'DEFAULT_MEDIA_CONTENT_SERVER', None):
+        logger.info('%s skipping: settings.DEFAULT_MEDIA_CONTENT_SERVER not enabled', download_from_content_server.__name__)
+        return
+
+    # Dynamically import the class
+    module = import_module(module_path)
+    cls = getattr(module, cls_name)
+
+    try:
+        instance = cls.objects.get(id=instance_id)
+    except cls.DoesNotExist:
+        logger.warning('Could not find archive "%s" (%s)', instance_id, cls)
+        return
+
+    if hasattr(instance, 'content_server') and instance.content_server:
+        try:
+            content_server = MEDIA_CONTENT_SERVERS[instance.content_server]
+            content_server.download_resources(instance, formats, include_directories)
+        except KeyError:
+            logger.warning('Unknown content server: "%s" for %s: "%s"',
+                instance.content_server, cls, instance.id)
+
+    # send_task callback
+    if sendtask_callback:
+        args, kwargs = sendtask_callback  # pylint: disable=W0633
+        current_app.send_task(*args, **str_keys(kwargs))
+
+@task
 def sync_content_server_resources_model(module_path, cls_name, instance_id, sendtask_callback=None, sendtask_tasksetid=None):
     '''
     This task will create or update the records in the ContentServerResource model 

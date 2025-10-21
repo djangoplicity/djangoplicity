@@ -20,6 +20,14 @@
     <a href="../">Go back</a>
 </div>
 <br>
+{% elif not crop_display_resource_available %}
+<div style="padding: 15px; color: #a94442; background-color: #f2dede; border: 1px solid #ebccd1; ">
+    The crop display image is not available locally and could not be downloaded from the content server.<br>
+    Please ensure the image exists in the content server or try re-importing the original image.<br>
+    <br>
+    <a href="../">Go back</a>
+</div>
+<br>
 {% else %}
 
 <form action="{{ form_url }}" method="post" id="{{ opts.model_name }}_crop_form">{% csrf_token %}{% block form_top %}{% endblock %}

@@ -39,7 +39,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MinValueValidator
 
-from djangoplicity.contentserver.tasks import sync_content_server
+from djangoplicity.contentserver.tasks import sync_content_server, download_from_content_server
 
 
 logger = logging.getLogger(__name__)
@@ -226,6 +226,18 @@ class ContentDeliveryModel(models.Model):
         # module path and class name
         sync_content_server.delay(self.__module__, self.__class__.__name__,
             self.pk, formats, delay)
+
+    def download_from_content_server(self, formats=None, delay=False, include_directories=False):
+        '''
+        Download the given formats (default if None) from the content server to local directories
+        if they don't exist locally. This is the opposite of sync_content_server.
+        Directory resources (like zoomable) are skipped by default unless include_directories=True.
+        If delay is True the requests will be store and run in batch.
+        '''
+        # The Django class can't be serialised, so we send instead the
+        # module path and class name
+        download_from_content_server.delay(self.__module__, self.__class__.__name__,
+            self.pk, formats, delay, True, True, include_directories)
 
     @classmethod
     def content_server_changed(cls, sender, instance, raw, **kwargs):

@@ -8,8 +8,9 @@ from djangoplicity.metadata.api.v2.serializers import ProgramSerializer
 from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
 from django.core.cache import cache
-
 from django.conf import settings
+from djangoplicity.utils.domain_rewrite import has_gemini_program_request
+
 
 class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
     main_image = serializers.SerializerMethodField()
@@ -45,7 +46,12 @@ class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerial
             return None
 
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
-        data = ImageMiniSerializer(images[0]).data
+
+        request = self.context.get('request')
+        has_gemini_program_flag = has_gemini_program_request(request)
+        context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
+
+        data = ImageMiniSerializer(images[0], context=context).data
 
         cache.set(cache_key, data, timeout=cache_timeout)
         return data
@@ -77,7 +83,7 @@ class AnnouncementSerializer(ArchiveSerializerMixin, serializers.ModelSerializer
     @extend_schema_field(ImageMiniSerializer(many=True))
     def get_images(self, obj):
         images = related_archive_items(Announcement.related_images, obj)
-        return ImageMiniSerializer(images, many=True).data
+        return ImageMiniSerializer(images, many=True).data        
 
     @extend_schema_field(VideoMiniSerializer(many=True))
     def get_videos(self, obj):

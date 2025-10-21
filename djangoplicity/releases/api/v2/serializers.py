@@ -9,6 +9,8 @@ from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
 from django.core.cache import cache
 from django.conf import settings
+from djangoplicity.utils.domain_rewrite import has_gemini_program_request
+
 
 class ReleaseSerializerMixin(ArchiveSerializerMixin):
     release_type = serializers.StringRelatedField()
@@ -55,7 +57,11 @@ class ReleaseMiniSerializer(ReleaseSerializerMixin, serializers.ModelSerializer)
         images = related_archive_items(Release.related_images, obj)
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
         if images:
-            data = ImageMiniSerializer(images[0]).data
+            request = self.context.get('request')
+            has_gemini_program_flag = has_gemini_program_request(request)
+            context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
+
+            data = ImageMiniSerializer(images[0], context=context).data
             cache.set(cache_key, data, timeout=cache_timeout)
             return data
 
