@@ -33,6 +33,7 @@ from __future__ import division
 
 from builtins import str
 import json
+import os
 from collections import OrderedDict
 
 from django.contrib import messages
@@ -84,8 +85,14 @@ class CropView(UpdateView):
 
         archive = self.get_object()
         offsets = json.loads(archive.crop_offsets) if archive.crop_offsets else {}
+        
+        # Get the crop display resource and ensure it exists locally
         crop_display_resource = getattr(archive, 'resource_%s' %
                                     archive.Archive.Meta.crop_display_format)
+        
+        # Check if the crop display resource exists locally, if not try to download it
+        if crop_display_resource and not (os.path.isfile(crop_display_resource.path) or os.path.isdir(crop_display_resource.path)):
+            self._ensure_crop_display_resource_exists(archive, crop_display_resource)
 
 
         # Get list of cropped formats
@@ -144,6 +151,9 @@ class CropView(UpdateView):
         context['opts'] = self.opts
         context['app_label'] = self.opts.app_label
         context['crop_display_resource'] = crop_display_resource
+        
+        # Check if crop display resource is available after download attempt
+        context['crop_display_resource_available'] = crop_display_resource and (os.path.isfile(crop_display_resource.path) or os.path.isdir(crop_display_resource.path))
 
         return context
 
@@ -170,3 +180,53 @@ class CropView(UpdateView):
         self.model.reimport_resources(archive, request.user)
 
         return HttpResponseRedirect(request.path)
+
+    def _ensure_crop_display_resource_exists(self, archive, crop_display_resource):
+        """
+        Ensure the crop display resource exists locally by downloading it from the content server
+        if it's available there. Uses the download_from_content_server task we implemented.
+        """
+        from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
+        
+        # Only proceed if the archive has a content server configured
+        if not hasattr(archive, 'content_server') or not archive.content_server:
+            return
+            
+        try:
+            content_server = MEDIA_CONTENT_SERVERS[archive.content_server]
+            
+            # Check if the resource exists in the content server
+            if hasattr(content_server, 'resource_exists') and content_server.resource_exists(crop_display_resource):
+                # Get the crop display format
+                crop_format = archive.Archive.Meta.crop_display_format
+                
+                # Use the download_from_content_server task we implemented
+                # Call it synchronously (not as a task) since we need the result immediately
+                from djangoplicity.contentserver.tasks import download_from_content_server
+                
+                try:
+                    # Call the task function directly (not as a Celery task) for immediate execution
+                    download_from_content_server(
+                        archive.__module__,
+                        archive.__class__.__name__,
+                        archive.pk,
+                        formats=[crop_format],
+                        delay=False,
+                        prefetch=True,
+                        purge=True,
+                        include_directories=False
+                    )
+                except Exception as e:
+                    # Log the error but don't fail the view
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning('Failed to download crop display resource for %s: %s', archive.id, str(e))
+                    
+        except KeyError:
+            # Unknown content server, skip
+            pass
+        except Exception as e:
+            # Log any other errors but don't fail the view
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning('Error checking/downloading crop display resource for %s: %s', archive.id, str(e))
