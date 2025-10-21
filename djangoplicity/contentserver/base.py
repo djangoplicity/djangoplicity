@@ -294,6 +294,115 @@ class S3ContentServer(ContentServer):
         logger.info('S3ContentServer: Enabled content_server_ready for %s %s',
             instance.__class__.__name__, instance.id)
 
+    def download_resources(self, instance, formats=None, include_directories=False, *args, **kwargs):
+        """
+        Download resources from S3 to local directories if they don't exist locally.
+        This is the opposite of sync_resources.
+        
+        Args:
+            instance: The archive instance
+            formats: List of formats to download (default: all formats)
+            include_directories: Whether to download directory resources (default: False)
+        """
+        from djangoplicity.archives.utils import get_all_possible_instance_formats
+
+        archive_formats = get_all_possible_instance_formats(instance)
+        formats = formats or archive_formats
+
+        for fmt in formats:
+            # Get the local resource (if any)
+            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt + '_only_local_files'), None)
+
+            if not resource:
+                continue
+
+            # Skip if the local file already exists
+            if os.path.isfile(resource.path) or os.path.isdir(resource.path):
+                logger.info('S3ContentServer: Local file/directory already exists, skipping download: %s', resource.path)
+                continue
+
+            remote_path = self.to_s3_path(resource.path)
+            
+            # Check if the resource exists in S3
+            if not self.resource_exists(resource):
+                logger.warning('S3ContentServer: Resource does not exist in S3, skipping: %s', remote_path)
+                continue
+
+            # Skip directory resources by default unless explicitly requested
+            if self.is_directory(resource):
+                if not include_directories:
+                    logger.info('S3ContentServer: Skipping directory resource (use include_directories=True to download): %s', remote_path)
+                    continue
+                else:
+                    logger.info('S3ContentServer: Downloading directory %s from %s:%s', resource.name, self.bucket, remote_path)
+                    self._download_directory_from_s3(remote_path, resource.path)
+            else:
+                # Create local directory if it doesn't exist
+                local_dir = os.path.dirname(resource.path)
+                if local_dir and not os.path.exists(local_dir):
+                    os.makedirs(local_dir, exist_ok=True)
+                    logger.info('S3ContentServer: Created local directory: %s', local_dir)
+                
+                logger.info('S3ContentServer: Downloading file %s from bucket %s:%s', resource.name, self.bucket, remote_path)
+                self._download_file_from_s3(remote_path, resource.path)
+
+        logger.info('S3ContentServer: Completed downloading resources for %s %s',
+            instance.__class__.__name__, instance.id)
+
+    def _download_file_from_s3(self, s3_path, local_path):
+        """
+        Download a single file from S3 to local path.
+        """
+        try:
+            self.s3_client.download_file(self.bucket, s3_path, local_path)
+            logger.info('S3ContentServer: Successfully downloaded file: %s', local_path)
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to download file %s: %s', local_path, str(e))
+            raise
+
+    def _download_directory_from_s3(self, s3_prefix, local_dir):
+        """
+        Download a directory from S3 to local directory.
+        """
+        try:
+            # Ensure local directory exists
+            os.makedirs(local_dir, exist_ok=True)
+            
+            # List all objects with the given prefix
+            paginator = self.s3_client.get_paginator('list_objects_v2')
+            pages = paginator.paginate(Bucket=self.bucket, Prefix=s3_prefix)
+            
+            downloaded_files = 0
+            for page in pages:
+                if 'Contents' not in page:
+                    continue
+                    
+                for obj in page['Contents']:
+                    s3_key = obj['Key']
+                    
+                    # Skip if it's just the directory marker
+                    if s3_key.endswith('/'):
+                        continue
+                    
+                    # Calculate local file path
+                    relative_path = s3_key[len(s3_prefix):].lstrip('/')
+                    local_file_path = os.path.join(local_dir, relative_path)
+                    
+                    # Create subdirectories if needed
+                    local_file_dir = os.path.dirname(local_file_path)
+                    if local_file_dir and not os.path.exists(local_file_dir):
+                        os.makedirs(local_file_dir, exist_ok=True)
+                    
+                    # Download the file
+                    self.s3_client.download_file(self.bucket, s3_key, local_file_path)
+                    downloaded_files += 1
+            
+            logger.info('S3ContentServer: Successfully downloaded directory with %d files: %s', downloaded_files, local_dir)
+            
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to download directory %s: %s', local_dir, str(e))
+            raise
+
 
 class CDN77ContentServer(ContentServer):
     '''
@@ -663,6 +772,16 @@ class CDN77ContentServer(ContentServer):
 
         if prefetch or purge:
             self._queue_purge_prefetch(instance, formats, delay, prefetch, purge)
+
+    def download_resources(self, instance, formats=None, include_directories=False, *args, **kwargs):
+        """
+        Dummy implementation for CDN77ContentServer.
+        CDN77ContentServer does not support downloading resources as it's designed
+        to serve files from a remote archive without requiring local copies.
+        """
+        logger.info('CDN77ContentServer: download_resources called but not supported for %s %s - CDN77 serves files remotely', 
+                   instance.__class__.__name__, instance.id)
+        logger.info('CDN77ContentServer: Skipping download operation (CDN77ContentServer does not support local file downloads)')
 
     def check_content_server_resources(self, instance, formats=None):
         '''
