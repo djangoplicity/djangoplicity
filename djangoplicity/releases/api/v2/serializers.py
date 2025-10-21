@@ -7,6 +7,8 @@ from djangoplicity.media.api.v2.serializers import ImageMiniSerializer, VideoMin
 from djangoplicity.metadata.api.v2.serializers import ProgramSerializer
 from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
+from djangoplicity.utils.domain_rewrite import has_gemini_program_request
+
 
 class ReleaseSerializerMixin(ArchiveSerializerMixin):
     release_type = serializers.StringRelatedField()
@@ -45,7 +47,12 @@ class ReleaseMiniSerializer(ReleaseSerializerMixin, serializers.ModelSerializer)
         images = related_archive_items(Release.related_images, obj)
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
         if images:
-            return ImageMiniSerializer(images[0]).data
+            request = self.context.get('request')
+
+            has_gemini_program_flag = has_gemini_program_request(request)
+            context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
+
+            return ImageMiniSerializer(images[0], context=context).data
 
 
 class ReleaseSerializer(ReleaseSerializerMixin, serializers.ModelSerializer):

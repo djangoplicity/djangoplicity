@@ -11,6 +11,8 @@ from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 from djangoplicity.metadata.api.v2.serializers import CategorySerializer
 from .typings import ImageFormatsURLs, VideoFormatsURLs
 
+from djangoplicity.utils.domain_rewrite import replace_gemini_domains, has_gemini_category_request
+
 
 IMAGE__TINY_FORMATS = ['thumb300y', 'screen', 'thumb700x']
 ImageTinyFormatsURLs = TypedDict('ImageFormatsURLs', dict(map(lambda x: (x, Optional[str]), IMAGE__TINY_FORMATS)))
@@ -39,8 +41,18 @@ class ImageMiniSerializer(ImageSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = Image
         fields = ['id', 'url', 'lang', 'source', 'title', 'width', 'height', 'featured', 'categories', 'formats']
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
         
+        context = self.context or {}
+        request = context.get('request')
         
+        if context.get('has_gemini_program') or has_gemini_category_request(request):
+            data = replace_gemini_domains(data)
+        
+        return data
+
 class ImageTinySerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
     formats = serializers.SerializerMethodField()
 
@@ -50,6 +62,17 @@ class ImageTinySerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
 
     def get_formats(self, obj) -> ImageTinyFormatsURLs:
         return get_all_instance_archives_urls(obj, IMAGE__TINY_FORMATS)
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        context = self.context or {}
+        request = context.get('request')
+
+        if has_gemini_category_request(request):
+            data = replace_gemini_domains(data)
+
+        return data
 
 
 class ImageSerializer(ImageSerializerMixin, serializers.ModelSerializer):
@@ -75,6 +98,17 @@ class VideoMiniSerializer(VideoSerializerMixin, serializers.ModelSerializer):
             'use_youtube', 'formats'
         ]
 
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        context = self.context or {}
+        request = context.get('request')
+
+        if has_gemini_category_request(request):
+            data = replace_gemini_domains(data)
+
+        return data
 
 class VideoSerializer(VideoSerializerMixin, serializers.ModelSerializer):
     class Meta:
