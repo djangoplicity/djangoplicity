@@ -31,26 +31,25 @@ class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerial
 
     @extend_schema_field(ImageMiniSerializer())
     def get_main_image(self, obj):
-        cache_key = f"announcement_main_image_{obj.id}"
+        request = self.context.get('request')
+        has_gemini_program_flag = has_gemini_program_request(request)
+
+        suffix = 'gemini' if has_gemini_program_flag else 'default'
+        cache_key = f"announcement_main_image_{obj.id}_{suffix}"
         cache_timeout = getattr(settings, 'ANNOUNCEMENTS_CACHE_TIMEOUT', 60 * 60 * 2) # 2 hours
 
         cached = cache.get(cache_key)
-
         if cached is not None:
             return cached
 
         images = related_archive_items(Announcement.related_images, obj)
-
         if not images:
             cache.set(cache_key, None, timeout=cache_timeout) 
             return None
 
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
 
-        request = self.context.get('request')
-        has_gemini_program_flag = has_gemini_program_request(request)
         context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
-
         data = ImageMiniSerializer(images[0], context=context).data
 
         cache.set(cache_key, data, timeout=cache_timeout)
