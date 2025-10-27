@@ -818,3 +818,44 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         """
         return str( pk )
         #return "%s.%s:%s" % ( self._meta.app_label, self._meta.model_name, str( self.pk ) )
+    
+    def get_access_tag(self):
+        """
+        Return the access tag for this object to sync with S3
+        Rules:
+        - No Published: Private
+        - current_date < release_date < embargo_date: Private
+        - current_date < embargo_date < release_date: Private
+        - release_date < current_date < embargo_date: Private
+        - embargo_date < current_date < release_date: Private
+        - release_date < embargo_date < current_date: Public
+        - embargo_date < release_date < current_date: Public
+        """
+        now = datetime.now()
+        # If the object is not published, it is private only admin can access it
+        if hasattr(self, 'published') and not self.published:
+            return 'Private'
+        
+        # If the object has no release_date or embargo_date, it is public
+        if not hasattr(self, 'release_date') or not hasattr(self, 'embargo_date'):
+            return 'Public'
+
+        embargo_date = getattr(self, 'embargo_date', None)
+        release_date = getattr(self, 'release_date', None)
+        
+        if embargo_date and release_date:
+            if now < release_date < embargo_date:
+                return 'Private'
+            if now < embargo_date < release_date:
+                return 'Private'
+            if release_date < now < embargo_date:
+                return 'Private'
+            if embargo_date < now < release_date:
+                return 'Private'
+            if release_date < embargo_date < now:
+                return 'Public'
+            if embargo_date < release_date < now:
+                return 'Public'
+
+        return 'Public' # Default in case that some fails
+
