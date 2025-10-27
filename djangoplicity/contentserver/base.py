@@ -283,7 +283,18 @@ class S3ContentServer(ContentServer):
                     content_type = 'image/gif'
                 elif resource.name.endswith('.mp4'):
                     content_type = 'video/mp4'
-                self.s3_client.upload_file(resource.path, self.bucket, remote_path, ExtraArgs={'ContentType': content_type})
+
+                access_tag = instance.get_access_tag()
+                if access_tag:
+                    logger.info('S3ContentServer: Setting tag Access=%s for %s', access_tag, instance)
+                else:
+                    logger.warning('S3ContentServer: No access tag found for %s', instance)
+
+                extra_args = {'ContentType': content_type, 'Tagging': f'Access={access_tag}'}
+
+                # upload the file with the tag included
+                self.s3_client.upload_file(resource.path, self.bucket, remote_path, ExtraArgs=extra_args)
+
 
         # We set the content server to ready as soon as the files are
         # synchronised, we don't have to wait until it's purged/prefetched
