@@ -413,6 +413,20 @@ class S3ContentServer(ContentServer):
         except Exception as e:
             logger.error('S3ContentServer: Failed to download directory %s: %s', local_dir, str(e))
             raise
+    
+    def _get_signed_url(self, resource, expires_in=3600):
+        logger.info("S3ContentServer: Generating signed URL for %s", resource.path)
+        try:
+            s3_path = self.to_s3_path(resource.path)
+            url = self.s3_client.generate_presigned_url(
+                'get_object',
+                Params={'Bucket': self.bucket, 'Key': s3_path},
+                ExpiresIn=expires_in
+            )
+            return url
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to generate signed URL for %s: %s', resource.path, str(e))
+            raise
 
 
 class CDN77ContentServer(ContentServer):
