@@ -39,6 +39,8 @@ from djangoplicity.archives.tasks import clear_archive_list_cache, \
     embargo_release_date_task
 from future.utils import with_metaclass
 
+from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
+
 
 __all__ = ( 'ArchiveModel', 'post_rename' )
 
@@ -624,6 +626,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         '''
         # Clear the cache
         clear_archive_list_cache()
+        self._update_access_tag_with_s3_server()
 
     def release_date_action(self):
         '''
@@ -631,6 +634,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         '''
         # Clear the cache
         clear_archive_list_cache()
+        self._update_access_tag_with_s3_server()
 
         from django.contrib.sites.models import Site
         domain = Site.objects.get_current().domain
@@ -832,7 +836,8 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         - embargo_date < release_date < current_date: Public
         """
         now = datetime.now()
-        # If the object is not published, it is private only admin can access it
+
+        # No publicado → solo admin
         if hasattr(self, 'published') and not self.published:
             return 'Private'
         
@@ -842,12 +847,35 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
 
         embargo_date = getattr(self, 'embargo_date', None)
         release_date = getattr(self, 'release_date', None)
+
+        if not embargo_date or not release_date:
+            return 'Public'
+
+        if now < release_date < embargo_date:
+            return 'Private'
+        elif now < embargo_date < release_date:
+            return 'Private'
+        elif release_date < now < embargo_date:
+            return 'Private'
+        elif embargo_date < now < release_date:
+            return 'Private'
+        elif release_date < embargo_date < now:
+            return 'Public'
+        elif embargo_date < release_date < now:
+            return 'Public'
+        else:
+            return 'Public'
+
+
+    def _update_access_tag_with_s3_server(self):
+        """
+        Update the access tag for this object to sync with S3
+        """
+        if not hasattr(self, 'content_server') or not self.content_server:
+            return
         
-        if embargo_date and release_date:
-            if now > embargo_date and now > release_date:
-                return 'Public'
-            else:
-                return 'Private'
-
-        return 'Public' # Default in case that some fails
-
+        content_server = MEDIA_CONTENT_SERVERS[self.content_server]
+        if not content_server:
+            return
+        
+        content_server.sync_resources(self)
