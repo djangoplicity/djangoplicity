@@ -844,18 +844,10 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         release_date = getattr(self, 'release_date', None)
         
         if embargo_date and release_date:
-            if now < release_date < embargo_date:
-                return 'Private'
-            if now < embargo_date < release_date:
-                return 'Private'
-            if release_date < now < embargo_date:
-                return 'Private'
-            if embargo_date < now < release_date:
-                return 'Private'
-            if release_date < embargo_date < now:
+            if now > embargo_date and now > release_date:
                 return 'Public'
-            if embargo_date < release_date < now:
-                return 'Public'
+            else:
+                return 'Private'
 
         return 'Public' # Default in case that some fails
 
