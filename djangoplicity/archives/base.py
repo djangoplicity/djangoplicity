@@ -40,6 +40,7 @@ from djangoplicity.archives.tasks import clear_archive_list_cache, \
 from future.utils import with_metaclass
 
 from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
+from djangoplicity.contentserver.base import S3ContentServer
 
 
 __all__ = ( 'ArchiveModel', 'post_rename' )
@@ -876,6 +877,9 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         
         content_server = MEDIA_CONTENT_SERVERS[self.content_server]
         if not content_server:
+            return
+        
+        if not isinstance(content_server, S3ContentServer):
             return
         
         content_server.sync_resources(self)
