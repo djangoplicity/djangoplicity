@@ -701,14 +701,31 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
 
         # --- AVM-related fields change detection, it needs to be calculated before the save so we can compare the values ---
         avm_fields_changed = self.isAVMDataUpdated()
+
+        # --- Published field change detection ---
+        published_changed = self.isPublishedChanged()
         
         super( Image, self ).save( *args, **kwargs )
 
         # Run background tasks on image
-        if run_tasks and avm_fields_changed and self.is_source() and 'loaddata' not in sys.argv:
+        if run_tasks and (avm_fields_changed or published_changed) and self.is_source() and 'loaddata' not in sys.argv:
+            print("Se ha cambiado metadata para la imagen %s" % self.id)
             image_extras.delay( self.id )
             image_color.delay( self.id )
             write_metadata.delay( self.id, IMAGE_AVM_FORMATS )
+    
+    def isPublishedChanged(self):
+        if not hasattr(self, 'published'):
+            return False
+        
+        if self.pk is None:
+            return False 
+        
+        try:
+            old_instance = self.__class__.objects.get(pk=self.pk)
+            return old_instance.published != self.published
+        except self.__class__.DoesNotExist:
+            return False
 
     def isAVMDataUpdated(self):
         # Get all AVM fields for this model
