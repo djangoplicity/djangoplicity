@@ -10,6 +10,7 @@ from builtins import object
 import logging
 import os.path
 
+from django.urls import reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import ImproperlyConfigured
@@ -101,10 +102,11 @@ class ResourceFile( File ):
     """
     Similar to FieldFile, but is not required to be bound to a field and instance.
     """
-    def __init__(self, path, storage ):
+    def __init__(self, path, storage, instance = None ):
         self.storage = storage
         self.name = path or u''
         self._closed = False
+        self.instance = instance
 
     def _get_file(self):
         if not hasattr(self, '_file'):
@@ -131,8 +133,50 @@ class ResourceFile( File ):
         return 'https://%s%s' % (Site.objects.get_current().domain, url)
     absolute_url = property(_get_absolute_url)
 
+    def _should_redirect_to_proxy(self):
+        '''
+        Return True if the file should be redirected to the proxy URL (AccessTag is Private).
+        '''
+        if not self.instance or not hasattr(self.instance, 'get_access_tag'):
+            return False
+
+        access_tag = self.instance.get_access_tag()
+        return access_tag == 'Private'
+    
+    def _extract_resource_parts(self):
+        parts = self.name.split('/')
+        if len(parts) < 2 or '.' not in parts[1]:
+            return None
+        
+        format = parts[0]
+        id = parts[1].split('.')[0]
+        ext = parts[1].split('.')[1]
+
+        return format, id, ext
+
     def _get_url(self):
-        return self.storage.url(self.name)
+        # If not required to redirect to proxy, return the storage URL.
+        if not self._should_redirect_to_proxy():
+            return self.storage.url(self.name)
+        
+        # If the file is a zoomable image, return the storage URL.
+        if 'zoomable' in self.name.split('/'):
+            return self.storage.url(self.name)
+
+        format, id, ext = self._extract_resource_parts()
+        model_name = self.instance._meta.model_name 
+
+        print(f"🔍 model_name: {model_name}, format: {format}, id: {id}, ext: {ext}")
+
+        return reverse(
+            'resource_proxy',
+            kwargs={
+                'model': model_name,
+                'format': format,
+                'id': id,
+                'ext': ext,
+            }
+        )
     url = property(_get_url)
 
     def open(self, mode='rb'):
@@ -160,7 +204,7 @@ class ResourceFile( File ):
     def __getstate__(self):
         # For ResourceFile the only necessary data to be pickled is the
         # file's name itself and the storage class.
-        return {'name': self.name, '_closed': self._closed, 'storage': self.storage }
+        return {'name': self.name, '_closed': self._closed, 'storage': self.storage, 'instance': self.instance }
 
 
 class ImageResourceFile( ResourceFile, ImageFile ):
@@ -249,12 +293,12 @@ class ResourceManager(object):
             localname = '%s.%s' % (localbase, e)
             if storage.exists(localname):
                 ext = e
-                resource = fileclass(name, storage)
+                resource = fileclass(name, storage, instance=instance)
                 break
         else:
             if storage.exists(localbase):
                 # No extension, but the file exists
-                resource = fileclass(name, storage)
+                resource = fileclass(name, storage, instance=instance)
 
         # Check whether a content server is defined for this resource
         if (not only_local_files) and hasattr(instance, 'content_server') and instance.content_server and instance.content_server_ready:
@@ -282,7 +326,7 @@ class ResourceManager(object):
                     if ext:
                         # The extension is found either when the local files exists or when the ContentServerResource record is found
                         base += '.%s' % ext
-                    resource = fileclass(base, storage)
+                    resource = fileclass(base, storage, instance=instance)
 
                 supports_all_formats = getattr(content_server, 'supports_all_formats', False)
                 archive_formats = []
@@ -304,7 +348,7 @@ class ResourceManager(object):
                         # The extension is found either when the local files exists or when the ContentServerResource record is found
                         base += '.%s' % ext
                     # We updated the based and storage so we update the resource object:
-                    resource = fileclass(base, storage)
+                    resource = fileclass(base, storage, instance=instance)
                     if not content_server.requires_local_files:
                         resource.is_from_content_server = True
 
