@@ -41,8 +41,6 @@ from djangoplicity.contentserver.models import ContentServerResource
 from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model
 from djangoplicity.archives.utils import initialize_resource
 
-from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
-
 
 class ContentDeliveryAdmin(object):
     def action_resync_resources(self, request, queryset):
@@ -96,7 +94,6 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
         """
         Optimize queryset to avoid N+1 queries for content_object by selecting related content_type.
         """
-        self.request = request
         qs = super().get_queryset(request)
         # Prefetch content_type to avoid N+1 queries; content_object is a GenericForeignKey
         return qs.prefetch_related('content_object')
