@@ -687,8 +687,12 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
             revoke(self.release_task_id)  # pylint: disable=E0203
 
         if self.release_date and self.release_date < one_month:
+            eta = self.release_date
+            if is_naive(eta):
+                eta = make_aware(eta)
+
             task = embargo_release_date_task.apply_async(
-                eta=self.release_date,
+                eta=eta,
                 args=[self._meta.app_label, self._meta.model_name,
                       self.pk, 'release'],
             )
