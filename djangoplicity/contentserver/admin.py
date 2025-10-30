@@ -140,37 +140,13 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
     def content_server_link(self, obj):
         if not obj.content_object:
             return None
-        
-        resource = getattr(obj.content_object, 'resource_' + obj.format, None)
-        if not resource:
-            return None
-
-        try:
-            url = resource.url
-            if hasattr(resource, 'storage') and hasattr(obj, 'content_server'):
-                print("Generando una url firmada")
-                from django.contrib import admin
-                model_admin = admin.site._registry.get(obj.content_type.model_class())
-                
-                # Check if user has admin permissions
-                if model_admin and model_admin.has_view_permission(self.request, obj.content_object):
-                    try:
-                        # Generate signed URL for admin with 1h expiration
-                        content_server = MEDIA_CONTENT_SERVERS[obj.content_server]
-                        url = content_server._get_signed_url(resource, expires_in=3600)
-                    except Exception as e:
-                        print(e)
-            # Print Debug
-            print("URL final: ", url)
+        resource = getattr(obj.content_object, 'resource_' + obj.format)
+        if resource and resource.url:
             return format_html(
-                '<a href="{}" target="_blank" title="{}">{}</a>',
-                url,
-                "Open in new tab (signed URL)" if "X-Amz-Signature" in str(url) else "Open in new tab",
-                "View file (signed)" if "X-Amz-Signature" in str(url) else "View file"
+                '<a href="{}" target="_blank">{}</a>',
+                resource.url,
+                f"View file"
             )
-        except Exception as e:
-            print(e)
-            return "Error generating link"
     content_server_link.short_description = 'View file'
 
     def mark_as_deleted(self, request, queryset):
