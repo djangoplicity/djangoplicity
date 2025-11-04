@@ -704,11 +704,14 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
 
         # --- Published field change detection ---
         published_changed = self.isPublishedChanged()
+
+        # --- Release and embargo date change detection ---
+        is_release_embargo_changed = self.isReleaseEmbargoChanged()
         
         super( Image, self ).save( *args, **kwargs )
 
         # Run background tasks on image
-        if run_tasks and (avm_fields_changed or published_changed) and self.is_source() and 'loaddata' not in sys.argv:
+        if run_tasks and (avm_fields_changed or published_changed or is_release_embargo_changed) and self.is_source() and 'loaddata' not in sys.argv:
             print("Se ha cambiado metadata para la imagen %s" % self.id)
             image_extras.delay( self.id )
             image_color.delay( self.id )
@@ -724,6 +727,19 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         try:
             old_instance = self.__class__.objects.get(pk=self.pk)
             return old_instance.published != self.published
+        except self.__class__.DoesNotExist:
+            return False
+
+    def isReleaseEmbargoChanged(self):
+        if not hasattr(self, 'release_date') or not hasattr(self, 'embargo_date'):
+            return False
+        
+        if self.pk is None:
+            return False 
+        
+        try:
+            old_instance = self.__class__.objects.get(pk=self.pk)
+            return old_instance.release_date != self.release_date or old_instance.embargo_date != self.embargo_date
         except self.__class__.DoesNotExist:
             return False
 
