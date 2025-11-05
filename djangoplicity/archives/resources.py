@@ -166,7 +166,9 @@ class ResourceFile( File ):
         format, id, ext = self._extract_resource_parts()
         model_name = self.instance._meta.model_name 
 
-        print(f"🔍 model_name: {model_name}, format: {format}, id: {id}, ext: {ext}")
+        # If the format is always public, return the storage URL.
+        if format in getattr(settings, 'S3_ALWAYS_PUBLIC_FORMATS', []):
+            return self.storage.url(self.name)
 
         return reverse(
             'resource_proxy',
