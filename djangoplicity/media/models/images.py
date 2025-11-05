@@ -717,7 +717,6 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
 
         # Run background tasks on image
         if run_tasks and avm_fields_changed and self.is_source() and 'loaddata' not in sys.argv:
-            print("Se ha cambiado metadata para la imagen %s" % self.id)
             image_extras.delay( self.id )
             image_color.delay( self.id )
             write_metadata.delay( self.id, IMAGE_AVM_FORMATS )

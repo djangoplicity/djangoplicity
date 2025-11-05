@@ -403,13 +403,6 @@ def update_access_tag(instance_id):
     try:
         from djangoplicity.media.models import Image
         obj = Image.objects.get(id=instance_id)
-
-        print('Updating access tag for %s' % obj)
-        print('Access tag: %s' % obj.get_access_tag())
-        print('Published: %s' % obj.published)
-        print('Release date: %s' % obj.release_date)
-        print('Embargo date: %s' % obj.embargo_date)
-
         content_server = MEDIA_CONTENT_SERVERS[obj.content_server]
         if not isinstance(content_server, S3ContentServer):
             return
