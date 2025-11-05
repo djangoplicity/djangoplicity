@@ -304,6 +304,38 @@ class S3ContentServer(ContentServer):
             content_server_ready=True)
         logger.info('S3ContentServer: Enabled content_server_ready for %s %s',
             instance.__class__.__name__, instance.id)
+    
+    def update_access_tag(self, instance):
+        """
+        Update the access tag for this object to sync with S3
+        """
+        from djangoplicity.archives.utils import get_all_possible_instance_formats
+        logger.info("S3ContentServer: Updating access tag for: %s", instance)
+        
+        access_tag = instance.get_access_tag()
+
+        if not access_tag:
+            logger.warning('S3ContentServer: No access tag found for %s', instance)
+            return
+        
+        formats = get_all_possible_instance_formats(instance)
+
+        for fmt in formats:
+            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt + '_only_local_files'), None)
+
+            if not resource:
+                continue
+
+            remote_path = self.to_s3_path(resource.path)
+            
+            # Exclude directories (e.g. zoomable and virtualtours)
+            if not os.path.isdir(resource.path):
+                logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
+                self.s3_client.put_object_tagging(
+                    Bucket=self.bucket, 
+                    Key=remote_path, 
+                    Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
+                )
 
     def download_resources(self, instance, formats=None, include_directories=False, *args, **kwargs):
         """

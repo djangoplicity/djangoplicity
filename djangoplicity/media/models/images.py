@@ -63,7 +63,7 @@ from djangoplicity.media.consts import DEFAULT_CREATOR_FUNC, DEFAULT_CREATOR_URL
     DEFAULT_RIGHTS_FUNC
 from djangoplicity.media.tasks import (
     write_metadata, image_color, image_extras,
-    image_observation_tagging_notification
+    image_observation_tagging_notification, update_access_tag
 )
 
 from djangoplicity.media.wcs import wwt_show_image_url
@@ -710,8 +710,13 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         
         super( Image, self ).save( *args, **kwargs )
 
+        # Update access tag for this image if published or release/embargo dates have changed with S3ContentServer
+        if (published_changed or is_release_embargo_changed):
+            from django.db import transaction
+            transaction.on_commit(lambda: update_access_tag.delay(self.id))
+
         # Run background tasks on image
-        if run_tasks and (avm_fields_changed or published_changed or is_release_embargo_changed) and self.is_source() and 'loaddata' not in sys.argv:
+        if run_tasks and avm_fields_changed and self.is_source() and 'loaddata' not in sys.argv:
             print("Se ha cambiado metadata para la imagen %s" % self.id)
             image_extras.delay( self.id )
             image_color.delay( self.id )

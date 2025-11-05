@@ -844,6 +844,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
 
         # No publicado → solo admin
         if hasattr(self, 'published') and not self.published:
+            print('No publicado → solo admin')
             return 'Private'
         
         # If the object has no release_date or embargo_date, it is public
@@ -886,4 +887,4 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         if not isinstance(content_server, S3ContentServer):
             return
         
-        content_server.sync_resources(self)
+        content_server.update_access_tag(self)

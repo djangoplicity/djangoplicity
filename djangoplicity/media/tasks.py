@@ -67,6 +67,9 @@ from djangoplicity.utils.history import add_admin_history
 from djangoplicity.utils.templatetags.djangoplicity_text_utils import remove_html_tags
 from djangoplicity.utils.sending_mail import mail_images_managers
 
+from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
+from djangoplicity.contentserver.base import S3ContentServer
+
 import django
 if django.VERSION >= (2, 0):
     from django.urls import reverse
@@ -391,6 +394,30 @@ def write_metadata(image_id, formats, cdn_sync=True):
         time.sleep(30)
         im.sync_content_server(delay=True)
 
+
+@task(name="media.update_access_tag", ignore_result=True)
+def update_access_tag(instance_id):
+    """
+    Update the access tag for this object to sync with S3
+    """
+    try:
+        from djangoplicity.media.models import Image
+        obj = Image.objects.get(id=instance_id)
+
+        print('Updating access tag for %s' % obj)
+        print('Access tag: %s' % obj.get_access_tag())
+        print('Published: %s' % obj.published)
+        print('Release date: %s' % obj.release_date)
+        print('Embargo date: %s' % obj.embargo_date)
+
+        content_server = MEDIA_CONTENT_SERVERS[obj.content_server]
+        if not isinstance(content_server, S3ContentServer):
+            return
+
+        time.sleep(10) # Give enough time for NFS to catch
+        content_server.update_access_tag(obj)
+    except Exception as e:
+        logger.warning("Exception: %s." % e)
 
 @task(name="media.fast_start", ignore_result=True)
 def fast_start(video_id, fmt, sendtask_callback=None, sendtask_tasksetid=None):
