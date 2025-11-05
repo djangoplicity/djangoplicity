@@ -842,9 +842,8 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         """
         now = datetime.now()
 
-        # No publicado → solo admin
+        # Only Admins can access
         if hasattr(self, 'published') and not self.published:
-            print('No publicado → solo admin')
             return 'Private'
         
         # If the object has no release_date or embargo_date, it is public
