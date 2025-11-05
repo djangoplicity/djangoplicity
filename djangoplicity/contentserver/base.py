@@ -285,6 +285,10 @@ class S3ContentServer(ContentServer):
                     content_type = 'video/mp4'
 
                 access_tag = instance.get_access_tag()
+
+                if fmt in getattr(settings, 'S3_ALWAYS_PUBLIC_FORMATS', []):
+                    access_tag = 'Public'
+                
                 if access_tag:
                     logger.info('S3ContentServer: Setting tag Access=%s for %s', access_tag, instance)
                 else:
@@ -312,9 +316,7 @@ class S3ContentServer(ContentServer):
         from djangoplicity.archives.utils import get_all_possible_instance_formats
         logger.info("S3ContentServer: Updating access tag for: %s", instance)
         
-        access_tag = instance.get_access_tag()
-
-        if not access_tag:
+        if not hasattr(instance, 'get_access_tag'):
             logger.warning('S3ContentServer: No access tag found for %s', instance)
             return
         
@@ -330,6 +332,11 @@ class S3ContentServer(ContentServer):
             
             # Exclude directories (e.g. zoomable and virtualtours)
             if not os.path.isdir(resource.path):
+
+                access_tag = instance.get_access_tag()
+                if fmt in getattr(settings, 'S3_ALWAYS_PUBLIC_FORMATS', []):
+                    access_tag = 'Public'
+                
                 logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
                 self.s3_client.put_object_tagging(
                     Bucket=self.bucket, 
