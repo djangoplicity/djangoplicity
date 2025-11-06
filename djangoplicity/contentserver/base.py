@@ -284,10 +284,7 @@ class S3ContentServer(ContentServer):
                 elif resource.name.endswith('.mp4'):
                     content_type = 'video/mp4'
 
-                access_tag = instance.get_access_tag()
-
-                if fmt in getattr(settings, 'S3_ALWAYS_PUBLIC_FORMATS', []):
-                    access_tag = 'Public'
+                access_tag = instance.get_access_tag_for_format(fmt)
                 
                 if access_tag:
                     logger.info('S3ContentServer: Setting tag Access=%s for %s', access_tag, instance)
@@ -333,10 +330,7 @@ class S3ContentServer(ContentServer):
             # Exclude directories (e.g. zoomable and virtualtours)
             if not os.path.isdir(resource.path):
 
-                access_tag = instance.get_access_tag()
-                if fmt in getattr(settings, 'S3_ALWAYS_PUBLIC_FORMATS', []):
-                    access_tag = 'Public'
-                
+                access_tag = instance.get_access_tag_for_format(fmt)
                 logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
                 self.s3_client.put_object_tagging(
                     Bucket=self.bucket, 

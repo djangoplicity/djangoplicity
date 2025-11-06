@@ -870,7 +870,28 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
             return 'Public'
         else:
             return 'Public'
+    
+    def is_embargoed(self):
+        embargo_date = getattr(self, 'embargo_date', None)
+        release_date = getattr(self, 'release_date', None)  
 
+        if not embargo_date and not release_date:
+            return False
+
+        now = datetime.now()
+        if embargo_date < now < release_date:
+            return True
+        return False
+    
+    def get_access_tag_for_format(self, fmt):
+        base_access_tag = self.get_access_tag()
+        is_embargoed = self.is_embargoed()
+        always_public = getattr(settings, 'S3_ALWAYS_PUBLIC_FORMATS', [])
+
+        if is_embargoed and fmt in always_public:
+            return 'Public'
+
+        return base_access_tag
 
     def _update_access_tag_with_s3_server(self):
         """

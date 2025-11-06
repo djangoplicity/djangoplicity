@@ -167,7 +167,7 @@ class ResourceFile( File ):
         model_name = self.instance._meta.model_name 
 
         # If the format is always public, return the storage URL.
-        if format in getattr(settings, 'S3_ALWAYS_PUBLIC_FORMATS', []):
+        if self.instance.get_access_tag_for_format(format) == 'Public':
             return self.storage.url(self.name)
 
         return reverse(
