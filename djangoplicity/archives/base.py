@@ -41,6 +41,7 @@ from future.utils import with_metaclass
 
 from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
 from djangoplicity.contentserver.base import S3ContentServer
+from django.conf import settings
 
 
 __all__ = ( 'ArchiveModel', 'post_rename' )
@@ -897,6 +898,9 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         """
         Update the access tag for this object to sync with S3
         """
+        if not getattr(settings, 'USE_PROXY_FOR_PRIVATE_MEDIA', False):
+            return
+
         if not hasattr(self, 'content_server') or not self.content_server:
             return
         
