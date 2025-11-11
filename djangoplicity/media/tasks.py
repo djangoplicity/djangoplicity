@@ -396,13 +396,19 @@ def write_metadata(image_id, formats, cdn_sync=True):
 
 
 @task(name="media.update_access_tag", ignore_result=True)
-def update_access_tag(instance_id):
+def update_access_tag(instance_id, is_video=False, is_image=False):
     """
     Update the access tag for this object to sync with S3
     """
     try:
-        from djangoplicity.media.models import Image
-        obj = Image.objects.get(id=instance_id)
+        from djangoplicity.media.models import Image, Video
+        if is_image:
+            obj = Image.objects.get(id=instance_id)
+        elif is_video:
+            obj = Video.objects.get(id=instance_id)
+        else:
+            return
+
         content_server = MEDIA_CONTENT_SERVERS[obj.content_server]
         if not isinstance(content_server, S3ContentServer):
             return

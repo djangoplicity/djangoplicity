@@ -713,7 +713,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         # Update access tag for this image if published or release/embargo dates have changed with S3ContentServer
         if (published_changed or is_release_embargo_changed):
             from django.db import transaction
-            transaction.on_commit(lambda: update_access_tag.delay(self.id))
+            transaction.on_commit(lambda: update_access_tag.delay(self.id, is_image=True))
 
         # Run background tasks on image
         if run_tasks and avm_fields_changed and self.is_source() and 'loaddata' not in sys.argv:
