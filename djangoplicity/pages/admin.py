@@ -90,19 +90,20 @@ class PageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, SyncTr
             else:
                 obj.groups.add(pagegroup)
 
-    def get_form(self, request, obj=None, **kwargs):
+    def get_fieldsets(self, request, obj=None):
         '''
         Only superusers can add/remove pages from/to groups
         '''
+        fieldsets = super(PageAdmin, self).get_fieldsets(request, obj)
         groups_fieldset = ('Groups', {'classes': ['collapse'], 'fields': ('groups', )})
 
         if request.user.is_superuser:
-            if groups_fieldset not in self.fieldsets:
-                self.fieldsets.append(groups_fieldset)
-        elif groups_fieldset in self.fieldsets:
-            self.fieldsets.remove(groups_fieldset)
+            if groups_fieldset not in fieldsets:
+                fieldsets.append(groups_fieldset)
+        elif groups_fieldset in fieldsets:
+            fieldsets.remove(groups_fieldset)
 
-        return super(PageAdmin, self).get_form(request, obj, **kwargs)
+        return fieldsets
 
     def _get_user_page_groups(self, request):
         '''
