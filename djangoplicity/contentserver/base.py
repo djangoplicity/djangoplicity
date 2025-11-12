@@ -66,7 +66,8 @@ def chunks(l, n):
 @python_2_unicode_compatible
 class ContentServer(object):
     requires_local_files = True # Wether the content server requires the local copy of the files or not, this is not the case for S3 which can work if the local files exists or not
-    
+    has_resource_protection_capabilities = False 
+
     def __init__(self, name, formats=None, url='', remote_dir=''):
         '''
         * name: Human friendly name of the Content server
@@ -130,8 +131,9 @@ class S3ContentServer(ContentServer):
     name = 'S3'
     resource_size_cache_timeout = 60 * 5  # seconds
     resource_size_cache_negative_timeout = 60 * 3  # seconds for failures/missing
+    has_resource_protection_capabilities = True
 
-    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None):
+    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None, always_public_formats=None):
         config = None
         if region_name:
             config = BotocoreConfig(region_name=region_name)
@@ -140,6 +142,7 @@ class S3ContentServer(ContentServer):
         self.base_url = base_url
         self.bigfiles_base_url = bigfiles_base_url
         self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
+        self.always_public_formats = always_public_formats if always_public_formats else [] # Void list by default
 
     def get_file_size(self, resource):
         from djangoplicity.contentserver.models import ContentServerResource
@@ -284,7 +287,7 @@ class S3ContentServer(ContentServer):
                 elif resource.name.endswith('.mp4'):
                     content_type = 'video/mp4'
 
-                access_tag = instance.get_access_tag_for_format(fmt)
+                access_tag = instance.get_access_tag_for_format(fmt).value
                 
                 if access_tag:
                     logger.info('S3ContentServer: Setting tag Access=%s for %s', access_tag, instance)
@@ -306,7 +309,7 @@ class S3ContentServer(ContentServer):
         logger.info('S3ContentServer: Enabled content_server_ready for %s %s',
             instance.__class__.__name__, instance.id)
     
-    def update_access_tag(self, instance):
+    def update_resource_privacy(self, instance):
         """
         Update the access tag for this object to sync with S3
         """
@@ -330,7 +333,7 @@ class S3ContentServer(ContentServer):
             # Exclude directories (e.g. zoomable and virtualtours)
             if not os.path.isdir(resource.path):
 
-                access_tag = instance.get_access_tag_for_format(fmt)
+                access_tag = instance.get_access_tag_for_format(fmt).value
                 logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
                 self.s3_client.put_object_tagging(
                     Bucket=self.bucket, 
@@ -447,7 +450,7 @@ class S3ContentServer(ContentServer):
             logger.error('S3ContentServer: Failed to download directory %s: %s', local_dir, str(e))
             raise
     
-    def _get_signed_url(self, resource, expires_in=3600):
+    def get_signed_url(self, resource, expires_in=3600):
         logger.info("S3ContentServer: Generating signed URL for %s", resource.path)
         try:
             s3_path = self.to_s3_path(resource.path)
