@@ -22,7 +22,7 @@ from django.utils.encoding import smart_text, smart_str
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
-from djangoplicity.contentserver.base import S3ContentServer
+from djangoplicity.contentserver.constants import AccessTagControl
 from djangoplicity.translation.models import TranslationModel
 
 logger = logging.getLogger(__name__)
@@ -138,26 +138,22 @@ class ResourceFile( File ):
         '''
         Return True if the file should be redirected to the proxy URL (AccessTag is Private).
         '''
-        # 1. If doesnt exist USE_PROXY_FOR_PRIVATE_MEDIA, return False
-        if not getattr(settings, 'USE_PROXY_FOR_PRIVATE_MEDIA', False):
-            return False
-            
-        # 2. If not instance or not has access tag, return False
+        # 1. If not instance or not has access tag, return False
         if not self.instance or not hasattr(self.instance, 'get_access_tag'):
             return False
         
-        # 3. If the instance is not a content server, return False
+        # 2. If the instance is not a content server, return False
         if not getattr(self.instance, 'content_server', None):
             return False
 
-        # 4. If content server is not s3, return False
+        # 3. Check protection capabilities
         server = MEDIA_CONTENT_SERVERS.get(self.instance.content_server)
-        if not isinstance(server, S3ContentServer):
+        if not getattr(server, 'has_resource_protection_capabilities', False) and getattr(self.instance, 'content_server_ready', False):
             return False 
 
-        # 5. Use proxy if access tag is private
+        # 4. Use proxy if access tag is private
         access_tag = self.instance.get_access_tag()
-        return access_tag == 'Private'
+        return access_tag == AccessTagControl.PRIVATE
     
     def _extract_resource_parts(self):
         # ./././<format>/<id.ext>
@@ -189,9 +185,11 @@ class ResourceFile( File ):
         model_name = self.instance._meta.model_name 
 
         # If the format is always public, return the storage URL.
-        if self.instance.get_access_tag_for_format(format) == 'Public':
+        if self.instance.get_access_tag_for_format(format) == AccessTagControl.PUBLIC:
             return self.storage.url(self.name)
 
+        # Remember to define the view in the global urls:
+        # path('resources/<str:model>/<str:format>/<str:id>.<str:ext>', resource_proxy_view, name='resource_proxy')
         return reverse(
             'resource_proxy',
             kwargs={
