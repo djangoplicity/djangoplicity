@@ -415,7 +415,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
                     msg.send()
                 except Exception:
                     # Just ignore error if SMTP server is down.
-                    pass 
+                    pass
 
         # Run background tasks on video
         if run_tasks and self.is_source():
