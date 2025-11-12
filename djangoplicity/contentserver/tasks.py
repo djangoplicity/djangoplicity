@@ -42,7 +42,7 @@ from djangoplicity.celery.serialtaskset import str_keys
 from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
 from django.contrib.contenttypes.models import ContentType
 from djangoplicity.archives.utils import get_all_possible_instance_formats, get_instance_checksum, initialize_resource
-
+import time
 
 logger = get_task_logger(__name__)
 
@@ -277,3 +277,17 @@ def check_content_server_resources(last=40):
         except IndexError:
             # Could not find not admin email in settings
             pass
+
+
+@task(name="contentserver.update_resource_privacy", ignore_result=True)
+def update_resource_privacy(app_label, model_name, pk):
+    from django.apps import apps
+
+    try:
+        time.sleep(10)
+        logger.info(f"Updating resource privacy for {app_label}.{model_name} ({pk})")
+        model_class = apps.get_model(app_label, model_name)
+        instance = model_class.objects.get(pk=pk)
+        instance.update_resource_privacy()
+    except Exception as e:
+        logger.warning("Exception: %s." % e)
