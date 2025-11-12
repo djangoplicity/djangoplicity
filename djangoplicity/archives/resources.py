@@ -174,7 +174,6 @@ class ResourceFile( File ):
 
     def _get_url(self):
         # If not required to redirect to proxy, return the storage URL.
-        print(f"Redirect to proxy: {self._should_redirect_to_proxy()}")
         if not self._should_redirect_to_proxy():
             return self.storage.url(self.name)
         
