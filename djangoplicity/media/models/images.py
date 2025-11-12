@@ -63,7 +63,7 @@ from djangoplicity.media.consts import DEFAULT_CREATOR_FUNC, DEFAULT_CREATOR_URL
     DEFAULT_RIGHTS_FUNC
 from djangoplicity.media.tasks import (
     write_metadata, image_color, image_extras,
-    image_observation_tagging_notification, update_access_tag
+    image_observation_tagging_notification
 )
 
 from djangoplicity.media.wcs import wwt_show_image_url
@@ -701,51 +701,15 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
 
         # --- AVM-related fields change detection, it needs to be calculated before the save so we can compare the values ---
         avm_fields_changed = self.isAVMDataUpdated()
-
-        # --- Published field change detection ---
-        published_changed = self.isPublishedChanged()
-
-        # --- Release and embargo date change detection ---
-        is_release_embargo_changed = self.isReleaseEmbargoChanged()
         
         super( Image, self ).save( *args, **kwargs )
 
-        # Update access tag for this image if published or release/embargo dates have changed with S3ContentServer
-        if (published_changed or is_release_embargo_changed):
-            from django.db import transaction
-            transaction.on_commit(lambda: update_access_tag.delay(self.id, is_image=True))
 
         # Run background tasks on image
         if run_tasks and avm_fields_changed and self.is_source() and 'loaddata' not in sys.argv:
             image_extras.delay( self.id )
             image_color.delay( self.id )
             write_metadata.delay( self.id, IMAGE_AVM_FORMATS )
-    
-    def isPublishedChanged(self):
-        if not hasattr(self, 'published'):
-            return False
-        
-        if self.pk is None:
-            return False 
-        
-        try:
-            old_instance = self.__class__.objects.get(pk=self.pk)
-            return old_instance.published != self.published
-        except self.__class__.DoesNotExist:
-            return False
-
-    def isReleaseEmbargoChanged(self):
-        if not hasattr(self, 'release_date') or not hasattr(self, 'embargo_date'):
-            return False
-        
-        if self.pk is None:
-            return False 
-        
-        try:
-            old_instance = self.__class__.objects.get(pk=self.pk)
-            return old_instance.release_date != self.release_date or old_instance.embargo_date != self.embargo_date
-        except self.__class__.DoesNotExist:
-            return False
 
     def isAVMDataUpdated(self):
         # Get all AVM fields for this model

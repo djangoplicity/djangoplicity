@@ -60,7 +60,7 @@ from djangoplicity.media.consts import DEFAULT_CREATOR_FUNC, DEFAULT_CREATOR_URL
     DEFAULT_CONTACT_STATE_PROVINCE_FUNC, DEFAULT_PUBLISHER_FUNC, DEFAULT_PUBLISHER_ID_FUNC, \
     DEFAULT_RIGHTS_FUNC, SPLIT_AUDIO_TYPES, DEFAULT_VIDEOS_FRAME_RATE_FUNC
 from djangoplicity.media.tasks import video_extras, update_youtube_caption, \
-    update_youtube_snippet, update_access_tag
+    update_youtube_snippet
 from djangoplicity.media.youtube import youtube_configured, \
     youtube_captions_insert, youtube_captions_list, youtube_captions_update, \
     youtube_playlistitems_insert, youtube_playlistitems_list, \
@@ -393,12 +393,6 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         else:
             run_tasks = True
 
-        # --- Published field change detection ---
-        published_changed = self.isPublishedChanged()
-
-        # --- Release and embargo date change detection ---
-        is_release_embargo_changed = self.isReleaseEmbargoChanged()
-
         super( Video, self ).save( *args, **kwargs )
 
         # Send the actual email notification
@@ -423,10 +417,6 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
                     # Just ignore error if SMTP server is down.
                     pass
         
-        # Update access tag for this video if published or release/embargo dates have changed with S3ContentServer
-        if (published_changed or is_release_embargo_changed):
-            from django.db import transaction
-            transaction.on_commit(lambda: update_access_tag.delay(self.id, is_video=True))
 
         # Run background tasks on video
         if run_tasks and self.is_source():
@@ -465,32 +455,6 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
             self.update_youtube_privacy('public')
             self.update_youtube_playlists()
             add_admin_history(self, 'Setting YouTube video privacy to "public" at release time')
-
-    def isPublishedChanged(self):
-        if not hasattr(self, 'published'):
-            return False
-        
-        if self.pk is None:
-            return False 
-        
-        try:
-            old_instance = self.__class__.objects.get(pk=self.pk)
-            return old_instance.published != self.published
-        except self.__class__.DoesNotExist:
-            return False
-
-    def isReleaseEmbargoChanged(self):
-        if not hasattr(self, 'release_date') or not hasattr(self, 'embargo_date'):
-            return False
-        
-        if self.pk is None:
-            return False 
-        
-        try:
-            old_instance = self.__class__.objects.get(pk=self.pk)
-            return old_instance.release_date != self.release_date or old_instance.embargo_date != self.embargo_date
-        except self.__class__.DoesNotExist:
-            return False
     
     def duration_in_seconds(self):
         h, m, s, f = self.file_duration.split(':')
