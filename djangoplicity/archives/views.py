@@ -814,11 +814,10 @@ class BaseListView(ListView):
 
         return qs
 
-
+# Resource proxy view for protected resources
 def resource_proxy_view(request, model, format, id, ext):
     from djangoplicity.archives.options import ArchiveOptions
     from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
-    from djangoplicity.contentserver.base import S3ContentServer
 
     print(f"Resource proxy view: {model}, {format}, {id}, {ext}")
 
@@ -843,8 +842,8 @@ def resource_proxy_view(request, model, format, id, ext):
     content_server = MEDIA_CONTENT_SERVERS[obj.content_server]
     if not content_server:
         return HttpResponseForbidden("Content server not found.")
-    if not isinstance(content_server, S3ContentServer):
-        return HttpResponseForbidden("Content server is not compatible with signed URLs.")
+    if not getattr(content_server, 'has_resource_protection_capabilities', False) and not hasattr(content_server, 'get_signed_url'):
+        return HttpResponseForbidden("Content server doesn't support resource protection.")
     
     # Get available formats
     available_formats = get_instance_archives(obj)
@@ -864,7 +863,7 @@ def resource_proxy_view(request, model, format, id, ext):
             return HttpResponseForbidden(f"Resource not found for format: {format}")
 
         # Generate signed URL
-        presigned_url = content_server._get_signed_url(resource, expires_in=3600)
+        presigned_url = content_server.get_signed_url(resource, expires_in=3600)
         if not presigned_url:
             return HttpResponseForbidden("Failed to generate signed URL")
         return HttpResponseRedirect(presigned_url)
