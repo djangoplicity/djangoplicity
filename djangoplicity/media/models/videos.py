@@ -415,8 +415,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
                     msg.send()
                 except Exception:
                     # Just ignore error if SMTP server is down.
-                    pass
-        
+                    pass 
 
         # Run background tasks on video
         if run_tasks and self.is_source():
@@ -455,7 +454,6 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
             self.update_youtube_privacy('public')
             self.update_youtube_playlists()
             add_admin_history(self, 'Setting YouTube video privacy to "public" at release time')
-    
     def duration_in_seconds(self):
         h, m, s, f = self.file_duration.split(':')
         return int(h) * 3600 + int(m) * 60 + int(s)

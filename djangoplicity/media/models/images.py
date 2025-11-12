@@ -704,7 +704,6 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         
         super( Image, self ).save( *args, **kwargs )
 
-
         # Run background tasks on image
         if run_tasks and avm_fields_changed and self.is_source() and 'loaddata' not in sys.argv:
             image_extras.delay( self.id )
