@@ -148,7 +148,7 @@ class ResourceFile( File ):
 
         # 3. Check protection capabilities
         server = MEDIA_CONTENT_SERVERS.get(self.instance.content_server)
-        if not getattr(server, 'has_resource_protection_capabilities', False) and getattr(self.instance, 'content_server_ready', False):
+        if (not server) or (not getattr(server, 'has_resource_protection_capabilities', False) and getattr(self.instance, 'content_server_ready', False)):
             return False 
 
         # 4. Use proxy if access tag is private
