@@ -288,6 +288,8 @@ def update_resource_privacy(app_label, model_name, pk):
         logger.info(f"Updating resource privacy for {app_label}.{model_name} ({pk})")
         model_class = apps.get_model(app_label, model_name)
         instance = model_class.objects.get(pk=pk)
-        instance.update_resource_privacy()
+        # Ensure the instance has the update_resource_privacy method as ArchiveModel
+        if hasattr(instance, 'update_resource_privacy'):
+            instance.update_resource_privacy()
     except Exception as e:
         logger.warning("Exception: %s." % e)
