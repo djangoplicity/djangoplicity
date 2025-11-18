@@ -39,6 +39,11 @@ from djangoplicity.archives.tasks import clear_archive_list_cache, \
     embargo_release_date_task
 from future.utils import with_metaclass
 
+from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
+from django.conf import settings
+
+from djangoplicity.contentserver.constants import AccessTagControl
+
 
 __all__ = ( 'ArchiveModel', 'post_rename' )
 
@@ -405,8 +410,40 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
     def save(self, *args, **kwargs ):
         if not self._state.adding and not self.pk:
             raise ValueError('Empty PK is not allowed')
+        
+        # --- Published, embargo and release field change detection ---
+        changed = self.has_changed(['published', 'embargo_date', 'release_date'])
 
         super(ArchiveModel, self).save(*args, **kwargs)
+
+        if any(changed.values()):
+            from djangoplicity.contentserver.tasks import update_resource_privacy
+            from django.db import transaction
+            print("Changed: %s" % changed)
+            transaction.on_commit(lambda: update_resource_privacy.delay(
+                self._meta.app_label,
+                self._meta.model_name,
+                self.pk
+            ))
+    
+    def has_changed(self, fields):
+        """Check if any of the given fields changed."""
+        if self.pk is None:
+            return {field: False for field in fields}
+
+        try:
+            old_instance = self.__class__.objects.get(pk=self.pk)
+        except self.__class__.DoesNotExist:
+            return {field: False for field in fields}
+
+        changed = {}
+        for field in fields:
+            if hasattr(self, field):
+                changed[field] = getattr(old_instance, field) != getattr(self, field)
+            else:
+                changed[field] = False
+        return changed
+        
 
     def rename( self, new_pk ):
         """
@@ -624,6 +661,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         '''
         # Clear the cache
         clear_archive_list_cache()
+        self.update_resource_privacy()
 
     def release_date_action(self):
         '''
@@ -631,6 +669,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         '''
         # Clear the cache
         clear_archive_list_cache()
+        self.update_resource_privacy()
 
         from django.contrib.sites.models import Site
         domain = Site.objects.get_current().domain
@@ -682,8 +721,12 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
             revoke(self.release_task_id)  # pylint: disable=E0203
 
         if self.release_date and self.release_date < one_month:
+            eta = self.release_date
+            if is_naive(eta):
+                eta = make_aware(eta)
+
             task = embargo_release_date_task.apply_async(
-                eta=self.release_date,
+                eta=eta,
                 args=[self._meta.app_label, self._meta.model_name,
                       self.pk, 'release'],
             )
@@ -818,3 +861,76 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         """
         return str( pk )
         #return "%s.%s:%s" % ( self._meta.app_label, self._meta.model_name, str( self.pk ) )
+    
+    def get_access_tag(self):
+        """
+        Return the access tag for this object to sync with S3
+        Simplified rules:
+        - Not published: Private
+        - No dates: Public
+        - Otherwise, check if current date is after both release and embargo dates
+        """
+        now = datetime.now()
+        embargo_date = getattr(self, 'embargo_date', None)
+        release_date = getattr(self, 'release_date', None)
+
+        # 1. Check if the object is not published
+        if hasattr(self, 'published') and not self.published:
+            return AccessTagControl.PRIVATE
+        
+        #2. If the object has no release_date or embargo_date, it is public
+        if not release_date or not embargo_date:
+            return AccessTagControl.PUBLIC
+
+        #3. If current date is after both release and embargo dates, it is public
+        if now > release_date and now > embargo_date:
+            return AccessTagControl.PUBLIC
+
+        #4. Otherwise, it is private
+        return AccessTagControl.PRIVATE
+    
+    def is_embargoed(self):
+        embargo_date = getattr(self, 'embargo_date', None)
+        release_date = getattr(self, 'release_date', None) 
+        published = getattr(self, 'published', None) 
+
+        if not embargo_date and not release_date:
+            return False
+
+        now = datetime.now()
+        if embargo_date < now < release_date and published:
+            return True
+        return False
+    
+    def get_access_tag_for_format(self, fmt):
+        base_access_tag = self.get_access_tag()
+        is_embargoed = self.is_embargoed()
+        
+        content_server = MEDIA_CONTENT_SERVERS[self.content_server]
+        if not content_server and not content_server.always_public_formats:
+            return AccessTagControl.PUBLIC
+
+        if is_embargoed and fmt in content_server.always_public_formats:
+            return AccessTagControl.PUBLIC
+
+        return base_access_tag
+
+    def update_resource_privacy(self):
+        """
+        Update the access tag for this object to sync with S3
+        """
+        # 1. Check if has attribute content_server
+        if not hasattr(self, 'content_server') or not self.content_server:
+            return
+        
+        # 2. Check if content server is valid
+        content_server = MEDIA_CONTENT_SERVERS[self.content_server]
+        if not content_server:
+            return
+        
+        # 3. Check if content server has proctection capabilities
+        if not getattr(content_server, 'has_resource_protection_capabilities', False) and not hasattr(content_server, 'update_resource_privacy'):
+            return
+        
+        # 4. Update resource privacy
+        content_server.update_resource_privacy(self)

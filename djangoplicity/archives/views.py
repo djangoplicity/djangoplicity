@@ -17,7 +17,7 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, \
     FieldDoesNotExist
 from django.urls import NoReverseMatch
-from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import redirect
 from django.template import loader
 from django.template.loader import render_to_string
@@ -30,6 +30,8 @@ from djangoplicity.archives import CACHE_PREFIX, _gen_cache_key
 from djangoplicity.archives.queries import ArchiveQuery
 from djangoplicity.archives.utils import is_internal, get_instance_checksum, get_resource_size
 from djangoplicity.archives.browsers import lang_templates, default_search_url
+
+from djangoplicity.archives.utils import get_instance_archives
 
 SEARCH_VAR = 'search'
 
@@ -811,3 +813,116 @@ class BaseListView(ListView):
             qs = qs.filter(release_date__lte=datetime.now())
 
         return qs
+
+# Resource proxy view for protected resources
+def resource_proxy_view(request, model, format, id, ext):
+    from djangoplicity.archives.options import ArchiveOptions
+    from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
+
+    print(f"Resource proxy view: {model}, {format}, {id}, {ext}")
+
+    # Get model class
+    model_class = _get_model_class(model)
+    if not model_class:
+        return HttpResponseNotFound("Model not found")
+    
+    # Get object
+    obj = _get_object(model_class, id)
+    if not obj:
+        return HttpResponseNotFound("Object not found")
+
+    # Get options
+    options = ArchiveOptions()
+    has_access, reason = _has_access_permissions(request, obj, options)
+    
+    if not has_access:
+        return HttpResponseForbidden(reason)
+    
+    # Get content server
+    content_server = MEDIA_CONTENT_SERVERS[obj.content_server]
+    if not content_server:
+        return HttpResponseForbidden("Content server not found.")
+    if not getattr(content_server, 'has_resource_protection_capabilities', False) and not hasattr(content_server, 'get_signed_url'):
+        return HttpResponseForbidden("Content server doesn't support resource protection.")
+    
+    # Get available formats
+    available_formats = get_instance_archives(obj)
+    if format not in available_formats:
+        return HttpResponseForbidden(f"Format '{format}' not found. Available formats: {', '.join(available_formats)}")
+        
+    # Get resource using get_archive_field method
+    try:
+        # First try with get_archive_field method if exists
+        if hasattr(obj, 'get_archive_field'):
+            resource = obj.get_archive_field(format)
+        else:
+            # If not exists, try with getattr
+            resource = getattr(obj, f'resource_{format}')
+            
+        if not resource:
+            return HttpResponseForbidden(f"Resource not found for format: {format}")
+
+        # Generate signed URL
+        presigned_url = content_server.get_signed_url(resource, expires_in=3600)
+        if not presigned_url:
+            return HttpResponseForbidden("Failed to generate signed URL")
+        return HttpResponseRedirect(presigned_url)
+    except Exception as e:
+        return HttpResponseForbidden(f"Error to generate signed URL: {str(e)}")
+
+######
+# HELPER METHODS
+######
+
+def _get_model_class(model_name):
+    from django.apps import apps
+    """
+    Searches for a Django model class by name.
+    Returns None if it is not found or if an error occurs.    
+    """
+    try:
+        for app_config in apps.get_app_configs():
+            if model_name in app_config.models:
+                return app_config.get_model(model_name)
+        print(f"Model '{model_name}' not found in installed apps.")
+        return None
+    except Exception as e:
+        print(f"Error retrieving model '{model_name}': {e}")
+        return None
+
+def _get_object(model_class, id):
+    try:
+        return model_class.objects.get(pk=id)
+    except model_class.DoesNotExist:
+        print(f"Object not found: {id}")
+        return None
+
+def _has_access_permissions(request, obj, options):
+    """
+    Checks if the user has access permissions to the object based 
+    on its state of publication and dates.
+    """
+    admin_rights, _ = options.has_admin_perms(request, obj)
+    can_staging = options.has_staging_perms(request, obj)
+    can_embargo = options.has_embargo_perms(request, obj)
+
+    now = datetime.now()
+    model_class = obj.__class__
+    release_date = getattr(obj, model_class.Archive.Meta.release_date_fieldname, None)
+    embargo_date = getattr(obj, model_class.Archive.Meta.embargo_date_fieldname, None)
+    published = getattr(obj, model_class.Archive.Meta.published_fieldname, None)
+
+    # Logic Access (NOIRLab Rules) - TODO: Test all cases
+    if not published and not admin_rights:
+        return False, "Only admins can access unpublished content."
+
+    if release_date and release_date > now:
+        if embargo_date and embargo_date > now and not can_staging:
+            return False, "Only staging accounts can access before embargo date."
+        elif not can_embargo:
+            return False, "Only embargo accounts can access before release date."
+
+    elif embargo_date and embargo_date > now and not can_staging:
+        return False, "Only staging accounts can access until embargo ends."
+
+    return True, None
