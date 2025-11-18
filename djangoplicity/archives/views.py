@@ -863,7 +863,7 @@ def resource_proxy_view(request, model, format, id, ext):
             return HttpResponseForbidden(f"Resource not found for format: {format}")
 
         # Generate signed URL
-        presigned_url = content_server.get_signed_url(resource, expires_in=3600)
+        presigned_url = content_server.get_signed_url(resource, format, expires_in=3600)
         if not presigned_url:
             return HttpResponseForbidden("Failed to generate signed URL")
         return HttpResponseRedirect(presigned_url)

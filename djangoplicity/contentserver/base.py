@@ -48,6 +48,7 @@ from django.core.cache import cache
 from six import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
+from urllib.parse import urlparse, urlunparse
 
 
 logger = logging.getLogger(__name__)
@@ -450,16 +451,37 @@ class S3ContentServer(ContentServer):
             logger.error('S3ContentServer: Failed to download directory %s: %s', local_dir, str(e))
             raise
     
-    def get_signed_url(self, resource, expires_in=3600):
+    def get_signed_url(self, resource, format, expires_in=3600):
         logger.info("S3ContentServer: Generating signed URL for %s", resource.path)
         try:
             s3_path = self.to_s3_path(resource.path)
-            url = self.s3_client.generate_presigned_url(
+            # Get signed url
+            signed_url = self.s3_client.generate_presigned_url(
                 'get_object',
                 Params={'Bucket': self.bucket, 'Key': s3_path},
                 ExpiresIn=expires_in
             )
-            return url
+
+            # Parse signed url to get the path
+            parsed_url = urlparse(signed_url)
+
+            # Get base url
+            base_url = self.get_url(resource, format)
+
+            # Parse base url
+            base_url_parsed = urlparse(base_url)
+
+            # Create new signed url replacing schema and netlock with base url
+            new_signed_url = urlunparse((
+                base_url_parsed.scheme or parsed_url.scheme,
+                base_url_parsed.netloc,
+                parsed_url.path,
+                parsed_url.params,
+                parsed_url.query,
+                parsed_url.fragment,
+            ))
+
+            return new_signed_url
         except Exception as e:
             logger.error('S3ContentServer: Failed to generate signed URL for %s: %s', resource.path, str(e))
             raise
