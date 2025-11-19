@@ -335,12 +335,12 @@ class S3ContentServer(ContentServer):
             if not os.path.isdir(resource.path):
 
                 access_tag = instance.get_access_tag_for_format(fmt).value
-                logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
-                self.s3_client.put_object_tagging(
-                    Bucket=self.bucket, 
-                    Key=remote_path, 
-                    Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
-                )
+                # logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
+                # self.s3_client.put_object_tagging(
+                #     Bucket=self.bucket, 
+                #     Key=remote_path, 
+                #     Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
+                # )
 
     def download_resources(self, instance, formats=None, include_directories=False, *args, **kwargs):
         """
