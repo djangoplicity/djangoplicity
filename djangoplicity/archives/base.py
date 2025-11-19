@@ -874,19 +874,23 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         embargo_date = getattr(self, 'embargo_date', None)
         release_date = getattr(self, 'release_date', None)
 
-        # 1. Check if the object is not published
+        #1. Check if the object is not published
         if hasattr(self, 'published') and not self.published:
             return AccessTagControl.PRIVATE
         
-        #2. If the object has no release_date or embargo_date, it is public
-        if not release_date or not embargo_date:
+        #2. If the object has no release date it is private
+        if not release_date:
+            return AccessTagControl.PRIVATE
+
+        #3. If the object has no embargo date and release date has passed, it is public
+        if not embargo_date and now > release_date:
             return AccessTagControl.PUBLIC
 
-        #3. If current date is after both release and embargo dates, it is public
+        #4. If current date is after both release and embargo dates, it is public
         if now > release_date and now > embargo_date:
             return AccessTagControl.PUBLIC
 
-        #4. Otherwise, it is private
+        #5. Otherwise, it is private
         return AccessTagControl.PRIVATE
     
     def is_embargoed(self):
@@ -894,12 +898,16 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         release_date = getattr(self, 'release_date', None) 
         published = getattr(self, 'published', None) 
 
-        if not embargo_date and not release_date:
+        if not embargo_date:
             return False
 
         now = datetime.now()
-        if embargo_date < now < release_date and published:
-            return True
+        if release_date:
+            if embargo_date < now < release_date and published:
+                return True
+        else:
+            if embargo_date < now and published:
+                return True
         return False
     
     def get_access_tag_for_format(self, fmt):
