@@ -214,7 +214,7 @@ def get_all_crop_formats(instance):
     Args: instance (Archive): The instance to get crop formats for
     Returns: list: List of crop formats, is a format for crop if it is an ImageResourceManager and has width and height
     '''
-    formats = [] 
+    formats = ['original'] 
     for fmt_name in dir(instance.Archive):
         fmt = getattr(instance.Archive, fmt_name)
         if (
