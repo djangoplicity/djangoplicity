@@ -197,23 +197,17 @@ class CropView(UpdateView):
             
             # Check if the resource exists in the content server
             if hasattr(content_server, 'resource_exists') and content_server.resource_exists(crop_display_resource):
-                # Get the crop display format
-                crop_format = archive.Archive.Meta.crop_display_format
-                
                 # Use the download_from_content_server task we implemented
                 # Call it synchronously (not as a task) since we need the result immediately
                 from djangoplicity.contentserver.tasks import download_from_content_server
                 
                 try:
                     # Call the task function directly (not as a Celery task) for immediate execution
+                    # Dont pass formats, because by default it will download all formats
                     download_from_content_server(
                         archive.__module__,
                         archive.__class__.__name__,
                         archive.pk,
-                        formats=[crop_format],
-                        delay=False,
-                        prefetch=True,
-                        purge=True,
                         include_directories=False
                     )
                 except Exception as e:
