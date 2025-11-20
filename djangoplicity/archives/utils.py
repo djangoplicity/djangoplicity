@@ -214,6 +214,7 @@ def get_all_crop_formats(instance):
     Args: instance (Archive): The instance to get crop formats for
     Returns: list: List of crop formats, is a format for crop if it is an ImageResourceManager and has width and height
     '''
+    # Add original format
     formats = ['original'] 
     for fmt_name in dir(instance.Archive):
         fmt = getattr(instance.Archive, fmt_name)
@@ -225,7 +226,7 @@ def get_all_crop_formats(instance):
         ):
             formats.append(fmt_name)
     
-    # Add the crop display format
+    # Add mandatory crop format
     formats.append(instance.Archive.Meta.crop_display_format)
 
     return formats
