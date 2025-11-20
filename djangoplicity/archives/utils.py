@@ -28,7 +28,7 @@ from django.db.models.signals import post_save, post_delete, pre_save
 from functools import partial
 
 from djangoplicity.archives.base import ArchiveModel
-from djangoplicity.archives.resources import ResourceManager
+from djangoplicity.archives.resources import ImageResourceManager, ResourceManager
 from djangoplicity.translation.models import TranslationModel
 from djangoplicity.utils.d2d import D2dDict
 from djangoplicity.archives.typings import ArchiveResource
@@ -206,6 +206,29 @@ def get_all_possible_instance_formats(instance):
     Returns a list of all existing Archives for a given instance
     '''
     return [x for x in dir(instance.Archive) if isinstance(getattr(instance.Archive, x), ResourceManager )]
+
+
+def get_all_crop_formats(instance):
+    '''
+    Returns a list of all existing crop formats for a given instance
+    Args: instance (Archive): The instance to get crop formats for
+    Returns: list: List of crop formats, is a format for crop if it is an ImageResourceManager and has width and height
+    '''
+    formats = [] 
+    for fmt_name in dir(instance.Archive):
+        fmt = getattr(instance.Archive, fmt_name)
+        if (
+            isinstance(fmt, ImageResourceManager) 
+            and fmt.type.width 
+            and fmt.type.height
+            and instance.width / instance.height != fmt.type.width / fmt.type.height
+        ):
+            formats.append(fmt_name)
+    
+    # Add the crop display format
+    formats.append(instance.Archive.Meta.crop_display_format)
+
+    return formats
 
 
 def get_instance_archives(instance):
