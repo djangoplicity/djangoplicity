@@ -359,7 +359,8 @@ class S3ContentServer(ContentServer):
 
         for fmt in formats:
             # Get the local resource (if any)
-            resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt + '_only_local_files'), None)
+            attr_name = f"{instance.Archive.Meta.resource_fields_prefix}{fmt}"
+            resource = getattr(instance, attr_name, None)
 
             if not resource:
                 continue
