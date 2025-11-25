@@ -295,8 +295,7 @@ class S3ContentServer(ContentServer):
                 else:
                     logger.warning('S3ContentServer: No access tag found for %s', instance)
 
-                # extra_args = {'ContentType': content_type, 'Tagging': f'Access={access_tag}'}
-                extra_args = {'ContentType': content_type}
+                extra_args = {'ContentType': content_type, 'Tagging': f'Access={access_tag}'}
 
                 # upload the file with the tag included
                 self.s3_client.upload_file(resource.path, self.bucket, remote_path, ExtraArgs=extra_args)
