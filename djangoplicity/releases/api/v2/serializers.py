@@ -7,6 +7,8 @@ from djangoplicity.media.api.v2.serializers import ImageMiniSerializer, VideoMin
 from djangoplicity.metadata.api.v2.serializers import ProgramSerializer
 from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
+from django.core.cache import cache
+from django.conf import settings
 from djangoplicity.utils.domain_rewrite import has_gemini_program_request
 
 
@@ -44,15 +46,28 @@ class ReleaseMiniSerializer(ReleaseSerializerMixin, serializers.ModelSerializer)
 
     @extend_schema_field(ImageMiniSerializer)
     def get_main_image(self, obj):
+        request = self.context.get('request')
+        has_gemini_program_flag = has_gemini_program_request(request)
+
+        suffix = 'gemini' if has_gemini_program_flag else 'default'
+        cache_key = f"release_main_image_{obj.id}_{suffix}"
+        cache_timeout = getattr(settings, 'RELEASES_CACHE_TIMEOUT', 60 * 60 * 2) # 2 hours
+
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return cached
+
         images = related_archive_items(Release.related_images, obj)
+        if not images:
+            cache.set(cache_key, None, timeout=cache_timeout) 
+            return None
+        
         # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
-        if images:
-            request = self.context.get('request')
-
-            has_gemini_program_flag = has_gemini_program_request(request)
-            context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
-
-            return ImageMiniSerializer(images[0], context=context).data
+        context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
+        data = ImageMiniSerializer(images[0], context=context).data
+        
+        cache.set(cache_key, data, timeout=cache_timeout)
+        return data
 
 
 class ReleaseSerializer(ReleaseSerializerMixin, serializers.ModelSerializer):
