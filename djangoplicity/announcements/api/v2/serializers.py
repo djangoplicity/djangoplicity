@@ -3,7 +3,7 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from djangoplicity.archives.utils import related_archive_items
 
-from djangoplicity.media.api.v2.serializers import ImageMiniSerializer, VideoMiniSerializer
+from djangoplicity.media.api.v2.serializers import ImageMiniSerializer, VideoMiniSerializer, ImageTinySerializer
 from djangoplicity.metadata.api.v2.serializers import ProgramSerializer
 from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
@@ -33,27 +33,21 @@ class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerial
     def get_main_image(self, obj):
         request = self.context.get('request')
         has_gemini_program_flag = has_gemini_program_request(request)
-
-        suffix = 'gemini' if has_gemini_program_flag else 'default'
-        cache_key = f"announcement_main_image_{obj.id}_{suffix}"
-        cache_timeout = getattr(settings, 'ANNOUNCEMENTS_CACHE_TIMEOUT', 60 * 60 * 2) # 2 hours
-
-        cached = cache.get(cache_key)
-        if cached is not None:
-            return cached
-
-        images = related_archive_items(Announcement.related_images, obj)
-        if not images:
-            cache.set(cache_key, None, timeout=cache_timeout) 
-            return None
-
-        # By default, related_archive_items put 'main visual' images first, then we can simply return the first one
+        has_tiny_param = request and request.query_params.get('tiny') == 'true'
 
         context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
-        data = ImageMiniSerializer(images[0], context=context).data
+        serializer_class = ImageTinySerializer if has_tiny_param else ImageMiniSerializer
 
-        cache.set(cache_key, data, timeout=cache_timeout)
-        return data
+        if hasattr(obj, '_main_image_cache'):
+            main_image = obj._main_image_cache
+        else:
+            images = related_archive_items(Announcement.related_images, obj)
+            main_image = images[0] if images else None
+        
+        if not main_image:
+            return None
+        
+        return serializer_class(main_image, context=context).data
 
 
 class AnnouncementSerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
