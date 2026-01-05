@@ -120,6 +120,11 @@ class ReleaseViewMixin:
             enum=[t[0] for t in RELEASE_TYPE_CHOICES],
             description=f"Default: {RELEASE_TYPE_PUBLIC}"
         ),
+        OpenApiParameter(
+            "tiny",
+            OpenApiTypes.BOOL,
+            description="If true returns a simplified response for the main image with minimal fields and few formats. Default: false"
+        )
     ],
 )
 class ReleaseListView(mixins.ListModelMixin, ReleaseViewMixin, TranslationAPIViewMixin, GenericViewSet):
@@ -128,6 +133,18 @@ class ReleaseListView(mixins.ListModelMixin, ReleaseViewMixin, TranslationAPIVie
     pagination_class = ReleasesPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ReleaseFilter
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        # Pre-fetch main visuals for better performance
+        Release.store_main_visuals(queryset)
+        print("Precargado todo")
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 @extend_schema(

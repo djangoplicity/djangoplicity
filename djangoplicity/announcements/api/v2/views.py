@@ -84,6 +84,11 @@ class AnnouncementViewMixin:
             OpenApiTypes.INT,
             description=f"Number of results to return per page. Max: {AnnouncementPagination.max_page_size}, Default: {AnnouncementPagination.page_size}"
         ),
+        OpenApiParameter(
+            "tiny",
+            OpenApiTypes.BOOL,
+            description="If true returns a simplified response for the main image with minimal fields and few formats. Default: false"
+        )
     ],
 )
 class AnnouncementListView(mixins.ListModelMixin, AnnouncementViewMixin, TranslationAPIViewMixin, GenericViewSet):
@@ -93,6 +98,20 @@ class AnnouncementListView(mixins.ListModelMixin, AnnouncementViewMixin, Transla
     pagination_class = AnnouncementPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AnnouncementFilter
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        # Pre-fetch main visuals for better performance
+        Announcement.store_main_visuals(queryset)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class AnnouncementDetailView(mixins.RetrieveModelMixin, AnnouncementViewMixin, TranslationAPIViewMixin, GenericViewSet):
