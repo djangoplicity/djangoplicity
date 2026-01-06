@@ -138,7 +138,6 @@ class ReleaseListView(mixins.ListModelMixin, ReleaseViewMixin, TranslationAPIVie
         queryset = self.filter_queryset(self.get_queryset())
         # Pre-fetch main visuals for better performance
         Release.store_main_visuals(queryset)
-        print("Precargado todo")
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
