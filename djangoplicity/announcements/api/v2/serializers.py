@@ -1,5 +1,5 @@
 from djangoplicity.announcements.models import Announcement
-from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.utils import extend_schema_field, PolymorphicProxySerializer
 from rest_framework import serializers
 from djangoplicity.archives.utils import related_archive_items
 
@@ -29,7 +29,13 @@ class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerial
             'main_image',
         ]
 
-    @extend_schema_field(ImageMiniSerializer())
+    @extend_schema_field(
+        PolymorphicProxySerializer(
+            component_name='MainImage',
+            serializers=[ImageTinySerializer, ImageMiniSerializer],
+            resource_type_field_name=None
+        )
+    )
     def get_main_image(self, obj):
         request = self.context.get('request')
         has_gemini_program_flag = has_gemini_program_request(request)
