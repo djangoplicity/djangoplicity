@@ -14,7 +14,7 @@ from .typings import ImageFormatsURLs, VideoFormatsURLs
 from djangoplicity.utils.domain_rewrite import replace_gemini_domains, has_gemini_category_request
 
 
-IMAGE__TINY_FORMATS = ['thumb300y', 'screen', 'thumb700x']
+IMAGE__TINY_FORMATS = ['thumb300y', 'screen', 'thumb700x', 'thumb350x']
 ImageTinyFormatsURLs = TypedDict('ImageFormatsURLs', dict(map(lambda x: (x, Optional[str]), IMAGE__TINY_FORMATS)))
 
 class ImageSerializerMixin(ArchiveSerializerMixin):
