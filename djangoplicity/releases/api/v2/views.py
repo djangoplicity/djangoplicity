@@ -17,6 +17,7 @@ from .serializers import ReleaseMiniSerializer, ReleaseSerializer
 from rest_framework import permissions, mixins
 from rest_framework.viewsets import GenericViewSet
 from django_filters import rest_framework as filters
+from djangoplicity.utils.domain_rewrite import has_gemini_program_request
 
 
 class StagingPermission(permissions.BasePermission):
@@ -144,6 +145,14 @@ class ReleaseListView(mixins.ListModelMixin, ReleaseViewMixin, TranslationAPIVie
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+
+        context['tiny'] = self.request.query_params.get('tiny', 'false').lower() == 'true'
+        context['has_gemini_program'] = has_gemini_program_request(self.request)
+
+        return context
 
 
 @extend_schema(

@@ -12,6 +12,7 @@ from .serializers import ImageSerializer, ImageMiniSerializer, ImageTinySerializ
 from rest_framework import permissions, mixins
 from rest_framework.viewsets import GenericViewSet
 from django_filters import rest_framework as filters
+from djangoplicity.utils.domain_rewrite import has_gemini_category_request
 
 
 class MediaPagination(PageNumberPagination):
@@ -109,6 +110,12 @@ class ImageListView(mixins.ListModelMixin, ImageViewMixin, TranslationAPIViewMix
         if self.request.GET.get('tiny', 'false') == 'true':
             return ImageTinySerializer
         return ImageMiniSerializer
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['has_gemini_category'] = has_gemini_category_request(self.request)
+
+        return context
 
 
 class ImageDetailView(mixins.RetrieveModelMixin, ImageViewMixin, TranslationAPIViewMixin, GenericViewSet):
@@ -140,6 +147,12 @@ class VideoListView(mixins.ListModelMixin, VideoViewMixin, TranslationAPIViewMix
     pagination_class = MediaPagination
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VideoFilter
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['has_gemini_category'] = has_gemini_category_request(self.request)
+
+        return context
 
 
 class VideoDetailView(mixins.RetrieveModelMixin, VideoViewMixin, TranslationAPIViewMixin, GenericViewSet):
