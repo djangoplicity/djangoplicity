@@ -45,10 +45,7 @@ class ImageMiniSerializer(ImageSerializerMixin, serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         
-        context = self.context or {}
-        request = context.get('request')
-        
-        if context.get('has_gemini_program') or has_gemini_category_request(request):
+        if self.context.get('has_gemini_program') or self.context.get('has_gemini_category'):
             data = replace_gemini_domains(data)
         
         return data
@@ -66,12 +63,9 @@ class ImageTinySerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
-        context = self.context or {}
-        request = context.get('request')
-
-        if has_gemini_category_request(request):
+        if self.context.get('has_gemini_program') or self.context.get('has_gemini_category'):
             data = replace_gemini_domains(data)
-
+        
         return data
 
 
@@ -102,13 +96,11 @@ class VideoMiniSerializer(VideoSerializerMixin, serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
 
-        context = self.context or {}
-        request = context.get('request')
-
-        if has_gemini_category_request(request):
+        if self.context.get('has_gemini_program') or self.context.get('has_gemini_category'):
             data = replace_gemini_domains(data)
-
+        
         return data
+
 
 class VideoSerializer(VideoSerializerMixin, serializers.ModelSerializer):
     class Meta:

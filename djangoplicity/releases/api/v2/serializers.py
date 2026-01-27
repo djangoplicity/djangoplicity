@@ -52,12 +52,8 @@ class ReleaseMiniSerializer(ReleaseSerializerMixin, serializers.ModelSerializer)
         )
     )
     def get_main_image(self, obj):
-        request = self.context.get('request')
-        has_gemini_program_flag = has_gemini_program_request(request)
-        has_tiny_param = request and request.query_params.get('tiny') == 'true'
-
-        context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
-        serializer_class = ImageTinySerializer if has_tiny_param else ImageMiniSerializer
+        is_tiny = self.context.get('tiny', False)
+        serializer_class = ImageTinySerializer if is_tiny else ImageMiniSerializer
 
         if hasattr(obj, '_main_image_cache'):
             main_image = obj._main_image_cache
@@ -68,7 +64,7 @@ class ReleaseMiniSerializer(ReleaseSerializerMixin, serializers.ModelSerializer)
         if not main_image:
             return None
         
-        return serializer_class(main_image, context=context).data
+        return serializer_class(main_image, context=self.context).data
 
 
 class ReleaseSerializer(ReleaseSerializerMixin, serializers.ModelSerializer):

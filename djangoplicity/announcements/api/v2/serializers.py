@@ -9,7 +9,6 @@ from djangoplicity.archives.api.v2.serializers import ArchiveSerializerMixin
 
 from django.core.cache import cache
 from django.conf import settings
-from djangoplicity.utils.domain_rewrite import has_gemini_program_request
 
 
 class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
@@ -37,11 +36,7 @@ class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerial
         )
     )
     def get_main_image(self, obj):
-        request = self.context.get('request')
-        has_gemini_program_flag = has_gemini_program_request(request)
-        has_tiny_param = request and request.query_params.get('tiny') == 'true'
-
-        context = {**self.context, 'has_gemini_program': has_gemini_program_flag}
+        has_tiny_param = self.context.get('tiny', False)
         serializer_class = ImageTinySerializer if has_tiny_param else ImageMiniSerializer
 
         if hasattr(obj, '_main_image_cache'):
@@ -53,7 +48,7 @@ class AnnouncementMiniSerializer(ArchiveSerializerMixin, serializers.ModelSerial
         if not main_image:
             return None
         
-        return serializer_class(main_image, context=context).data
+        return serializer_class(main_image, context=self.context).data
 
 
 class AnnouncementSerializer(ArchiveSerializerMixin, serializers.ModelSerializer):
