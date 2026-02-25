@@ -65,7 +65,7 @@ IM_LIMITS = '-limit memory 6GiB -limit map 6GiB -limit thread 8'
 IM_TMP_DIR = os.path.join(settings.TMP_DIR, 'imagemagick')
 os.makedirs(IM_TMP_DIR, exist_ok=True)
 
-CONVERT_DEFAULTS = '-quiet -colorspace sRGB +antialias'
+CONVERT_DEFAULTS = '-quiet -depth 8 -colorspace sRGB +antialias'
 if os.path.isdir(IM_TMP_DIR):
     CONVERT_DEFAULTS += ' -define registry:temporary-path={}'.format(IM_TMP_DIR)
 
@@ -203,21 +203,10 @@ def _get_convert_args(archive, width, height, fmt, tmp_path, output_dir):
     args += ['-profile', SRGB_PROFILE]
 
     # Input file
-    depth = getattr(archive, '_bit_depth', 8) # Fallback to 8 bits if not set
-
     args += [tmp_path]
-    args += ['-depth', str(depth)]
-
 
     # Output path
-    output_path = os.path.join(
-        output_dir,
-        '%s.%s' % (archive.pk, fmt.type.exts[0])
-    )
-
-    # Force BigTIFF when needed
-    if fmt.type.exts[0] in ('tif', 'tiff') and _must_use_bigtiff(fmt, width, height):
-        output_path = 'tiff64:%s' % output_path
+    output_path = os.path.join(output_dir, '%s.%s' % (archive.pk, fmt.type.exts[0]))
 
     if hasattr(fmt.type, 'force_format'):
         # In some cases we force a different format than the extension's default
@@ -426,19 +415,6 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
     shutil.move(zoomable_dir, target)
 
 
-def _must_use_bigtiff(fmt, width, height):
-    '''
-    Returns True if the format requires BigTIFF
-    '''
-    # If the format has needs_bigtiff flag set, always use BigTIFF
-    if getattr(fmt.type, 'needs_bigtiff', False):
-        logger.info('Format %s requires BigTIFF', fmt.type.verbose_name)
-        return True
-
-    # General rule: use BigTIFF if width or height exceeds 30000 pixels
-    return max(width, height) > 30000
-
-
 def identify_image(path):
     '''
     Returns the image resolution
@@ -457,22 +433,6 @@ def identify_image(path):
     width, height = output.split(';')[0].split()
 
     return int(width), int(height)
-
-def identify_image_with_depth(path):
-    '''
-    Returns the image resolution (width, height) and depth
-    '''
-    identify_args = IDENTIFY.split()
-    identify_args += ['-quiet', '-format', '%w %h %z;', path]
-
-    identify = Popen(identify_args, stdout=PIPE, encoding='utf8')
-    output = identify.communicate()[0]
-
-    try:
-        width, height, depth = output.split(';')[0].split()
-        return int(width), int(height), int(depth)
-    except (ValueError, IndexError) as e:
-        raise Exception(f'Failed to parse image dimensions from identify output for {path}: {output.strip()}. Error: {str(e)}')
 
 
 def process_image_derivatives(app_label, module_name, pk, formats,
@@ -528,8 +488,7 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         raise Exception(error)
 
     # Get the original file resolution:
-    width, height, depth = identify_image_with_depth(original.path)
-    archive._bit_depth = depth
+    width, height = identify_image(original.path)
 
     # We keep track of the required formats which can't be generated, and
     # formats which we have to upscale:
