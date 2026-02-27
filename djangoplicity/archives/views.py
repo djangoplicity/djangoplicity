@@ -321,6 +321,13 @@ class GenericDetailView( object ):
         """
         template_names = []
 
+        # Use detail template specified in Options by custom method
+        custom_template = getattr(self.options, 'get_detail_template', None)
+        if callable(custom_template):
+            tpl = custom_template(obj)
+            if tpl:
+                template_names.append( tpl )
+
         # Use detail template specified in a field in the instance if available
         if self.options.template_name_field:
             template_names.append( getattr( obj, self.options.template_name_field ) )
