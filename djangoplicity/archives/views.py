@@ -318,31 +318,36 @@ class GenericDetailView( object ):
     def select_template( self, model, obj, suffix="" ):
         """
         Select the template to used for rendering
+
+        Templates are resolved in order from most specific to most generic.
+        The first existing template found in this ordered list will be used.
         """
         template_names = []
 
-        # Use detail template specified in Options by custom method
+        # 1. Use detail template specified in Options by custom method
+        #   (most specific case — may return None to allow fallback)
         custom_template = getattr(self.options, 'get_detail_template', None)
         if callable(custom_template):
             tpl = custom_template(obj)
             if tpl:
                 template_names.append( tpl )
 
-        # Use detail template specified in a field in the instance if available
+        # 2. Use detail template specified in a field in the instance if available
         if self.options.template_name_field:
             template_names.append( getattr( obj, self.options.template_name_field ) )
 
-        # Use detail template specified in ArchiveOptions object if specified
+        # 3. Use detail template specified in ArchiveOptions object if specified
         if self.options.template_name:
             template_names.append( self.options.template_name )
 
-        # Use default detail templates
+        # 4. Use default detail templates
         template_names.append( "archives/%s/detail%s.html" % ( model._meta.object_name.lower(), suffix ) )
         template_names.append( "archives/detail%s.html" % suffix )
 
         if settings.USE_I18N:
             template_names = lang_templates( model, template_names ) + template_names
 
+        
         return loader.select_template( template_names )
 
     def render( self, request, model, obj, state, admin_rights, **kwargs ):
