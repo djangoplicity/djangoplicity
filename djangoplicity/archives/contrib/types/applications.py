@@ -69,3 +69,8 @@ class TzType(FileType):
     verbose_name = ugettext_noop(u'Compressed Tarball (.tz)')
     exts = ['tz']
     content_type = 'application/x-tar'
+
+
+class WebAppType(FileType):
+    verbose_name = ugettext_noop(u'Web App')
+    exts = []
