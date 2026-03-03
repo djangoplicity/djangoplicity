@@ -32,6 +32,7 @@ class PublicationTiff40KType(TiffType):
     verbose_name = _(u'Publication TIFF 40K')
     size = 40000
     required = False
+    needs_bigtiff = True
 
 
 class PublicationTiff25KType(TiffType):
