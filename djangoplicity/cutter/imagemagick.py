@@ -66,11 +66,12 @@ IM_TMP_DIR = os.path.join(settings.TMP_DIR, 'imagemagick')
 os.makedirs(IM_TMP_DIR, exist_ok=True)
 
 CONVERT_DEFAULTS = '-quiet -colorspace sRGB +antialias'
+TEMPORARY_DIR_PARAM = ' -define registry:temporary-path={}'.format(IM_TMP_DIR)
 if os.path.isdir(IM_TMP_DIR):
-    CONVERT_DEFAULTS += ' -define registry:temporary-path={}'.format(IM_TMP_DIR)
+    CONVERT_DEFAULTS += TEMPORARY_DIR_PARAM
 
 CONVERT = '%s %s %s' % (os.path.join(IM_PATH, 'convert'), IM_LIMITS, CONVERT_DEFAULTS)
-IDENTIFY = '%s %s' % (os.path.join(IM_PATH, 'identify'), IM_LIMITS)
+IDENTIFY = '%s %s %s' % (os.path.join(IM_PATH, 'identify'), IM_LIMITS, TEMPORARY_DIR_PARAM)
 
 SRGB_PROFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),'icc', 'sRGB-IEC61966-2.1.icc')
 
