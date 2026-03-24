@@ -26,6 +26,7 @@ __all__ = (
     'PPTType',
     'PPSType',
     'Model3dObjType',
+    'Model3dStlType',
     'Model3dC4DType',
     'StyType',
     'TexType',
@@ -110,6 +111,11 @@ class EpsType( FileType ):
 class Model3dObjType( FileType ):
     verbose_name = ugettext_noop( u'Wavefront (.obj)' )
     exts = ['obj', 'zip']
+
+
+class Model3dStlType( FileType ):
+    verbose_name = ugettext_noop( u'Stereolithography (.stl)' )
+    exts = ['stl', 'zip']
 
 
 class Model3dC4DType( FileType ):
