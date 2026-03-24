@@ -423,7 +423,7 @@ class Model3dOptions ( StandardOptions ):
 
     downloads = (
         ( _(u'Images'), {'resources': ('large', 'original'), 'icons': { 'large': 'phot', 'original': 'phot' } } ),
-        ( _(u'3D Model Files'), {'resources': ( 'model_3d_c4d', 'model_3d_obj' ), 'icons': { 'model_3d_c4d': 'phot', 'model_3d_obj': 'phot' } } )
+        ( _(u'3D Model Files'), {'resources': ( 'model_3d_c4d', 'model_3d_obj', 'model_3d_stl' ), 'icons': { 'model_3d_c4d': 'phot', 'model_3d_obj': 'phot', 'model_3d_stl': 'phot' } } )
     )
 
     class Queries(object):
@@ -436,6 +436,8 @@ class Model3dOptions ( StandardOptions ):
             ( 'original', ( '.jpg', '.jpeg', '.tif', '.tiff', '.png', ) ),
             ( 'model_3d_c4d', ( '.c4d', '.zip') ),
             ( 'model_3d_obj', ( '.obj', '.zip') ),
+            ( 'model_3d_stl', ( '.stl', '.zip') ),
+
         ]
         actions = [
             move_resources,
