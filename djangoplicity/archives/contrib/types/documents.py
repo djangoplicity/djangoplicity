@@ -27,6 +27,7 @@ __all__ = (
     'PPSType',
     'Model3dObjType',
     'Model3dC4DType',
+    'Model3dStlType',
     'StyType',
     'TexType',
 )
@@ -116,6 +117,9 @@ class Model3dC4DType( FileType ):
     verbose_name = ugettext_noop( u'Maxon Cinema 4D (.c4d)' )
     exts = ['c4d', 'zip']
 
+class Model3dStlType( FileType ):
+    verbose_name = ugettext_noop( u'STereoLithography (.stl)' )
+    exts = ['stl', 'zip']
 
 class StyType(FileType):
     verbose_name = ugettext_noop(u'LaTeX Style')
