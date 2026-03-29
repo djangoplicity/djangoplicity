@@ -932,6 +932,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
             last_modified = True
             created = True
             published = True
+            auto_detect_pk_fks = True
             rename_pk = ('media_image', 'id')
             rename_fks = (
                 ('announcements_announcementimage', 'archive_item_id'),
