@@ -128,7 +128,7 @@ class ArchiveRenameService:
             
             translations = instance.get_translations(filter_kwargs={})['translations']
 
-            for _lang, translation in translations:
+            for _lang, translation in translations.items():
                 if not translation.pk.startswith(old_pk):
                     continue
                 
