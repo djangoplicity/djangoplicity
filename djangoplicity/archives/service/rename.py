@@ -69,21 +69,24 @@ class ArchiveRenameService:
         return instance.Archive.Meta.rename_pk
 
     def get_fk_relations(self, instance):
-        
         if getattr(instance.Archive.Meta, 'auto_detect_pk_fks', False):
-            relations = []
+            relations = set()
 
             for model in apps.get_models():
                 for field in model._meta.get_fields():
                     if (
-                        field.is_relation and 
+                        field.is_relation and
                         field.many_to_one and
-                        field.related_model == instance.__class__
+                        field.related_model == instance.__class__ and
+                        hasattr(field, 'attname')
                     ):
-                        relations.append((model, field.name))
-       
-            return relations
-        
+                        table_name = model._meta.db_table
+                        column_name = field.attname
+
+                        relations.add((table_name, column_name))
+
+            return list(relations)
+
         return instance.Archive.Meta.rename_fks
     
     # Get list of related resources and rename them, this has to be done
