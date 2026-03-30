@@ -4,16 +4,14 @@ import inspect
 from django.apps import apps
 from django.conf import settings
 from django.db import connection, transaction
+from django.contrib.contenttypes.models import ContentType
 
 
 class ArchiveRenameService:
-    from djangoplicity.archives.base import cache_handler
-    from djangoplicity.archives.base import ArchiveModel
-    from djangoplicity.archives.base import post_rename
-
-
     def rename(self, instance, new_pk, _internal=False):
+        from djangoplicity.archives.base import cache_handler, post_rename
 
+        
         try:
             with transaction.atomic():
                 old_pk = instance.pk
@@ -71,6 +69,7 @@ class ArchiveRenameService:
         return instance.Archive.Meta.rename_pk
 
     def get_fk_relations(self, instance):
+        
         if getattr(instance.Archive.Meta, 'auto_detect_pk_fks', False):
             relations = []
 
@@ -90,6 +89,8 @@ class ArchiveRenameService:
     # Get list of related resources and rename them, this has to be done
     # before we update the keys in the DB
     def rename_related_resources(self, instance, old_pk, new_pk):
+        from djangoplicity.archives.base import ArchiveModel
+
         def get_related(x):
             return x.startswith('related_') or x in ('image', 'video', 'comparison')
         
@@ -161,7 +162,7 @@ class ArchiveRenameService:
             except Exception:
                 continue
     
-    def _rename_resources_safe(self, instance, resoruce_name, new_pk):
+    def _rename_resource_safe(self, instance, resoruce_name, new_pk):
         if ( settings.USE_I18N and hasattr( instance, 'Translation') and instance.is_translation() ):
             return
         
