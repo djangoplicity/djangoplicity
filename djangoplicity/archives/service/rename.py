@@ -3,7 +3,7 @@ import inspect
 
 from django.apps import apps
 from django.conf import settings
-from django.db import connection
+from django.db import connection, transaction
 
 
 class ArchiveRenameService:
@@ -13,40 +13,46 @@ class ArchiveRenameService:
 
 
     def rename(self, instance, new_pk, _internal=False):
-        old_pk = instance.pk
-        self.validate(instance, new_pk)
 
-        pk_info = self.get_pk(instance)
-        fk_relations = self.get_fk_relations(instance)
+        try:
+            with transaction.atomic():
+                old_pk = instance.pk
+                self.validate(instance, new_pk)
 
-        cache_handler(instance.__class__, created=False, instance=instance)
+                pk_info = self.get_pk(instance)
+                fk_relations = self.get_fk_relations(instance)
 
-        self.rename_related_resources(instance, old_pk, new_pk)
+                cache_handler(instance.__class__, created=False, instance=instance)
 
-        self.rename_translations(instance, old_pk, new_pk)
+                self.rename_related_resources(instance, old_pk, new_pk)
 
-        self.rename_resources_safe(instance, new_pk)
+                self.rename_translations(instance, old_pk, new_pk)
 
-        self.update_primary_key(pk_info, old_pk, new_pk)
+                self.rename_resources_safe(instance, new_pk)
 
-        self.update_foreign_keys(fk_relations, old_pk, new_pk)
+                self.update_primary_key(pk_info, old_pk, new_pk)
 
-        self.update_admin_log(instance, old_pk, new_pk)
+                self.update_foreign_keys(fk_relations, old_pk, new_pk)
 
-        # Get the new instance and update embargo/release tasks
-        new_instance = instance.__class__.objects.get(pk=new_pk)
+                self.update_admin_log(instance, old_pk, new_pk)
 
-        new_instance.set_embargo_date_task()
-        new_instance.set_release_date_task()
-        new_instance.save()
+                # Get the new instance and update embargo/release tasks
+                new_instance = instance.__class__.objects.get(pk=new_pk)
 
-        post_rename.send(
-            sender=instance.__class__,
-            old_pk=old_pk,
-            new_pk=new_pk,
-        )
+                new_instance.set_embargo_date_task()
+                new_instance.set_release_date_task()
+                new_instance.save()
 
-        return new_instance
+                post_rename.send(
+                    sender=instance.__class__,
+                    old_pk=old_pk,
+                    new_pk=new_pk,
+                )
+
+                return new_instance
+
+        except Exception as e:
+            raise ValueError(f"Error renaming instance: {e}")
 
     
     def validate(self, instance, new_pk):
