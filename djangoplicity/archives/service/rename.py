@@ -186,9 +186,23 @@ class ArchiveRenameService:
 
         try:
             os.rename(old_path, new_path)
-        except Exception:
+        except Exception as e:
+            print(f"[WARN] Resource rename failed: {e}")
             pass
     
+    
+    def update_content_server_resources(self, instance, old_pk, new_pk):
+        from djangoplicity.contentserver.models import ContentServerResource
+        
+        resources = ContentServerResource.objects.filter(
+            content_type=ContentType.objects.get_for_model(instance),
+            object_id=old_pk
+        )
+        
+        for resource in resources:
+            resource.object_id = new_pk
+            resource.save()
+
     # ------ SQL Operations ------ #
     def update_primary_key(self, pk_info, old_pk, new_pk):
         table, key = pk_info
