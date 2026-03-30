@@ -7,11 +7,28 @@ from django.db import connection, transaction
 from django.contrib.contenttypes.models import ContentType
 
 
+class FileRenameTracker:
+    def __init__(self):
+        self.renamed_files = []
+    
+    def add(self, old_path, new_path):
+        self.renamed_files.append((old_path, new_path))
+    
+    def rollback(self):
+        for old_path, new_path in self.renamed_files:
+            if os.path.exists(new_path):
+                try:
+                    os.rename(new_path, old_path)
+                except Exception as e:
+                    print(f"Failed to rollback {new_path} to {old_path}: {e}")
+
+
 class ArchiveRenameService:
     def rename(self, instance, new_pk, _internal=False):
         from djangoplicity.archives.base import cache_handler, post_rename
 
-        
+        tracker = FileRenameTracker()
+ 
         try:
             with transaction.atomic():
                 old_pk = instance.pk
@@ -26,7 +43,7 @@ class ArchiveRenameService:
 
                 self.rename_translations(instance, old_pk, new_pk)
 
-                self.rename_resources_safe(instance, new_pk)
+                self.rename_resources_safe(instance, new_pk, tracker)
 
                 self.update_primary_key(pk_info, old_pk, new_pk)
 
@@ -50,6 +67,7 @@ class ArchiveRenameService:
                 return new_instance
 
         except Exception as e:
+            tracker.rollback()
             raise ValueError(f"Error renaming instance: {e}")
 
     
@@ -153,7 +171,7 @@ class ArchiveRenameService:
                 # Recursive
                 self.rename(proxytranslation, destpk, _internal=True)
     
-    def rename_resources_safe(self, instance, new_pk):
+    def rename_resources_safe(self, instance, new_pk, tracker):
         resource_names = [
             name for name, type_ in vars(instance.Archive).items()
             if hasattr(type_, 'get_resource_for_instance')
@@ -161,11 +179,11 @@ class ArchiveRenameService:
 
         for rname in resource_names:
             try:
-                self._rename_resource_safe(instance, rname, new_pk)
+                self._rename_resource_safe(instance, rname, new_pk, tracker)
             except Exception:
                 continue
     
-    def _rename_resource_safe(self, instance, resoruce_name, new_pk):
+    def _rename_resource_safe(self, instance, resoruce_name, new_pk, tracker):
         if ( settings.USE_I18N and hasattr( instance, 'Translation') and instance.is_translation() ):
             return
         
@@ -186,6 +204,7 @@ class ArchiveRenameService:
 
         try:
             os.rename(old_path, new_path)
+            tracker.add_rename(old_path, new_path)
         except Exception as e:
             print(f"[WARN] Resource rename failed: {e}")
             pass
