@@ -81,7 +81,12 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
     if hasattr(instance, 'content_server') and instance.content_server:
         try:
             content_server = MEDIA_CONTENT_SERVERS[instance.content_server]
+            print(f"Before {instance.content_server_ready}")
             content_server.sync_resources(instance, formats, delay, prefetch, purge)
+            print(f"After {instance.content_server_ready}")
+            # Ensure to get the last updates to the instance, because the content server might have updated it but in the same transaction
+            instance.refresh_from_db()
+            print(f"After refresh {instance.content_server_ready}")
             sync_content_server_resources_model(module_path, cls_name, instance_id)
         except KeyError:
             logger.warning('Unknown content server: "%s" for %s: "%s"',
@@ -91,6 +96,40 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
     if sendtask_callback:
         args, kwargs = sendtask_callback  # pylint: disable=W0633
         current_app.send_task(*args, **str_keys(kwargs))
+
+
+@task
+def clean_up_resources_with_old_pk(module_path, cls_name, old_pk):
+    """
+    Clean up resources with the old primary key after a rename.
+    This removes any stale references from the content server such as S3.
+    """
+    from djangoplicity.contentserver.models import ContentServerResource
+    # Dynamically import the class
+    module = import_module(module_path)
+    cls = getattr(module, cls_name)
+
+    try:
+        instance = cls.objects.get(id=old_pk)
+    except cls.DoesNotExist:
+        logger.warning('Could not find archive "%s" (%s)', old_pk, cls)
+        return
+
+    content_type = ContentType.objects.get_for_model(cls)
+    old_resources = ContentServerResource.objects.filter(
+        content_type=content_type,
+        object_id=old_pk
+    )
+
+    for resource in old_resources:
+        try:
+            if hasattr(instance, 'content_server') and instance.content_server:
+                content_server = MEDIA_CONTENT_SERVERS[instance.content_server]
+                if content_server:
+                    content_server.delete(resource)
+                    logger.info('Deleted resource with old_pk %s: %s', old_pk, resource)
+        except Exception as e:
+            logger.warning('Failed to delete resource %s: %s', resource, e)
 
 
 @task
