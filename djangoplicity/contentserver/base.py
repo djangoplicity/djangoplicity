@@ -125,6 +125,12 @@ class ContentServer(object):
         '''
         return []
 
+    def delete(self, resource):
+        """
+        Delete a resource from the content server.
+        """
+        pass
+
 
 class S3ContentServer(ContentServer):
     supports_all_formats = True
@@ -486,7 +492,18 @@ class S3ContentServer(ContentServer):
         except Exception as e:
             logger.error('S3ContentServer: Failed to generate signed URL for %s: %s', resource.path, str(e))
             raise
-
+    
+    def delete(self, resource):
+        """
+        Delete a resource from the content server.
+        """
+        try:
+            s3_path = resource.content_server_path # Extract from model ContentServerResource
+            self.s3_client.delete_object(Bucket=self.bucket, Key=s3_path)
+            logger.info('S3ContentServer: Deleted %s from S3', s3_path)
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to delete %s: %s', resource.path, str(e))
+            raise
 
 class CDN77ContentServer(ContentServer):
     '''
