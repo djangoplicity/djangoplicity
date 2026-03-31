@@ -307,6 +307,9 @@ def get_instance_resources(instance) -> List[ArchiveResource]:
         formats = D2dDict([
             ('Original', ('model_3d_c4d', 'Model')),
             ('Obj', ('model_3d_obj', 'Model')),
+            ('FBX', ('model_3d_fbx', 'Model')),
+            ('BLEND', ('model_3d_blend', 'Model')),
+            ('PLY', ('model_3d_ply', 'Model')),
             ('Thumbnail', ('thumb', 'Image')),
         ])
     else:
