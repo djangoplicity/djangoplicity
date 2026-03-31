@@ -204,7 +204,7 @@ class ArchiveRenameService:
 
         try:
             os.rename(old_path, new_path)
-            tracker.add_rename(old_path, new_path)
+            tracker.add(old_path, new_path)
         except Exception as e:
             print(f"[WARN] Resource rename failed: {e}")
             pass
