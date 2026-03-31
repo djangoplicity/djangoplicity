@@ -39,7 +39,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MinValueValidator
 
-from djangoplicity.contentserver.tasks import sync_content_server, download_from_content_server
+from djangoplicity.contentserver.tasks import sync_content_server, download_from_content_server, clean_up_resources_with_old_pk
 
 
 logger = logging.getLogger(__name__)
@@ -226,6 +226,13 @@ class ContentDeliveryModel(models.Model):
         # module path and class name
         sync_content_server.delay(self.__module__, self.__class__.__name__,
             self.pk, formats, delay)
+    
+    def clean_up_resources_with_old_pk(self, old_pk):
+        """
+        Clean up resources with the old primary key after a rename.
+        This removes any stale references from the content server.
+        """
+        clean_up_resources_with_old_pk.delay(self.__module__, self.__class__.__name__, old_pk)
 
     def download_from_content_server(self, formats=None, delay=False, include_directories=False):
         '''
@@ -277,12 +284,13 @@ class ContentDeliveryModel(models.Model):
         '''
         Callback for post_rename signal
         '''
-        # TODO: this should be improved to remove the old content using old_pk
         logger.info('Sync archive after rename from "%s" to "%s"', old_pk, new_pk)
 
         # We first turn of the content server while we sync the archives
         try:
             instance = cls.objects.get(id=new_pk)
+
+            instance.clean_up_resources_with_old_pk(old_pk)
             # We don't want to trigger signals when setting content_server_ready,
             # so we use a hack to bypass it instead of using instance.save():
             cls.objects.filter(pk=instance.pk).update(content_server_ready=False)
