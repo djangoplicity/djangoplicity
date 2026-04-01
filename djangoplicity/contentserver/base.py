@@ -463,26 +463,28 @@ class S3ContentServer(ContentServer):
                 ExpiresIn=expires_in
             )
 
-            # Parse signed url to get the path
-            parsed_url = urlparse(signed_url)
+            return signed_url
 
-            # Get base url
-            base_url = self.get_url(resource, format)
+            # # Parse signed url to get the path
+            # parsed_url = urlparse(signed_url)
 
-            # Parse base url
-            base_url_parsed = urlparse(base_url)
+            # # Get base url
+            # base_url = self.get_url(resource, format)
 
-            # Create new signed url replacing schema and netlock with base url
-            new_signed_url = urlunparse((
-                base_url_parsed.scheme or parsed_url.scheme,
-                base_url_parsed.netloc,
-                parsed_url.path,
-                parsed_url.params,
-                parsed_url.query,
-                parsed_url.fragment,
-            ))
+            # # Parse base url
+            # base_url_parsed = urlparse(base_url)
 
-            return new_signed_url
+            # # Create new signed url replacing schema and netlock with base url
+            # new_signed_url = urlunparse((
+            #     base_url_parsed.scheme or parsed_url.scheme,
+            #     base_url_parsed.netloc,
+            #     parsed_url.path,
+            #     parsed_url.params,
+            #     parsed_url.query,
+            #     parsed_url.fragment,
+            # ))
+
+            # return new_signed_url
         except Exception as e:
             logger.error('S3ContentServer: Failed to generate signed URL for %s: %s', resource.path, str(e))
             raise
