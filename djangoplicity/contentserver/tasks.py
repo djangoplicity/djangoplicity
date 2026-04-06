@@ -96,8 +96,6 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
         current_app.send_task(*args, **str_keys(kwargs))
     
     
-
-
 @task
 def rename_resources_in_content_server(module_path, cls_name, old_pk, new_pk):
 
@@ -145,7 +143,6 @@ def rename_resources_in_content_server(module_path, cls_name, old_pk, new_pk):
         object_id=old_pk
     ).delete()
 
-    
     logger.info('Deleted %s resources with old_pk %s', deleted, old_pk)
 
 
