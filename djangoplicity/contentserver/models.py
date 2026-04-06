@@ -291,6 +291,9 @@ class ContentDeliveryModel(models.Model):
         def run_after_commit():
             try:
                 instance = cls.objects.get(pk=new_pk)
+                # We don't want to trigger signals when setting content_server_ready,
+                # so we use a hack to bypass it instead of using instance.save():
+                cls.objects.filter(pk=instance.pk).update(content_server_ready=False)
 
                 # Get module & class_name to deserialize into celery task
                 module = getattr(instance, '__module__', None)
