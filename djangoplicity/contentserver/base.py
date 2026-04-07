@@ -552,6 +552,11 @@ class S3ContentServer(ContentServer):
         '''
         Rename a directory in S3
         '''
+        if not old_path.endswith('/'):
+            old_path = old_path + '/'
+        if not new_path.endswith('/'):
+            new_path = new_path + '/'
+        
         try:
             paginator = self.s3_client.get_paginator('list_objects_v2')
             pages = paginator.paginate(Bucket=self.bucket, Prefix=old_path)
