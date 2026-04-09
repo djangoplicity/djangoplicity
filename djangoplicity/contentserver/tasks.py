@@ -336,6 +336,17 @@ def cleanup_old_local_resources(weeks=4):
             continue
 
         try:
+            related_object = resource.content_object
+
+            if not related_object:
+                logger.warning(f"Resource {resource.id} has no related object, skipping")
+                continue
+            
+            if hasattr(related_object, 'content_server_ready'):
+                if not related_object.content_server_ready:
+                    logger.info(f"Related object {related_object.id} is not ready for content server, skipping resource {resource.id}")
+                    continue
+
             # Check if file exists in disk
             if os.path.exists(resource.content_server_path):
                 os.remove(resource.content_server_path)
