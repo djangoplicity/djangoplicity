@@ -309,6 +309,7 @@ class Release( ArchiveModel, TranslationModel ):
             created = True
             published = True
             rename_pk = ('releases_release', 'id')
+            auto_detect_pk_fks = True
             rename_fks = (
                 ('releases_release', 'source_id'),
                 ('releases_release_facility', 'release_id'),
