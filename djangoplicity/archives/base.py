@@ -455,6 +455,8 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
     
 
     def get_fk_relations(self):
+        manual_fks = getattr(self.Archive.Meta, 'rename_fks', [])
+
         if getattr(self.Archive.Meta, 'auto_detect_pk_fks', False):
             relations = set()
             model_class = self.__class__
@@ -485,10 +487,14 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
                     ):
                         relations.add((through._meta.db_table, through_field.attname))
 
+            # Add manual foreign key relations, because exists "ghosty" relations that are not detected by Django
+            # for example release_date_owner, that is a SlugField but is used as a foreign key.
+            for relation in manual_fks:
+                relations.add(tuple(relation))
 
             return list(relations)
 
-        return self.Archive.Meta.rename_fks
+        return manual_fks
         
 
     def rename( self, new_pk, **kwargs ):
