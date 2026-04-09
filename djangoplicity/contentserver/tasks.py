@@ -330,10 +330,6 @@ def cleanup_old_local_resources(weeks=4):
             logger.warning(f"Unknown content server: {resource.content_server}")
             continue
 
-        if not isinstance(content_server, S3ContentServer):
-            print(f"Resource {resource.id} is not a S3 content server")
-            logger.warning(f"Resource {resource.id} is not a S3 content server")
-            continue
 
         try:
             related_object = resource.content_object
