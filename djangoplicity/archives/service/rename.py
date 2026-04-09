@@ -1,7 +1,6 @@
 import os
 import inspect
 
-from django.apps import apps
 from django.conf import settings
 from django.db import connection, transaction
 from django.contrib.contenttypes.models import ContentType
@@ -79,34 +78,17 @@ class ArchiveRenameService:
             raise ValueError("Same PK")
     
     def get_pk(self, instance):
-        if getattr(instance.Archive.Meta, 'auto_detect_pk_fks', False):
-            db_table_name = instance._meta.db_table
-            pk_name = instance._meta.pk.name
-            return db_table_name, pk_name
+        if getattr(instance.Archive.Meta, 'auto_detect_pk_fks', False) and hasattr(instance, 'get_pk'):
+            return instance.get_pk()
         
         return instance.Archive.Meta.rename_pk
 
     def get_fk_relations(self, instance):
-        if getattr(instance.Archive.Meta, 'auto_detect_pk_fks', False):
-            relations = set()
-
-            for model in apps.get_models():
-                for field in model._meta.get_fields():
-                    if (
-                        field.is_relation and
-                        field.many_to_one and
-                        field.related_model == instance.__class__ and
-                        hasattr(field, 'attname')
-                    ):
-                        table_name = model._meta.db_table
-                        column_name = field.attname
-
-                        relations.add((table_name, column_name))
-
-            return list(relations)
+        if getattr(instance.Archive.Meta, 'auto_detect_pk_fks', False) and hasattr(instance, 'get_fk_relations'):
+            return instance.get_fk_relations()
 
         return instance.Archive.Meta.rename_fks
-    
+
     # Get list of related resources and rename them, this has to be done
     # before we update the keys in the DB
     def rename_related_resources(self, instance, old_pk, new_pk):

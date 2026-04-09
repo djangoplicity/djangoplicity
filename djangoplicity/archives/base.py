@@ -29,6 +29,7 @@ from django.dispatch import Signal
 from functools import partial
 from django.utils.timezone import is_naive, make_aware
 from django.utils.translation import ugettext_lazy as _
+from django.apps import apps
 
 from djangoplicity.archives import _gen_cache_key, CACHE_PREFIX
 from djangoplicity.archives.contrib.security import StaticFilesProtectorCache
@@ -443,6 +444,51 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
             else:
                 changed[field] = False
         return changed
+    
+    def get_pk_info( self ):
+        if getattr(self.Archive.Meta, 'auto_detect_pk_fks', False):
+            db_table_name = self._meta.db_table
+            pk_name = self._meta.pk.name
+            return db_table_name, pk_name
+        
+        return self.Archive.Meta.rename_pk
+    
+
+    def get_fk_relations(self):
+        if getattr(self.Archive.Meta, 'auto_detect_pk_fks', False):
+            relations = set()
+            model_class = self.__class__
+
+            for model in apps.get_models():
+                for field in model._meta.get_fields():
+                    if (
+                        field.is_relation and
+                        field.many_to_one and
+                        field.related_model == model_class and
+                        hasattr(field, 'attname')
+                    ):
+                        relations.add((model._meta.db_table, field.attname))
+
+            for field in model_class._meta.get_fields():
+                if not (field.is_relation and field.many_to_many):
+                    continue
+
+                through = getattr(getattr(field, 'remote_field', None), 'through', None)
+                if through is None:
+                    continue
+
+                for through_field in through._meta.get_fields():
+                    if (
+                        hasattr(through_field, 'related_model') and
+                        through_field.related_model == model_class and
+                        hasattr(through_field, 'attname')
+                    ):
+                        relations.add((through._meta.db_table, through_field.attname))
+
+
+            return list(relations)
+
+        return self.Archive.Meta.rename_fks
         
 
     def rename( self, new_pk, **kwargs ):
