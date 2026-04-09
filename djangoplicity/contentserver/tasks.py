@@ -326,6 +326,9 @@ def cleanup_old_local_resources(weeks=4):
         # Check content server is a S3 content server
         try:
             content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+            if not content_server:
+                logger.warning(f"Content server {resource.content_server} not found")
+                continue
         except KeyError:
             logger.warning(f"Unknown content server: {resource.content_server}")
             continue
