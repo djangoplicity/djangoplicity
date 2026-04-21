@@ -288,6 +288,7 @@ class Announcement( ArchiveModel, TranslationModel ):
             last_modified = True
             created = True
             published = True
+            auto_detect_pk_fks = True
             rename_pk = ('announcements_announcement', 'id')
             rename_fks = (
                 ('announcements_announcement', 'source_id'),

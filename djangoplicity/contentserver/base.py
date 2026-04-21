@@ -125,6 +125,18 @@ class ContentServer(object):
         '''
         return []
 
+    def delete_resource(self, path):
+        """
+        Delete a resource from the content server.
+        """
+        pass
+    
+    def rename_resource(self, old_path, new_path):
+        """
+        Rename a resource on the content server.
+        """
+        pass
+
 
 class S3ContentServer(ContentServer):
     supports_all_formats = True
@@ -487,6 +499,85 @@ class S3ContentServer(ContentServer):
             # return new_signed_url
         except Exception as e:
             logger.error('S3ContentServer: Failed to generate signed URL for %s: %s', resource.path, str(e))
+            raise
+    
+    def delete_resource(self, path):
+        """
+        Delete a resource from the content server.
+        """
+        try:
+            if not path:
+                return
+            self.s3_client.delete_object(Bucket=self.bucket, Key=path)
+            logger.info('S3ContentServer: Deleted %s from S3', path)
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to delete %s: %s', path, str(e))
+            raise
+    
+    def rename_resource(self, old_path, new_path):
+        """
+        Rename a resource in the content server using copy and delete.
+        Handles both single files and directories (S3 prefixes).
+        """
+        try:
+            if not old_path or not new_path:
+                return
+            
+            _, ext = os.path.splitext(old_path)
+
+            if old_path.endswith('/') or not ext:
+                self._rename_directory(old_path, new_path)
+            else:
+                self._rename_single_resource(old_path, new_path)
+
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to rename %s to %s: %s', old_path, new_path, str(e))
+            raise
+    
+    def _rename_single_resource(self, old_path, new_path):
+        '''
+        Rename a single file in S3
+        '''
+        try:
+            self.s3_client.copy_object(
+                Bucket=self.bucket,
+                CopySource={'Bucket': self.bucket, 'Key': old_path},
+                Key=new_path
+            )
+            self.s3_client.delete_object(Bucket=self.bucket, Key=old_path)
+            logger.info('S3ContentServer: Renamed file %s -> %s', old_path, new_path)
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to rename %s to %s: %s', old_path, new_path, str(e))
+            raise
+    
+    def _rename_directory(self, old_path, new_path):
+        '''
+        Rename a directory in S3
+        '''
+        if not old_path.endswith('/'):
+            old_path = old_path + '/'
+        if not new_path.endswith('/'):
+            new_path = new_path + '/'
+        
+        try:
+            paginator = self.s3_client.get_paginator('list_objects_v2')
+            pages = paginator.paginate(Bucket=self.bucket, Prefix=old_path)
+
+            for page in pages:
+                for obj in page.get('Contents', []):
+                    old_key = obj['Key']
+                    suffix = old_key[len(old_path):]
+                    new_key = new_path + suffix
+
+                    self.s3_client.copy_object(
+                        Bucket=self.bucket,
+                        CopySource={'Bucket': self.bucket, 'Key': old_key},
+                        Key=new_key
+                    )
+                    self.s3_client.delete_object(Bucket=self.bucket, Key=old_key)
+                    logger.info('S3ContentServer: Renamed %s -> %s', old_key, new_key)
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to rename directory %s to %s: %s', old_path, new_path, str(e))
             raise
 
 

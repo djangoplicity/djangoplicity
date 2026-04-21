@@ -33,13 +33,15 @@ import logging
 import os
 
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.forms import fields
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MinValueValidator
 
-from djangoplicity.contentserver.tasks import sync_content_server, download_from_content_server
+from djangoplicity.contentserver.tasks import sync_content_server, download_from_content_server, rename_resources_in_content_server
+
+from celery import chain
 
 
 logger = logging.getLogger(__name__)
@@ -226,6 +228,13 @@ class ContentDeliveryModel(models.Model):
         # module path and class name
         sync_content_server.delay(self.__module__, self.__class__.__name__,
             self.pk, formats, delay)
+    
+    def rename_resources_in_content_server(self, old_pk, new_pk):
+        """
+        Rename resources in the content server after a rename.
+        This updates the content server paths to reflect the new primary key.
+        """
+        rename_resources_in_content_server.delay(self.__module__, self.__class__.__name__, old_pk, new_pk)
 
     def download_from_content_server(self, formats=None, delay=False, include_directories=False):
         '''
@@ -277,16 +286,36 @@ class ContentDeliveryModel(models.Model):
         '''
         Callback for post_rename signal
         '''
-        # TODO: this should be improved to remove the old content using old_pk
         logger.info('Sync archive after rename from "%s" to "%s"', old_pk, new_pk)
 
-        # We first turn of the content server while we sync the archives
-        try:
-            instance = cls.objects.get(id=new_pk)
-            # We don't want to trigger signals when setting content_server_ready,
-            # so we use a hack to bypass it instead of using instance.save():
-            cls.objects.filter(pk=instance.pk).update(content_server_ready=False)
+        def run_after_commit():
+            try:
+                instance = cls.objects.get(pk=new_pk)
+                # We don't want to trigger signals when setting content_server_ready,
+                # so we use a hack to bypass it instead of using instance.save():
+                cls.objects.filter(pk=instance.pk).update(content_server_ready=False)
 
-            instance.sync_content_server()
-        except cls.DoesNotExist:
-            logger.warning('Could not find archive "%s" (%s)', new_pk, cls)
+                # Get module & class_name to deserialize into celery task
+                module = getattr(instance, '__module__', None)
+                class_name = getattr(instance.__class__, '__name__', None)
+                
+                if not module or not class_name:
+                    module = getattr(sender, '__module__', None)
+                    class_name = getattr(sender, '__name__', None)
+                
+
+                if not module or not class_name:
+                    logger.warning('Module or class name is empty for instance with pk "%s"', new_pk)
+                    return
+
+                chain(
+                    rename_resources_in_content_server.s(module, class_name, old_pk, new_pk),
+                    sync_content_server.si(module, class_name, new_pk)
+                ).delay()
+
+
+
+            except cls.DoesNotExist:
+                logger.warning('Instance with pk "%s" not found after rename', new_pk)
+
+        transaction.on_commit(run_after_commit)

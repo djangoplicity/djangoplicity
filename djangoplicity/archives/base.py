@@ -29,6 +29,7 @@ from django.dispatch import Signal
 from functools import partial
 from django.utils.timezone import is_naive, make_aware
 from django.utils.translation import ugettext_lazy as _
+from django.apps import apps
 
 from djangoplicity.archives import _gen_cache_key, CACHE_PREFIX
 from djangoplicity.archives.contrib.security import StaticFilesProtectorCache
@@ -443,161 +444,66 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
             else:
                 changed[field] = False
         return changed
+    
+    def get_pk_info( self ):
+        if getattr(self.Archive.Meta, 'auto_detect_pk_fks', False):
+            db_table_name = self._meta.db_table
+            pk_name = self._meta.pk.name
+            return db_table_name, pk_name
+        
+        return self.Archive.Meta.rename_pk
+    
+
+    def get_fk_relations(self):
+        manual_fks = getattr(self.Archive.Meta, 'rename_fks', [])
+
+        if getattr(self.Archive.Meta, 'auto_detect_pk_fks', False):
+            relations = set()
+            model_class = self.__class__
+
+            for model in apps.get_models():
+                for field in model._meta.get_fields():
+                    if (
+                        field.is_relation and
+                        field.many_to_one and
+                        field.related_model == model_class and
+                        hasattr(field, 'attname')
+                    ):
+                        relations.add((model._meta.db_table, field.attname))
+
+            for field in model_class._meta.get_fields():
+                if not (field.is_relation and field.many_to_many):
+                    continue
+
+                through = getattr(getattr(field, 'remote_field', None), 'through', None)
+                if through is None:
+                    continue
+
+                for through_field in through._meta.get_fields():
+                    if (
+                        hasattr(through_field, 'related_model') and
+                        through_field.related_model == model_class and
+                        hasattr(through_field, 'attname')
+                    ):
+                        relations.add((through._meta.db_table, through_field.attname))
+
+            # Add manual foreign key relations, because exists "ghosty" relations that are not detected by Django
+            # for example release_date_owner, that is a SlugField but is used as a foreign key.
+            for relation in manual_fks:
+                relations.add(tuple(relation))
+
+            return list(relations)
+
+        return manual_fks
         
 
-    def rename( self, new_pk ):
-        """
-        Method to rename and archive item.
-
-        Example::
-            class SomeArchive:
-                ...
-
-                class Meta:
-                    rename_pk = ('tablename','pk_name')
-                    rename_fks = (('related_tablename','fk_name'),...)
-        """
-        try:
-            self.__class__.objects.get( pk=new_pk )
-            raise Exception( "Object with new primary key does already exists." )
-        except ObjectDoesNotExist:
-            pass
-
-        # Get keys to rename.
-        pk = self.Archive.Meta.rename_pk
-        if hasattr( self.Archive.Meta, 'rename_fks' ):
-            fks = self.Archive.Meta.rename_fks
-        else:
-            fks = []
-
-        cache_handler( self.__class__, created=False, instance=self )
-
-        #
-        # Rename keys
-        #
-        cursor = connection.cursor()
-
-        # Get list of related resources and rename them, this has to be done
-        # before we update the keys in the DB
-        def get_related(x):
-            return x.startswith('related_') or x in ('image', 'video', 'comparison')
-
-        for related_resource in filter(get_related, dir(self)):
-            related_resource = getattr(self, related_resource)
-
-            if not related_resource:
-                continue
-
-            #  Check if the attribute is an ArchiveModel (like for POTW)
-            #  or a ManytoMany (PR, Ann, etc.)
-            if isinstance(related_resource, ArchiveModel):
-                related_resources = [related_resource]
-            else:
-                related_resources = related_resource.all()
-
-            for resource in related_resources:
-                if not resource.pk.startswith(self.pk):
-                    print('** Not renaming %s for %s' % (resource.pk, self.pk))
-                    continue
-
-                # Generate destination pk:
-                destpk = resource.pk.replace(self.pk, new_pk, 1)
-
-                # Make sure that the destination pk doesn't already exist:
-                try:
-                    resource.__class__.objects.get( pk=destpk )
-                    raise Exception( "Object (%s) with new primary key (%s) does already exists." %
-                            (resource.__class__.__name__, destpk))
-                except ObjectDoesNotExist:
-                    pass
-                resource.rename(destpk)
-
-        # Get list of translations (if any) and rename them
-        if settings.USE_I18N and hasattr(self, 'Translation') and self.is_source():
-            for _lang, translation in self.get_translations(filter_kwargs={})['translations'].items():
-                if not translation.pk.startswith(self.pk):
-                    continue
-
-                # Generate destination pk:
-                destpk = translation.pk.replace(self.pk, new_pk, 1)
-
-                # Make sure that the destination pk doesn't already exist:
-                try:
-                    translation.__class__.objects.get( pk=destpk )
-                    raise Exception( "Translation for object (%s) with new primary key (%s) does already exists." %
-                            (translation.__class__.__name__, destpk))
-                except ObjectDoesNotExist:
-                    pass
-
-                # We want to rename the "Proxy" version of the model, otherwise
-                # 'return self.__class__.objects.get( pk=new_pk )' won't work
-                # We use the inspect module to find which module hosts the
-                # Archive item, and then look for a Proxy model (e.g.: we look
-                # for ImageProxy in the same module as Image)
-
-                module = inspect.getmodule(translation)
-                proxymodel_name = '%sProxy' % translation.__class__.__name__
-
-                if not hasattr(module, proxymodel_name):
-                    continue
-                proxymodel = getattr(module, proxymodel_name)
-
-                # Rename translation (get should always be successful as we know
-                # there is a translation for this language, as reported by
-                # get_translations():
-                proxytranslation = proxymodel.objects.get(pk=translation.pk)
-                proxytranslation.rename(destpk)
-                print('** Renaming %s Translation %s to %s' % (proxytranslation.__class__.__name__, translation.pk, destpk))
-
-        # Update key in primary table
-        sql = """UPDATE "%(table)s" SET "%(key)s"='%(new_key)s' WHERE "%(key)s"='%(old_key)s'"""
-        if connection.vendor == 'mysql':
-            sql = "UPDATE `%(table)s` SET `%(key)s`='%(new_key)s' WHERE `%(key)s`='%(old_key)s'"
-
-        cursor.execute( sql % { 'key': pk[1], 'table': pk[0], 'new_key': new_pk, 'old_key': self.pk } )
-
-        for fk in fks:
-            # We only update the table if it actually exists
-            if fk[0] not in connection.introspection.table_names():
-                continue
-
-            sql = """UPDATE "%(table)s" SET "%(key)s"='%(new_key)s' WHERE "%(key)s"='%(old_key)s'"""
-            if connection.vendor == 'mysql':
-                sql = "UPDATE `%(table)s` SET `%(key)s`='%(new_key)s' WHERE `%(key)s`='%(old_key)s'"
-            cursor.execute( sql % { 'key': fk[1], 'table': fk[0], 'new_key': new_pk, 'old_key': self.pk } )
-
-        # Rename the admin log history, as multiple objects can have the
-        # same ID we also filter with the content_id
-        content_type = ContentType.objects.get_for_model(self)
-        sql = """UPDATE "django_admin_log" SET "object_id"='{new_pk}' WHERE "object_id"='{old_pk}' AND "content_type_id"={content_type_id}"""
-        if connection.vendor == 'mysql':
-            sql = "UPDATE `django_admin_log` SET `object_id`='{new_pk}' WHERE `object_id`='{old_pk}' AND `content_type_id`={content_type_id}"
-        cursor.execute(sql.format(new_pk=new_pk, old_pk=self.pk, content_type_id=content_type.pk))
-
-        #
-        # Rename resources
-        #
-
-        # Only delete resources for source objects
-        resource_names = [
-            name for name, type_ in list(vars(self.Archive).items())
-            if isinstance(type_, ResourceManager)
-        ]
-
-        for rname in resource_names:
-            self._rename_resource( rname, new_pk )
-
-        new_instance = self.__class__.objects.get( pk=new_pk )
-
-        # Revoke existing embargo/release tasks and create new one
-        # accordingly
-        new_instance.set_embargo_date_task()
-        new_instance.set_release_date_task()
-        new_instance.save()
-
-        # Send signals
-        post_rename.send(sender=self.__class__, old_pk=self.pk, new_pk=new_pk)
-        return new_instance
+    def rename( self, new_pk, **kwargs ):
+        from djangoplicity.archives.service.rename import ArchiveRenameService
+        
+        service = ArchiveRenameService()
+        
+        return service.rename(self, new_pk, **kwargs)
+        
 
     def delete_resources( self ):
         """

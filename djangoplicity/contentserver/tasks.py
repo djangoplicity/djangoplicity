@@ -74,6 +74,7 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
 
     try:
         instance = cls.objects.get(id=instance_id)
+        logger.info('Found instance %s with id %s', cls, instance_id)
     except cls.DoesNotExist:
         logger.warning('Could not find archive "%s" (%s)', instance_id, cls)
         return
@@ -82,6 +83,8 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
         try:
             content_server = MEDIA_CONTENT_SERVERS[instance.content_server]
             content_server.sync_resources(instance, formats, delay, prefetch, purge)
+            # Ensure to get the last updates to the instance, because the content server might have updated it but in the same transaction
+            instance.refresh_from_db()
             sync_content_server_resources_model(module_path, cls_name, instance_id)
         except KeyError:
             logger.warning('Unknown content server: "%s" for %s: "%s"',
@@ -91,6 +94,56 @@ def sync_content_server(module_path, cls_name, instance_id, formats=None,
     if sendtask_callback:
         args, kwargs = sendtask_callback  # pylint: disable=W0633
         current_app.send_task(*args, **str_keys(kwargs))
+    
+    
+@task
+def rename_resources_in_content_server(module_path, cls_name, old_pk, new_pk):
+
+    from djangoplicity.contentserver.models import ContentServerResource
+    # Dynamically import the class
+    module = import_module(module_path)
+    cls = getattr(module, cls_name)
+
+    content_type = ContentType.objects.get_for_model(cls)
+    old_resources = ContentServerResource.objects.filter(
+        content_type=content_type,
+        object_id=old_pk
+    )
+
+    logger.info('Found %s resources with old_pk %s', len(old_resources), old_pk)
+
+    if not old_resources:
+        logger.info('No resources found with old_pk %s', old_pk)
+        return
+
+    for resource in old_resources:
+        try:
+            if hasattr(resource, 'content_server') and resource.content_server:
+                content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+                if content_server:
+                    old_path = resource.content_server_path
+                    new_path = old_path.replace(str(old_pk), str(new_pk), 1)
+
+                    content_server.rename_resource(old_path, new_path)
+
+                    # Update the resource in the database
+                    resource.object_id = new_pk
+                    resource.content_server_path = new_path
+                    resource.save() 
+
+                    logger.info('Renamed resource with old_pk %s: %s -> %s', old_pk, old_path, new_path)
+        except Exception as e:
+            logger.warning('Failed to rename resource %s: %s, format: %s', old_path, e, resource.format)
+    
+    # In case that something wrong happen during the rename process, we delete the resources with the old pk
+    # because after this task, the instance execute another task called sync_content_server and this task
+    # will create the resources with the new pk (ContentServerResource Model) and sync them to the content server
+    deleted, _ = ContentServerResource.objects.filter(
+        content_type=content_type,
+        object_id=old_pk
+    ).delete()
+
+    logger.info('Deleted %s resources with old_pk %s', deleted, old_pk)
 
 
 @task
