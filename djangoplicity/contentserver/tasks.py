@@ -33,6 +33,7 @@ from celery import task
 from celery import current_app
 from celery.utils.log import get_task_logger
 from datetime import datetime, timedelta
+from django.utils import timezone
 from importlib import import_module
 
 from django.conf import settings
@@ -43,6 +44,7 @@ from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
 from django.contrib.contenttypes.models import ContentType
 from djangoplicity.archives.utils import get_all_possible_instance_formats, get_instance_checksum, initialize_resource
 import time
+import os
 
 logger = get_task_logger(__name__)
 
@@ -346,3 +348,64 @@ def update_resource_privacy(app_label, model_name, pk):
             instance.update_resource_privacy()
     except Exception as e:
         logger.warning("Exception: %s." % e)
+
+
+@task()
+def cleanup_old_local_resources_task():
+    local_resources_cleanup_weeks = getattr(settings, 'LOCAL_RESOURCES_CLEANUP_WEEKS', 4)
+    logger.info(f"Cleaning up local resources older than {local_resources_cleanup_weeks} weeks")
+
+    deleted_count = cleanup_old_local_resources(weeks=local_resources_cleanup_weeks)
+    logger.info(f"Local resources cleanup completed. Deleted {deleted_count} resources")
+
+
+def cleanup_old_local_resources(weeks=4):
+    from djangoplicity.contentserver.models import ContentServerResource
+    from djangoplicity.contentserver.base import S3ContentServer
+    
+    cutoff_date = timezone.now() - timedelta(weeks=weeks)
+
+    resources = ContentServerResource.objects.filter(
+        created_at__lt=cutoff_date,
+        updated_at__lt=cutoff_date,
+        is_active=True
+    )
+
+    if not resources.exists():
+        return 0
+    
+    deleted_count = 0
+    for resource in resources:
+        # Check content server is a S3 content server
+        try:
+            content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+            if not content_server:
+                logger.warning(f"Content server {resource.content_server} not found")
+                continue
+        except KeyError:
+            logger.warning(f"Unknown content server: {resource.content_server}")
+            continue
+
+
+        try:
+            related_object = resource.content_object
+
+            if not related_object:
+                logger.warning(f"Resource {resource.id} has no related object, skipping")
+                continue
+            
+            if hasattr(related_object, 'content_server_ready'):
+                if not related_object.content_server_ready:
+                    logger.info(f"Related object {related_object.id} is not ready for content server, skipping resource {resource.id}")
+                    continue
+
+            # Check if file exists in disk
+            if os.path.exists(resource.content_server_path):
+                os.remove(resource.content_server_path)
+                deleted_count += 1
+                logger.info(f"Deleted resource {resource.id} from disk")
+        except Exception as e:
+            logger.error(f"Error deleting resource {resource.id} from disk: {e}")
+
+    return deleted_count
+
