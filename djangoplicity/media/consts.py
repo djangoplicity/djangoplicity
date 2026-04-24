@@ -339,6 +339,14 @@ IMAGE_AVM_FORMATS = getattr(
         'wallpaper3',
         'wallpaper4',
         'wallpaper5',
+        'desktopwallpaperhd',
+        'desktopwallpaperfhd',
+        'desktopwallpaperqhd',
+        'desktopwallpaperuhd',
+        'mobilewallpaperfhd',
+        'mobilewallpaperfhdplus',
+        'mobilewallpaperqhdplus',
+        'mobilewallpaperuhd',
     ),
 )
 
