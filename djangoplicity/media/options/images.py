@@ -103,7 +103,7 @@ class ImageOptions( ArchiveOptions ):
         ( ugettext_noop( u'Zoomable' ), {'resources': ( zoomable_link, ), 'icons': { 'zoomable_link': 'zoom', } } ),
         ( ugettext_noop( u'BitTorrent Download' ), {'resources': ( image_magnet_uri_link, ), 'icons': { 'image_magnet_uri_link': 'magnet', } } ),
         ( ugettext_noop( u'Logos' ), {'resources': ( 'png', 'eps', 'illustrator', 'illustrator_text', ), 'icons': { 'png': 'phot', 'eps': 'phot', 'illustrator': 'phot', 'illustrator_text': 'phot'} } ),
-        ( ugettext_noop( u'Wallpapers' ), { 'condition': lambda obj: obj.wallpapers, 'resources': ( 'wallpaper1', 'wallpaper2', 'wallpaper3', 'wallpaper4', 'wallpaper5', ), 'icons': { 'wallpaper1': 'slides', 'wallpaper2': 'slides', 'wallpaper3': 'slides', 'wallpaper4': 'slides', 'wallpaper5': 'slides', } } ),
+        ( ugettext_noop( u'Classic Wallpapers' ), { 'condition': lambda obj: obj.wallpapers, 'resources': ( 'wallpaper1', 'wallpaper2', 'wallpaper3', 'wallpaper4', 'wallpaper5', ), 'icons': { 'wallpaper1': 'slides', 'wallpaper2': 'slides', 'wallpaper3': 'slides', 'wallpaper4': 'slides', 'wallpaper5': 'slides', } } ),
         ( ugettext_noop( u'Desktop Wallpapers' ), { 
             'condition': lambda obj: obj.wallpapers, 
             'resources': ( 'desktopwallpaperhd', 'desktopwallpaperfhd', 'desktopwallpaperqhd', 'desktopwallpaperuhd', ), 
