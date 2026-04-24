@@ -159,7 +159,8 @@ class WallpaperSmallType(JpegType):
     width = 1024
     height = 768
 
-
+# TODO: DEPRECATED - Will be removed after async migration to new desktop/mobile wallpaper types
+# See: DesktopWallpaper*Type and MobileWallpaper*Type classes below
 class Wallpaper1Type(JpegType):
     verbose_name = _(u'1024x768')
     width = 1024
@@ -216,6 +217,76 @@ class WallpaperLargeType(JpegType):
     verbose_name = _(u'1600x1200')
     width = 1600
     height = 1200
+
+
+# New: Desktop & Mobile Wallpapers
+class DesktopWallpaperHDType(JpegType):
+    verbose_name = _(u'1280x720 (HD)')
+    width = 1280
+    height = 720
+    unsharp = 25
+    upscale = True
+
+
+class DesktopWallpaperFHDType(JpegType):
+    verbose_name = _(u'1920x1080 (FHD)')
+    width = 1920
+    height = 1080
+    unsharp = 25
+    upscale = True
+
+
+class DesktopWallpaperQHDType(JpegType):
+    verbose_name = _(u'2560x1440 (QHD)')
+    compression_quality = 100
+    width = 2560
+    height = 1440
+    unsharp = 25
+    upscale = True
+
+
+class DesktopWallpaperUHDType(JpegType):
+    verbose_name = _(u'3840x2160 (UHD)')
+    compression_quality = 100
+    width = 3840
+    height = 2160
+    unsharp = 25
+    upscale = True
+
+
+class MobileWallpaperFHDType(JpegType):
+    verbose_name = _(u'1080x1920 (FHD)')
+    width = 1080
+    height = 1920
+    unsharp = 25
+    upscale = True
+
+
+class MobileWallpaperFHDPlusType(JpegType):
+    verbose_name = _(u'1080x2340 (FHD+)')
+    compression_quality = 100
+    width = 1080
+    height = 2340
+    unsharp = 25
+    upscale = True
+
+
+class MobileWallpaperQHDPlusType(JpegType):
+    verbose_name = _(u'1440x3200 (QHD+)')
+    compression_quality = 100
+    width = 1440
+    height = 3200
+    unsharp = 25
+    upscale = True
+
+
+class MobileWallpaperUHDType(JpegType):
+    verbose_name = _(u'2160x3840 (UHD)')
+    compression_quality = 100
+    width = 2160
+    height = 3840
+    unsharp = 25
+    upscale = True
 
 
 class VirtualTourType(FileType):
