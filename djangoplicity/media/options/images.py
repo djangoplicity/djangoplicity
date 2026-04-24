@@ -112,7 +112,7 @@ class ImageOptions( ArchiveOptions ):
         ( ugettext_noop( u'Mobile Wallpapers' ), { 
             'condition': lambda obj: obj.wallpapers, 
             'resources': ( 'mobilewallpaperfhd', 'mobilewallpaperfhdplus', 'mobilewallpaperqhdplus', 'mobilewallpaperuhd', ), 
-            'icons': { 'mobilewallpaperfhd': 'slides', 'mobilewallpaperfhdplus': 'slides', 'mobilewallpaperqhdplus': 'slides', 'mobilewallpaperuhd': 'slides', } 
+            'icons': { 'mobilewallpaperfhd': 'mobile', 'mobilewallpaperfhdplus': 'mobile', 'mobilewallpaperqhdplus': 'mobile', 'mobilewallpaperuhd': 'mobile', } 
         } ),
         ( ugettext_noop( u'PDF' ), {'resources': ( 'pdf', ), 'icons': { 'pdf': 'doc', } } ),
     )
