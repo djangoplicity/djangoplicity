@@ -104,6 +104,16 @@ class ImageOptions( ArchiveOptions ):
         ( ugettext_noop( u'BitTorrent Download' ), {'resources': ( image_magnet_uri_link, ), 'icons': { 'image_magnet_uri_link': 'magnet', } } ),
         ( ugettext_noop( u'Logos' ), {'resources': ( 'png', 'eps', 'illustrator', 'illustrator_text', ), 'icons': { 'png': 'phot', 'eps': 'phot', 'illustrator': 'phot', 'illustrator_text': 'phot'} } ),
         ( ugettext_noop( u'Wallpapers' ), { 'condition': lambda obj: obj.wallpapers, 'resources': ( 'wallpaper1', 'wallpaper2', 'wallpaper3', 'wallpaper4', 'wallpaper5', ), 'icons': { 'wallpaper1': 'slides', 'wallpaper2': 'slides', 'wallpaper3': 'slides', 'wallpaper4': 'slides', 'wallpaper5': 'slides', } } ),
+        ( ugettext_noop( u'Desktop Wallpapers' ), { 
+            'condition': lambda obj: obj.wallpapers, 
+            'resources': ( 'desktopwallpaperhd', 'desktopwallpaperfhd', 'desktopwallpaperqhd', 'desktopwallpaperuhd', ), 
+            'icons': { 'desktopwallpaperhd': 'slides', 'desktopwallpaperfhd': 'slides', 'desktopwallpaperqhd': 'slides', 'desktopwallpaperuhd': 'slides', } 
+        } ),
+        ( ugettext_noop( u'Mobile Wallpapers' ), { 
+            'condition': lambda obj: obj.wallpapers, 
+            'resources': ( 'mobilewallpaperfhd', 'mobilewallpaperfhdplus', 'mobilewallpaperqhdplus', 'mobilewallpaperuhd', ), 
+            'icons': { 'mobilewallpaperfhd': 'slides', 'mobilewallpaperfhdplus': 'slides', 'mobilewallpaperqhdplus': 'slides', 'mobilewallpaperuhd': 'slides', } 
+        } ),
         ( ugettext_noop( u'PDF' ), {'resources': ( 'pdf', ), 'icons': { 'pdf': 'doc', } } ),
     )
 
