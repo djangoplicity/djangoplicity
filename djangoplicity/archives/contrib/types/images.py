@@ -159,8 +159,7 @@ class WallpaperSmallType(JpegType):
     width = 1024
     height = 768
 
-# TODO: DEPRECATED - Will be removed after async migration to new desktop/mobile wallpaper types
-# See: DesktopWallpaper*Type and MobileWallpaper*Type classes below
+
 class Wallpaper1Type(JpegType):
     verbose_name = _(u'1024x768')
     width = 1024
@@ -219,7 +218,6 @@ class WallpaperLargeType(JpegType):
     height = 1200
 
 
-# New: Desktop & Mobile Wallpapers
 class DesktopWallpaperHDType(JpegType):
     verbose_name = _(u'1280x720 (HD)')
     width = 1280
