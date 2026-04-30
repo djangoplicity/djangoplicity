@@ -83,6 +83,11 @@ class LargeJpegType(ImageFileType):
     compression_quality = 90
     content_type = 'image/jpeg'
 
+class WebPType(ImageFileType):
+    verbose_name = _('WebP')
+    exts = ['webp']
+    compression_quality = 80
+    content_type = 'image/webp'
 
 class PublicationJpegType(JpegType):
     verbose_name = _(u'Publication JPEG')
@@ -300,5 +305,12 @@ class Poster400yType(JpegType):
     compression_quality = 85
     width = 282
     height = 400
+    unsharp = 25
+    upscale = True
+
+class ScreensizeWebPType(WebPType):
+    verbose_name = _(u'Screensize WebP')
+    compression_quality = 80 
+    width = 1280
     unsharp = 25
     upscale = True
