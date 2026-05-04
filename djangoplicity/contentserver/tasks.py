@@ -375,6 +375,7 @@ def cleanup_old_local_resources(weeks=4):
         return 0
     
     media_root = settings.MEDIA_ROOT
+
     allowed_content_types = {
         ContentType.objects.get_for_model(Image),
         ContentType.objects.get_for_model(Video),
@@ -389,16 +390,16 @@ def cleanup_old_local_resources(weeks=4):
             )
             continue
         
-        model_class = resource.content_type.model_class()
-        archive_dir_name = f"{model_class._meta.model_name}s"
-        
-        expected_path_prefix = os.path.join(media_root, 'archives', archive_dir_name)
-        expected_path_normalized = os.path.normpath(expected_path_prefix)
-        resource_path_normalized = os.path.normpath(resource.content_server_path)
-        
-        if not resource_path_normalized.startswith(expected_path_normalized):
+        # Make resource_path absolute because media root is a absolute path and we need to compare them, and also normalize the paths to avoid issues with different path formats
+        resource_path_normalized = os.path.normpath(
+            os.path.join(settings.BASE_DIR, resource.content_server_path)
+        )
+        media_root_normalized = os.path.normpath(media_root)
+
+        if not resource_path_normalized.startswith(media_root_normalized + os.sep):
             logger.warning(
-                f"Resource {resource.id} path '{resource.content_server_path}' is not within '{expected_path_prefix}', skipping"
+                f"Resource {resource.id} path '{resource.content_server_path}' "
+                f"is not within MEDIA_ROOT '{media_root}', skipping"
             )
             continue
         
