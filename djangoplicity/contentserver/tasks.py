@@ -361,7 +361,7 @@ def cleanup_old_local_resources_task():
 
 def cleanup_old_local_resources(weeks=4):
     from djangoplicity.contentserver.models import ContentServerResource
-    from djangoplicity.contentserver.base import S3ContentServer
+    from djangoplicity.media.models import Image, Video
     
     cutoff_date = timezone.now() - timedelta(weeks=weeks)
 
@@ -374,9 +374,34 @@ def cleanup_old_local_resources(weeks=4):
     if not resources.exists():
         return 0
     
+    media_root = settings.MEDIA_ROOT
+    allowed_content_types = {
+        ContentType.objects.get_for_model(Image),
+        ContentType.objects.get_for_model(Video),
+    }
     deleted_count = 0
+    
     for resource in resources:
-        # Check content server is a S3 content server
+        if resource.content_type not in allowed_content_types:
+            logger.warning(
+                f"Resource {resource.id} content type '{resource.content_type}' "
+                f"is not in allowed list (Image, Video), skipping"
+            )
+            continue
+        
+        model_class = resource.content_type.model_class()
+        archive_dir_name = f"{model_class._meta.model_name}s"
+        
+        expected_path_prefix = os.path.join(media_root, 'archives', archive_dir_name)
+        expected_path_normalized = os.path.normpath(expected_path_prefix)
+        resource_path_normalized = os.path.normpath(resource.content_server_path)
+        
+        if not resource_path_normalized.startswith(expected_path_normalized):
+            logger.warning(
+                f"Resource {resource.id} path '{resource.content_server_path}' is not within '{expected_path_prefix}', skipping"
+            )
+            continue
+        
         try:
             content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
             if not content_server:
@@ -399,13 +424,23 @@ def cleanup_old_local_resources(weeks=4):
                     logger.info(f"Related object {related_object.id} is not ready for content server, skipping resource {resource.id}")
                     continue
 
+            s3_path = content_server.to_s3_path(resource.content_server_path)
+            if not content_server.file_exists(s3_path):
+                logger.warning(
+                    f"Resource {resource.id} does not exist in content server at '{s3_path}', skipping"
+                )
+                continue
+
             # Check if file exists in disk
             if os.path.exists(resource.content_server_path):
                 os.remove(resource.content_server_path)
                 deleted_count += 1
-                logger.info(f"Deleted resource {resource.id} from disk")
+                logger.info(f"Deleted resource {resource.id} from disk: {resource.content_server_path}")
+            else:
+                logger.info(f"Resource {resource.id} file not found on disk at {resource.content_server_path}")
+                
         except Exception as e:
-            logger.error(f"Error deleting resource {resource.id} from disk: {e}")
+            logger.error(f"Error processing resource {resource.id}: {e}")
 
     return deleted_count
 
