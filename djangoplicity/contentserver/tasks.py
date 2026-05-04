@@ -433,12 +433,12 @@ def cleanup_old_local_resources(weeks=4):
                 continue
 
             # Check if file exists in disk
-            if os.path.exists(resource.content_server_path):
-                os.remove(resource.content_server_path)
+            if os.path.exists(resource_path_normalized):
+                os.remove(resource_path_normalized)
                 deleted_count += 1
-                logger.info(f"Deleted resource {resource.id} from disk: {resource.content_server_path}")
+                logger.info(f"Deleted resource {resource.id} from disk: {resource_path_normalized}")
             else:
-                logger.info(f"Resource {resource.id} file not found on disk at {resource.content_server_path}")
+                logger.info(f"Resource {resource.id} file not found on disk at {resource_path_normalized}")
                 
         except Exception as e:
             logger.error(f"Error processing resource {resource.id}: {e}")
