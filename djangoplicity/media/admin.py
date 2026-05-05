@@ -332,8 +332,6 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     action_reimport_zoomable.short_description = _("Re-generate zoomable")
 
     def action_generate_modern_wallpapers(self, request, queryset):
-        from djangoplicity.cutter.tasks import process_images_derivatives
-
         MODERN_WALLPAPER_FORMATS = [
             'desktopwallpaperhd',
             'desktopwallpaperfhd',
@@ -345,15 +343,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
             'mobilewallpaperuhd',
         ]
 
-        for obj in queryset:
-            process_images_derivatives.delay(
-                obj._meta.app_label,
-                obj._meta.model_name,
-                request.user.id,
-                [obj.pk],
-                MODERN_WALLPAPER_FORMATS, 
-                None,                      
-            )
+        return super(ImageAdmin, self).action_reimport(request, queryset, formats=MODERN_WALLPAPER_FORMATS)
     action_generate_modern_wallpapers.short_description = _('Generate modern wallpapers (desktop & mobile)')
 
     class Media:
