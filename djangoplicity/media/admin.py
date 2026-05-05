@@ -251,7 +251,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     ordering = ('-last_modified', )
     richtext_fields = ('description', 'credit')
     readonly_fields = ('id', 'content_server_ready', 'constellation')
-    actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_reimport_zoomable', 'action_resync_content_server_resources_model', 'action_resync_resources', 'edit_bulk_credit_action']
+    actions = ['action_toggle_published', 'action_toggle_featured', 'action_avm_content_review', 'action_avm_observation_review', 'action_avm_coordinate_review', 'action_write_avm', 'action_reimport', 'action_reimport_zoomable', 'action_resync_content_server_resources_model', 'action_resync_resources', 'edit_bulk_credit_action', 'action_generate_modern_wallpapers']
     inlines = [ ImageExposureInlineAdmin, ImageContactInlineAdmin ]
 
     def get_credit(self, obj):
@@ -330,6 +330,31 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
         # Call action_reimport with formats=['zoomable']
         return super(ImageAdmin, self).action_reimport(request, queryset, formats=['zoomable'])
     action_reimport_zoomable.short_description = _("Re-generate zoomable")
+
+    def action_generate_modern_wallpapers(self, request, queryset):
+        from djangoplicity.cutter.tasks import process_images_derivatives
+
+        MODERN_WALLPAPER_FORMATS = [
+            'desktopwallpaperhd',
+            'desktopwallpaperfhd',
+            'desktopwallpaperqhd',
+            'desktopwallpaperuhd',
+            'mobilewallpaperfhd',
+            'mobilewallpaperfhdplus',
+            'mobilewallpaperqhdplus',
+            'mobilewallpaperuhd',
+        ]
+
+        for obj in queryset:
+            process_images_derivatives.delay(
+                obj._meta.app_label,
+                obj._meta.model_name,
+                request.user.id,
+                [obj.pk],
+                MODERN_WALLPAPER_FORMATS, 
+                None,                      
+            )
+    action_generate_modern_wallpapers.short_description = _('Generate modern wallpapers (desktop & mobile)')
 
     class Media:
         css = { 'all': (settings.MEDIA_URL + settings.SUBJECT_CATEGORY_CSS,) }  # Extra widget for subject category field

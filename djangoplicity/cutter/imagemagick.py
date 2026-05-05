@@ -54,7 +54,10 @@ from djangoplicity.archives.base import cache_handler
 from djangoplicity.archives.resources import ImageResourceManager
 from djangoplicity.archives.utils import wait_for_resource
 from djangoplicity.archives.contrib import types
-
+from djangoplicity.archives.contrib.types import (
+    Wallpaper1Type, Wallpaper2Type, Wallpaper3Type,
+    Wallpaper4Type, Wallpaper5Type
+)
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +78,10 @@ IDENTIFY = '%s %s %s' % (os.path.join(IM_PATH, 'identify'), IM_LIMITS, TEMPORARY
 
 SRGB_PROFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),'icc', 'sRGB-IEC61966-2.1.icc')
 
+CLASSIC_WALLPAPER_TYPES = [
+    Wallpaper1Type, Wallpaper2Type, Wallpaper3Type,
+    Wallpaper4Type, Wallpaper5Type
+]
 
 def _format_is_lte_size(fmt, size):
     '''
@@ -504,10 +511,11 @@ def process_image_derivatives(app_label, module_name, pk, formats,
     logger.info(msg)
 
     if formats is None:
-        # If no formats are given generate all formats
+        # If no formats are given generate all formats except classic wallpaper types
         formats = [
             x for x in dir(model.Archive)
             if isinstance(getattr(model.Archive, x), ImageResourceManager)
+            and getattr(model.Archive, x).type not in CLASSIC_WALLPAPER_TYPES
         ]
 
     ordered_formats = _order_formats(model, formats)
