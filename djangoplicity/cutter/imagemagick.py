@@ -78,10 +78,13 @@ IDENTIFY = '%s %s %s' % (os.path.join(IM_PATH, 'identify'), IM_LIMITS, TEMPORARY
 
 SRGB_PROFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),'icc', 'sRGB-IEC61966-2.1.icc')
 
-CLASSIC_WALLPAPER_TYPES = [
-    Wallpaper1Type, Wallpaper2Type, Wallpaper3Type,
-    Wallpaper4Type, Wallpaper5Type
-]
+# We need to keep generating the classic wallpapers until we are sure that we are no longer using them in the templates, 
+# for instance, they are used in the Top100 extension
+# CLASSIC_WALLPAPER_TYPES = [
+#     Wallpaper1Type, Wallpaper2Type, Wallpaper3Type,
+#     Wallpaper4Type, Wallpaper5Type
+# ]
+CLASSIC_WALLPAPER_TYPES = []
 
 def _format_is_lte_size(fmt, size):
     '''
