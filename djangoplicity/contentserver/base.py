@@ -163,10 +163,9 @@ class S3ContentServer(ContentServer):
         Get the file size from cache/DB/S3 for the given resource.
         Returns the file size in bytes, or None if not found.
         """
+        s3_path = self.to_s3_path(resource.path)
+        cache_key = f"s3_resource_size:{self.bucket}:{s3_path}"
         if not nocache:
-            s3_path = self.to_s3_path(resource.path)
-            cache_key = f"s3_resource_size:{self.bucket}:{s3_path}"
-
             cached_value = cache.get(cache_key)
             if cached_value is not None:
                 if cached_value == -1:
