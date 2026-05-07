@@ -100,7 +100,7 @@ class ContentServer(object):
         '''
         return self.url
 
-    def get_file_size(self, resource):
+    def get_file_size(self, resource, nocache=False):
         """
         Dummy method for getting file size. Should be overridden by subclasses if needed.
         """
@@ -157,29 +157,30 @@ class S3ContentServer(ContentServer):
         self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
         self.always_public_formats = always_public_formats if always_public_formats else [] # Void list by default
 
-    def get_file_size(self, resource):
+    def get_file_size(self, resource, nocache=False):
         from djangoplicity.contentserver.models import ContentServerResource
         """
         Get the file size from cache/DB/S3 for the given resource.
         Returns the file size in bytes, or None if not found.
         """
-        s3_path = self.to_s3_path(resource.path)
-        cache_key = f"s3_resource_size:{self.bucket}:{s3_path}"
+        if not nocache:
+            s3_path = self.to_s3_path(resource.path)
+            cache_key = f"s3_resource_size:{self.bucket}:{s3_path}"
 
-        cached_value = cache.get(cache_key)
-        if cached_value is not None:
-            if cached_value == -1:
-                return None
-            return cached_value
+            cached_value = cache.get(cache_key)
+            if cached_value is not None:
+                if cached_value == -1:
+                    return None
+                return cached_value
 
-        # Try DB first
-        resource_size = ContentServerResource.objects.filter(
-            content_server_path=s3_path, is_active=True
-        ).values_list('resource_size', flat=True).first()
+            # Try DB first
+            resource_size = ContentServerResource.objects.filter(
+                content_server_path=s3_path, is_active=True
+            ).values_list('resource_size', flat=True).first()
 
-        if resource_size is not None:
-            cache.set(cache_key, resource_size, timeout=self.resource_size_cache_timeout)
-            return resource_size
+            if resource_size is not None:
+                cache.set(cache_key, resource_size, timeout=self.resource_size_cache_timeout)
+                return resource_size
 
         # Fall back to S3 HEAD request
         try:

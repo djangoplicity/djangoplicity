@@ -223,7 +223,7 @@ def sync_content_server_resources_model(module_path, cls_name, instance_id, send
                             resource = initialize_resource(instance, format, content_server_ext)
                             if content_server.resource_exists(resource):
                                 resource_path = content_server.to_content_server_path(resource.path)
-                                size = content_server.get_file_size(resource)
+                                size = content_server.get_file_size(resource, nocache=True)
                                 break
                         else:
                             # Fallback to check if directory exists, like for zoomable
