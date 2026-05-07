@@ -821,7 +821,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         is_embargoed = self.is_embargoed()
         
         content_server = MEDIA_CONTENT_SERVERS[self.content_server]
-        if not content_server and not content_server.always_public_formats:
+        if not content_server:
             return AccessTagControl.PUBLIC
 
         if is_embargoed and fmt in content_server.always_public_formats:
