@@ -374,35 +374,28 @@ def cleanup_old_local_resources(weeks=4):
     if not resources.exists():
         return 0
     
-    media_root = settings.MEDIA_ROOT
-
+    media_root = os.path.normpath(settings.MEDIA_ROOT)
+    
     allowed_content_types = {
         ContentType.objects.get_for_model(Image),
         ContentType.objects.get_for_model(Video),
     }
+    
+    allowed_subdirs = [
+        os.path.join(media_root, "archives", "videos"),
+        os.path.join(media_root, "archives", "imagenes"),
+    ]
+
     deleted_count = 0
     
     for resource in resources:
-        if resource.content_type not in allowed_content_types:
-            logger.warning(
-                f"Resource {resource.id} content type '{resource.content_type}' "
-                f"is not in allowed list (Image, Video), skipping"
-            )
-            continue
-        
-        # Make resource_path absolute because media root is a absolute path and we need to compare them, and also normalize the paths to avoid issues with different path formats
-        resource_path_normalized = os.path.normpath(
+        resource_path = os.path.normpath(
             os.path.join(settings.BASE_DIR, resource.content_server_path)
         )
-        media_root_normalized = os.path.normpath(media_root)
 
-        if not resource_path_normalized.startswith(media_root_normalized + os.sep):
-            logger.warning(
-                f"Resource {resource.id} path '{resource.content_server_path}' "
-                f"is not within MEDIA_ROOT '{media_root}', skipping"
-            )
+        if not _is_valid_resource(resource, resource_path, media_root, allowed_content_types, allowed_subdirs):
             continue
-        
+
         try:
             content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
             if not content_server:
@@ -412,36 +405,70 @@ def cleanup_old_local_resources(weeks=4):
             logger.warning(f"Unknown content server: {resource.content_server}")
             continue
 
-
         try:
-            related_object = resource.content_object
-
-            if not related_object:
-                logger.warning(f"Resource {resource.id} has no related object, skipping")
-                continue
-            
-            if hasattr(related_object, 'content_server_ready'):
-                if not related_object.content_server_ready:
-                    logger.info(f"Related object {related_object.id} is not ready for content server, skipping resource {resource.id}")
-                    continue
-
-            s3_path = content_server.to_s3_path(resource.content_server_path)
-            if not content_server.file_exists(s3_path):
-                logger.warning(
-                    f"Resource {resource.id} does not exist in content server at '{s3_path}', skipping"
-                )
+            if not _is_ready_for_deletion(resource, content_server):
                 continue
 
-            # Check if file exists in disk
-            if os.path.exists(resource_path_normalized):
-                os.remove(resource_path_normalized)
+            if os.path.exists(resource_path):
+                os.remove(resource_path)
                 deleted_count += 1
-                logger.info(f"Deleted resource {resource.id} from disk: {resource_path_normalized}")
+                logger.info(f"Deleted resource {resource.id} from disk: {resource_path}")
             else:
-                logger.info(f"Resource {resource.id} file not found on disk at {resource_path_normalized}")
+                logger.info(f"Resource {resource.id} file not found on disk at {resource_path}")
                 
         except Exception as e:
             logger.error(f"Error processing resource {resource.id}: {e}")
 
     return deleted_count
+
+
+def _is_valid_resource(resource, resource_path, media_root, allowed_content_types, allowed_subdirs):
+
+    # 1. Check content type
+    if resource.content_type not in allowed_content_types:
+        logger.warning(f"Resource {resource.id} content type '{resource.content_type}' is not Image or Video, skipping")
+        return False
+
+    # 2. Check media root
+    if not resource_path.startswith(media_root + os.sep):
+        logger.warning(f"Resource {resource.id} path '{resource.content_server_path}' is not within MEDIA_ROOT, skipping")
+        return False
+
+    # 3. Check allowed subdirectories
+    if not _is_within_allowed_subdir(resource_path, allowed_subdirs):
+        logger.warning(f"Resource {resource.id} path '{resource.content_server_path}' is not within allowed subdirectories (archives/videos, archives/imagenes), skipping")
+        return False
+
+    return True
+
+
+def _is_within_allowed_subdir(resource_path, allowed_subdirs):
+    for allowed_dir in allowed_subdirs:
+        try:
+            if os.path.commonpath([resource_path, allowed_dir]) == allowed_dir:
+                return True
+        except ValueError:
+            continue
+    return False
+
+
+def _is_ready_for_deletion(resource, content_server):
+    related_object = resource.content_object
+
+    if not related_object:
+        logger.warning(f"Resource {resource.id} has no related object, skipping")
+        return False
+
+    # 1. Check content ready
+    if hasattr(related_object, 'content_server_ready') and not related_object.content_server_ready:
+        logger.info(f"Related object {related_object.id} is not ready for content server, skipping resource {resource.id}")
+        return False
+
+    # 2. Check file exists in S3
+    s3_path = content_server.to_s3_path(resource.content_server_path)
+    if not content_server.file_exists(s3_path):
+        logger.warning(f"Resource {resource.id} does not exist in S3 at '{s3_path}', skipping")
+        return False
+
+    return True
 
