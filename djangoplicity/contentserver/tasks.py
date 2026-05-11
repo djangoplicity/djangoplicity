@@ -383,7 +383,7 @@ def cleanup_old_local_resources(weeks=4):
     
     allowed_subdirs = [
         os.path.join(media_root, "archives", "videos"),
-        os.path.join(media_root, "archives", "imagenes"),
+        os.path.join(media_root, "archives", "images"),
     ]
 
     deleted_count = 0
