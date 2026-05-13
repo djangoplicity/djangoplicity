@@ -44,6 +44,8 @@ from djangoplicity.cutter.imagemagick import process_image_derivatives
 def process_images_derivatives(app_label, module_name, user_id, pks,
         formats=None, imported_formats=None, sendtask_callback=None,
         sendtask_tasksetid=None):
+
+    return "Task temporarily bypassed"
     '''
     Generate the given formats (or all applicable) for the given archives
     '''
