@@ -58,6 +58,7 @@ from djangoplicity.archives.contrib.types import (
     Wallpaper1Type, Wallpaper2Type, Wallpaper3Type,
     Wallpaper4Type, Wallpaper5Type
 )
+from djangoplicity.contentserver.tasks import download_from_content_server
 
 logger = logging.getLogger(__name__)
 
@@ -538,6 +539,39 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         error = 'No original format found for "%s"', pk
         logging.error(error)
         raise Exception(error)
+    
+    if original and not os.path.exists(original.path):
+        if hasattr(archive, 'content_server') and archive.content_server:
+            try:
+                logger.info("Original file not found, downloading from content server")
+                # Call the task function directly (not as a Celery task) for immediate execution
+                download_from_content_server(
+                    archive.__module__,
+                    archive.__class__.__name__,
+                    archive.pk,
+                    formats=['original'],
+                    include_directories=False,
+                )
+                logger.info("Original file downloaded from content server")
+                
+                # Refresh the original resource after download
+                original = wait_for_resource(archive)
+                logger.info(f"Refreshed original path -> {original.path}")
+                logger.info(f"Exists after download -> {os.path.exists(original.path)}")
+                
+                if not os.path.exists(original.path):
+                    error = 'Original file still not found after download: "%s"', original.path
+                    logging.error(error)
+                    raise Exception(error)
+                    
+            except Exception as e:
+                error = 'Failed to download original file from content server: %s', str(e)
+                logging.error(error)
+                raise Exception(error)
+        else:
+            error = 'Original file not found and no content server configured: "%s"', original.path
+            logging.error(error)
+            raise Exception(error)
 
     # Get the original file resolution:
     width, height, depth = identify_image_with_depth(original.path)
