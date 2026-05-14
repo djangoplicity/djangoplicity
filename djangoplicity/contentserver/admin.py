@@ -40,6 +40,7 @@ from django.conf import settings
 from djangoplicity.contentserver.models import ContentServerResource
 from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model
 from djangoplicity.archives.utils import initialize_resource
+from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
 
 
 class ContentDeliveryAdmin(object):
@@ -59,10 +60,10 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
     """
     list_display = [
         'id', 'content_object_link', 'content_type', 'object_id', 'format', 'extension', 'resource_size_display',
-        'content_server', 'is_active', 'created_at', 'updated_at', 'content_server_link'
+        'content_server', 'is_private', 'is_active', 'created_at', 'updated_at', 'content_server_link'
     ]
     list_filter = [
-        'format', 'is_directory', 'is_active', 'content_server', 'content_type'
+        'format', 'is_directory', 'is_private', 'is_active', 'content_server', 'content_type'
     ]
     search_fields = [
         'content_server_path', 'format', 'extension', 'checksum'
@@ -81,14 +82,14 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_id', 'content_object_link')
         }),
         ('Status', {
-            'fields': ('is_active',)
+            'fields': ('is_private', 'is_active',)
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at', 'uploaded_at'),
             'classes': ('collapse',)
         }),
     )
-    actions = ['mark_as_deleted', 'reactivate_resources']
+    actions = ['mark_as_deleted', 'reactivate_resources', 'refresh_resource_privacy']
     
     def get_queryset(self, request):
         """
@@ -163,6 +164,29 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             f"Successfully reactivated {count} resource(s)."
         )
     reactivate_resources.short_description = "Reactivate selected resources"
+
+    def refresh_resource_privacy(self, request, queryset):
+        """Refresh privacy value from the content server for selected resources"""
+        refreshed = 0
+        for resource in queryset:
+            try:
+                content_server = MEDIA_CONTENT_SERVERS.get(resource.content_server)
+                if not content_server or not hasattr(content_server, 'get_resource_privacy'):
+                    continue
+
+                is_private = content_server.get_resource_privacy(resource)
+                if is_private is not None:
+                    resource.is_private = is_private
+                    resource.save(update_fields=['is_private'])
+                    refreshed += 1
+            except Exception:
+                continue
+
+        self.message_user(
+            request,
+            f"Successfully refreshed privacy for {refreshed} resource(s)."
+        )
+    refresh_resource_privacy.short_description = "Refresh privacy from content server"
 
 
 def register_with_admin(admin_site):
