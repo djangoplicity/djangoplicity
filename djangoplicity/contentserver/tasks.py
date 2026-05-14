@@ -235,18 +235,28 @@ def sync_content_server_resources_model(module_path, cls_name, instance_id, send
                         
                         if resource_path:
                             # Create or update the ContentServerResource
+                            is_private = None
+                            try:
+                                is_private = content_server.get_resource_privacy(resource)
+                            except Exception:
+                                is_private = None
+
+                            defaults = {
+                                'format': format,
+                                'resource_size': size,
+                                'checksum': get_instance_checksum(instance, format),
+                                'content_server': instance.content_server,
+                                'is_directory': is_directory,
+                                'is_active': True,
+                            }
+                            if is_private is not None:
+                                defaults['is_private'] = is_private
+
                             ContentServerResource.objects.update_or_create(
                                 content_type=content_type,
                                 object_id=instance.pk,
                                 content_server_path=resource_path,
-                                defaults={
-                                    'format': format,
-                                    'resource_size': size,
-                                    'checksum': get_instance_checksum(instance, format),
-                                    'content_server': instance.content_server,
-                                    'is_directory': is_directory,
-                                    'is_active': True
-                                }
+                                defaults=defaults
                             )
                         
                     except Exception as e:
