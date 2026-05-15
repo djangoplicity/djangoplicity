@@ -65,10 +65,10 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
     """
     list_display = [
         'id', 'content_object_link', 'content_type', 'object_id', 'format', 'extension', 'resource_size_display',
-        'content_server', 'is_private', 'is_active', 'created_at', 'updated_at', 'content_server_link'
+        'content_server', 'is_public', 'is_active', 'created_at', 'updated_at', 'content_server_link'
     ]
     list_filter = [
-        'format', 'is_directory', 'is_private', 'is_active', 'content_server', 'content_type'
+        'format', 'is_directory', 'is_public', 'is_active', 'content_server', 'content_type'
     ]
     search_fields = [
         'content_server_path', 'format', 'extension', 'checksum'
@@ -87,7 +87,7 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_id', 'content_object_link')
         }),
         ('Status', {
-            'fields': ('is_private', 'is_active',)
+            'fields': ('is_public', 'is_active',)
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at', 'uploaded_at'),

@@ -284,7 +284,7 @@ class S3ContentServer(ContentServer):
             tagging = self.s3_client.get_object_tagging(Bucket=self.bucket, Key=remote_path)
             for tag in tagging.get('TagSet', []):
                 if tag.get('Key') == 'Access':
-                    return tag.get('Value').lower() == AccessTagControl.PRIVATE.value.lower()
+                    return tag.get('Value').lower() == AccessTagControl.PUBLIC.value.lower()
         except self.s3_client.exceptions.NoSuchKey:
             return None
         except Exception as e:
@@ -398,14 +398,14 @@ class S3ContentServer(ContentServer):
                 )
 
                 try:
-                    is_private = access_tag.lower() == AccessTagControl.PRIVATE.value.lower()
+                    is_public = access_tag.lower() == AccessTagControl.PUBLIC.value.lower()
                     ContentServerResource.objects.filter(
                         content_type=content_type,
                         object_id=instance.pk,
                         content_server_path=remote_path,
                         content_server=instance.content_server,
                         is_active=True
-                    ).update(is_private=is_private)
+                    ).update(is_public=is_public)
                 except Exception as e:
                     logger.warning('S3ContentServer: Could not update ContentServerResource privacy record for %s: %s', remote_path, e)
 
@@ -432,10 +432,10 @@ class S3ContentServer(ContentServer):
                         Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
                     )
 
-                    is_private = access_tag.lower() == AccessTagControl.PRIVATE.value.lower()
+                    is_public = access_tag.lower() == AccessTagControl.PUBLIC.value.lower()
                     ContentServerResource.objects.filter(
                         pk=resource.pk
-                    ).update(is_private=is_private)
+                    ).update(is_public=is_public)
                 except Exception as e:
                     logger.warning('S3ContentServer: Could not update privacy for tracked resource %s: %s', resource, e)
         except Exception as e:
