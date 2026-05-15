@@ -38,9 +38,8 @@ from django.urls import reverse
 from django.conf import settings
 
 from djangoplicity.contentserver.models import ContentServerResource
-from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy
+from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task
 from djangoplicity.archives.utils import initialize_resource
-from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
 
 
 class ContentDeliveryAdmin(object):
@@ -172,27 +171,16 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
 
     def refresh_resource_privacy(self, request, queryset):
         """Refresh privacy value from the content server for selected resources"""
-        refreshed = 0
         for resource in queryset:
-            try:
-                content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
-                if not content_server or not hasattr(content_server, 'get_resource_privacy'):
-                    continue
-
-                is_public = content_server.get_resource_privacy(resource)
-                if is_public is None:
-                    continue  # Skip if privacy information is not available
-                
-                resource.is_public = is_public
-                resource.save(update_fields=['is_public'])
-                refreshed += 1
-            except Exception as e:
-                print(f"Error occurred while refreshing privacy for resource {resource}: {e}")
-                continue
+            refresh_resource_privacy_task.delay(
+                resource._meta.app_label,
+                resource._meta.model_name,
+                resource.pk
+            )
 
         self.message_user(
             request,
-            f"Successfully refreshed privacy for {refreshed} resource(s)."
+            f"Privacy refresh scheduled for {queryset.count()} resource(s)."
         )
     refresh_resource_privacy.short_description = "Refresh privacy from content server"
 

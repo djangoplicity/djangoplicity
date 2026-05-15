@@ -482,3 +482,27 @@ def _is_ready_for_deletion(resource, content_server):
 
     return True
 
+
+@task
+def refresh_resource_privacy_task(app_label, model_name, pk):
+    from django.apps import apps
+    try:
+        model = apps.get_model(app_label, model_name)
+        resource = model.objects.get(pk=pk)
+
+        content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+
+        if not content_server or not hasattr(content_server, 'get_resource_privacy'):
+            return
+
+        is_public = content_server.get_resource_privacy(resource)
+
+        if is_public is None:
+            return
+
+        resource.is_public = is_public
+        resource.save(update_fields=['is_public'])
+        logger.info(f"Refreshed privacy for #{pk} Content Server Resource with Object ID {resource.object_id}: is_public={is_public}")
+
+    except Exception as e:
+        logger.warning(f"Error refreshing privacy for #{pk} Content Server Resource: {e}")
