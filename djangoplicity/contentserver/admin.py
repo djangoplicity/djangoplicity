@@ -179,12 +179,12 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
                 if not content_server or not hasattr(content_server, 'get_resource_privacy'):
                     continue
 
-                is_private = content_server.get_resource_privacy(resource)
-                if is_private is None:
+                is_public = content_server.get_resource_privacy(resource)
+                if is_public is None:
                     continue  # Skip if privacy information is not available
                 
-                resource.is_private = is_private
-                resource.save(update_fields=['is_private'])
+                resource.is_public = is_public
+                resource.save(update_fields=['is_public'])
                 refreshed += 1
             except Exception as e:
                 print(f"Error occurred while refreshing privacy for resource {resource}: {e}")
