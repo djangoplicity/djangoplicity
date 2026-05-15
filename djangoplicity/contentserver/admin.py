@@ -38,7 +38,7 @@ from django.urls import reverse
 from django.conf import settings
 
 from djangoplicity.contentserver.models import ContentServerResource
-from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model
+from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy
 from djangoplicity.archives.utils import initialize_resource
 from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
 
@@ -53,6 +53,11 @@ class ContentDeliveryAdmin(object):
         for obj in queryset:
             sync_content_server_resources_model.delay(obj.__module__, obj.__class__.__name__, obj.pk)
     action_resync_content_server_resources_model.short_description = _("Re-sync Content Server Resources model")
+
+    def action_resync_resource_privacy(self, request, queryset):
+        for obj in queryset:
+            update_resource_privacy.delay(obj._meta.app_label, obj._meta.model_name, obj.pk)
+    action_resync_resource_privacy.short_description = _("Re-sync resource privacy from content server")
 
 class ContentServerResourceAdmin(admin.ModelAdmin):
     """
@@ -170,16 +175,19 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
         refreshed = 0
         for resource in queryset:
             try:
-                content_server = MEDIA_CONTENT_SERVERS.get(resource.content_server)
+                content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
                 if not content_server or not hasattr(content_server, 'get_resource_privacy'):
                     continue
 
                 is_private = content_server.get_resource_privacy(resource)
-                if is_private is not None:
-                    resource.is_private = is_private
-                    resource.save(update_fields=['is_private'])
-                    refreshed += 1
-            except Exception:
+                if is_private is None:
+                    continue  # Skip if privacy information is not available
+                
+                resource.is_private = is_private
+                resource.save(update_fields=['is_private'])
+                refreshed += 1
+            except Exception as e:
+                print(f"Error occurred while refreshing privacy for resource {resource}: {e}")
                 continue
 
         self.message_user(
