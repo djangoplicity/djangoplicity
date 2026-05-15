@@ -376,6 +376,8 @@ class S3ContentServer(ContentServer):
         
         formats = get_all_possible_instance_formats(instance)
         content_type = ContentType.objects.get_for_model(instance)
+        
+        processed_paths = set()
 
         # Step 1: Update tags for local files that still exist
         for fmt in formats:
@@ -406,6 +408,7 @@ class S3ContentServer(ContentServer):
                         content_server=instance.content_server,
                         is_active=True
                     ).update(is_public=is_public)
+                    processed_paths.add(remote_path)
                 except Exception as e:
                     logger.warning('S3ContentServer: Could not update ContentServerResource privacy record for %s: %s', remote_path, e)
 
@@ -424,6 +427,11 @@ class S3ContentServer(ContentServer):
             for resource in tracked_resources:
                 try:
                     remote_path = resource.content_server_path
+                    
+                    if remote_path in processed_paths:
+                        logger.info('S3ContentServer: Already processed resource %s, skipping: %s', resource, remote_path)
+                        continue
+
                     access_tag = instance.get_access_tag_for_format(resource.format).value
                     logger.info('S3ContentServer: Setting tag Access=%s for tracked resource %s - format: %s', access_tag, resource, resource.format)
                     self.s3_client.put_object_tagging(
@@ -436,6 +444,7 @@ class S3ContentServer(ContentServer):
                     ContentServerResource.objects.filter(
                         pk=resource.pk
                     ).update(is_public=is_public)
+                    
                 except Exception as e:
                     logger.warning('S3ContentServer: Could not update privacy for tracked resource %s: %s', resource, e)
         except Exception as e:
