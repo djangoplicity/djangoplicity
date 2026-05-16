@@ -237,7 +237,7 @@ def sync_content_server_resources_model(module_path, cls_name, instance_id, send
                             # Create or update the ContentServerResource
                             is_public = None
                             try:
-                                is_public = content_server.get_resource_privacy(resource)
+                                is_public = content_server.is_publicly_accessible(resource)
                             except Exception:
                                 is_public = None
 
@@ -492,10 +492,10 @@ def refresh_resource_privacy_task(app_label, model_name, pk):
 
         content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
 
-        if not content_server or not hasattr(content_server, 'get_resource_privacy'):
+        if not content_server or not hasattr(content_server, 'is_publicly_accessible'):
             return
 
-        is_public = content_server.get_resource_privacy(resource)
+        is_public = content_server.is_publicly_accessible(resource)
 
         if is_public is None:
             return
