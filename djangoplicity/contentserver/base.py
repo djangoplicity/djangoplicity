@@ -284,7 +284,7 @@ class S3ContentServer(ContentServer):
             tagging = self.s3_client.get_object_tagging(Bucket=self.bucket, Key=remote_path)
             for tag in tagging.get('TagSet', []):
                 if tag.get('Key') == 'Access':
-                    return tag.get('Value').lower() == AccessTagControl.PUBLIC.value.lower()
+                    return tag.get('Value').lower()
         except self.s3_client.exceptions.NoSuchKey:
             return None
         except Exception as e:
@@ -292,6 +292,10 @@ class S3ContentServer(ContentServer):
             return None
 
         return None
+    
+    def is_publicly_accessible(self, resource):
+        """Return True if the resource is public, False otherwise."""
+        return self.get_resource_privacy(resource) == AccessTagControl.PUBLIC.value.lower()
 
     def sync_resources(self, instance, formats=None, *args, **kwargs):
         from djangoplicity.archives.utils import get_all_possible_instance_formats
