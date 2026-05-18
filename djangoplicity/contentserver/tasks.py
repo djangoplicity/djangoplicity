@@ -388,7 +388,7 @@ def cleanup_old_local_resources(weeks=4):
 
     deleted_count = 0
     
-    for resource in resources:
+    for resource in resources.iterator(chunk_size=1000):
         resource_path = os.path.normpath(
             os.path.join(settings.BASE_DIR, resource.content_server_path)
         )
