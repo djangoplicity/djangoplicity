@@ -372,6 +372,7 @@ def cleanup_old_local_resources(weeks=4):
     )
 
     if not resources.exists():
+        logger.info("No local resources found for cleanup older than %s weeks", weeks)
         return 0
     
     media_root = os.path.normpath(settings.MEDIA_ROOT)
