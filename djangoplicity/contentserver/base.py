@@ -291,7 +291,8 @@ class S3ContentServer(ContentServer):
             logger.warning('S3ContentServer: Could not read privacy tag for %s: %s', remote_path, e)
             return None
 
-        return None
+        # If no access tag is found, assume it's public
+        return AccessTagControl.PUBLIC.value
     
     def is_publicly_accessible(self, resource):
         """Return True if the resource is public, False otherwise."""
