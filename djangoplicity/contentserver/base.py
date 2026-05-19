@@ -48,6 +48,7 @@ from django.core.cache import cache
 from six import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
+from djangoplicity.contentserver.constants import AccessTagControl
 from urllib.parse import urlparse, urlunparse
 
 
@@ -103,6 +104,13 @@ class ContentServer(object):
     def get_file_size(self, resource, nocache=False):
         """
         Dummy method for getting file size. Should be overridden by subclasses if needed.
+        """
+        return None
+
+    def get_resource_privacy(self, resource):
+        """
+        Return a boolean indicating whether the resource is private in the
+        content server. Returns None if privacy cannot be determined.
         """
         return None
 
@@ -256,6 +264,39 @@ class S3ContentServer(ContentServer):
             remote_path = remote_path[1:]
         return remote_path
 
+    def get_resource_privacy(self, resource):
+        """
+        Return a boolean indicating whether the resource is private in the
+        content server. Returns None if privacy cannot be determined.
+        """
+        path = None
+        if hasattr(resource, 'path'):
+            path = resource.path
+        
+        if not path and hasattr(resource, 'content_server_path'):
+            path = resource.content_server_path
+
+        remote_path = self.to_s3_path(path)
+        if not remote_path:
+            return None
+
+        try:
+            tagging = self.s3_client.get_object_tagging(Bucket=self.bucket, Key=remote_path)
+            for tag in tagging.get('TagSet', []):
+                if tag.get('Key') == 'Access':
+                    return tag.get('Value').lower()
+        except self.s3_client.exceptions.NoSuchKey:
+            return None
+        except Exception as e:
+            logger.warning('S3ContentServer: Could not read privacy tag for %s: %s', remote_path, e)
+            return None
+
+        return None
+    
+    def is_publicly_accessible(self, resource):
+        """Return True if the resource is public, False otherwise."""
+        return self.get_resource_privacy(resource) == AccessTagControl.PUBLIC.value.lower()
+
     def sync_resources(self, instance, formats=None, *args, **kwargs):
         from djangoplicity.archives.utils import get_all_possible_instance_formats
 
@@ -325,8 +366,12 @@ class S3ContentServer(ContentServer):
     def update_resource_privacy(self, instance):
         """
         Update the access tag for this object to sync with S3
+        This handles both local files and tracked resources in ContentServerResource.
         """
         from djangoplicity.archives.utils import get_all_possible_instance_formats
+        from djangoplicity.contentserver.models import ContentServerResource
+        from django.contrib.contenttypes.models import ContentType
+
         logger.info("S3ContentServer: Updating access tag for: %s", instance)
         
         if not hasattr(instance, 'get_access_tag'):
@@ -334,7 +379,11 @@ class S3ContentServer(ContentServer):
             return
         
         formats = get_all_possible_instance_formats(instance)
+        content_type = ContentType.objects.get_for_model(instance)
+        
+        processed_paths = set()
 
+        # Step 1: Update tags for local files that still exist
         for fmt in formats:
             resource = getattr(instance, '%s%s' % (instance.Archive.Meta.resource_fields_prefix, fmt + '_only_local_files'), None)
 
@@ -353,6 +402,57 @@ class S3ContentServer(ContentServer):
                     Key=remote_path, 
                     Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
                 )
+
+                try:
+                    is_public = access_tag.lower() == AccessTagControl.PUBLIC.value.lower()
+                    ContentServerResource.objects.filter(
+                        content_type=content_type,
+                        object_id=instance.pk,
+                        content_server_path=remote_path,
+                        content_server=instance.content_server,
+                        is_active=True
+                    ).update(is_public=is_public)
+                    processed_paths.add(remote_path)
+                except Exception as e:
+                    logger.warning('S3ContentServer: Could not update ContentServerResource privacy record for %s: %s', remote_path, e)
+
+        # Step 2: Update privacy for all tracked resources in ContentServerResource
+        # This handles resources that may no longer exist locally but are still tracked
+        try:
+            tracked_resources = ContentServerResource.objects.filter(
+                content_type=content_type,
+                object_id=instance.pk,
+                content_server=instance.content_server,
+                is_active=True,
+            )
+
+            logger.info(f"S3ContentServer: Found {tracked_resources.count()} tracked resources for {instance}")
+
+            for resource in tracked_resources:
+                try:
+                    remote_path = resource.content_server_path
+                    
+                    if remote_path in processed_paths:
+                        logger.info('S3ContentServer: Already processed resource %s, skipping: %s', resource, remote_path)
+                        continue
+
+                    access_tag = instance.get_access_tag_for_format(resource.format).value
+                    logger.info('S3ContentServer: Setting tag Access=%s for tracked resource %s - format: %s', access_tag, resource, resource.format)
+                    self.s3_client.put_object_tagging(
+                        Bucket=self.bucket, 
+                        Key=remote_path, 
+                        Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
+                    )
+
+                    is_public = access_tag.lower() == AccessTagControl.PUBLIC.value.lower()
+                    ContentServerResource.objects.filter(
+                        pk=resource.pk
+                    ).update(is_public=is_public)
+                    
+                except Exception as e:
+                    logger.warning('S3ContentServer: Could not update privacy for tracked resource %s: %s', resource, e)
+        except Exception as e:
+            logger.warning(f"S3ContentServer: Error processing tracked resources for {instance}: {e}")
 
     def download_resources(self, instance, formats=None, include_directories=False, *args, **kwargs):
         """

@@ -38,7 +38,7 @@ from django.urls import reverse
 from django.conf import settings
 
 from djangoplicity.contentserver.models import ContentServerResource
-from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model
+from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task
 from djangoplicity.archives.utils import initialize_resource
 
 
@@ -53,16 +53,21 @@ class ContentDeliveryAdmin(object):
             sync_content_server_resources_model.delay(obj.__module__, obj.__class__.__name__, obj.pk)
     action_resync_content_server_resources_model.short_description = _("Re-sync Content Server Resources model")
 
+    def action_resync_resource_privacy(self, request, queryset):
+        for obj in queryset:
+            update_resource_privacy.delay(obj._meta.app_label, obj._meta.model_name, obj.pk)
+    action_resync_resource_privacy.short_description = _("Re-sync resource privacy from content server")
+
 class ContentServerResourceAdmin(admin.ModelAdmin):
     """
     Admin interface for ContentServerResource model
     """
     list_display = [
         'id', 'content_object_link', 'content_type', 'object_id', 'format', 'extension', 'resource_size_display',
-        'content_server', 'is_active', 'created_at', 'updated_at', 'content_server_link'
+        'content_server', 'is_public', 'is_active', 'created_at', 'updated_at', 'content_server_link'
     ]
     list_filter = [
-        'format', 'is_directory', 'is_active', 'content_server', 'content_type'
+        'format', 'is_directory', 'is_public', 'is_active', 'content_server', 'content_type'
     ]
     search_fields = [
         'content_server_path', 'format', 'extension', 'checksum'
@@ -81,14 +86,14 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             'fields': ('content_type', 'object_id', 'content_object_link')
         }),
         ('Status', {
-            'fields': ('is_active',)
+            'fields': ('is_public', 'is_active',)
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at', 'uploaded_at'),
             'classes': ('collapse',)
         }),
     )
-    actions = ['mark_as_deleted', 'reactivate_resources']
+    actions = ['mark_as_deleted', 'reactivate_resources', 'refresh_resource_privacy']
     
     def get_queryset(self, request):
         """
@@ -163,6 +168,21 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             f"Successfully reactivated {count} resource(s)."
         )
     reactivate_resources.short_description = "Reactivate selected resources"
+
+    def refresh_resource_privacy(self, request, queryset):
+        """Refresh privacy value from the content server for selected resources"""
+        for resource in queryset:
+            refresh_resource_privacy_task.delay(
+                resource._meta.app_label,
+                resource._meta.model_name,
+                resource.pk
+            )
+
+        self.message_user(
+            request,
+            f"Privacy refresh scheduled for {queryset.count()} resource(s)."
+        )
+    refresh_resource_privacy.short_description = "Refresh privacy from content server"
 
 
 def register_with_admin(admin_site):

@@ -235,18 +235,28 @@ def sync_content_server_resources_model(module_path, cls_name, instance_id, send
                         
                         if resource_path:
                             # Create or update the ContentServerResource
+                            is_public = None
+                            try:
+                                is_public = content_server.is_publicly_accessible(resource)
+                            except Exception:
+                                is_public = None
+
+                            defaults = {
+                                'format': format,
+                                'resource_size': size,
+                                'checksum': get_instance_checksum(instance, format),
+                                'content_server': instance.content_server,
+                                'is_directory': is_directory,
+                                'is_active': True,
+                            }
+                            if is_public is not None:
+                                defaults['is_public'] = is_public
+
                             ContentServerResource.objects.update_or_create(
                                 content_type=content_type,
                                 object_id=instance.pk,
                                 content_server_path=resource_path,
-                                defaults={
-                                    'format': format,
-                                    'resource_size': size,
-                                    'checksum': get_instance_checksum(instance, format),
-                                    'content_server': instance.content_server,
-                                    'is_directory': is_directory,
-                                    'is_active': True
-                                }
+                                defaults=defaults
                             )
                         
                     except Exception as e:
@@ -472,3 +482,27 @@ def _is_ready_for_deletion(resource, content_server):
 
     return True
 
+
+@task
+def refresh_resource_privacy_task(app_label, model_name, pk):
+    from django.apps import apps
+    try:
+        model = apps.get_model(app_label, model_name)
+        resource = model.objects.get(pk=pk)
+
+        content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+
+        if not content_server or not hasattr(content_server, 'is_publicly_accessible'):
+            return
+
+        is_public = content_server.is_publicly_accessible(resource)
+
+        if is_public is None:
+            return
+
+        resource.is_public = is_public
+        resource.save(update_fields=['is_public'])
+        logger.info(f"Refreshed privacy for #{pk} Content Server Resource with Object ID {resource.object_id}: is_public={is_public}")
+
+    except Exception as e:
+        logger.warning(f"Error refreshing privacy for #{pk} Content Server Resource: {e}")

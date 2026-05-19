@@ -111,7 +111,8 @@ class ContentServerResource(models.Model):
     # Resource type
     is_directory = models.BooleanField(default=False, help_text="Whether this resource is a directory")
     
-    # Status and tracking
+    # Privacy and status
+    is_public = models.BooleanField(null=True, blank=True, help_text="Whether this resource is public in the content server, when null it means the privacy is unknown")
     is_active = models.BooleanField(default=True, help_text="Whether the resource is currently active")
     
     # Timestamps
@@ -126,6 +127,7 @@ class ContentServerResource(models.Model):
             models.Index(fields=['content_type', 'object_id']),
             models.Index(fields=['format']),
             models.Index(fields=['is_directory']),
+            models.Index(fields=['is_public']),
             models.Index(fields=['is_active']),
             models.Index(fields=['created_at']),
             models.Index(fields=['content_server_path', 'is_active']),
