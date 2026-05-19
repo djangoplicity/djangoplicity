@@ -112,7 +112,7 @@ class ContentServerResource(models.Model):
     is_directory = models.BooleanField(default=False, help_text="Whether this resource is a directory")
     
     # Privacy and status
-    is_public = models.BooleanField(default=False, help_text="Whether this resource is public in the content server")
+    is_public = models.BooleanField(null=True, blank=True, help_text="Whether this resource is public in the content server, when null it means the privacy is unknown")
     is_active = models.BooleanField(default=True, help_text="Whether the resource is currently active")
     
     # Timestamps

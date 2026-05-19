@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='contentserverresource',
             name='is_public',
-            field=models.BooleanField(default=False, help_text='Whether this resource is public in the content server'),
+            field=models.BooleanField(null=True, blank=True, help_text='Whether this resource is public in the content server, when null it means the privacy is unknown'),
         ),
         migrations.AddIndex(
             model_name='contentserverresource',
