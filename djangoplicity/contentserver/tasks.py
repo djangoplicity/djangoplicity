@@ -454,7 +454,7 @@ def _is_within_allowed_subdir(resource_path, allowed_subdirs):
     return False
 
 
-def _is_ready_for_deletion(resource, content_server):
+def _is_ready_for_deletion(resource, content_server, is_dir=False):
     related_object = resource.content_object
 
     if not related_object:
@@ -468,9 +468,14 @@ def _is_ready_for_deletion(resource, content_server):
 
     # 2. Check file exists in S3
     s3_path = content_server.to_s3_path(resource.content_server_path)
-    if not content_server.file_exists(s3_path):
-        logger.warning(f"Resource {resource.id} does not exist in S3 at '{s3_path}', skipping")
-        return False
+    if is_dir:
+        if not content_server.directory_exists(s3_path):
+            logger.warning(f"Directory resource {resource.id} does not exist in S3 at '{s3_path}', skipping")
+            return False
+    else:   
+        if not content_server.file_exists(s3_path):
+            logger.warning(f"Resource {resource.id} does not exist in S3 at '{s3_path}', skipping")
+            return False
 
     return True
 
