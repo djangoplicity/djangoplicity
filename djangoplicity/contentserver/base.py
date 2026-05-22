@@ -334,6 +334,9 @@ class S3ContentServer(ContentServer):
                 continue
             
             remote_path = self.to_s3_path(resource.path)
+            access_tag = instance.get_access_tag_for_format(fmt).value
+            logger.info('S3ContentServer: Setting tag Access=%s for %s. Format: %s', access_tag, instance, fmt)
+
             # There are some archive types that are directories, like the zoomable and the virtualtours
             if os.path.isdir(resource.path):
                 logger.info('S3ContentServer: Uploading directory %s to %s:%s', resource.name, self.bucket, remote_path)
@@ -345,7 +348,9 @@ class S3ContentServer(ContentServer):
                 for root, dirs, files in os.walk(resource.path):
                     for filename in files:
                         local_path = os.path.join(root, filename)
-                        self.s3_client.upload_file(local_path, self.bucket, self.to_s3_path(local_path))
+                        extra_args = {'Tagging': f'Access={access_tag}'}
+
+                        self.s3_client.upload_file(local_path, self.bucket, self.to_s3_path(local_path), ExtraArgs=extra_args)
             else:
                 logger.info('S3ContentServer: Uploading %s to bucket %s:%s', resource.name, self.bucket, remote_path)
                 # TODO: Improve content type detection
@@ -358,13 +363,6 @@ class S3ContentServer(ContentServer):
                     content_type = 'image/gif'
                 elif resource.name.endswith('.mp4'):
                     content_type = 'video/mp4'
-
-                access_tag = instance.get_access_tag_for_format(fmt).value
-                
-                if access_tag:
-                    logger.info('S3ContentServer: Setting tag Access=%s for %s', access_tag, instance)
-                else:
-                    logger.warning('S3ContentServer: No access tag found for %s', instance)
 
                 extra_args = {'ContentType': content_type, 'Tagging': f'Access={access_tag}'}
 
