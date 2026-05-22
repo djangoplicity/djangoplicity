@@ -424,34 +424,46 @@ def cleanup_old_local_resources(weeks=4):
     return deleted_count
 
 
-def _is_valid_resource(resource, resource_path, media_root, allowed_content_types, allowed_subdirs):
-
-    # 1. Check content type
-    if resource.content_type not in allowed_content_types:
-        logger.warning(f"Resource {resource.id} content type '{resource.content_type}' is not Image or Video, skipping")
+def _try_delete_path(resource, path, is_dir=False):
+    """Attempt to delete a file from disk. Returns True if deleted."""
+    try:
+        content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+    except KeyError:
+        logger.warning(f"Unknown content server '{resource.content_server}' for resource {resource.object_id}, skipping")
         return False
 
-    # 2. Check media root
-    if not resource_path.startswith(media_root + os.sep):
-        logger.warning(f"Resource {resource.id} path '{resource.content_server_path}' is not within MEDIA_ROOT, skipping")
+    if not _is_ready_for_deletion(resource, content_server, is_dir=is_dir):
         return False
 
-    # 3. Check allowed subdirectories
-    if not _is_within_allowed_subdir(resource_path, allowed_subdirs):
-        logger.warning(f"Resource {resource.id} path '{resource.content_server_path}' is not within allowed subdirectories (archives/videos, archives/imagenes), skipping")
+    try:
+        if is_dir:
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+        logger.info(f"Deleted local resource {resource.object_id}: {path}")
+        return True
+    except Exception as e:
+        logger.warning(f"Failed to delete {path} for resource {resource.object_id}: {e}")
         return False
 
-    return True
 
+def _get_resources_map(cutoff_date, allowed_content_types, ids, format):
+    """Fetch matching resources for a format."""
+    from djangoplicity.contentserver.models import ContentServerResource
 
-def _is_within_allowed_subdir(resource_path, allowed_subdirs):
-    for allowed_dir in allowed_subdirs:
-        try:
-            if os.path.commonpath([resource_path, allowed_dir]) == allowed_dir:
-                return True
-        except ValueError:
-            continue
-    return False
+    qs = ContentServerResource.objects.filter(
+        object_id__in=ids,
+        format=format,
+        content_type__in=allowed_content_types,
+        created_at__lt=cutoff_date,
+        updated_at__lt=cutoff_date,
+    ).select_related('content_type').iterator(chunk_size=1000)
+
+    resources_map = {}
+    for r in qs:
+        resources_map[r.object_id] = r
+    
+    return resources_map
 
 
 def _is_ready_for_deletion(resource, content_server, is_dir=False):
