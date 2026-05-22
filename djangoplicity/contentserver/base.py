@@ -408,29 +408,34 @@ class S3ContentServer(ContentServer):
 
             remote_path = self.to_s3_path(resource.path)
             
-            # Exclude directories (e.g. zoomable and virtualtours)
+            access_tag = instance.get_access_tag_for_format(fmt).value
+            logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
+
+            # For individual files
             if not os.path.isdir(resource.path):
+                self._set_access_tag_for_key(remote_path, access_tag)
+            else:
+            # For directories, we need to list all objects with the prefix and update the tags for each of them (e.g. zoomable)
+                if remote_path == instance.Archive.Meta.root or remote_path == '/' or remote_path == '':
+                    raise Exception('S3ContentServer: remote_path is in root: %s', remote_path)
 
-                access_tag = instance.get_access_tag_for_format(fmt).value
-                logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
-                self.s3_client.put_object_tagging(
-                    Bucket=self.bucket, 
-                    Key=remote_path, 
-                    Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
-                )
+                for root, dirs, files in os.walk(resource.path):
+                    for filename in files:
+                        local_path = os.path.join(root, filename)
+                        self._set_access_tag_for_key(self.to_s3_path(local_path), access_tag)   
 
-                try:
-                    is_public = access_tag == AccessTagControl.PUBLIC.value
-                    ContentServerResource.objects.filter(
-                        content_type=content_type,
-                        object_id=instance.pk,
-                        content_server_path=remote_path,
-                        content_server=instance.content_server,
-                        is_active=True
-                    ).update(is_public=is_public)
-                    processed_paths.add(remote_path)
-                except Exception as e:
-                    logger.warning('S3ContentServer: Could not update ContentServerResource privacy record for %s: %s', remote_path, e)
+            try:
+                is_public = access_tag == AccessTagControl.PUBLIC.value
+                ContentServerResource.objects.filter(
+                    content_type=content_type,
+                    object_id=instance.pk,
+                    content_server_path=remote_path,
+                    content_server=instance.content_server,
+                    is_active=True
+                ).update(is_public=is_public)
+                processed_paths.add(remote_path)
+            except Exception as e:
+                logger.warning('S3ContentServer: Could not update ContentServerResource privacy record for %s: %s', remote_path, e)
 
         # Step 2: Update privacy for all tracked resources in ContentServerResource
         # This handles resources that may no longer exist locally but are still tracked
@@ -454,11 +459,18 @@ class S3ContentServer(ContentServer):
 
                     access_tag = instance.get_access_tag_for_format(resource.format).value
                     logger.info('S3ContentServer: Setting tag Access=%s for tracked resource %s - format: %s', access_tag, resource, resource.format)
-                    self.s3_client.put_object_tagging(
-                        Bucket=self.bucket, 
-                        Key=remote_path, 
-                        Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
-                    )
+                    
+                    if resource.format == 'zoomable':
+                        paginator = self.s3_client.get_paginator('list_objects_v2')
+                        dir_path = f"{remote_path}/" if not remote_path.endswith('/') else remote_path
+                        pages = paginator.paginate(Bucket=self.bucket, Prefix=dir_path)
+
+                        for page in pages:
+                            for obj in page.get('Contents', []):
+                                obj_key = obj['Key']
+                                self._set_access_tag_for_key(obj_key, access_tag)
+                    else:
+                        self._set_access_tag_for_key(remote_path, access_tag)
 
                     is_public = access_tag == AccessTagControl.PUBLIC.value
                     ContentServerResource.objects.filter(
@@ -701,6 +713,14 @@ class S3ContentServer(ContentServer):
         for tag in tagging.get('TagSet', []):
             if tag.get('Key') == 'Access':
                 return tag.get('Value')
+    
+    def _set_access_tag_for_key(self, key, access_tag):
+        self.s3_client.put_object_tagging(
+            Bucket=self.bucket, 
+            Key=key, 
+            Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
+        )
+
 
 class CDN77ContentServer(ContentServer):
     '''
