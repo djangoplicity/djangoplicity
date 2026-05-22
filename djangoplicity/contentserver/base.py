@@ -281,10 +281,27 @@ class S3ContentServer(ContentServer):
             return None
 
         try:
-            tagging = self.s3_client.get_object_tagging(Bucket=self.bucket, Key=remote_path)
-            for tag in tagging.get('TagSet', []):
-                if tag.get('Key') == 'Access':
-                    return tag.get('Value')
+            if resource.format == 'zoomable':
+                dir_path = f"{remote_path}/" if not remote_path.endswith('/') else remote_path
+                paginator = self.s3_client.get_paginator('list_objects_v2')
+                pages = paginator.paginate(
+                    Bucket=self.bucket,
+                    Prefix=dir_path,
+                    PaginationConfig={'MaxItems': 1}
+                )
+
+                for page in pages:
+                    contents = page.get('Contents', [])
+                    if not contents:
+                        return AccessTagControl.PUBLIC.value
+
+                    first_object_key = contents[0]['Key']
+
+                    return self._get_access_tag_for_key(first_object_key)
+
+            else:
+                return self._get_access_tag_for_key(remote_path)
+                
         except self.s3_client.exceptions.NoSuchKey:
             return None
         except Exception as e:
@@ -681,6 +698,11 @@ class S3ContentServer(ContentServer):
             logger.error('S3ContentServer: Failed to rename directory %s to %s: %s', old_path, new_path, str(e))
             raise
 
+    def _get_access_tag_for_key(self, key):
+        tagging = self.s3_client.get_object_tagging(Bucket=self.bucket, Key=key)
+        for tag in tagging.get('TagSet', []):
+            if tag.get('Key') == 'Access':
+                return tag.get('Value')
 
 class CDN77ContentServer(ContentServer):
     '''
