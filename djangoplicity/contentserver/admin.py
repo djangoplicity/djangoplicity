@@ -40,6 +40,7 @@ from django.conf import settings
 from djangoplicity.contentserver.models import ContentServerResource
 from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task
 from djangoplicity.archives.utils import initialize_resource
+from django.db.models import Q
 
 
 class ContentDeliveryAdmin(object):
@@ -58,6 +59,35 @@ class ContentDeliveryAdmin(object):
             update_resource_privacy.delay(obj._meta.app_label, obj._meta.model_name, obj.pk)
     action_resync_resource_privacy.short_description = _("Re-sync resource privacy from content server")
 
+
+class HasRelatedObjectFilter(admin.SimpleListFilter):
+    title = _('Has related object')
+    parameter_name = 'has_related_object'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('yes', _('Yes')),
+            ('no', _('No')),
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.filter(
+                content_type__isnull=False,
+            ).exclude(
+                object_id='',
+            )
+
+        if self.value() == 'no':
+            return queryset.filter(
+                Q(content_type__isnull=True) |
+                Q(object_id__isnull=True) |
+                Q(object_id='')
+            )
+
+        return queryset
+
+
 class ContentServerResourceAdmin(admin.ModelAdmin):
     """
     Admin interface for ContentServerResource model
@@ -67,7 +97,7 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
         'content_server', 'is_public', 'is_active', 'created_at', 'updated_at', 'content_server_link'
     ]
     list_filter = [
-        'format', 'is_directory', 'is_public', 'is_active', 'content_server', 'content_type'
+        'format', 'is_directory', 'is_public', HasRelatedObjectFilter, 'is_active', 'content_server', 'content_type',
     ]
     search_fields = [
         'content_server_path', 'format', 'extension', 'checksum'
