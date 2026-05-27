@@ -592,10 +592,15 @@ class S3ContentServer(ContentServer):
             logger.error('S3ContentServer: Failed to download directory %s: %s', local_dir, str(e))
             raise
     
-    def get_signed_url(self, resource, format, expires_in=3600):
+    def get_signed_url(self, resource, format, expires_in=3600, resource_path=None):
         logger.info("S3ContentServer: Generating signed URL for %s", resource.path)
         try:
-            s3_path = self.to_s3_path(resource.path)
+            s3_path = None
+            if resource_path and format == 'zoomable':
+                s3_path = self.to_s3_path(f"{resource.path}/{resource_path}")
+            else:
+                s3_path = self.to_s3_path(resource.path)
+
             # Get signed url
             signed_url = self.s3_client.generate_presigned_url(
                 'get_object',
