@@ -461,14 +461,7 @@ class S3ContentServer(ContentServer):
                     logger.info('S3ContentServer: Setting tag Access=%s for tracked resource %s - format: %s', access_tag, resource, resource.format)
                     
                     if resource.format == 'zoomable':
-                        paginator = self.s3_client.get_paginator('list_objects_v2')
-                        dir_path = f"{remote_path}/" if not remote_path.endswith('/') else remote_path
-                        pages = paginator.paginate(Bucket=self.bucket, Prefix=dir_path)
-
-                        for page in pages:
-                            for obj in page.get('Contents', []):
-                                obj_key = obj['Key']
-                                self._set_access_tag_for_key(obj_key, access_tag)
+                        self.set_access_tag_for_key_in_dir(remote_path, access_tag)
                     else:
                         self._set_access_tag_for_key(remote_path, access_tag)
 
@@ -725,6 +718,24 @@ class S3ContentServer(ContentServer):
             Key=key, 
             Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
         )
+
+    def _set_access_tag_for_key_in_dir(self, remote_path, access_tag):
+        """Set the access tag for all objects under a directory prefix."""
+        if not remote_path:
+            return
+
+        if not remote_path.endswith('/'):
+            remote_path = f"{remote_path}/"
+
+        paginator = self.s3_client.get_paginator('list_objects_v2')
+        pages = paginator.paginate(Bucket=self.bucket, Prefix=remote_path)
+
+        for page in pages:
+            for obj in page.get('Contents', []):
+                obj_key = obj['Key']
+                if obj_key.endswith('/'):
+                    continue
+                self._set_access_tag_for_key(obj_key, access_tag)
 
 
 class CDN77ContentServer(ContentServer):
