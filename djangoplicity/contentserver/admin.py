@@ -38,7 +38,8 @@ from django.urls import reverse
 from django.conf import settings
 
 from djangoplicity.contentserver.models import ContentServerResource
-from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task
+from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task, set_access_tag_for_resource_task
+from djangoplicity.contentserver.constants import AccessTagControl
 from djangoplicity.archives.utils import initialize_resource
 from django.db.models import Q
 
@@ -123,7 +124,7 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    actions = ['mark_as_deleted', 'reactivate_resources', 'refresh_resource_privacy']
+    actions = ['mark_as_deleted', 'reactivate_resources', 'refresh_resource_privacy', 'set_public_access_tag_for_resource', 'set_private_access_tag_for_resource']
     
     def get_queryset(self, request):
         """
@@ -213,6 +214,39 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             f"Privacy refresh scheduled for {queryset.count()} resource(s)."
         )
     refresh_resource_privacy.short_description = "Refresh privacy from content server"
+
+    def set_public_access_tag_for_resource(self, request, queryset):
+        """Set public access tag for selected resources"""
+        for resource in queryset:
+            set_access_tag_for_resource_task.delay(
+                resource._meta.app_label,
+                resource._meta.model_name,
+                resource.pk,
+                AccessTagControl.PUBLIC.value
+            )
+
+        self.message_user(
+            request,
+            f"Public access tag set for {queryset.count()} resource(s)."
+        )
+    set_public_access_tag_for_resource.short_description = "Set public access tag for selected resources in content server"
+
+    def set_private_access_tag_for_resource(self, request, queryset):
+        """Set private access tag for selected resources"""
+        for resource in queryset:
+            set_access_tag_for_resource_task.delay(
+                resource._meta.app_label,
+                resource._meta.model_name,
+                resource.pk,
+                AccessTagControl.PRIVATE.value
+            )
+
+        self.message_user(
+            request,
+            f"Private access tag set for {queryset.count()} resource(s)."
+        )
+    set_private_access_tag_for_resource.short_description = "Set private access tag for selected resources in content server"
+
 
 
 def register_with_admin(admin_site):
