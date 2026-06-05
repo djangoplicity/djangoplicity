@@ -934,13 +934,17 @@ def _has_access_permissions(request, obj, options):
     if not published and not admin_rights:
         return False, "Only admins can access unpublished content."
 
-    if release_date and release_date > now:
-        if embargo_date and embargo_date > now and not can_staging:
+    # Staging
+    if (
+        release_date and release_date > now
+        and embargo_date and embargo_date > now
+    ):
+        if not can_staging:
             return False, "Only staging accounts can access before embargo date."
-        elif not can_embargo:
-            return False, "Only embargo accounts can access before release date."
 
-    elif embargo_date and embargo_date > now and not can_staging:
-        return False, "Only staging accounts can access until embargo ends."
+    # Embargo
+    elif release_date and release_date > now:
+        if not can_embargo:
+            return False, "Only embargo accounts can access before release date."
 
     return True, None
