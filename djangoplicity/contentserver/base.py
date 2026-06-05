@@ -432,11 +432,9 @@ class S3ContentServer(ContentServer):
                         local_path = os.path.join(root, filename)
                         
                         s3_key = self.to_s3_path(local_path)
-                        effective_access_tag = (
-                            self._get_zoomable_access_tag(s3_key, access_tag) 
-                            if fmt == 'zoomable' else access_tag
-                        )
-                        self._set_access_tag_for_key(s3_key, effective_access_tag)   
+                        if fmt == 'zoomable' and not self._is_protected_zoom_level(s3_key):
+                            continue  # skip, only set tags for protected zoom levels in zoomable directories
+                        self._set_access_tag_for_key(s3_key, access_tag)
 
             try:
                 is_public = access_tag == AccessTagControl.PUBLIC.value
@@ -772,6 +770,12 @@ class S3ContentServer(ContentServer):
     def _is_protected_zoom_level(self, s3_path: str) -> bool:
         filename = s3_path.split('/')[-1]
         name, ext = os.path.splitext(filename)
+        
+        # Process .xml files (like ImageProperties.xml) in zoomable directories
+        if ext.lower() == '.xml':
+            return True
+        
+        # Process .jpg files with zoom level prefix
         if ext.lower() == '.jpg':
             parts = name.split('-')
             if parts and parts[0].isdigit():
