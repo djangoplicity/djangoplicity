@@ -48,7 +48,7 @@ from django.core.cache import cache
 from six import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
-from djangoplicity.contentserver.constants import AccessTagControl
+from djangoplicity.contentserver.constants import AccessTagControl, ZOOMABLE_PRIVATE_TILE_GROUPS
 from urllib.parse import urlparse, urlunparse
 
 
@@ -154,7 +154,7 @@ class S3ContentServer(ContentServer):
     resource_size_cache_negative_timeout = 60 * 3  # seconds for failures/missing
     has_resource_protection_capabilities = True
 
-    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None, always_public_formats=None):
+    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None, always_public_formats=None, zoomable_private_tile_groups=None):
         config = None
         if region_name:
             config = BotocoreConfig(region_name=region_name)
@@ -164,7 +164,7 @@ class S3ContentServer(ContentServer):
         self.bigfiles_base_url = bigfiles_base_url
         self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
         self.always_public_formats = always_public_formats if always_public_formats else [] # Void list by default
-
+        self.zoomable_private_tile_groups = zoomable_private_tile_groups if zoomable_private_tile_groups else ZOOMABLE_PRIVATE_TILE_GROUPS # Use default if not specified
     def get_file_size(self, resource, nocache=False):
         from djangoplicity.contentserver.models import ContentServerResource
         """
@@ -348,9 +348,17 @@ class S3ContentServer(ContentServer):
                 for root, dirs, files in os.walk(resource.path):
                     for filename in files:
                         local_path = os.path.join(root, filename)
-                        extra_args = {'Tagging': f'Access={access_tag}'}
+                        s3_key = self.to_s3_path(local_path)
 
-                        self.s3_client.upload_file(local_path, self.bucket, self.to_s3_path(local_path), ExtraArgs=extra_args)
+                        
+                        effective_access_tag = (
+                            self._get_zoomable_access_tag(s3_key, access_tag) 
+                            if fmt == 'zoomable' else access_tag
+                        )
+
+                        extra_args = {'Tagging': f'Access={effective_access_tag}'}
+
+                        self.s3_client.upload_file(local_path, self.bucket, s3_key, ExtraArgs=extra_args)
             else:
                 logger.info('S3ContentServer: Uploading %s to bucket %s:%s', resource.name, self.bucket, remote_path)
                 # TODO: Improve content type detection
@@ -422,7 +430,13 @@ class S3ContentServer(ContentServer):
                 for root, dirs, files in os.walk(resource.path):
                     for filename in files:
                         local_path = os.path.join(root, filename)
-                        self._set_access_tag_for_key(self.to_s3_path(local_path), access_tag)   
+                        
+                        s3_key = self.to_s3_path(local_path)
+                        effective_access_tag = (
+                            self._get_zoomable_access_tag(s3_key, access_tag) 
+                            if fmt == 'zoomable' else access_tag
+                        )
+                        self._set_access_tag_for_key(s3_key, effective_access_tag)   
 
             try:
                 is_public = access_tag == AccessTagControl.PUBLIC.value
@@ -461,7 +475,7 @@ class S3ContentServer(ContentServer):
                     logger.info('S3ContentServer: Setting tag Access=%s for tracked resource %s - format: %s', access_tag, resource, resource.format)
                     
                     if resource.format == 'zoomable':
-                        self.set_access_tag_for_key_in_dir(remote_path, access_tag)
+                        self._set_access_tag_for_key_in_dir(remote_path, access_tag)
                     else:
                         self._set_access_tag_for_key(remote_path, access_tag)
 
@@ -735,7 +749,17 @@ class S3ContentServer(ContentServer):
                 obj_key = obj['Key']
                 if obj_key.endswith('/'):
                     continue
-                self._set_access_tag_for_key(obj_key, access_tag)
+                effective_tag = self._get_zoomable_access_tag(obj_key, access_tag)
+                self._set_access_tag_for_key(obj_key, effective_tag)
+
+    def _get_zoomable_access_tag(self, s3_path, access_tag):
+        parts = s3_path.split('/')
+        for part in parts:
+            if part.startswith('TileGroup'):
+                if part in self.zoomable_private_tile_groups:
+                    return access_tag
+                return AccessTagControl.PUBLIC.value
+        return access_tag
 
 
 class CDN77ContentServer(ContentServer):
