@@ -48,7 +48,7 @@ from django.core.cache import cache
 from six import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
-from djangoplicity.contentserver.constants import AccessTagControl, ZOOMABLE_PUBLIC_ZOOM_LEVELS
+from djangoplicity.contentserver.constants import AccessTagControl, ZOOMABLE_PRIVATE_ZOOM_LEVELS
 from urllib.parse import urlparse, urlunparse
 
 
@@ -154,7 +154,7 @@ class S3ContentServer(ContentServer):
     resource_size_cache_negative_timeout = 60 * 3  # seconds for failures/missing
     has_resource_protection_capabilities = True
 
-    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None, always_public_formats=None, zoomable_public_zoom_levels=None):
+    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None, always_public_formats=None, zoomable_private_zoom_levels=None):
         config = None
         if region_name:
             config = BotocoreConfig(region_name=region_name)
@@ -164,7 +164,7 @@ class S3ContentServer(ContentServer):
         self.bigfiles_base_url = bigfiles_base_url
         self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
         self.always_public_formats = always_public_formats if always_public_formats else [] # Void list by default
-        self.zoomable_public_zoom_levels = zoomable_public_zoom_levels if zoomable_public_zoom_levels else ZOOMABLE_PUBLIC_ZOOM_LEVELS
+        self.zoomable_private_zoom_levels = zoomable_private_zoom_levels if zoomable_private_zoom_levels else ZOOMABLE_PRIVATE_ZOOM_LEVELS
     def get_file_size(self, resource, nocache=False):
         from djangoplicity.contentserver.models import ContentServerResource
         """
@@ -755,14 +755,14 @@ class S3ContentServer(ContentServer):
 
     def _get_zoomable_access_tag(self, s3_path, access_tag):
         """
-        Determine the access tag for a zoomable tile based on its zoom level and the configured public zoom levels. Just only for sync_resources method.
+        Determine the access tag for a zoomable tile based on its zoom level and the configured private zoom levels. Just only for sync_resources method.
         """
         filename = s3_path.split('/')[-1]
         name, ext = os.path.splitext(filename)
         if ext.lower() == '.jpg':
             parts = name.split('-')
             if parts and parts[0].isdigit():
-                if int(parts[0]) in self.zoomable_public_zoom_levels:
+                if int(parts[0]) in self.zoomable_private_zoom_levels:
                     return access_tag
                 return AccessTagControl.PUBLIC.value
         return access_tag
@@ -779,7 +779,7 @@ class S3ContentServer(ContentServer):
         if ext.lower() == '.jpg':
             parts = name.split('-')
             if parts and parts[0].isdigit():
-                return int(parts[0]) in self.zoomable_public_zoom_levels
+                return int(parts[0]) in self.zoomable_private_zoom_levels
         return False
 
 
