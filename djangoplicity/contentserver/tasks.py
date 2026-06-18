@@ -45,6 +45,7 @@ from django.contrib.contenttypes.models import ContentType
 from djangoplicity.archives.utils import get_all_possible_instance_formats, get_instance_checksum, initialize_resource
 import time
 import os
+import shutil
 
 logger = get_task_logger(__name__)
 
@@ -370,20 +371,9 @@ def cleanup_old_local_resources_task():
 
 
 def cleanup_old_local_resources(weeks=4):
-    from djangoplicity.contentserver.models import ContentServerResource
     from djangoplicity.media.models import Image, Video
     
     cutoff_date = timezone.now() - timedelta(weeks=weeks)
-
-    resources = ContentServerResource.objects.filter(
-        created_at__lt=cutoff_date,
-        updated_at__lt=cutoff_date,
-        is_active=True
-    )
-
-    if not resources.exists():
-        return 0
-    
     media_root = os.path.normpath(settings.MEDIA_ROOT)
     
     allowed_content_types = {
@@ -391,78 +381,98 @@ def cleanup_old_local_resources(weeks=4):
         ContentType.objects.get_for_model(Video),
     }
     
-    allowed_subdirs = [
+    allowed_dirs = [
         os.path.join(media_root, "archives", "videos"),
         os.path.join(media_root, "archives", "images"),
     ]
 
     deleted_count = 0
     
-    for resource in resources:
-        resource_path = os.path.normpath(
-            os.path.join(settings.BASE_DIR, resource.content_server_path)
-        )
-
-        if not _is_valid_resource(resource, resource_path, media_root, allowed_content_types, allowed_subdirs):
-            continue
-
-        try:
-            content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
-            if not content_server:
-                logger.warning(f"Content server {resource.content_server} not found")
+    for allowed_dir in allowed_dirs:
+        for dirpath, dirnames, filenames in os.walk(allowed_dir):
+            
+            if dirpath == allowed_dir:
                 continue
-        except KeyError:
-            logger.warning(f"Unknown content server: {resource.content_server}")
-            continue
+            
+            format = os.path.basename(dirpath)
+            logger.info(f"Processing directory: {dirpath}, format: {format}")
 
-        try:
-            if not _is_ready_for_deletion(resource, content_server):
-                continue
+            if format == "zoomable":
+                ids = list(dirnames)
+                resources_map = _get_resources_map(cutoff_date, allowed_content_types, ids, format)
+                deleted_count += _process_entries(dirpath, dirnames, resources_map, is_dir=True)
 
-            if os.path.exists(resource_path):
-                os.remove(resource_path)
-                deleted_count += 1
-                logger.info(f"Deleted resource {resource.id} from disk: {resource_path}")
+                dirnames.clear()  # Don't traverse into zoomable directories
             else:
-                logger.info(f"Resource {resource.id} file not found on disk at {resource_path}")
+                ids = [os.path.splitext(f)[0] for f in filenames]
+                resources_map = _get_resources_map(cutoff_date, allowed_content_types, ids, format)
                 
-        except Exception as e:
-            logger.error(f"Error processing resource {resource.id}: {e}")
+                deleted_count += _process_entries(dirpath, filenames, resources_map)                   
 
     return deleted_count
 
 
-def _is_valid_resource(resource, resource_path, media_root, allowed_content_types, allowed_subdirs):
+def _process_entries(dirpath, entries, resources_map, is_dir=False):
+    """Iterate entries, delete those with a valid resource. Returns deleted count."""
+    deleted_count = 0
 
-    # 1. Check content type
-    if resource.content_type not in allowed_content_types:
-        logger.warning(f"Resource {resource.id} content type '{resource.content_type}' is not Image or Video, skipping")
-        return False
+    for entry in entries:
+        entry_id = entry if is_dir else os.path.splitext(entry)[0]
 
-    # 2. Check media root
-    if not resource_path.startswith(media_root + os.sep):
-        logger.warning(f"Resource {resource.id} path '{resource.content_server_path}' is not within MEDIA_ROOT, skipping")
-        return False
-
-    # 3. Check allowed subdirectories
-    if not _is_within_allowed_subdir(resource_path, allowed_subdirs):
-        logger.warning(f"Resource {resource.id} path '{resource.content_server_path}' is not within allowed subdirectories (archives/videos, archives/imagenes), skipping")
-        return False
-
-    return True
-
-
-def _is_within_allowed_subdir(resource_path, allowed_subdirs):
-    for allowed_dir in allowed_subdirs:
-        try:
-            if os.path.commonpath([resource_path, allowed_dir]) == allowed_dir:
-                return True
-        except ValueError:
+        resource = resources_map.get(entry_id)
+        logger.info(f"Checking entry: {entry}, resource found: {bool(resource)}")
+        if not resource:
             continue
-    return False
+
+        if _try_delete_path(resource, os.path.join(dirpath, entry), is_dir=is_dir):
+            deleted_count += 1
+
+    return deleted_count
 
 
-def _is_ready_for_deletion(resource, content_server):
+def _try_delete_path(resource, path, is_dir=False):
+    """Attempt to delete a file from disk. Returns True if deleted."""
+    try:
+        content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+    except KeyError:
+        logger.warning(f"Unknown content server '{resource.content_server}' for resource {resource.object_id}, skipping")
+        return False
+
+    if not _is_ready_for_deletion(resource, content_server, is_dir=is_dir):
+        return False
+
+    try:
+        if is_dir:
+            shutil.rmtree(path)
+        else:
+            os.remove(path)
+        logger.info(f"Deleted local resource {resource.object_id}: {path}")
+        return True
+    except Exception as e:
+        logger.warning(f"Failed to delete {path} for resource {resource.object_id}: {e}")
+        return False
+
+
+def _get_resources_map(cutoff_date, allowed_content_types, ids, format):
+    """Fetch matching resources for a format."""
+    from djangoplicity.contentserver.models import ContentServerResource
+
+    qs = ContentServerResource.objects.filter(
+        object_id__in=ids,
+        format=format,
+        content_type__in=allowed_content_types,
+        created_at__lt=cutoff_date,
+        updated_at__lt=cutoff_date,
+    ).select_related('content_type').iterator(chunk_size=1000)
+
+    resources_map = {}
+    for r in qs:
+        resources_map[r.object_id] = r
+    
+    return resources_map
+
+
+def _is_ready_for_deletion(resource, content_server, is_dir=False):
     related_object = resource.content_object
 
     if not related_object:
@@ -476,9 +486,14 @@ def _is_ready_for_deletion(resource, content_server):
 
     # 2. Check file exists in S3
     s3_path = content_server.to_s3_path(resource.content_server_path)
-    if not content_server.file_exists(s3_path):
-        logger.warning(f"Resource {resource.id} does not exist in S3 at '{s3_path}', skipping")
-        return False
+    if is_dir:
+        if not content_server.directory_exists(s3_path):
+            logger.warning(f"Directory resource {resource.id} does not exist in S3 at '{s3_path}', skipping")
+            return False
+    else:   
+        if not content_server.file_exists(s3_path):
+            logger.warning(f"Resource {resource.id} does not exist in S3 at '{s3_path}', skipping")
+            return False
 
     return True
 
