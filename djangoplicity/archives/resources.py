@@ -360,19 +360,28 @@ class ResourceManager(object):
                         # No content server defined for this format
                         archive_formats = []
                 
-                if resource and (supports_all_formats or self.name in archive_formats):
-                    new_location = os.path.join(storage.location, instance.Archive.Meta.root)
-                    url = os.path.join(content_server.get_url(resource, self.name), instance.Archive.Meta.root)
-                    storage = FileSystemStorage(base_url=url, location=new_location)
-                    base = os.path.join(self.name, _archive_instance_id( instance ))
+                # Only build the content server URL if there's an active
+                # ContentServerResource record. If the record was soft-deleted
+                # (is_active=False), the resource should not be exposed even
+                # if the local file still exists on disk.
+                # This only applies when a content server is configured;
+                # otherwise the local file is returned as-is.
+                if resource_record_found:
+                    if resource and (supports_all_formats or self.name in archive_formats):
+                        new_location = os.path.join(storage.location, instance.Archive.Meta.root)
+                        url = os.path.join(content_server.get_url(resource, self.name), instance.Archive.Meta.root)
+                        storage = FileSystemStorage(base_url=url, location=new_location)
+                        base = os.path.join(self.name, _archive_instance_id( instance ))
 
-                    if ext:
-                        # The extension is found either when the local files exists or when the ContentServerResource record is found
-                        base += '.%s' % ext
-                    # We updated the based and storage so we update the resource object:
-                    resource = fileclass(base, storage, instance=instance)
-                    if not content_server.requires_local_files:
-                        resource.is_from_content_server = True
+                        if ext:
+                            # The extension is found either when the local files exists or when the ContentServerResource record is found
+                            base += '.%s' % ext
+                        # We updated the based and storage so we update the resource object:
+                        resource = fileclass(base, storage, instance=instance)
+                        if not content_server.requires_local_files:
+                            resource.is_from_content_server = True
+                else:
+                    resource = None
 
         return resource
 
