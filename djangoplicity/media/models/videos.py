@@ -281,6 +281,10 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
         hd_broadcast_720p50 = ResourceManager( type=types.BroadcastType, verbose_name=_(u"HD Broadcast 720p/50") )  # hd720p50_brodcast
         hd_1080p25_screen = ResourceManager( type=types.FullHDPreview1080p, verbose_name=_(u"Full HD Preview 1080p") )  # hd1080p25_screen
         hd_1080p25_broadcast = ResourceManager( type=types.BroadcastType, verbose_name=_(u"Full HD Broadcast 1080p") )  # hd1080p25_brodcast
+        # Portrait HD
+        portrait_hd = ResourceManager( type=types.PortraitHDType, verbose_name=_(u"Portrait HD Preview")) # portrait_hd
+        portrait_hd_broadcast = ResourceManager( type=types.PortraitHDBroadcastType, verbose_name=_(u"Portrait HD Broadcast")) # portrait_hd_broadcast
+        
         # FULL HD 29,97 FPS
         hd_1080_screen = ResourceManager( type=types.FullHDPreview1080p, verbose_name=_(u"Full HD Preview 1080p") )  # hd1080_screen
         hd_1080_broadcast = ResourceManager( type=types.BroadcastType, verbose_name=_(u"Full HD Broadcast 1080p") )  # hd1080_brodcast

@@ -244,3 +244,17 @@ class SubtitleType (FileType):
 class AudioTrackType (FileType):
     verbose_name = ugettext_noop(u'Audio Track')
     exts = ['zip', 'wav']
+
+
+class PortraitHDType(FileType):
+    verbose_name = ugettext_noop(u'Portrait HD (H.264)')
+    exts = ['mp4']
+    width = 1080
+    height = 1920
+
+
+class PortraitHDBroadcastType(FileType):
+    verbose_name = ugettext_noop(u'Portrait HD Broadcast (ProRes)')
+    exts = ['mov']
+    width = 1080
+    height = 1920

@@ -137,10 +137,11 @@ class VideoOptions( ArchiveOptions ):
                 }
         } ),
         ( ugettext_noop('HD'), {
-            'resources': ( shadowbox_link('hd_and_apple', 1280, 720, player='qt'), 'hd_1080p25_screen', 'ext_highres', 'ext_playback'),
+            'resources': ( shadowbox_link('hd_and_apple', 1280, 720, player='qt'), 'hd_1080p25_screen', 'ext_highres', 'portrait_hd', 'ext_playback'),
             'icons': {
                 'shadowbox_link': 'movie',
                 'hd_1080p25_screen': 'movie',
+                'portrait_hd': 'movie',
                 }
         } ),
         ( ugettext_noop( u'BitTorrent Download' ), {
@@ -167,7 +168,7 @@ class VideoOptions( ArchiveOptions ):
                 }
         } ),
         ( ugettext_noop('For Broadcasters'), {
-            'resources': ( 'ultra_hd_broadcast', 'hd_1080p25_broadcast', 'hd_broadcast_720p50', 'hd_broadcast_720p25', 'broadcast_sd', 'broadcast_sd_old', ),
+            'resources': ( 'ultra_hd_broadcast', 'hd_1080p25_broadcast', 'hd_broadcast_720p50', 'hd_broadcast_720p25', 'portrait_hd_broadcast', 'broadcast_sd', 'broadcast_sd_old', ),
             'icons': {
                 'broadcast_sd': 'movie',
                 'broadcast_sd_old': 'movie',
@@ -175,6 +176,7 @@ class VideoOptions( ArchiveOptions ):
                 'hd_broadcast_720p50': 'movie',
                 'hd_1080p25_broadcast': 'movie',
                 'ultra_hd_broadcast': 'movie',
+                'portrait_hd_broadcast': 'movie',
                 }
         } ),
         ( ugettext_noop('Script'), {
@@ -283,11 +285,13 @@ class VideoOptions( ArchiveOptions ):
             # HD
             ( 'hd_and_apple', ( '.mp4', '.m4v' ) ),
             ( 'hd_1080p25_screen', ( '.mp4' ) ),
+            ( 'portrait_hd', ('.mp4')),
             # Broadcast
             ( 'broadcast_sd', ( '.avi', '.mxf', '.mov', '.mp4' ) ),
             ( 'hd_broadcast_720p25', ( '.mxf', '.m2t', '.mov' ) ),
             ( 'hd_broadcast_720p50', ( '.mxf', '.m2t', '.mov' ) ),
             ( 'hd_1080p25_broadcast', ( '.avi', '.mxf' ) ),
+            ( 'portrait_hd_broadcast', ('.mov')),
             # Large
             ( 'large_qt', ( '.mov', ) ),
             # Medium
