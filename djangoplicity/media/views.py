@@ -30,14 +30,18 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 from django.conf import settings
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template import loader
+from django.urls import reverse
 
 from djangoplicity.archives.utils import FormatTokenGenerator
-from djangoplicity.archives.views import GenericDetailView
+from djangoplicity.archives.views import GenericDetailView, _has_access_permissions
+from djangoplicity.archives.options import ArchiveOptions
 from djangoplicity.media.models import Image, ImageProxy
 from djangoplicity.archives.contrib.security.views import serve_file
+
+from djangoplicity.contentserver.constants import AccessTagControl
 
 
 class ZoomableDetailView( GenericDetailView ):
@@ -49,17 +53,40 @@ class ZoomableDetailView( GenericDetailView ):
         return ['zoomable']
 
     def render( self, request, model, obj, state, admin_rights, **kwargs ):
+        options = ArchiveOptions()
+        has_access, reason = _has_access_permissions(request, obj, options)
+        print(f"ZoomableDetailView: has_access={has_access}, reason={reason}")
+        if not has_access:
+            return HttpResponseForbidden(reason)
+
         template_loader = loader
         template_names = ['archives/detail_zoomable.html']
 
         t = template_loader.select_template( template_names )
-
+        
+        access_tag = None
+        tiles_proxy_url = None
+        if hasattr(obj, 'get_access_tag_for_format') and obj.get_access_tag_for_format:
+            access_tag = obj.get_access_tag_for_format('zoomable')
+            tiles_proxy_url = reverse('zoomable_resource_proxy', kwargs={
+                'model': obj._meta.model_name,
+                'format': 'zoomable',
+                'id': obj.id,
+                'resource_path': '_',  # placeholder to replace then in openseadragon
+        }).rsplit('/_', 1)[0] + '/'
         # Request context setup
         context = {
             'object': obj,
+            'should_use_zoomable_proxy': access_tag == AccessTagControl.PRIVATE,
+            'tiles_proxy_url': tiles_proxy_url  
         }
 
         return t.render( context, request )
+
+    def response(self, html, **kwargs):
+        if isinstance(html, HttpResponse):
+            return html
+        return super(ZoomableDetailView, self).response(html, **kwargs)
 
 
 class ImageComparisonFullscreenDetailView( GenericDetailView ):

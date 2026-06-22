@@ -38,8 +38,10 @@ from django.urls import reverse
 from django.conf import settings
 
 from djangoplicity.contentserver.models import ContentServerResource
-from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task
+from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task, set_access_tag_for_resource_task
+from djangoplicity.contentserver.constants import AccessTagControl
 from djangoplicity.archives.utils import initialize_resource
+from django.db.models import Q
 
 
 class ContentDeliveryAdmin(object):
@@ -58,6 +60,35 @@ class ContentDeliveryAdmin(object):
             update_resource_privacy.delay(obj._meta.app_label, obj._meta.model_name, obj.pk)
     action_resync_resource_privacy.short_description = _("Re-sync resource privacy from content server")
 
+
+class HasRelatedObjectFilter(admin.SimpleListFilter):
+    title = _('Has related object')
+    parameter_name = 'has_related_object'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('yes', _('Yes')),
+            ('no', _('No')),
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.filter(
+                content_type__isnull=False,
+            ).exclude(
+                object_id='',
+            )
+
+        if self.value() == 'no':
+            return queryset.filter(
+                Q(content_type__isnull=True) |
+                Q(object_id__isnull=True) |
+                Q(object_id='')
+            )
+
+        return queryset
+
+
 class ContentServerResourceAdmin(admin.ModelAdmin):
     """
     Admin interface for ContentServerResource model
@@ -67,7 +98,7 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
         'content_server', 'is_public', 'is_active', 'created_at', 'updated_at', 'content_server_link'
     ]
     list_filter = [
-        'format', 'is_directory', 'is_public', 'is_active', 'content_server', 'content_type'
+        'format', 'is_directory', 'is_public', HasRelatedObjectFilter, 'is_active', 'content_server', 'content_type',
     ]
     search_fields = [
         'content_server_path', 'format', 'extension', 'checksum'
@@ -93,7 +124,7 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    actions = ['mark_as_deleted', 'reactivate_resources', 'refresh_resource_privacy']
+    actions = ['mark_as_deleted', 'reactivate_resources', 'refresh_resource_privacy', 'set_public_access_tag_for_resource', 'set_private_access_tag_for_resource']
     
     def get_queryset(self, request):
         """
@@ -183,6 +214,39 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             f"Privacy refresh scheduled for {queryset.count()} resource(s)."
         )
     refresh_resource_privacy.short_description = "Refresh privacy from content server"
+
+    def set_public_access_tag_for_resource(self, request, queryset):
+        """Set public access tag for selected resources"""
+        for resource in queryset:
+            set_access_tag_for_resource_task.delay(
+                resource._meta.app_label,
+                resource._meta.model_name,
+                resource.pk,
+                AccessTagControl.PUBLIC.value
+            )
+
+        self.message_user(
+            request,
+            f"Public access tag set for {queryset.count()} resource(s)."
+        )
+    set_public_access_tag_for_resource.short_description = "Set public access tag for selected resources in content server"
+
+    def set_private_access_tag_for_resource(self, request, queryset):
+        """Set private access tag for selected resources"""
+        for resource in queryset:
+            set_access_tag_for_resource_task.delay(
+                resource._meta.app_label,
+                resource._meta.model_name,
+                resource.pk,
+                AccessTagControl.PRIVATE.value
+            )
+
+        self.message_user(
+            request,
+            f"Private access tag set for {queryset.count()} resource(s)."
+        )
+    set_private_access_tag_for_resource.short_description = "Set private access tag for selected resources in content server"
+
 
 
 def register_with_admin(admin_site):

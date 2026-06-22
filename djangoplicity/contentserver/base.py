@@ -48,7 +48,7 @@ from django.core.cache import cache
 from six import python_2_unicode_compatible
 
 from djangoplicity.contentserver.cdn77_tasks import purge_prefetch
-from djangoplicity.contentserver.constants import AccessTagControl
+from djangoplicity.contentserver.constants import AccessTagControl, ZOOMABLE_PRIVATE_ZOOM_LEVELS
 from urllib.parse import urlparse, urlunparse
 
 
@@ -154,7 +154,7 @@ class S3ContentServer(ContentServer):
     resource_size_cache_negative_timeout = 60 * 3  # seconds for failures/missing
     has_resource_protection_capabilities = True
 
-    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None, always_public_formats=None):
+    def __init__(self, bucket, base_url=None, bigfiles_base_url=None, bigfiles_limit=None, access_key_id=None, access_key_secret=None, region_name=None, always_public_formats=None, zoomable_private_zoom_levels=None):
         config = None
         if region_name:
             config = BotocoreConfig(region_name=region_name)
@@ -164,7 +164,7 @@ class S3ContentServer(ContentServer):
         self.bigfiles_base_url = bigfiles_base_url
         self.bigfiles_limit = bigfiles_limit if bigfiles_limit else 50_000_000_000 # 50GB as default
         self.always_public_formats = always_public_formats if always_public_formats else [] # Void list by default
-
+        self.zoomable_private_zoom_levels = zoomable_private_zoom_levels if zoomable_private_zoom_levels else ZOOMABLE_PRIVATE_ZOOM_LEVELS
     def get_file_size(self, resource, nocache=False):
         from djangoplicity.contentserver.models import ContentServerResource
         """
@@ -281,10 +281,27 @@ class S3ContentServer(ContentServer):
             return None
 
         try:
-            tagging = self.s3_client.get_object_tagging(Bucket=self.bucket, Key=remote_path)
-            for tag in tagging.get('TagSet', []):
-                if tag.get('Key') == 'Access':
-                    return tag.get('Value')
+            if resource.format == 'zoomable':
+                dir_path = f"{remote_path}/" if not remote_path.endswith('/') else remote_path
+                paginator = self.s3_client.get_paginator('list_objects_v2')
+                pages = paginator.paginate(
+                    Bucket=self.bucket,
+                    Prefix=dir_path,
+                    PaginationConfig={'MaxItems': 1}
+                )
+
+                for page in pages:
+                    contents = page.get('Contents', [])
+                    if not contents:
+                        return AccessTagControl.PUBLIC.value
+
+                    first_object_key = contents[0]['Key']
+
+                    return self._get_access_tag_for_key(first_object_key)
+
+            else:
+                return self._get_access_tag_for_key(remote_path)
+                
         except self.s3_client.exceptions.NoSuchKey:
             return None
         except Exception as e:
@@ -317,6 +334,9 @@ class S3ContentServer(ContentServer):
                 continue
             
             remote_path = self.to_s3_path(resource.path)
+            access_tag = instance.get_access_tag_for_format(fmt).value
+            logger.info('S3ContentServer: Setting tag Access=%s for %s. Format: %s', access_tag, instance, fmt)
+
             # There are some archive types that are directories, like the zoomable and the virtualtours
             if os.path.isdir(resource.path):
                 logger.info('S3ContentServer: Uploading directory %s to %s:%s', resource.name, self.bucket, remote_path)
@@ -328,7 +348,17 @@ class S3ContentServer(ContentServer):
                 for root, dirs, files in os.walk(resource.path):
                     for filename in files:
                         local_path = os.path.join(root, filename)
-                        self.s3_client.upload_file(local_path, self.bucket, self.to_s3_path(local_path))
+                        s3_key = self.to_s3_path(local_path)
+
+                        
+                        effective_access_tag = (
+                            self._get_zoomable_access_tag(s3_key, access_tag) 
+                            if fmt == 'zoomable' else access_tag
+                        )
+
+                        extra_args = {'Tagging': f'Access={effective_access_tag}'}
+
+                        self.s3_client.upload_file(local_path, self.bucket, s3_key, ExtraArgs=extra_args)
             else:
                 logger.info('S3ContentServer: Uploading %s to bucket %s:%s', resource.name, self.bucket, remote_path)
                 # TODO: Improve content type detection
@@ -341,13 +371,6 @@ class S3ContentServer(ContentServer):
                     content_type = 'image/gif'
                 elif resource.name.endswith('.mp4'):
                     content_type = 'video/mp4'
-
-                access_tag = instance.get_access_tag_for_format(fmt).value
-                
-                if access_tag:
-                    logger.info('S3ContentServer: Setting tag Access=%s for %s', access_tag, instance)
-                else:
-                    logger.warning('S3ContentServer: No access tag found for %s', instance)
 
                 extra_args = {'ContentType': content_type, 'Tagging': f'Access={access_tag}'}
 
@@ -393,29 +416,38 @@ class S3ContentServer(ContentServer):
 
             remote_path = self.to_s3_path(resource.path)
             
-            # Exclude directories (e.g. zoomable and virtualtours)
+            access_tag = instance.get_access_tag_for_format(fmt).value
+            logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
+
+            # For individual files
             if not os.path.isdir(resource.path):
+                self._set_access_tag_for_key(remote_path, access_tag)
+            else:
+            # For directories, we need to list all objects with the prefix and update the tags for each of them (e.g. zoomable)
+                if remote_path == instance.Archive.Meta.root or remote_path == '/' or remote_path == '':
+                    raise Exception('S3ContentServer: remote_path is in root: %s', remote_path)
 
-                access_tag = instance.get_access_tag_for_format(fmt).value
-                logger.info('S3ContentServer: Setting tag Access=%s for %s - format: %s', access_tag, instance, fmt)
-                self.s3_client.put_object_tagging(
-                    Bucket=self.bucket, 
-                    Key=remote_path, 
-                    Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
-                )
+                for root, dirs, files in os.walk(resource.path):
+                    for filename in files:
+                        local_path = os.path.join(root, filename)
+                        
+                        s3_key = self.to_s3_path(local_path)
+                        if fmt == 'zoomable' and not self._is_protected_zoom_level(s3_key):
+                            continue  # skip, only set tags for protected zoom levels in zoomable directories
+                        self._set_access_tag_for_key(s3_key, access_tag)
 
-                try:
-                    is_public = access_tag == AccessTagControl.PUBLIC.value
-                    ContentServerResource.objects.filter(
-                        content_type=content_type,
-                        object_id=instance.pk,
-                        content_server_path=remote_path,
-                        content_server=instance.content_server,
-                        is_active=True
-                    ).update(is_public=is_public)
-                    processed_paths.add(remote_path)
-                except Exception as e:
-                    logger.warning('S3ContentServer: Could not update ContentServerResource privacy record for %s: %s', remote_path, e)
+            try:
+                is_public = access_tag == AccessTagControl.PUBLIC.value
+                ContentServerResource.objects.filter(
+                    content_type=content_type,
+                    object_id=instance.pk,
+                    content_server_path=remote_path,
+                    content_server=instance.content_server,
+                    is_active=True
+                ).update(is_public=is_public)
+                processed_paths.add(remote_path)
+            except Exception as e:
+                logger.warning('S3ContentServer: Could not update ContentServerResource privacy record for %s: %s', remote_path, e)
 
         # Step 2: Update privacy for all tracked resources in ContentServerResource
         # This handles resources that may no longer exist locally but are still tracked
@@ -439,11 +471,11 @@ class S3ContentServer(ContentServer):
 
                     access_tag = instance.get_access_tag_for_format(resource.format).value
                     logger.info('S3ContentServer: Setting tag Access=%s for tracked resource %s - format: %s', access_tag, resource, resource.format)
-                    self.s3_client.put_object_tagging(
-                        Bucket=self.bucket, 
-                        Key=remote_path, 
-                        Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
-                    )
+                    
+                    if resource.format == 'zoomable':
+                        self._set_access_tag_for_key_in_dir(remote_path, access_tag)
+                    else:
+                        self._set_access_tag_for_key(remote_path, access_tag)
 
                     is_public = access_tag == AccessTagControl.PUBLIC.value
                     ContentServerResource.objects.filter(
@@ -565,10 +597,15 @@ class S3ContentServer(ContentServer):
             logger.error('S3ContentServer: Failed to download directory %s: %s', local_dir, str(e))
             raise
     
-    def get_signed_url(self, resource, format, expires_in=3600):
+    def get_signed_url(self, resource, format, expires_in=3600, resource_path=None):
         logger.info("S3ContentServer: Generating signed URL for %s", resource.path)
         try:
-            s3_path = self.to_s3_path(resource.path)
+            s3_path = None
+            if resource_path and format == 'zoomable':
+                s3_path = self.to_s3_path(f"{resource.path}/{resource_path}")
+            else:
+                s3_path = self.to_s3_path(resource.path)
+
             # Get signed url
             signed_url = self.s3_client.generate_presigned_url(
                 'get_object',
@@ -680,6 +717,70 @@ class S3ContentServer(ContentServer):
         except Exception as e:
             logger.error('S3ContentServer: Failed to rename directory %s to %s: %s', old_path, new_path, str(e))
             raise
+
+    def _get_access_tag_for_key(self, key):
+        tagging = self.s3_client.get_object_tagging(Bucket=self.bucket, Key=key)
+        for tag in tagging.get('TagSet', []):
+            if tag.get('Key') == 'Access':
+                return tag.get('Value')
+    
+    def _set_access_tag_for_key(self, key, access_tag):
+        self.s3_client.put_object_tagging(
+            Bucket=self.bucket, 
+            Key=key, 
+            Tagging={'TagSet': [{'Key': 'Access', 'Value': access_tag}]}
+        )
+
+    def _set_access_tag_for_key_in_dir(self, remote_path, access_tag):
+        """Set the access tag for all objects under a directory prefix."""
+        if not remote_path:
+            return
+
+        if not remote_path.endswith('/'):
+            remote_path = f"{remote_path}/"
+
+        paginator = self.s3_client.get_paginator('list_objects_v2')
+        pages = paginator.paginate(Bucket=self.bucket, Prefix=remote_path)
+
+        for page in pages:
+            for obj in page.get('Contents', []):
+                obj_key = obj['Key']
+                if obj_key.endswith('/'):
+                    continue
+                
+                if not self._is_protected_zoom_level(obj_key):
+                    continue
+
+                self._set_access_tag_for_key(obj_key, access_tag)
+
+    def _get_zoomable_access_tag(self, s3_path, access_tag):
+        """
+        Determine the access tag for a zoomable tile based on its zoom level and the configured private zoom levels. Just only for sync_resources method.
+        """
+        filename = s3_path.split('/')[-1]
+        name, ext = os.path.splitext(filename)
+        if ext.lower() == '.jpg':
+            parts = name.split('-')
+            if parts and parts[0].isdigit():
+                if int(parts[0]) in self.zoomable_private_zoom_levels:
+                    return access_tag
+                return AccessTagControl.PUBLIC.value
+        return access_tag
+    
+    def _is_protected_zoom_level(self, s3_path: str) -> bool:
+        filename = s3_path.split('/')[-1]
+        name, ext = os.path.splitext(filename)
+        
+        # Process .xml files (like ImageProperties.xml) in zoomable directories
+        if ext.lower() == '.xml':
+            return True
+        
+        # Process .jpg files with zoom level prefix
+        if ext.lower() == '.jpg':
+            parts = name.split('-')
+            if parts and parts[0].isdigit():
+                return int(parts[0]) in self.zoomable_private_zoom_levels
+        return False
 
 
 class CDN77ContentServer(ContentServer):

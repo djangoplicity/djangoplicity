@@ -521,3 +521,41 @@ def refresh_resource_privacy_task(app_label, model_name, pk):
 
     except Exception as e:
         logger.warning(f"Error refreshing privacy for #{pk} Content Server Resource: {e}")
+
+
+@task
+def set_access_tag_for_resource_task(app_label, model_name, pk, access_tag):
+    from django.apps import apps
+
+    try:
+        model = apps.get_model(app_label, model_name)
+        resource = model.objects.get(pk=pk)
+
+        content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+
+        if (
+            not content_server or 
+            not hasattr(content_server, 'is_publicly_accessible') or 
+            not hasattr(content_server, '_set_access_tag_for_key') or 
+            not hasattr(content_server, '_set_access_tag_for_key_in_dir')
+        ):
+            return
+
+        if resource.format == 'zoomable':
+            content_server._set_access_tag_for_key_in_dir(resource.content_server_path, access_tag)
+            logger.info(f"Set access tag: {access_tag} for zoomable directory resource #{pk} with Object ID {resource.object_id}")
+            
+        else:
+            content_server._set_access_tag_for_key(resource.content_server_path, access_tag)
+            logger.info(f"Set access tag: {access_tag} for #{pk} Content Server Resource with Object ID {resource.object_id}")
+
+        is_public = content_server.is_publicly_accessible(resource)
+
+        if is_public is None:
+            return
+
+        resource.is_public = is_public
+        resource.save(update_fields=['is_public'])
+
+    except Exception as e:
+        logger.warning(f"Error setting access tag: {access_tag} for #{pk} Content Server Resource: {e}")
