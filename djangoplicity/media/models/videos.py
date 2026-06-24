@@ -92,7 +92,7 @@ class Video( ArchiveModel, TranslationModel, ContentDeliveryModel ):
 
     UPLOAD_FORMATS = (
         'vr_8k', 'vr_4k', 'cylindrical_preview', 'ultra_hd',
-        'hd_1080p25_screen', 'hd_1080_screen', 'hd_broadcast_720p25', 'dome_2kplayback',
+        'hd_1080p25_screen', 'portrait_hd', 'portrait_hd_broadcast', 'hd_1080_screen', 'hd_broadcast_720p25', 'dome_2kplayback',
         'dome_4kplayback', 'dome_preview', 'hd_and_apple', 'medium_podcast',
         'ext_highres', 'ext_playback', 'old_video', 'vr_16kmaster', 'vr_8kmaster',
         'vr_4kmaster'
