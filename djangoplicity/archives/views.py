@@ -831,8 +831,6 @@ def resource_proxy_view(request, model, format, id, ext=None, resource_path=None
     from djangoplicity.archives.options import ArchiveOptions
     from djangoplicity.media.consts import MEDIA_CONTENT_SERVERS
 
-    print(f"Resource proxy view: {model}, {format}, {id}, {ext}, {resource_path}")
-
     # Get model class
     model_class = _get_model_class(model)
     if not model_class:
