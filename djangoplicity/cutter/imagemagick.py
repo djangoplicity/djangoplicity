@@ -289,19 +289,39 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
     if not os.path.exists(zoomable_dir):
         os.makedirs(zoomable_dir)
 
-    # Create temporary image with sRGB profile using VIPS
-    sRGBSource = os.path.join(tmp_dir, f"{archive.pk}_srgb.v")
-    logger.info(f"Creating temporary image with sRGB profile for {source}")
-    args = ['vips', 'icc_transform', source, sRGBSource, SRGB_PROFILE]
-    logger.info(' '.join(args))
-    convert = Popen(args)
-    convert.communicate()
+    # Detect whether the original has an embedded ICC profile
+    proc = Popen(['vips', 'header', '-a', source], stdout=PIPE, stderr=PIPE, encoding='utf8')
+    stdout, stderr = proc.communicate()
+    has_profile = 'icc-profile-data' in stdout
+    logger.info('Embedded ICC profile for %s: %s', source, has_profile)
+
+    sRGBSource = source
+    if has_profile:
+        # Create temporary image with sRGB profile using VIPS
+        sRGBSource = os.path.join(tmp_dir, f"{archive.pk}_srgb.v")
+        logger.info(f"Creating temporary image with sRGB profile for {source}")
+        args = ['vips', 'icc_transform', source, sRGBSource, SRGB_PROFILE]
+        if not _run_vips(args):
+            logger.error('Aborting zoomable generation for %s: icc_transform failed', archive.pk)
+            return
+    else:
+        # No embedded ICC profile: assume sRGB and skip the transformation or maybe do a something else? For now, we just log it.
+        logger.info('No embedded ICC profile for %s, skipping icc_transform (assuming sRGB)', archive.pk)
 
     logger.info(f"Generating zoomify tiles using VIPS for {sRGBSource} into tmpdir: {zoomable_dir}")
     args = ['vips', 'dzsave', sRGBSource, zoomable_dir, '--basename', subdir, '--suffix', '.jpg[Q=90]', '--layout', 'zoomify', '--strip']
-    logger.info(' '.join(args))
-    convert = Popen(args)
-    convert.communicate()
+    if not _run_vips(args):
+        logger.error('Aborting zoomable generation for %s: dzsave failed', archive.pk)
+        return
+
+    # Validate output before touching the destination
+    properties_path = os.path.join(zoomable_dir, 'ImageProperties.xml')
+    tile_groups = [name for name in os.listdir(zoomable_dir) if name.startswith('TileGroup')]
+    if not os.path.exists(properties_path) or not tile_groups:
+        logger.error('Zoomable output incomplete for %s: missing ImageProperties.xml or TileGroup dirs',
+                     archive.pk)
+        return
+
 
     # Remove old files and put the new files in place
     target = os.path.join(dest_dir, 'zoomable', archive.pk)
