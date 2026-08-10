@@ -688,8 +688,17 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         logger.debug('Generating "%s" from "%s": %s', fmt_name, derived,
                         ' '.join(convert_args))
 
-        convert = Popen(convert_args, env=env)
+        convert = Popen(convert_args, env=env, stdout=PIPE, stderr=PIPE, encoding='utf8')
         convert.communicate()
+
+        if convert.returncode != 0:
+            logger.error('Failed generating "%s" from "%s" (exit=%s): %s%s',
+                fmt_name, derived, convert.returncode, ' '.join(convert_args),
+                '\nstderr: %s' % convert._stderr_content if convert._stderr_content else '')
+        else:
+            logger.info('Generated "%s" from "%s": %s%s',
+                fmt_name, derived, ' '.join(convert_args),
+                '\nstderr: %s' % convert._stderr_content if convert._stderr_content else '')
 
         # Copy the output files to the archive
         path = glob.glob(os.path.join(tmp_dir, fmt_name, '%s.*' % pk))
