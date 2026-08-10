@@ -262,6 +262,26 @@ def _order_formats(model, formats):
 
     return OrderedDict(res)
 
+def _run_vips(args):
+    '''
+    Run a vips command capturing its output, log it and return True on success.
+    '''
+    logger.info('Running vips: %s', ' '.join(args))
+    proc = Popen(args, stdout=PIPE, stderr=PIPE, encoding='utf8')
+    stdout, stderr = proc.communicate()
+
+    if proc.returncode != 0:
+        logger.error('vips failed (exit=%s): %s%s', proc.returncode,
+                     ' '.join(args),
+                     '\nstderr: %s' % stderr.strip() if stderr.strip() else '')
+        return False
+
+    if stderr.strip():
+        logger.warning('vips warnings (%s): %s', ' '.join(args), stderr.strip())
+
+    return True
+
+
 def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
     source = archive.resource_original.path
     subdir = 'zoomable'
