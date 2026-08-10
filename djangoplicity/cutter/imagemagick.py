@@ -262,22 +262,28 @@ def _order_formats(model, formats):
 
     return OrderedDict(res)
 
-def _run_vips(args):
+def _run_command(args, logger_name=None, env=None):
     '''
-    Run a vips command capturing its output, log it and return True on success.
+    Run a command with the given arguments capturing its output, log it and
+    return True on success, False on failure.
     '''
-    logger.info('Running vips: %s', ' '.join(args))
-    proc = Popen(args, stdout=PIPE, stderr=PIPE, encoding='utf8')
+    log = logging.getLogger(logger_name) if logger_name else logger
+    log.info('Running: %s', ' '.join(args))
+
+    proc = Popen(args, stdout=PIPE, stderr=PIPE, env=env, encoding='utf8')
     stdout, stderr = proc.communicate()
 
     if proc.returncode != 0:
-        logger.error('vips failed (exit=%s): %s%s', proc.returncode,
-                     ' '.join(args),
-                     '\nstderr: %s' % stderr.strip() if stderr.strip() else '')
+        log.error('Command failed (exit=%s): %s%s', proc.returncode,
+                  ' '.join(args),
+                  '\nstderr: %s' % stderr.strip() if stderr.strip() else '')
         return False
 
     if stderr.strip():
-        logger.warning('vips warnings (%s): %s', ' '.join(args), stderr.strip())
+        log.warning('Command warnings (%s): %s', ' '.join(args), stderr.strip())
+
+    if stdout.strip():
+        log.debug('Command stdout:\n%s', stdout.strip())
 
     return True
 
@@ -301,7 +307,7 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
         sRGBSource = os.path.join(tmp_dir, f"{archive.pk}_srgb.v")
         logger.info(f"Creating temporary image with sRGB profile for {source}")
         args = ['vips', 'icc_transform', source, sRGBSource, SRGB_PROFILE]
-        if not _run_vips(args):
+        if not _run_command(args):
             logger.error('Aborting zoomable generation for %s: icc_transform failed', archive.pk)
             return
     else:
@@ -310,7 +316,7 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
 
     logger.info(f"Generating zoomify tiles using VIPS for {sRGBSource} into tmpdir: {zoomable_dir}")
     args = ['vips', 'dzsave', sRGBSource, zoomable_dir, '--basename', subdir, '--suffix', '.jpg[Q=90]', '--layout', 'zoomify', '--strip']
-    if not _run_vips(args):
+    if not _run_command(args):
         logger.error('Aborting zoomable generation for %s: dzsave failed', archive.pk)
         return
 
@@ -382,8 +388,9 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
 
         logger.debug(' '.join(args))
 
-        convert = Popen(args)
-        convert.communicate()
+        if not _run_command(args):
+            logger.error('Aborting zoomable generation for %s: tile generation failed', archive.pk)
+            return
 
         tiers -= 1
 
@@ -398,8 +405,10 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
 
         logger.info('Generating source for tier %d', tiers)
         logger.debug(' '.join(args))
-        convert = Popen(args)
-        convert.communicate()
+        if not _run_command(args, env={'MAGICK_TMPDIR': IM_TMP_DIR} if os.path.isdir(IM_TMP_DIR) else None):
+            logger.error('Aborting zoomable generation for %s: failed to generate source for tier %d',
+                         archive.pk, tiers)
+            return
 
         source = next_tier_source
 
@@ -710,8 +719,8 @@ def process_image_derivatives(app_label, module_name, pk, formats,
             args += ['-flatten', tmp_path]
             logger.debug(' '.join(args))
 
-            convert = Popen(args)
-            convert.communicate()
+            if not _run_command(args):
+                raise Exception('Could not create MPC file %s for "%s"' % (tmp_path, pk))
 
         # Create output directory
         output_dir = os.path.join(tmp_dir, fmt.name)
@@ -728,17 +737,8 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         logger.debug('Generating "%s" from "%s": %s', fmt_name, derived,
                         ' '.join(convert_args))
 
-        convert = Popen(convert_args, env=env, stdout=PIPE, stderr=PIPE, encoding='utf8')
-        convert.communicate()
-
-        if convert.returncode != 0:
-            logger.error('Failed generating "%s" from "%s" (exit=%s): %s%s',
-                fmt_name, derived, convert.returncode, ' '.join(convert_args),
-                '\nstderr: %s' % convert._stderr_content if convert._stderr_content else '')
-        else:
-            logger.info('Generated "%s" from "%s": %s%s',
-                fmt_name, derived, ' '.join(convert_args),
-                '\nstderr: %s' % convert._stderr_content if convert._stderr_content else '')
+        if not _run_command(convert_args, env=env):
+            raise Exception('Could not generate %s for "%s"' % (fmt_name, pk))
 
         # Copy the output files to the archive
         path = glob.glob(os.path.join(tmp_dir, fmt_name, '%s.*' % pk))
