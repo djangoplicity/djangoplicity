@@ -336,7 +336,7 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
     shutil.move(zoomable_dir, target)
 
     # Clean up temporary file
-    if os.path.exists(sRGBSource):
+    if has_profile and os.path.exists(sRGBSource):
         os.remove(sRGBSource)
 
 
