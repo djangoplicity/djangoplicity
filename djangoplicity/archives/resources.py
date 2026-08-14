@@ -229,11 +229,17 @@ class ResourceFile( File ):
         if 'zoomable' in self.name.split('/'):
             return self.storage.url(self.name)
 
-        format, id, ext = self._extract_resource_parts()
-        model_name = self.instance._meta.model_name 
+        parts = self._extract_resource_parts()
+        if not parts:
+            # The resource name can't be mapped to a proxy URL
+            return self.storage.url(self.name)
+        format, id, ext = parts
+        model_name = self.instance._meta.model_name
 
-        # If the format is always public, return the storage URL.
-        if self.instance.get_access_tag_for_format(format) == AccessTagControl.PUBLIC:
+        # If the format is meant to be public (always public formats, or the
+        # object itself is public), only return the direct storage URL when
+        # the recorded state doesn't contradict it (async re-tagging lag).
+        if self.instance.get_access_tag_for_format(format) == AccessTagControl.PUBLIC and self._recorded_is_public(format) is not False:
             return self.storage.url(self.name)
 
         # Remember to define the view in the global urls:
