@@ -153,6 +153,16 @@ class ResourceFile( File ):
 
         # 4. Use proxy if access tag is private
         access_tag = self.instance.get_access_tag()
+        if access_tag == AccessTagControl.PRIVATE:
+            return True
+
+        # 5. The access tag is computed from the publishing dates, but the
+        # content server re-tags the files asynchronously (celery task at the
+        # release date), so right after the release date the files can still
+        # be private in S3. Keep using the proxy until the recorded state
+        # confirms the resource is actually public in the content server.
+        return self._recorded_is_public() is False
+
         return access_tag == AccessTagControl.PRIVATE
     
     def _extract_resource_parts(self):
