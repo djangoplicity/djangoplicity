@@ -163,8 +163,46 @@ class ResourceFile( File ):
         # confirms the resource is actually public in the content server.
         return self._recorded_is_public() is False
 
-        return access_tag == AccessTagControl.PRIVATE
-    
+    def _recorded_is_public(self, format=None):
+        '''
+        Privacy state recorded in ContentServerResource for the given format
+        (defaults to this resource's own format): True/False as confirmed by
+        the last sync with the content server, or None when there is no
+        record (privacy unknown).
+        '''
+        if format is None:
+            parts = self._extract_resource_parts()
+            if not parts:
+                return None
+            format = parts[0]
+
+        instance = self.instance
+        if hasattr(instance, 'get_source'):
+            instance = instance.get_source()
+
+        privacy = getattr(instance, '_content_server_privacy_cache', None)
+        if privacy is None:
+            # Build a map of format -> is_public from the ContentServerResource
+            # records, e.g.: {'screen': True, 'large': True, 'original': False}
+            privacy = {}
+            try:
+                for record in instance.content_server_resources.all():
+                    if not record.is_active:
+                        continue
+
+                    if record.content_server != instance.content_server:
+                        continue
+
+                    privacy[record.format] = record.is_public
+            except Exception:
+                # Models without content server tracking (no relation) or a
+                # failing query: leave the map empty -> privacy unknown
+                privacy = {}
+
+            instance._content_server_privacy_cache = privacy
+        return privacy.get(format)
+
+
     def _extract_resource_parts(self):
         # ./././<format>/<id.ext>
         parts = self.name.split('/')
