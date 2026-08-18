@@ -1,0 +1,37 @@
+{% load i18n %}
+{% if url and image %}
+<div class="iframe-on-demand"
+     data-src="{{ url }}"
+     data-height="{{ height }}"
+     style="position: relative; overflow: hidden; width: {% if width %}{{ width }}{% else %}100%{% endif %}; height: {{ height }}; margin: 15px 0;">
+    <img src="{{ image }}"
+         alt="{{ description|default:'' }}"
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" />
+    <div class="iframe-on-demand-overlay"
+         style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; background: rgba(0, 0, 0, 0.45);">
+        <button type="button"
+                class="iframe-on-demand-button"
+                style="cursor: pointer; padding: 12px 28px; border: 0; border-radius: 4px; background: #ffffff; color: #1a1a1a; font-size: 16px; font-weight: bold;"
+                onclick="(function (btn) {
+                    var container = btn.closest('.iframe-on-demand');
+                    var iframe = document.createElement('iframe');
+                    iframe.src = container.dataset.src;
+                    iframe.style.width = '100%';
+                    iframe.style.height = container.dataset.height;
+                    iframe.style.border = '0';
+                    iframe.setAttribute('frameborder', '0');
+                    iframe.setAttribute('allowfullscreen', '');
+                    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+                    container.innerHTML = '';
+                    container.style.height = 'auto';
+                    container.appendChild(iframe);
+                })(this);">{% trans 'Click to load the content' %}</button>
+        {% if description %}
+            <p class="iframe-on-demand-description"
+               style="margin: 12px 0 0; max-width: 80%; color: #ffffff; font-size: 14px; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);">{{ description }}</p>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="alert alert-danger" role="alert">Missing 'url' or 'image' in {% templatetag openblock %} load_iframe_on_demand {% templatetag closeblock %}</div>
+{% endif %}

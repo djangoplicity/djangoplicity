@@ -139,3 +139,18 @@ def youtube_frame(youtube_id, *args, **kwargs):
         'autoplay': 'autoplay' in args,
         'mute': 'mute' in args,
     }
+
+
+@register.inclusion_tag('templatetags/load_iframe_on_demand.html')
+def load_iframe_on_demand(**kwargs):
+    height = str(kwargs.get('height', 500))
+    if height.isdigit():
+        height += 'px'
+
+    return {
+        'url': kwargs.get('url', None),
+        'image': kwargs.get('image', None),
+        'description': kwargs.get('description', None),
+        'height': height,
+        'width': kwargs.get('width', None),
+    }
