@@ -153,8 +153,56 @@ class ResourceFile( File ):
 
         # 4. Use proxy if access tag is private
         access_tag = self.instance.get_access_tag()
-        return access_tag == AccessTagControl.PRIVATE
-    
+        if access_tag == AccessTagControl.PRIVATE:
+            return True
+
+        # 5. The access tag is computed from the publishing dates, but the
+        # content server re-tags the files asynchronously (celery task at the
+        # release date), so right after the release date the files can still
+        # be private in S3. Keep using the proxy until the recorded state
+        # confirms the resource is actually public in the content server.
+        return self._recorded_is_public() is False
+
+    def _recorded_is_public(self, format=None):
+        '''
+        Privacy state recorded in ContentServerResource for the given format
+        (defaults to this resource's own format): True/False as confirmed by
+        the last sync with the content server, or None when there is no
+        record (privacy unknown).
+        '''
+        if format is None:
+            parts = self._extract_resource_parts()
+            if not parts:
+                return None
+            format = parts[0]
+
+        instance = self.instance
+        if hasattr(instance, 'get_source'):
+            instance = instance.get_source()
+
+        privacy = getattr(instance, '_content_server_privacy_cache', None)
+        if privacy is None:
+            # Build a map of format -> is_public from the ContentServerResource
+            # records, e.g.: {'screen': True, 'large': True, 'original': False}
+            privacy = {}
+            try:
+                for record in instance.content_server_resources.all():
+                    if not record.is_active:
+                        continue
+
+                    if record.content_server != instance.content_server:
+                        continue
+
+                    privacy[record.format] = record.is_public
+            except Exception:
+                # Models without content server tracking (no relation) or a
+                # failing query: leave the map empty -> privacy unknown
+                privacy = {}
+
+            instance._content_server_privacy_cache = privacy
+        return privacy.get(format)
+
+
     def _extract_resource_parts(self):
         # ./././<format>/<id.ext>
         parts = self.name.split('/')
@@ -181,11 +229,17 @@ class ResourceFile( File ):
         if 'zoomable' in self.name.split('/'):
             return self.storage.url(self.name)
 
-        format, id, ext = self._extract_resource_parts()
-        model_name = self.instance._meta.model_name 
+        parts = self._extract_resource_parts()
+        if not parts:
+            # The resource name can't be mapped to a proxy URL
+            return self.storage.url(self.name)
+        format, id, ext = parts
+        model_name = self.instance._meta.model_name
 
-        # If the format is always public, return the storage URL.
-        if self.instance.get_access_tag_for_format(format) == AccessTagControl.PUBLIC:
+        # If the format is meant to be public (always public formats, or the
+        # object itself is public), only return the direct storage URL when
+        # the recorded state doesn't contradict it (async re-tagging lag).
+        if self.instance.get_access_tag_for_format(format) == AccessTagControl.PUBLIC and self._recorded_is_public(format) is not False:
             return self.storage.url(self.name)
 
         # Remember to define the view in the global urls:
