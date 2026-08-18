@@ -262,6 +262,32 @@ def _order_formats(model, formats):
 
     return OrderedDict(res)
 
+def _run_command(args, logger_name=None, env=None):
+    '''
+    Run a command with the given arguments capturing its output, log it and
+    return True on success, False on failure.
+    '''
+    log = logging.getLogger(logger_name) if logger_name else logger
+    log.info('Running: %s', ' '.join(args))
+
+    proc = Popen(args, stdout=PIPE, stderr=PIPE, env=env, encoding='utf8')
+    stdout, stderr = proc.communicate()
+
+    if proc.returncode != 0:
+        log.error('Command failed (exit=%s): %s%s', proc.returncode,
+                  ' '.join(args),
+                  '\nstderr: %s' % stderr.strip() if stderr.strip() else '')
+        return False
+
+    if stderr.strip():
+        log.warning('Command warnings (%s): %s', ' '.join(args), stderr.strip())
+
+    if stdout.strip():
+        log.debug('Command stdout:\n%s', stdout.strip())
+
+    return True
+
+
 def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
     source = archive.resource_original.path
     subdir = 'zoomable'
@@ -269,19 +295,39 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
     if not os.path.exists(zoomable_dir):
         os.makedirs(zoomable_dir)
 
-    # Create temporary image with sRGB profile using VIPS
-    sRGBSource = os.path.join(tmp_dir, f"{archive.pk}_srgb.v")
-    logger.info(f"Creating temporary image with sRGB profile for {source}")
-    args = ['vips', 'icc_transform', source, sRGBSource, SRGB_PROFILE]
-    logger.info(' '.join(args))
-    convert = Popen(args)
-    convert.communicate()
+    # Detect whether the original has an embedded ICC profile
+    proc = Popen(['vips', 'header', '-a', source], stdout=PIPE, stderr=PIPE, encoding='utf8')
+    stdout, stderr = proc.communicate()
+    has_profile = 'icc-profile-data' in stdout
+    logger.info('Embedded ICC profile for %s: %s', source, has_profile)
+
+    sRGBSource = source
+    if has_profile:
+        # Create temporary image with sRGB profile using VIPS
+        sRGBSource = os.path.join(tmp_dir, f"{archive.pk}_srgb.v")
+        logger.info(f"Creating temporary image with sRGB profile for {source}")
+        args = ['vips', 'icc_transform', source, sRGBSource, SRGB_PROFILE]
+        if not _run_command(args):
+            logger.error('Aborting zoomable generation for %s: icc_transform failed', archive.pk)
+            return
+    else:
+        # No embedded ICC profile: assume sRGB and skip the transformation or maybe do a something else? For now, we just log it.
+        logger.info('No embedded ICC profile for %s, skipping icc_transform (assuming sRGB)', archive.pk)
 
     logger.info(f"Generating zoomify tiles using VIPS for {sRGBSource} into tmpdir: {zoomable_dir}")
     args = ['vips', 'dzsave', sRGBSource, zoomable_dir, '--basename', subdir, '--suffix', '.jpg[Q=90]', '--layout', 'zoomify', '--strip']
-    logger.info(' '.join(args))
-    convert = Popen(args)
-    convert.communicate()
+    if not _run_command(args):
+        logger.error('Aborting zoomable generation for %s: dzsave failed', archive.pk)
+        return
+
+    # Validate output before touching the destination
+    properties_path = os.path.join(zoomable_dir, 'ImageProperties.xml')
+    tile_groups = [name for name in os.listdir(zoomable_dir) if name.startswith('TileGroup')]
+    if not os.path.exists(properties_path) or not tile_groups:
+        logger.error('Zoomable output incomplete for %s: missing ImageProperties.xml or TileGroup dirs',
+                     archive.pk)
+        return
+
 
     # Remove old files and put the new files in place
     target = os.path.join(dest_dir, 'zoomable', archive.pk)
@@ -296,7 +342,7 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
     shutil.move(zoomable_dir, target)
 
     # Clean up temporary file
-    if os.path.exists(sRGBSource):
+    if has_profile and os.path.exists(sRGBSource):
         os.remove(sRGBSource)
 
 
@@ -342,8 +388,9 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
 
         logger.debug(' '.join(args))
 
-        convert = Popen(args)
-        convert.communicate()
+        if not _run_command(args):
+            logger.error('Aborting zoomable generation for %s: tile generation failed', archive.pk)
+            return
 
         tiers -= 1
 
@@ -358,8 +405,10 @@ def _generate_zoomify(archive, width, height, tmp_dir, dest_dir):
 
         logger.info('Generating source for tier %d', tiers)
         logger.debug(' '.join(args))
-        convert = Popen(args)
-        convert.communicate()
+        if not _run_command(args, env={'MAGICK_TMPDIR': IM_TMP_DIR} if os.path.isdir(IM_TMP_DIR) else None):
+            logger.error('Aborting zoomable generation for %s: failed to generate source for tier %d',
+                         archive.pk, tiers)
+            return
 
         source = next_tier_source
 
@@ -670,8 +719,8 @@ def process_image_derivatives(app_label, module_name, pk, formats,
             args += ['-flatten', tmp_path]
             logger.debug(' '.join(args))
 
-            convert = Popen(args)
-            convert.communicate()
+            if not _run_command(args):
+                raise Exception('Could not create MPC file %s for "%s"' % (tmp_path, pk))
 
         # Create output directory
         output_dir = os.path.join(tmp_dir, fmt.name)
@@ -688,8 +737,8 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         logger.debug('Generating "%s" from "%s": %s', fmt_name, derived,
                         ' '.join(convert_args))
 
-        convert = Popen(convert_args, env=env)
-        convert.communicate()
+        if not _run_command(convert_args, env=env):
+            raise Exception('Could not generate %s for "%s"' % (fmt_name, pk))
 
         # Copy the output files to the archive
         path = glob.glob(os.path.join(tmp_dir, fmt_name, '%s.*' % pk))
