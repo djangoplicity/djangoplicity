@@ -19,7 +19,7 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, \
 from django.urls import NoReverseMatch
 from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import redirect
-from django.template import loader
+from django.template import engines, loader, TemplateSyntaxError
 from django.template.loader import render_to_string
 from django.utils.encoding import force_text
 from django.utils.http import urlunquote
@@ -299,6 +299,25 @@ class GenericDetailView( object ):
 
     cache_key_prefix = CACHE_PREFIX['detail_view']
 
+    # Object fields that may contain template tags and are pre-rendered
+    # before the detail template is rendered in the detail template.
+    template_tag_fields = ('description',)
+
+    def render_template_fields(self, request, obj):
+        """
+        Pre-render object fields that can contain template tags (e.g. the
+        builtins from djangoplicity.pages.templatetags.layout). Fields with
+        invalid template syntax are kept as-is.
+        """
+        for field in self.template_tag_fields:
+            value = getattr(obj, field, None)
+            if value:
+                try:
+                    tpl = engines['django'].from_string(value)
+                    setattr(obj, field, tpl.render({}, request))
+                except TemplateSyntaxError:
+                    pass
+
     def vary_on(self, request, model, obj, state, admin_rights, **kwargs ):
         """
         Determine the specific version of page being generated, so that
@@ -358,6 +377,11 @@ class GenericDetailView( object ):
 
         # Get additional_content from kwargs
         additional_context = kwargs.get('additional_context', None)
+
+        #
+        # Pre-render fields that may contain template tags
+        #
+        self.render_template_fields(request, obj)
 
         #
         # Extra context setup
