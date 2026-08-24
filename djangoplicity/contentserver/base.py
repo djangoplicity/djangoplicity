@@ -138,7 +138,13 @@ class ContentServer(object):
         Delete a resource from the content server.
         """
         pass
-    
+
+    def delete_resource_from_content_server(self, resource):
+        """
+        Delete a ContentServerResource (file or directory) from the content server.
+        """
+        pass
+
     def rename_resource(self, old_path, new_path):
         """
         Rename a resource on the content server.
@@ -651,7 +657,63 @@ class S3ContentServer(ContentServer):
         except Exception as e:
             logger.error('S3ContentServer: Failed to delete %s: %s', path, str(e))
             raise
-    
+
+    def delete_resource_from_content_server(self, resource):
+        """
+        Delete the given ContentServerResource from S3.
+        Handles both single files and directories (S3 prefixes), e.g. zoomable.
+        """
+        path = resource.content_server_path
+
+        if not path:
+            logger.warning('S3ContentServer: Resource %s has no content_server_path, skipping', resource.pk)
+            return
+
+        if resource.is_directory:
+            self._delete_directory(path)
+        else:
+            self.delete_resource(path)
+
+    def _delete_directory(self, prefix):
+        '''
+        Delete every object under a directory prefix in S3
+        '''
+        if not prefix.endswith('/'):
+            prefix = prefix + '/'
+
+        # Make sure that we won't delete the whole bucket:
+        if prefix in ('/', ''):
+            raise Exception('S3ContentServer: refusing to delete root prefix: %s' % prefix)
+
+        try:
+            paginator = self.s3_client.get_paginator('list_objects_v2')
+            pages = paginator.paginate(Bucket=self.bucket, Prefix=prefix)
+
+            deleted = 0
+            for page in pages:
+                keys = [{'Key': obj['Key']} for obj in page.get('Contents', [])]
+
+                # delete_objects accepts up to 1000 keys per call
+                for batch in chunks(keys, 1000):
+                    response = self.s3_client.delete_objects(
+                        Bucket=self.bucket,
+                        Delete={'Objects': batch}
+                    )
+
+                    # delete_objects doesn't raise on partial failures, so we
+                    # have to check the errors ourselves
+                    errors = response.get('Errors', [])
+                    if errors:
+                        raise Exception('S3ContentServer: Failed to delete %d object(s) under %s: %s' %
+                            (len(errors), prefix, errors))
+
+                    deleted += len(batch)
+
+            logger.info('S3ContentServer: Deleted directory %s from S3 (%d objects)', prefix, deleted)
+        except Exception as e:
+            logger.error('S3ContentServer: Failed to delete directory %s: %s', prefix, str(e))
+            raise
+
     def rename_resource(self, old_path, new_path):
         """
         Rename a resource in the content server using copy and delete.
