@@ -174,12 +174,10 @@ def download_from_content_server(module_path, cls_name, instance_id, formats=Non
         logger.warning('Could not find archive "%s" (%s)', instance_id, cls)
         return
 
-    downloaded = []
-
     if hasattr(instance, 'content_server') and instance.content_server:
         try:
             content_server = MEDIA_CONTENT_SERVERS[instance.content_server]
-            downloaded = content_server.download_resources(instance, formats, include_directories)
+            content_server.download_resources(instance, formats, include_directories)
         except KeyError:
             logger.warning('Unknown content server: "%s" for %s: "%s"',
                 instance.content_server, cls, instance.id)
@@ -188,8 +186,6 @@ def download_from_content_server(module_path, cls_name, instance_id, formats=Non
     if sendtask_callback:
         args, kwargs = sendtask_callback  # pylint: disable=W0633
         current_app.send_task(*args, **str_keys(kwargs))
-
-    return downloaded
 
 @task
 def sync_content_server_resources_model(module_path, cls_name, instance_id, sendtask_callback=None, sendtask_tasksetid=None):
