@@ -559,3 +559,39 @@ def set_access_tag_for_resource_task(app_label, model_name, pk, access_tag):
 
     except Exception as e:
         logger.warning(f"Error setting access tag: {access_tag} for #{pk} Content Server Resource: {e}")
+
+
+@task
+def delete_resource_from_content_server_task(app_label, model_name, pk):
+    from django.apps import apps
+
+    try:
+        model = apps.get_model(app_label, model_name)
+        resource = model.objects.get(pk=pk)
+    except Exception as e:
+        logger.warning(f"Could not find #{pk} Content Server Resource: {e}")
+        return
+
+    try:
+        content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+    except KeyError:
+        logger.warning(f"Unknown content server '{resource.content_server}' for #{pk} Content Server Resource, skipping")
+        return
+
+    if not content_server or not hasattr(content_server, 'delete_resource_from_content_server'):
+        return
+
+    # Keep a copy of the values for the logs, as the record is deleted below
+    object_id = resource.object_id
+    content_server_path = resource.content_server_path
+
+    try:
+        content_server.delete_resource_from_content_server(resource)
+    except Exception as e:
+        # We keep the record in the database so the action can be retried,
+        # otherwise we would lose track of an orphan file in the content server
+        logger.warning(f"Error deleting #{pk} Content Server Resource from content server: {e}")
+        return
+
+    resource.delete()
+    logger.info(f"Deleted #{pk} Content Server Resource with Object ID {object_id} and its content in the content server: {content_server_path}")
