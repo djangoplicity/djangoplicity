@@ -38,7 +38,7 @@ from django.urls import reverse
 from django.conf import settings
 
 from djangoplicity.contentserver.models import ContentServerResource
-from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task, set_access_tag_for_resource_task
+from djangoplicity.contentserver.tasks import sync_content_server, sync_content_server_resources_model, update_resource_privacy, refresh_resource_privacy_task, set_access_tag_for_resource_task, delete_resource_from_content_server_task, delete_archive_from_content_server_task
 from djangoplicity.contentserver.constants import AccessTagControl
 from djangoplicity.archives.utils import initialize_resource
 from django.db.models import Q
@@ -59,6 +59,18 @@ class ContentDeliveryAdmin(object):
         for obj in queryset:
             update_resource_privacy.delay(obj._meta.app_label, obj._meta.model_name, obj.pk)
     action_resync_resource_privacy.short_description = _("Re-sync resource privacy from content server")
+
+    def action_delete_from_content_server(self, request, queryset):
+        for obj in queryset:
+            delete_archive_from_content_server_task.delay(obj._meta.app_label, obj._meta.model_name, obj.pk)
+
+        # The deletion runs in the background, so we let the user know that the
+        # objects are still listed on purpose
+        self.message_user(
+            request,
+            _("Deletion from content server scheduled for %d object(s).") % queryset.count()
+        )
+    action_delete_from_content_server.short_description = _("Delete selected objects and their resources from content server")
 
 
 class HasRelatedObjectFilter(admin.SimpleListFilter):
@@ -124,7 +136,7 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    actions = ['mark_as_deleted', 'reactivate_resources', 'refresh_resource_privacy', 'set_public_access_tag_for_resource', 'set_private_access_tag_for_resource']
+    actions = ['mark_as_deleted', 'reactivate_resources', 'refresh_resource_privacy', 'set_public_access_tag_for_resource', 'set_private_access_tag_for_resource', 'delete_resource_from_content_server']
     
     def get_queryset(self, request):
         """
@@ -246,6 +258,21 @@ class ContentServerResourceAdmin(admin.ModelAdmin):
             f"Private access tag set for {queryset.count()} resource(s)."
         )
     set_private_access_tag_for_resource.short_description = "Set private access tag for selected resources in content server"
+
+    def delete_resource_from_content_server(self, request, queryset):
+        """Delete selected resources from the content server and from the database"""
+        for resource in queryset:
+            delete_resource_from_content_server_task.delay(
+                resource._meta.app_label,
+                resource._meta.model_name,
+                resource.pk
+            )
+
+        self.message_user(
+            request,
+            f"Deletion from content server scheduled for {queryset.count()} resource(s)."
+        )
+    delete_resource_from_content_server.short_description = "Delete selected resources from content server and database"
 
 
 

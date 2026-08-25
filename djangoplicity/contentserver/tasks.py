@@ -559,3 +559,89 @@ def set_access_tag_for_resource_task(app_label, model_name, pk, access_tag):
 
     except Exception as e:
         logger.warning(f"Error setting access tag: {access_tag} for #{pk} Content Server Resource: {e}")
+
+
+def _delete_resource_from_content_server(resource):
+    '''
+    Delete a single ContentServerResource from its content server and from the
+    database. Returns True if the resource was deleted, False otherwise
+    '''
+    try:
+        content_server = MEDIA_CONTENT_SERVERS[resource.content_server]
+    except KeyError:
+        logger.warning(f"Unknown content server '{resource.content_server}' for #{resource.pk} Content Server Resource, skipping")
+        return False
+
+    if not content_server or not hasattr(content_server, 'delete_resource_from_content_server'):
+        return False
+
+    # Keep a copy of the values for the logs, as the record is deleted below
+    pk = resource.pk
+    object_id = resource.object_id
+    content_server_path = resource.content_server_path
+
+    try:
+        content_server.delete_resource_from_content_server(resource)
+    except Exception as e:
+        # We keep the record in the database so the deletion can be retried,
+        # otherwise we would lose track of an orphan file in the content server
+        logger.warning(f"Error deleting #{pk} Content Server Resource from content server: {e}")
+        return False
+
+    resource.delete()
+    logger.info(f"Deleted #{pk} Content Server Resource with Object ID {object_id} and its content in the content server: {content_server_path}")
+    return True
+
+
+@task
+def delete_resource_from_content_server_task(app_label, model_name, pk):
+    from django.apps import apps
+
+    try:
+        model = apps.get_model(app_label, model_name)
+        resource = model.objects.get(pk=pk)
+    except Exception as e:
+        logger.warning(f"Could not find #{pk} Content Server Resource: {e}")
+        return
+
+    _delete_resource_from_content_server(resource)
+
+
+@task
+def delete_archive_from_content_server_task(app_label, model_name, pk):
+    '''
+    Delete an archive and all of its resources from the content server.
+    The resources are deleted first, as deleting the archive cascades to the
+    ContentServerResource records and we would lose track of their paths
+    '''
+    from django.apps import apps
+
+    try:
+        model = apps.get_model(app_label, model_name)
+        instance = model.objects.get(pk=pk)
+    except Exception as e:
+        logger.warning(f"Could not find archive '{pk}' ({app_label}.{model_name}): {e}")
+        return
+
+    if not hasattr(instance, 'content_server_resources'):
+        logger.warning(f"Archive '{pk}' ({app_label}.{model_name}) has no content server resources, skipping")
+        return
+
+    # We use the generic relation instead of ContentServerResource.get_resources_for_model()
+    # as the latter skips the resources marked as inactive, which do still
+    # exist in the content server
+    resources = list(instance.content_server_resources.all())
+
+    failed = 0
+    for resource in resources:
+        if not _delete_resource_from_content_server(resource):
+            failed += 1
+
+    if failed:
+        # We keep the archive so the action can be retried, otherwise we would
+        # lose track of the orphan files in the content server
+        logger.warning(f"Could not delete {failed} of {len(resources)} resource(s) from the content server for archive '{pk}', the archive is kept")
+        return
+
+    instance.delete()
+    logger.info(f"Deleted archive '{pk}' ({app_label}.{model_name}) and its {len(resources)} content server resource(s)")
