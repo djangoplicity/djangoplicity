@@ -516,8 +516,9 @@ class S3ContentServer(ContentServer):
             if not resource:
                 continue
 
-            # Skip if the local file already exists
-            if os.path.isfile(resource.path) or os.path.isdir(resource.path):
+            # Skip if the local file already exists (an empty file is treated
+            # as missing so that it gets downloaded again)
+            if os.path.isdir(resource.path) or (os.path.isfile(resource.path) and os.path.getsize(resource.path) > 0):
                 logger.info('S3ContentServer: Local file/directory already exists, skipping download: %s', resource.path)
                 continue
 
@@ -555,6 +556,15 @@ class S3ContentServer(ContentServer):
         """
         try:
             self.s3_client.download_file(self.bucket, s3_path, local_path)
+
+            # Integrity check
+            expected = self.s3_client.head_object(Bucket=self.bucket, Key=s3_path)['ContentLength']
+            size = os.path.getsize(local_path)
+            if size != expected:
+                os.remove(local_path)
+                raise IOError('S3ContentServer: Incomplete download of %s: got %d bytes, expected %d' %
+                    (s3_path, size, expected))
+
             logger.info('S3ContentServer: Successfully downloaded file: %s', local_path)
         except Exception as e:
             logger.error('S3ContentServer: Failed to download file %s: %s', local_path, str(e))
