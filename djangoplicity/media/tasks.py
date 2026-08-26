@@ -680,6 +680,27 @@ def upload_youtube(video_id, user_id=None):
         )
         return
 
+    # The local copy may have been removed by cleanup_old_local_resources
+    # while the file still exists in the content server (e.g. S3):
+    # download it back before uploading to YouTube (same approach as
+    # djangoplicity.cutter.imagemagick)
+    if not os.path.exists(path) and getattr(v, 'content_server', None):
+        from djangoplicity.contentserver.tasks import download_from_content_server
+        logger.info('"%s" not found locally, downloading from content server', path)
+        download_from_content_server(
+            v.__module__, v.__class__.__name__, v.pk,
+            formats=[fmt, 'videoframe'],
+            include_directories=False,
+        )
+
+    if not os.path.exists(path):
+        logger.warning('Resource "%s" not found locally nor in content server for "%s"', path, video_id)
+        mail_user(
+            'Couldn\'t find file to upload "%s" to YouTube' % video_id,
+            'Format "%s" is not available locally nor in the content server: %s' % (fmt, path)
+        )
+        return
+
     # Prepare the body of the insert request
     body = dict(
         snippet=dict(
