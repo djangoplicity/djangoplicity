@@ -24,7 +24,7 @@ class ExeType(FileType):
 
 
 class Bz2Type(FileType):
-    verbose_name = ugettext_noop(u'BZip2 archive (.bz2)')
+    verbose_name = ugettext_noop(u'MacOS Application (.bz2)')
     exts = ['bz2']
     content_type = 'application/x-bzip2'
 
