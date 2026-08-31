@@ -102,7 +102,10 @@ def process_image_derivatives(add_imported_formats=[]):
 
         if add_imported_formats:
             imported_formats = imported_formats if imported_formats else []
-            imported_formats = imported_formats + add_imported_formats
+            # exclude formats that are already imported
+            for fmt in add_imported_formats:
+                if fmt not in imported_formats:
+                    imported_formats.append(fmt)
 
         args = [obj._meta.app_label, obj._meta.model_name, conf.get('user_id'),
             [obj.pk], formats, imported_formats]
