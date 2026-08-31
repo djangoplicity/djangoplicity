@@ -922,6 +922,7 @@ class Image( ArchiveModel, TranslationModel, ContentDeliveryModel, CropModel ):
         screen640 = ImageResourceManager(derived='publicationtiff', type=types.Screen640Type)
         portrait1080 = ImageResourceManager(derived='publicationtiff', type=types.Portrait1080Type)
         poster400y = ImageResourceManager(derived='publicationtiff', type=types.Poster400yType)
+        webp = ImageResourceManager(derived='publicationtiff', type=types.ScreensizeWebPType)
 
         pl_original = ImageResourceManager(type=types.OriginalImageType)
         pl_screen = ImageResourceManager(derived='pl_original', type=types.ScreensizeJpegType)
