@@ -5,8 +5,8 @@
     {% for track in object.videobroadcastaudiotrack_set.all %}
         {% if track.resource_broadcastaudio %}
         <div class="archive_download">
-            <span class="archive_dl_icon"><img src="{% static "icons/icon_audio.png" %}" /></span>
-            <span class="archive_dl_text"><a href="{{ track.resource_broadcastaudio.url }}"{{ track.resource_broadcastaudio.extra_attrs }}>{{ track|safe }}</a></span>
+            <span class="archive_dl_icon"><img src="{% static "icons/icon_audio.png" %}" alt="Audio Icon"/></span>
+            <span class="archive_dl_text"><a href="{{ track.resource_broadcastaudio.url }}"{{ track.resource_broadcastaudio.extra_attrs }} aria-label="{{ track|safe }}">{{ track|safe }}</a></span>
             {% if track.resource_broadcastaudio.size %}<span class="archive_dl_size"><div>{{ track.resource_broadcastaudio.size|filesizeformat }}</div></span>{% endif %}
         </div>
         {% endif %}
