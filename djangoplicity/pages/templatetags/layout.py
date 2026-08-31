@@ -85,6 +85,11 @@ def comparison_frame(**kwargs):
     except ImageComparison.DoesNotExist:
         obj = None
 
+    # If no alt is given default to image title
+    alt = kwargs.get('alt', None)
+    if not alt and obj:
+        alt = obj.title
+
     # If no credit is given default to image credit
     credit = kwargs.get('credit', None)
     if credit is None and obj:
@@ -94,6 +99,7 @@ def comparison_frame(**kwargs):
 
     return {
         'object': obj,
+        'alt': alt,
         'legend': kwargs.get('legend', None),
         'credit': credit,
         'position': kwargs.get('position', None),
