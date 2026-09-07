@@ -451,13 +451,19 @@ class S3ContentServer(ContentServer):
 
             try:
                 is_public = access_tag == AccessTagControl.PUBLIC.value
-                ContentServerResource.objects.filter(
+                records = ContentServerResource.objects.filter(
                     content_type=content_type,
                     object_id=instance.pk,
                     content_server_path=remote_path,
                     content_server=instance.content_server,
                     is_active=True
-                ).update(is_public=is_public)
+                )
+                for record in records:
+                    # We save the record instead of using queryset.update() so
+                    # that auto_now updates 'updated_at' as well, it is used by
+                    # cleanup_old_local_resources() to find stale resources
+                    record.is_public = is_public
+                    record.save(update_fields=['is_public', 'updated_at'])
                 processed_paths.add(remote_path)
             except Exception as e:
                 logger.warning('S3ContentServer: Could not update ContentServerResource privacy record for %s: %s', remote_path, e)
@@ -490,10 +496,8 @@ class S3ContentServer(ContentServer):
                     else:
                         self._set_access_tag_for_key(remote_path, access_tag)
 
-                    is_public = access_tag == AccessTagControl.PUBLIC.value
-                    ContentServerResource.objects.filter(
-                        pk=resource.pk
-                    ).update(is_public=is_public)
+                    resource.is_public = access_tag == AccessTagControl.PUBLIC.value
+                    resource.save(update_fields=['is_public', 'updated_at'])
                     
                 except Exception as e:
                     logger.warning('S3ContentServer: Could not update privacy for tracked resource %s: %s', resource, e)
