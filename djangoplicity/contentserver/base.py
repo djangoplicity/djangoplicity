@@ -318,8 +318,15 @@ class S3ContentServer(ContentServer):
         return AccessTagControl.PUBLIC.value
     
     def is_publicly_accessible(self, resource):
-        """Return True if the resource is public, False otherwise."""
-        return self.get_resource_privacy(resource) == AccessTagControl.PUBLIC.value
+        """
+        Return True if the resource is public, False if it is private, and None
+        if the privacy could not be determined (e.g. the object is missing or
+        has no Access tag). Callers must not treat None as private.
+        """
+        access_tag = self.get_resource_privacy(resource)
+        if access_tag is None:
+            return None
+        return access_tag == AccessTagControl.PUBLIC.value
 
     def sync_resources(self, instance, formats=None, *args, **kwargs):
         from djangoplicity.archives.utils import get_all_possible_instance_formats
