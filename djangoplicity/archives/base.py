@@ -51,6 +51,10 @@ __all__ = ( 'ArchiveModel', 'post_rename' )
 
 post_rename = Signal(providing_args=['old_pk', 'new_pk'])
 
+# Seconds to wait before re-tagging the resources in the content server after
+# the publishing state of an archive changed
+PRIVACY_UPDATE_COUNTDOWN = 15
+
 
 def add_model_field( attrs, cls, name, *args, **kwargs ):
     if name in attrs:
@@ -420,11 +424,11 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         if any(changed.values()):
             from djangoplicity.contentserver.tasks import update_resource_privacy
             from django.db import transaction
-            print("Changed: %s" % changed)
-            transaction.on_commit(lambda: update_resource_privacy.delay(
-                self._meta.app_label,
-                self._meta.model_name,
-                self.pk
+            # The countdown gives the resources time to be uploaded to the
+            # content server before we re-tag them
+            transaction.on_commit(lambda: update_resource_privacy.apply_async(
+                args=[self._meta.app_label, self._meta.model_name, self.pk],
+                countdown=PRIVACY_UPDATE_COUNTDOWN,
             ))
     
     def has_changed(self, fields):
