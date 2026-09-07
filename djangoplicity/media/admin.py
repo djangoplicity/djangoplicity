@@ -53,7 +53,8 @@ from djangoplicity.media.consts import IMAGE_AVM_FORMATS
 from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
         VideoContact, Video, VideoSubtitle, ImageColor, Color, PictureOfTheWeek, \
         ImageComparison, ImageProxy, ImageComparisonProxy, PictureOfTheWeekProxy, \
-        VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, VideoScript
+        VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, VideoScript, \
+        MultiwavelengthImage, MultiwavelengthImageBand
 from djangoplicity.metadata.models import Category, TaggingStatus
 from djangoplicity.releases.admin import releaseinlineadmin
 from django import forms
@@ -757,6 +758,37 @@ ImageComparisonAdmin.inlines += [ImageComparisonProxyInlineAdmin]
 
 
 # ============================================
+# Multiwavelength image admin
+# ============================================
+class MultiwavelengthImageBandInlineAdmin( admin.TabularInline ):
+    model = MultiwavelengthImageBand
+    extra = 3
+    ordering = ( 'order', )
+    raw_id_fields = ( 'image', )
+
+
+class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, ArchiveAdmin ):
+    list_display = ( 'id', 'title', 'published', 'priority', 'release_date', 'embargo_date', view_link( 'multiwavelength' ) )
+    list_filter = ( 'published', 'last_modified', 'created', 'release_date', 'embargo_date', )
+    list_editable = ( 'published', 'priority', )
+    search_fields = ( 'id', 'title', 'subtitle', 'description', 'credit', )
+    date_hierarchy = 'release_date'
+    fieldsets = (
+                    ( None, {'fields': ( 'id', 'priority' ) } ),
+                    ( 'Publishing', {'fields': ( 'published', ( 'release_date', 'embargo_date' ), ), } ),
+                    ( 'Content', {'fields': ( 'title', 'subtitle', 'description', 'credit' ), } ),
+                )
+    ordering = ( '-release_date', '-id', )
+    richtext_fields = ( 'description', 'credit', )
+    actions = ['action_toggle_published']
+    inlines = [MultiwavelengthImageBandInlineAdmin]
+
+    def get_queryset( self, request ):
+        qs = super( MultiwavelengthImageAdmin, self ).get_queryset( request )
+        return ArchiveAdmin.limit_access( self, request, qs )
+
+
+# ============================================
 # Ingest release inline admins into model admins
 # ============================================
 releaseinlineadmin( ImageAdmin, 'ReleaseImage' )
@@ -785,6 +817,7 @@ def register_with_admin( admin_site ):
     admin_site.register( ImageColor, ImageColorAdmin )
     admin_site.register( PictureOfTheWeek, PictureOfTheWeekAdmin )
     admin_site.register( ImageComparison, ImageComparisonAdmin )
+    admin_site.register( MultiwavelengthImage, MultiwavelengthImageAdmin )
 
 
 # Register with default admin site
