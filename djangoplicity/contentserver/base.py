@@ -272,8 +272,8 @@ class S3ContentServer(ContentServer):
 
     def get_resource_privacy(self, resource):
         """
-        Return a boolean indicating whether the resource is private in the
-        content server. Returns None if privacy cannot be determined.
+        Return the Access tag ('Public'/'Private') set on the resource in the
+        content server, or None if the privacy cannot be determined.
         """
         path = None
         if hasattr(resource, 'path'):
@@ -287,7 +287,7 @@ class S3ContentServer(ContentServer):
             return None
 
         try:
-            if resource.format == 'zoomable':
+            if getattr(resource, 'format', None) == 'zoomable':
                 dir_path = f"{remote_path}/" if not remote_path.endswith('/') else remote_path
                 paginator = self.s3_client.get_paginator('list_objects_v2')
                 pages = paginator.paginate(
