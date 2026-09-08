@@ -361,63 +361,6 @@ def update_resource_privacy(app_label, model_name, pk):
         logger.warning("Exception: %s." % e)
 
 
-@task
-def apply_pending_privacy_updates(hours=25):
-    '''
-    Re-apply the resource privacy of the archives whose embargo or release date
-    has just passed.
-
-    ArchiveModel.set_embargo_date_task()/set_release_date_task() only schedule
-    embargo_release_date_task for dates less than 4 weeks away, so archives
-    published further in the future would never have their privacy updated.
-    This task catches them up and is meant to be run periodically (e.g. hourly
-    with hours=2, so that a skipped run is picked up by the next one). It has to
-    be added to the CELERY_BEAT_SCHEDULE of the project using djangoplicity,
-    like cleanup_old_local_resources_task and check_content_server_resources.
-    '''
-    from djangoplicity.contentserver.models import ContentDeliveryModel
-    from django.db.models import Q
-
-    now = datetime.now()
-    since = now - timedelta(hours=hours)
-
-    for model, _options in get_archives():
-        if not issubclass(model, ContentDeliveryModel):
-            continue
-
-        # Not every archive has both publishing dates, and some have neither,
-        # in which case there is nothing that can have expired
-        field_names = [field.name for field in model._meta.get_fields()]
-        date_fields = [
-            name for name in ('release_date', 'embargo_date') if name in field_names
-        ]
-
-        if not date_fields:
-            continue
-
-        # Archives whose release or embargo date falls in the (since, now] window
-        just_passed = Q()
-        for date_field in date_fields:
-            just_passed |= Q(**{
-                '%s__gt' % date_field: since,
-                '%s__lte' % date_field: now,
-            })
-
-        # An unpublished archive is private whatever its dates say, so none of
-        # them can trigger a privacy change for it
-        filters = {'content_server_ready': True}
-        if 'published' in field_names:
-            filters['published'] = True
-
-        app_label = model._meta.app_label
-        model_name = model._meta.model_name
-
-        for archive in model.objects.filter(just_passed, **filters):
-            logger.info('Applying pending privacy update for %s.%s: %s',
-                app_label, model_name, archive.pk)
-            update_resource_privacy.delay(app_label, model_name, archive.pk)
-
-
 @task()
 def cleanup_old_local_resources_task():
     local_resources_cleanup_weeks = getattr(settings, 'LOCAL_RESOURCES_CLEANUP_WEEKS', 4)
