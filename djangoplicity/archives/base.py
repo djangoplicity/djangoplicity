@@ -52,6 +52,7 @@ __all__ = ( 'ArchiveModel', 'post_rename' )
 post_rename = Signal(providing_args=['old_pk', 'new_pk'])
 
 
+
 def add_model_field( attrs, cls, name, *args, **kwargs ):
     if name in attrs:
         raise ImproperlyConfigured( _( 'Cannot add model field to Model from Archive - field name %s already exists' % name ) )
