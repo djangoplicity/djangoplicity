@@ -35,6 +35,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.db.models import Q
 from django.forms import ModelForm
+from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.encoding import force_text
@@ -55,6 +56,7 @@ from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
         ImageComparison, ImageProxy, ImageComparisonProxy, PictureOfTheWeekProxy, \
         VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, VideoScript, \
         MultiwavelengthImage, MultiwavelengthImageBand
+from djangoplicity.media.models.multiwavelength import WavelengthBand
 from djangoplicity.metadata.models import Category, TaggingStatus
 from djangoplicity.releases.admin import releaseinlineadmin
 from django import forms
@@ -760,11 +762,47 @@ ImageComparisonAdmin.inlines += [ImageComparisonProxyInlineAdmin]
 # ============================================
 # Multiwavelength image admin
 # ============================================
+class MultiwavelengthImageBandInlineFormSet( BaseInlineFormSet ):
+    """
+    Shows one row per band of the spectrum, in spectrum order, with the band
+    already filled in: the editor only picks an image (and optionally a title,
+    a description and the caption side) for the bands the object has. Rows
+    left without an image are unchanged extra forms, so Django skips them.
+    """
+    def __init__( self, *args, **kwargs ):
+        super( MultiwavelengthImageBandInlineFormSet, self ).__init__( *args, **kwargs )
+        existing = set( self.queryset.values_list( 'band', flat=True ) )
+        self.initial_extra = [
+            { 'band': band } for band in WavelengthBand.values if band not in existing ]
+
+    def get_queryset( self ):
+        qs = super( MultiwavelengthImageBandInlineFormSet, self ).get_queryset()
+        return sorted( qs, key=lambda b: b.spectrum_index )
+
+    def total_form_count( self ):
+        # Exactly one row per band: existing ones plus the missing ones.
+        if self.is_bound:
+            return super( MultiwavelengthImageBandInlineFormSet, self ).total_form_count()
+        return min( len( self.get_queryset() ) + len( self.initial_extra ), self.max_num )
+
+
 class MultiwavelengthImageBandInlineAdmin( admin.TabularInline ):
     model = MultiwavelengthImageBand
-    extra = 3
-    ordering = ( 'order', )
+    formset = MultiwavelengthImageBandInlineFormSet
+    fields = ( 'band', 'image', 'caption_align', 'title', 'description', )
     raw_id_fields = ( 'image', )
+    max_num = len( WavelengthBand.values )
+    extra = len( WavelengthBand.values )
+
+    def formfield_for_dbfield( self, db_field, request, **kwargs ):
+        field = super( MultiwavelengthImageBandInlineAdmin, self ).formfield_for_dbfield( db_field, request, **kwargs )
+        if db_field.name == 'band':
+            # The band is fixed per row: show it, but don't let it be changed.
+            field.widget = forms.Select( choices=field.choices, attrs={ 'class': 'mwl-band-fixed', 'style': 'pointer-events: none; background: transparent;' } )
+            field.widget.attrs['tabindex'] = '-1'
+        elif db_field.name == 'description':
+            field.widget = forms.Textarea( attrs={ 'rows': 3, 'cols': 40 } )
+        return field
 
 
 class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, ArchiveAdmin ):
@@ -776,7 +814,7 @@ class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanH
     fieldsets = (
                     ( None, {'fields': ( 'id', 'priority' ) } ),
                     ( 'Publishing', {'fields': ( 'published', ( 'release_date', 'embargo_date' ), ), } ),
-                    ( 'Content', {'fields': ( 'title', 'subtitle', 'description', 'credit' ), } ),
+                    ( 'Content', {'fields': ( 'title', 'subtitle', 'main_band', 'description', 'credit' ), } ),
                 )
     ordering = ( '-release_date', '-id', )
     richtext_fields = ( 'description', 'credit', )
