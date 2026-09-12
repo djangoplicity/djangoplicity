@@ -114,10 +114,10 @@ class MultiwavelengthImage( ArchiveModel, models.Model ):
     @property
     def main_visual( self ):
         """
-        {% opengraph_image %} expects a main_visual attribute. Use the first
-        band's image.
+        {% opengraph_image %} expects a main_visual attribute. Use the image
+        of the main band.
         """
-        band = self.bands.first()
+        band = self.main_band_object()
         return band.image if band else None
 
 
