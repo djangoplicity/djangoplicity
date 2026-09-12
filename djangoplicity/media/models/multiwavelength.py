@@ -129,7 +129,7 @@ class MultiwavelengthImageBand( models.Model ):
     """
     multiwavelength_image = models.ForeignKey( MultiwavelengthImage,
         related_name='bands', on_delete=models.CASCADE )
-    band = models.CharField( max_length=16, choices=WAVELENGTH_BAND_CHOICES,
+    band = models.CharField( max_length=16, choices=WavelengthBand.choices,
         db_index=True )
     image = TranslationForeignKey( Image, verbose_name=_('Related Image'),
         only_sources=True, on_delete=models.CASCADE )
