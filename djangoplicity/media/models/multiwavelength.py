@@ -111,6 +111,26 @@ class MultiwavelengthImage( ArchiveModel, models.Model ):
     def get_absolute_url( self ):
         return reverse( 'multiwavelength_detail', args=[str( self.id )] )
 
+    def ordered_bands( self ):
+        """
+        The bands of this object sorted along the spectrum, from gamma-ray to
+        radio. Sorting is done in Python so a prefetch of `bands__image` is
+        reused instead of triggering another query.
+        """
+        bands = [b for b in self.bands.all() if b.band in WAVELENGTH_BAND_ORDER]
+        return sorted( bands, key=lambda b: b.spectrum_index )
+
+    def main_band_object( self ):
+        """
+        The band selected as main in the admin, or the shortest-wavelength
+        band the object has if that one is missing.
+        """
+        bands = self.ordered_bands()
+        for band in bands:
+            if band.band == self.main_band:
+                return band
+        return bands[0] if bands else None
+
     @property
     def main_visual( self ):
         """
