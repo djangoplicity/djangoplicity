@@ -38,3 +38,5 @@ from djangoplicity.media.models.comparisons import ImageComparison, \
     ImageComparisonProxy
 from djangoplicity.media.models.potws import PictureOfTheWeek, \
     PictureOfTheWeekProxy
+from djangoplicity.media.models.multiwavelength import MultiwavelengthImage, \
+    MultiwavelengthImageBand, WavelengthBand, CaptionAlign

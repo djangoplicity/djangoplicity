@@ -29,11 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
-from djangoplicity.media.options.images import ImageOptions
-from djangoplicity.media.options.videos import VideoOptions
-from djangoplicity.media.options.videos import VideoSubtitleOptions
-from djangoplicity.media.options.videos import VideoAudioTrackOptions
-from djangoplicity.media.options.videos import VideoBroadcastAudioTrackOptions
-from djangoplicity.media.options.comparisons import ImageComparisonOptions
-from djangoplicity.media.options.potws import PictureOfTheWeekOptions
-from djangoplicity.media.options.multiwavelength import MultiwavelengthImageOptions
+from djangoplicity.archives.urls import urlpatterns_for_options
+from djangoplicity.media.options import MultiwavelengthImageOptions
+
+urlpatterns = urlpatterns_for_options( MultiwavelengthImageOptions )
