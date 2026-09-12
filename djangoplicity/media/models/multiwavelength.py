@@ -83,6 +83,9 @@ class MultiwavelengthImage( ArchiveModel, models.Model ):
     description = archive_fields.DescriptionField()
     credit = metadatafields.AVMCreditField()
     priority = archive_fields.PriorityField( default=0 )
+    main_band = models.CharField( max_length=16, choices=WavelengthBand.choices,
+        default=WavelengthBand.VISIBLE, verbose_name=_('Main band'),
+        help_text=_('Band shown when the page opens and used as the main visual of the object') )
 
     class Archive:
         # No resources of its own - the visuals live in the Image archive.
