@@ -35,6 +35,8 @@ from django.utils.translation import ugettext_noop as _
 from djangoplicity.archives.contrib import security
 from djangoplicity.archives.contrib.browsers import NormalBrowser, \
     ViewAllBrowser
+from djangoplicity.archives.contrib.info import admin_edit_for_site, \
+    priority, published, release_date
 from djangoplicity.archives.contrib.queries import AllPublicQuery, \
     EmbargoQuery, StagingQuery, UnpublishedQuery
 from djangoplicity.archives.options import ArchiveOptions
@@ -47,6 +49,18 @@ class MultiwavelengthImageOptions( ArchiveOptions ):
     prefetch_related = ( 'bands__image', )
 
     search_fields = ( 'id', 'title', 'subtitle', 'description', 'credit', )
+
+    info = (
+        ( _( "About the Page" ), { 'fields': ( 'id', release_date, ), } ),
+    )
+
+    admin = (
+        ( _( "Admin" ), {
+            'links': ( admin_edit_for_site( 'admin_site' ), ),
+            'fields': ( published, 'release_date', 'embargo_date',
+                        'last_modified', 'created', priority ),
+        } ),
+    )
 
     class Queries( object ):
         default = AllPublicQuery( browsers=( 'normal', 'viewall' ), verbose_name=_("Multiwavelength Universe"), feed_name="default" )
