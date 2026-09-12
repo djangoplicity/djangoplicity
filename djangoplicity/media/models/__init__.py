@@ -39,4 +39,4 @@ from djangoplicity.media.models.comparisons import ImageComparison, \
 from djangoplicity.media.models.potws import PictureOfTheWeek, \
     PictureOfTheWeekProxy
 from djangoplicity.media.models.multiwavelength import MultiwavelengthImage, \
-    MultiwavelengthImageBand, WAVELENGTH_BAND_CHOICES
+    MultiwavelengthImageBand, WavelengthBand, CaptionAlign
