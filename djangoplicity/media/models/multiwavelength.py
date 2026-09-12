@@ -52,11 +52,21 @@ WAVELENGTH_BAND_CHOICES = (
     ('x-ray', _('X-ray')),
     ('ultraviolet', _('Ultraviolet')),
     ('visible', _('Visible light')),
-    ('infrared', _('Infrared')),
-    ('millimeter', _('Millimeter')),
-    ('microwave', _('Microwave')),
-    ('radio', _('Radio')),
-)
+    ('infrared', _('Infrared')
+    MICROWAVE = 'microwave', _('Microwave')
+    RADIO = 'radio', _('Radio')
+
+
+# Position of every band on the spectrum, shortest wavelength first. Bands are
+# always presented in this order, so MultiwavelengthImageBand carries no order
+# field of its own.
+WAVELENGTH_BAND_ORDER = dict(
+    ( value, index ) for index, value in enumerate( WavelengthBand.values ) )
+
+
+class CaptionAlign( models.TextChoices ):
+    LEFT = 'left', _('Left')
+    RIGHT = 'right', _('Right')
 
 
 @python_2_unicode_compatible
