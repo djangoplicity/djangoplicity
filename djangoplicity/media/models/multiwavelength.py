@@ -47,12 +47,12 @@ from djangoplicity.translation.models import TranslationForeignKey
 # ImageExposure.spectral_band), but it has no Microwave band and calls the
 # visible band "Optical". The keys below are kept close to the AVM values so
 # the two can be mapped later on if needed.
-WAVELENGTH_BAND_CHOICES = (
-    ('gamma-ray', _('Gamma-ray')),
-    ('x-ray', _('X-ray')),
-    ('ultraviolet', _('Ultraviolet')),
-    ('visible', _('Visible light')),
-    ('infrared', _('Infrared')
+class WavelengthBand( models.TextChoices ):
+    GAMMA_RAY = 'gamma-ray', _('Gamma-ray')
+    X_RAY = 'x-ray', _('X-ray')
+    ULTRAVIOLET = 'ultraviolet', _('Ultraviolet')
+    VISIBLE = 'visible', _('Visible light')
+    INFRARED = 'infrared', _('Infrared')
     MICROWAVE = 'microwave', _('Microwave')
     RADIO = 'radio', _('Radio')
 
