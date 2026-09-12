@@ -135,17 +135,21 @@ class MultiwavelengthImageBand( models.Model ):
         only_sources=True, on_delete=models.CASCADE )
     title = models.CharField( max_length=255, blank=True )
     description = models.TextField( blank=True )
-    order = models.PositiveSmallIntegerField( default=0,
-        help_text=_('Position of the band on the spectrum bar') )
+    caption_align = models.CharField( max_length=5, choices=CaptionAlign.choices,
+        default=CaptionAlign.LEFT, help_text=_('Side of the image where the band text is shown') )
 
     class Meta:
-        ordering = ( 'order', )
         unique_together = ( 'multiwavelength_image', 'band' )
         verbose_name = _('Wavelength band')
         app_label = 'media'
 
     def __str__( self ):
         return "%s: %s" % ( self.multiwavelength_image_id, self.get_band_display() )
+
+    @property
+    def spectrum_index( self ):
+        """ Position of the band on the spectrum (0 = gamma-ray). """
+        return WAVELENGTH_BAND_ORDER.get( self.band, len( WAVELENGTH_BAND_ORDER ) )
 
     @property
     def credit( self ):
