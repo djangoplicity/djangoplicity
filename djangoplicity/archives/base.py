@@ -597,6 +597,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         # Revoke the previous task if any
         if self.embargo_task_id:  # pylint: disable=E0203
             revoke(self.embargo_task_id)  # pylint: disable=E0203
+            self.embargo_task_id = None
 
         if self.embargo_date and self.embargo_date < one_month:
             eta = self.embargo_date
@@ -625,6 +626,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         # Revoke the previous task if any
         if self.release_task_id:  # pylint: disable=E0203
             revoke(self.release_task_id)  # pylint: disable=E0203
+            self.release_task_id = None
 
         if self.release_date and self.release_date < one_month:
             eta = self.release_date
