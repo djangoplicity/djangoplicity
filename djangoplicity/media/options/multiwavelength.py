@@ -36,27 +36,35 @@ from djangoplicity.archives.contrib import security
 from djangoplicity.archives.contrib.browsers import NormalBrowser, \
     ViewAllBrowser
 from djangoplicity.archives.contrib.info import admin_edit_for_site, \
-    priority, published, release_date
+    admin_add_translation, priority, published, release_date
 from djangoplicity.archives.contrib.queries import AllPublicQuery, \
     EmbargoQuery, StagingQuery, UnpublishedQuery
 from djangoplicity.archives.options import ArchiveOptions
+from djangoplicity.media.info import object_id
+from djangoplicity.media.models import MultiwavelengthImageProxy
 
 
 class MultiwavelengthImageOptions( ArchiveOptions ):
     urlname_prefix = 'multiwavelength'
     template_name = 'archives/multiwavelength/detail.html'
 
-    prefetch_related = ( 'bands__image', )
+    # Prefetching doesn't follow translations to their source (see
+    # ArchiveOptions.prefetch_related), so the source bands are prefetched
+    # through 'source' for translated objects.
+    prefetch_related = ( 'bands__image', 'source__bands__image', 'band_translations', )
 
     search_fields = ( 'id', 'title', 'subtitle', 'description', 'credit', )
 
     info = (
-        ( _( "About the Page" ), { 'fields': ( 'id', release_date, ), } ),
+        ( _( "About the Page" ), { 'fields': ( object_id, release_date, ), } ),
     )
 
     admin = (
         ( _( "Admin" ), {
-            'links': ( admin_edit_for_site( 'admin_site' ), ),
+            'links': (
+                admin_edit_for_site( 'admin_site', translation_proxy=MultiwavelengthImageProxy ),
+                admin_add_translation( 'admin_site', translation_proxy=MultiwavelengthImageProxy ),
+            ),
             'fields': ( published, 'release_date', 'embargo_date',
                         'last_modified', 'created', priority ),
         } ),
