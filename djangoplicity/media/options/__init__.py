@@ -36,3 +36,4 @@ from djangoplicity.media.options.videos import VideoAudioTrackOptions
 from djangoplicity.media.options.videos import VideoBroadcastAudioTrackOptions
 from djangoplicity.media.options.comparisons import ImageComparisonOptions
 from djangoplicity.media.options.potws import PictureOfTheWeekOptions
+from djangoplicity.media.options.multiwavelength import MultiwavelengthImageOptions

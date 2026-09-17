@@ -35,6 +35,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.db.models import Q
 from django.forms import ModelForm
+from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.encoding import force_text
@@ -53,7 +54,10 @@ from djangoplicity.media.consts import IMAGE_AVM_FORMATS
 from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
         VideoContact, Video, VideoSubtitle, ImageColor, Color, PictureOfTheWeek, \
         ImageComparison, ImageProxy, ImageComparisonProxy, PictureOfTheWeekProxy, \
-        VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, VideoScript
+        VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, VideoScript, \
+        MultiwavelengthImage, MultiwavelengthImageBand, \
+        MultiwavelengthImageBandTranslation, MultiwavelengthImageProxy
+from djangoplicity.media.models.multiwavelength import WavelengthBand
 from djangoplicity.metadata.models import Category, TaggingStatus
 from djangoplicity.releases.admin import releaseinlineadmin
 from django import forms
@@ -757,6 +761,152 @@ ImageComparisonAdmin.inlines += [ImageComparisonProxyInlineAdmin]
 
 
 # ============================================
+# Multiwavelength image admin
+# ============================================
+class MultiwavelengthImageBandInlineFormSet( BaseInlineFormSet ):
+    """
+    Shows one row per band of the spectrum, in spectrum order, with the band
+    already filled in: the editor only picks an image (and optionally a title,
+    a description and the caption side) for the bands the object has. Rows
+    left without an image are unchanged extra forms, so Django skips them.
+    """
+    def __init__( self, *args, **kwargs ):
+        super( MultiwavelengthImageBandInlineFormSet, self ).__init__( *args, **kwargs )
+        existing = set( self.queryset.values_list( 'band', flat=True ) )
+        self.initial_extra = [
+            { 'band': band } for band in WavelengthBand.values if band not in existing ]
+
+    def get_queryset( self ):
+        qs = super( MultiwavelengthImageBandInlineFormSet, self ).get_queryset()
+        return sorted( qs, key=lambda b: b.spectrum_index )
+
+    def total_form_count( self ):
+        # Exactly one row per band: existing ones plus the missing ones.
+        if self.is_bound:
+            return super( MultiwavelengthImageBandInlineFormSet, self ).total_form_count()
+        return min( len( self.get_queryset() ) + len( self.initial_extra ), self.max_num )
+
+
+class MultiwavelengthImageBandInlineAdmin( admin.TabularInline ):
+    model = MultiwavelengthImageBand
+    formset = MultiwavelengthImageBandInlineFormSet
+    fields = ( 'band', 'image', 'caption_align', 'title', 'description', )
+    raw_id_fields = ( 'image', )
+    max_num = len( WavelengthBand.values )
+    extra = len( WavelengthBand.values )
+
+    def formfield_for_dbfield( self, db_field, request, **kwargs ):
+        field = super( MultiwavelengthImageBandInlineAdmin, self ).formfield_for_dbfield( db_field, request, **kwargs )
+        if db_field.name == 'band':
+            # The band is fixed per row: show it, but don't let it be changed.
+            field.widget = forms.Select( choices=field.choices, attrs={ 'class': 'mwl-band-fixed', 'style': 'pointer-events: none; background: transparent;' } )
+            field.widget.attrs['tabindex'] = '-1'
+        elif db_field.name == 'description':
+            field.widget = forms.Textarea( attrs={ 'rows': 3, 'cols': 40 } )
+        return field
+
+
+class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, ArchiveAdmin ):
+    list_display = ( 'id', 'title', 'published', 'priority', 'release_date', 'embargo_date', view_link( 'multiwavelength' ) )
+    list_filter = ( 'published', 'last_modified', 'created', 'release_date', 'embargo_date', )
+    list_editable = ( 'published', 'priority', )
+    search_fields = ( 'id', 'title', 'subtitle', 'description', 'credit', )
+    date_hierarchy = 'release_date'
+    fieldsets = (
+                    ( None, {'fields': ( 'id', 'priority' ) } ),
+                    ( _(u'Language'), {'fields': ( 'lang', ) } ),
+                    ( 'Publishing', {'fields': ( 'published', ( 'release_date', 'embargo_date' ), ), } ),
+                    ( 'Content', {'fields': ( 'title', 'subtitle', 'main_band', 'description', 'credit' ), } ),
+                )
+    ordering = ( '-release_date', '-id', )
+    richtext_fields = ( 'description', 'credit', )
+    actions = ['action_toggle_published']
+    inlines = [MultiwavelengthImageBandInlineAdmin]
+
+    def get_queryset( self, request ):
+        qs = super( MultiwavelengthImageAdmin, self ).get_queryset( request )
+        return ArchiveAdmin.limit_access( self, request, qs )
+
+
+# ============================================
+# Multiwavelength image proxy admin
+# ============================================
+class MultiwavelengthImageProxyInlineForm( ModelForm ):
+    class Meta:
+        model = MultiwavelengthImageProxy
+        fields = ( 'id', 'published', 'translation_ready', 'lang', )
+
+
+class MultiwavelengthImageProxyInlineAdmin( admin.TabularInline ):
+    model = MultiwavelengthImageProxy
+    extra = 0
+    form = MultiwavelengthImageProxyInlineForm
+
+
+class MultiwavelengthImageBandTranslationInlineFormSet( MultiwavelengthImageBandInlineFormSet ):
+    """
+    Same rows as the source bands inline - one per band of the spectrum, with
+    the band already filled in - so the translator only types the title and
+    the description. When the source is known (an existing translation, or the
+    "Add translation" link, which passes ?source=<id>) its band texts are shown
+    as placeholders. Rows left empty are skipped and fall back to the source.
+    """
+    # Source given in the URL of the add view, set by the inline admin.
+    source = None
+
+    def add_fields( self, form, index ):
+        super( MultiwavelengthImageBandTranslationInlineFormSet, self ).add_fields( form, index )
+        source = self.instance.source if self.instance.source_id else self.source
+        if source is None:
+            return
+
+        if not hasattr( self, '_source_bands' ):
+            self._source_bands = dict( ( b.band, b ) for b in source.bands.all() )
+        band = self._source_bands.get( form.initial.get( 'band' ) )
+        if band is not None:
+            form.fields['title'].widget.attrs['placeholder'] = band.title
+            form.fields['description'].widget.attrs['placeholder'] = band.description
+
+
+class MultiwavelengthImageBandTranslationInlineAdmin( MultiwavelengthImageBandInlineAdmin ):
+    model = MultiwavelengthImageBandTranslation
+    fk_name = 'translation'
+    formset = MultiwavelengthImageBandTranslationInlineFormSet
+    fields = ( 'band', 'title', 'description', )
+    raw_id_fields = ()
+
+    def get_formset( self, request, obj=None, **kwargs ):
+        formset = super( MultiwavelengthImageBandTranslationInlineAdmin, self ).get_formset( request, obj, **kwargs )
+        if obj is None and request.GET.get( 'source' ):
+            formset.source = MultiwavelengthImage.objects.filter( pk=request.GET['source'] ).first()
+        return formset
+
+
+class MultiwavelengthImageProxyAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, TranslationDuplicateAdmin, SyncTranslationAdmin, ArchiveAdmin ):
+    list_display = ( 'id', 'title', 'published', 'translation_ready', 'lang', 'source', 'last_modified', view_link( 'multiwavelength', translation=True ) )
+    list_filter = ( 'lang', 'published', 'last_modified', 'created', 'release_date', 'embargo_date', )
+    list_editable = ( 'title', 'translation_ready', )
+    search_fields = MultiwavelengthImageAdmin.search_fields
+    fieldsets = (
+                    ( 'Language', {'fields': ( 'lang', 'source', 'translation_ready', ) } ),
+                    ( None, {'fields': ( 'id', ) } ),
+                    ( 'Publishing', {'fields': ( 'published', ), } ),
+                    ( 'Content', {'fields': ( 'title', 'subtitle', 'description', 'credit', ), } ),
+                )
+    ordering = MultiwavelengthImageAdmin.ordering
+    richtext_fields = MultiwavelengthImageAdmin.richtext_fields
+    raw_id_fields = ( 'source', )
+    readonly_fields = ( 'id', )
+    inlines = [MultiwavelengthImageBandTranslationInlineAdmin]
+
+    def get_queryset( self, request ):
+        return super( MultiwavelengthImageProxyAdmin, self ).get_queryset( request ).select_related('source')
+
+
+MultiwavelengthImageAdmin.inlines += [MultiwavelengthImageProxyInlineAdmin]
+
+
+# ============================================
 # Ingest release inline admins into model admins
 # ============================================
 releaseinlineadmin( ImageAdmin, 'ReleaseImage' )
@@ -776,6 +926,7 @@ def register_with_admin( admin_site ):
         admin_site.register( VideoProxy, VideoProxyAdmin )
         admin_site.register( PictureOfTheWeekProxy, PictureOfTheWeekProxyAdmin )
         admin_site.register( ImageComparisonProxy, ImageComparisonProxyAdmin )
+        admin_site.register( MultiwavelengthImageProxy, MultiwavelengthImageProxyAdmin )
     admin_site.register( Video, VideoAdmin )
     admin_site.register( VideoSubtitle, VideoSubtitleAdmin )
     admin_site.register( VideoAudioTrack, VideoAudioTrackAdmin )
@@ -785,6 +936,7 @@ def register_with_admin( admin_site ):
     admin_site.register( ImageColor, ImageColorAdmin )
     admin_site.register( PictureOfTheWeek, PictureOfTheWeekAdmin )
     admin_site.register( ImageComparison, ImageComparisonAdmin )
+    admin_site.register( MultiwavelengthImage, MultiwavelengthImageAdmin )
 
 
 # Register with default admin site

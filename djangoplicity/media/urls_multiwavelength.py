@@ -29,15 +29,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE
 
-from djangoplicity.media.models.images import Color, Image, ImageColor, \
-    ImageContact, ImageExposure, Exposure, ImageProxy
-from djangoplicity.media.models.videos import Video, VideoContact, \
-    VideoSubtitle, VideoProxy, VideoAudioTrack, VideoBroadcastAudioTrack, \
-    VideoScript
-from djangoplicity.media.models.comparisons import ImageComparison, \
-    ImageComparisonProxy
-from djangoplicity.media.models.potws import PictureOfTheWeek, \
-    PictureOfTheWeekProxy
-from djangoplicity.media.models.multiwavelength import MultiwavelengthImage, \
-    MultiwavelengthImageBand, MultiwavelengthImageBandTranslation, \
-    MultiwavelengthImageProxy, WavelengthBand, CaptionAlign
+from djangoplicity.archives.urls import urlpatterns_for_options
+from djangoplicity.media.options import MultiwavelengthImageOptions
+
+urlpatterns = urlpatterns_for_options( MultiwavelengthImageOptions )
