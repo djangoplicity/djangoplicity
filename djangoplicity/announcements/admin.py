@@ -144,7 +144,7 @@ class AnnouncementAdmin(DjangoplicityModelAdmin, CleanHTMLAdmin, AnnouncementDis
                     ( None, {'fields': ( 'id', ('announcement_type', )), } ),
                     ( 'Language', {'fields': ( 'lang', ) } ),
                     ( 'Publishing', {'fields': ( 'published', 'featured', 'is_e_and_e', 'release_date', 'embargo_date'  ), } ),
-                    ('Programs', {'fields': ('programs',)}),
+                    ('Programs', {'fields': ('programs', 'program_logo_lineup' )}),
                     ( 'Archive', {'fields': ( 'title', 'subtitle', 'description', 'links', 'contacts' ), } ),
                 )
     inlines = [
