@@ -185,22 +185,23 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
 
     def ordered_bands( self ):
         """
-        The bands of this object sorted along the spectrum, from gamma-ray to
-        radio. Sorting is done in Python so a prefetch of `bands__image` (or
-        `source__bands__image` for translations) is reused instead of
-        triggering another query.
+        The images of this object along the spectrum, from the highest
+        frequency (gamma-ray) to the lowest (radio). Several images may share
+        a band. The order comes from MultiwavelengthImageBand.Meta.ordering,
+        which the prefetch of `bands__image` (or `source__bands__image` for
+        translations) carries with it, so no sorting is needed here.
 
         On a translation the bands come from the source, with the title and
         description replaced by the translated ones where they have been
         filled in. The source bands are copied, not modified, so the source
         instances stay untouched.
         """
-        bands = [b for b in self.get_source().bands.all() if b.band in WAVELENGTH_BAND_ORDER]
+        bands = [b for b in self.get_source().bands.all() if b.frequency]
 
         if self.is_translation():
-            translated = dict( ( t.band, t ) for t in self.band_translations.all() )
+            translated = dict( ( t.band_id, t ) for t in self.band_translations.all() )
             for i, band in enumerate( bands ):
-                t = translated.get( band.band )
+                t = translated.get( band.pk )
                 if t is None:
                     continue
                 band = copy.copy( band )
@@ -210,7 +211,7 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
                     band.description = t.description
                 bands[i] = band
 
-        return sorted( bands, key=lambda b: b.spectrum_index )
+        return bands
 
     def main_band_object( self ):
         """
