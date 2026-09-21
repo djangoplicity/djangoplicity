@@ -143,9 +143,6 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
     description = archive_fields.DescriptionField()
     credit = metadatafields.AVMCreditField()
     priority = archive_fields.PriorityField( default=0 )
-    main_band = models.CharField( max_length=16, choices=WavelengthBand.choices,
-        default=WavelengthBand.VISIBLE, verbose_name=_('Main band'),
-        help_text=_('Band shown when the page opens and used as the main visual of the object') )
 
     class Translation:
         fields = ['title', 'subtitle', 'description', 'credit', ]
