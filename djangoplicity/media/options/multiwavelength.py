@@ -76,7 +76,7 @@ class MultiwavelengthImageOptions( ArchiveOptions ):
         staging = StagingQuery( browsers=( 'normal', 'viewall' ), verbose_name=_("Multiwavelength Universe (staging)") )
 
     class Browsers( object ):
-        normal = NormalBrowser( paginate_by=20 )
+        normal = NormalBrowser( paginate_by=52 )
         viewall = ViewAllBrowser()
 
     class ResourceProtection( object ):
