@@ -358,3 +358,15 @@ SPLIT_AUDIO_TYPES = (
     ('712surround', '7.1.2 Surround'),
     ('audio_description', 'Audio Description'),
 )
+
+#
+# Multiwavelength: frequency to wavelength conversion and frequency labels
+#
+SPEED_OF_LIGHT = 299792458.0  # m/s
+
+# Convert each number into its superscript unicode character. This is used to display the frequency units in a more compact form.
+SUPERSCRIPT_DIGITS = {
+    u'-': u'\u207b', u'0': u'\u2070', u'1': u'\u00b9', u'2': u'\u00b2',
+    u'3': u'\u00b3', u'4': u'\u2074', u'5': u'\u2075', u'6': u'\u2076',
+    u'7': u'\u2077', u'8': u'\u2078', u'9': u'\u2079',
+}
