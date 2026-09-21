@@ -274,12 +274,31 @@ class MultiwavelengthImageBand( models.Model ):
         ]
 
     def __str__( self ):
-        return "%s: %s" % ( self.multiwavelength_image_id, self.get_band_display() )
+        return "%s: %s (%.3g Hz)" % (
+            self.multiwavelength_image_id, self.get_band_display(), self.frequency or 0 )
 
     @property
-    def spectrum_index( self ):
-        """ Position of the band on the spectrum (0 = gamma-ray). """
-        return WAVELENGTH_BAND_ORDER.get( self.band, len( WAVELENGTH_BAND_ORDER ) )
+    def band( self ):
+        """ The band of the spectrum this frequency falls into. """
+        return band_for_frequency( self.frequency )
+
+    def get_band_display( self ):
+        """
+        Human readable name of the band. `band` is no longer a field with
+        choices, so Django does not generate this helper any more, but the
+        templates still call it.
+        """
+        return WAVELENGTH_BAND_LABELS.get( self.band, '' )
+
+    @property
+    def wavelength( self ):
+        """ The wavelength of the observation, in metres. """
+        return wavelength_for_frequency( self.frequency )
+
+    @property
+    def frequency_display( self ):
+        """ The frequency as the page and the admin show it. """
+        return frequency_label( self.frequency )
 
     @property
     def credit( self ):
@@ -290,16 +309,16 @@ class MultiwavelengthImageBand( models.Model ):
 @python_2_unicode_compatible
 class MultiwavelengthImageBandTranslation( models.Model ):
     """
-    Translated title and description of one band of the spectrum for one
-    translation of a MultiwavelengthImage. The language is the one of the
-    translation it belongs to, and the band is matched by its spectrum value
-    against the source bands, so the rows can be filled in before the source
-    is even chosen. Empty values fall back to the source band's text.
+    Translated title and description of one MultiwavelengthImageBand.
+
+    Linked to the band row itself, since several images can share a band
+    name. Empty values fall back to the source band's text.
     """
     translation = TranslationForeignKey( MultiwavelengthImage,
         related_name='band_translations', only_sources=False, on_delete=models.CASCADE )
-    band = models.CharField( max_length=16, choices=WavelengthBand.choices,
-        db_index=True )
+    band = models.ForeignKey( 'media.MultiwavelengthImageBand',
+        related_name='translations', on_delete=models.CASCADE,
+        verbose_name=_('Wavelength band') )
     title = models.CharField( max_length=255, blank=True )
     description = models.TextField( blank=True )
 
@@ -309,12 +328,7 @@ class MultiwavelengthImageBandTranslation( models.Model ):
         app_label = 'media'
 
     def __str__( self ):
-        return "%s: %s" % ( self.translation_id, self.get_band_display() )
-
-    @property
-    def spectrum_index( self ):
-        """ Position of the band on the spectrum (0 = gamma-ray). """
-        return WAVELENGTH_BAND_ORDER.get( self.band, len( WAVELENGTH_BAND_ORDER ) )
+        return "%s: %s" % ( self.translation_id, self.band )
 
 
 # ========================================================================
