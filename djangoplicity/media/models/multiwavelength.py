@@ -214,12 +214,12 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
 
     def main_band_object( self ):
         """
-        The band selected as main in the admin, or the shortest-wavelength
-        band the object has if that one is missing.
+        The image ticked as main in the admin, or the highest-frequency one
+        the object has if none is ticked.
         """
         bands = self.ordered_bands()
         for band in bands:
-            if band.band == self.main_band:
+            if band.is_main:
                 return band
         return bands[0] if bands else None
 
