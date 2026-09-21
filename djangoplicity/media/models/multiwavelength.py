@@ -234,15 +234,21 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
 @python_2_unicode_compatible
 class MultiwavelengthImageBand( models.Model ):
     """
-    One wavelength view of a MultiwavelengthImage: the visual shown when the
-    visitor selects this band, together with its own title and description.
-    Bands are shared by all translations (see MultiwavelengthImageBandTranslation
-    for the translated texts).
+    One image of a MultiwavelengthImage, with its own title and description.
+
+    The band is worked out from the frequency, not stored, so an object can
+    have several images in the same band. Translated texts live in
+    MultiwavelengthImageBandTranslation.
     """
     multiwavelength_image = TranslationForeignKey( MultiwavelengthImage,
         related_name='bands', only_sources=True, on_delete=models.CASCADE )
-    band = models.CharField( max_length=16, choices=WavelengthBand.choices,
-        db_index=True )
+    frequency = models.FloatField( verbose_name=_('Frequency (Hz)'), db_index=True,
+        validators=[MinValueValidator( 1.0 )],
+        help_text=_('Frequency of the observation in hertz, e.g. 1e13. The band '
+                    'of the spectrum is worked out from it.') )
+    is_main = models.BooleanField( default=False, verbose_name=_('Main'),
+        help_text=_('Shown when the page opens and used as the main visual of the '
+                    'object. At most one image per object.') )
     image = TranslationForeignKey( Image, verbose_name=_('Related Image'),
         only_sources=True, on_delete=models.CASCADE )
     title = models.CharField( max_length=255, blank=True )
@@ -251,7 +257,7 @@ class MultiwavelengthImageBand( models.Model ):
         default=CaptionAlign.LEFT, help_text=_('Side of the image where the band text is shown') )
 
     class Meta:
-        unique_together = ( 'multiwavelength_image', 'band' )
+        ordering = ['-frequency']
         verbose_name = _('Wavelength band')
         app_label = 'media'
 
