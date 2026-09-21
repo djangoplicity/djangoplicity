@@ -236,11 +236,12 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
 @python_2_unicode_compatible
 class MultiwavelengthImageBand( models.Model ):
     """
-    One image of a MultiwavelengthImage, with its own title and description.
-
-    The band is worked out from the frequency, not stored, so an object can
-    have several images in the same band. Translated texts live in
-    MultiwavelengthImageBandTranslation.
+    One observation of a MultiwavelengthImage: the visual shown when the
+    visitor picks this point of the spectrum, together with its own title and
+    description. The editor types the frequency of the observation and the
+    band is worked out from it, so an object can carry several images of the
+    same band. Bands are shared by all translations (see
+    MultiwavelengthImageBandTranslation for the translated texts).
     """
     multiwavelength_image = TranslationForeignKey( MultiwavelengthImage,
         related_name='bands', only_sources=True, on_delete=models.CASCADE )
@@ -262,6 +263,15 @@ class MultiwavelengthImageBand( models.Model ):
         ordering = ['-frequency']
         verbose_name = _('Wavelength band')
         app_label = 'media'
+        constraints = [
+            # The admin formset checks this too, so that the editor gets a
+            # form error instead of an IntegrityError.
+            models.UniqueConstraint( fields=['multiwavelength_image'],
+                condition=Q( is_main=True ),
+                name='media_mwlband_one_main_per_image' ),
+            models.CheckConstraint( check=Q( frequency__gt=0 ),
+                name='media_mwlband_frequency_positive' ),
+        ]
 
     def __str__( self ):
         return "%s: %s" % ( self.multiwavelength_image_id, self.get_band_display() )
