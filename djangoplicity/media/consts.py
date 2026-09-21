@@ -370,3 +370,5 @@ SUPERSCRIPT_DIGITS = {
     u'3': u'\u00b3', u'4': u'\u2074', u'5': u'\u2075', u'6': u'\u2076',
     u'7': u'\u2077', u'8': u'\u2078', u'9': u'\u2079',
 }
+
+MULTIPLICATION_SIGN = u'\u00d7'
