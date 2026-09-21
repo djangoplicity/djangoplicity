@@ -30,9 +30,11 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 import copy
+import math
 
+from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import signals
+from django.db.models import Q, signals
 from django.utils.translation import ugettext_lazy as _
 from six import python_2_unicode_compatible
 
