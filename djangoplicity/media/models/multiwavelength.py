@@ -39,6 +39,8 @@ from six import python_2_unicode_compatible
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.translation import TranslationProxyMixin
+from djangoplicity.media.consts import MULTIPLICATION_SIGN, \
+    SPEED_OF_LIGHT, SUPERSCRIPT_DIGITS
 from djangoplicity.media.models.images import Image
 from djangoplicity.metadata.archives import fields as metadatafields
 from djangoplicity.translation.fields import TranslationForeignKey
@@ -62,11 +64,64 @@ class WavelengthBand( models.TextChoices ):
     RADIO = 'radio', _('Radio')
 
 
-# Position of every band on the spectrum, shortest wavelength first. Bands are
-# always presented in this order, so MultiwavelengthImageBand carries no order
-# field of its own.
-WAVELENGTH_BAND_ORDER = dict(
-    ( value, index ) for index, value in enumerate( WavelengthBand.values ) )
+WAVELENGTH_BAND_LABELS = dict( WavelengthBand.choices )
+
+
+# Lower frequency bound (Hz) of every band, highest energy first. A frequency
+# on a boundary belongs to the higher energy band.
+WAVELENGTH_BAND_CUTS = (
+    ( 3.0e19, WavelengthBand.GAMMA_RAY ),
+    ( 3.0e16, WavelengthBand.X_RAY ),
+    ( 7.5e14, WavelengthBand.ULTRAVIOLET ),
+    ( 4.3e14, WavelengthBand.VISIBLE ),
+    ( 3.0e11, WavelengthBand.INFRARED ),
+    ( 3.0e8, WavelengthBand.MICROWAVE ),
+    ( 0.0, WavelengthBand.RADIO ),
+)
+
+
+def band_for_frequency( frequency ):
+    """
+    The band of the spectrum a frequency in hertz falls into, or None when there is no usable frequency.
+    """
+    if not frequency or frequency <= 0:
+        return None
+    for lower, band in WAVELENGTH_BAND_CUTS:
+        if frequency >= lower:
+            return band
+    return WavelengthBand.RADIO
+
+
+def wavelength_for_frequency( frequency ):
+    """ The wavelength in metres of a frequency in hertz, or None. """
+    if not frequency or frequency <= 0:
+        return None
+    return SPEED_OF_LIGHT / frequency
+
+
+def superscript( number ):
+    """ "13" -> "13" in superscript digits. """
+    return u''.join( SUPERSCRIPT_DIGITS.get( c, c ) for c in str( number ) )
+
+
+def frequency_label( frequency ):
+    """
+    A frequency in hertz as "3x10^13 Hz" or "10^8 Hz", with Unicode superscripts instead of <sup> so it also works 
+    as plain text.
+    """
+    if not frequency or frequency <= 0:
+        return u''
+    # Scientific notation: 3.2e13 -> coefficient 3.2, exponent 13.
+    exponent = int( math.floor( math.log10( frequency ) ) )
+    coefficient = round( frequency / ( 10.0 ** exponent ), 1 )
+    # Rounding can push the coefficient up to 10 (9.97 -> 10.0): carry it over.
+    if coefficient >= 10:
+        coefficient /= 10.0
+        exponent += 1
+    if coefficient == 1:
+        return u'10%s Hz' % superscript( exponent )
+    return u'%g%s10%s Hz' % (
+        coefficient, MULTIPLICATION_SIGN, superscript( exponent ) )
 
 
 class CaptionAlign( models.TextChoices ):
