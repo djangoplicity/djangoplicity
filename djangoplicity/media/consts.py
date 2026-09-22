@@ -376,3 +376,14 @@ SUPERSCRIPT_DIGITS = {
 }
 
 MULTIPLICATION_SIGN = u'\u00d7'
+
+# Units for wavelength_label(): a wavelength in nanometres takes the first
+# one it reaches, so they go largest first.
+WAVELENGTH_UNITS = (
+    ( 1e9, u'm' ),
+    ( 1e7, u'cm' ),
+    ( 1e6, u'mm' ),
+    ( 1e3, u'\u00b5m' ),
+    ( 1.0, u'nm' ),
+    ( 1e-3, u'pm' ),
+)
