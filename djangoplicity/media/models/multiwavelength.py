@@ -184,8 +184,8 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
 
     def ordered_bands( self ):
         """
-        The images of this object along the spectrum, from the highest
-        frequency (gamma-ray) to the lowest (radio). Several images may share
+        The images of this object along the spectrum, from the shortest
+        wavelength (gamma-ray) to the longest (radio). Several images may share
         a band. The order comes from MultiwavelengthImageBand.Meta.ordering,
         which the prefetch of `bands__image` (or `source__bands__image` for
         translations) carries with it, so no sorting is needed here.
@@ -214,7 +214,7 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
 
     def main_band_object( self ):
         """
-        The image ticked as main in the admin, or the highest-frequency one
+        The image ticked as main in the admin, or the shortest-wavelength one
         the object has if none is ticked.
         """
         bands = self.ordered_bands()
