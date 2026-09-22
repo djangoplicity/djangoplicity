@@ -58,7 +58,7 @@ from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
         MultiwavelengthImage, MultiwavelengthImageBand, \
         MultiwavelengthImageBandTranslation, MultiwavelengthImageProxy
 from djangoplicity.media.models.multiwavelength import \
-        WAVELENGTH_BAND_CUTS, WAVELENGTH_BAND_LABELS
+        WAVELENGTH_BAND_RANGES, WAVELENGTH_BAND_LABELS
 from djangoplicity.metadata.models import Category, TaggingStatus
 from djangoplicity.releases.admin import releaseinlineadmin
 from django import forms
@@ -800,19 +800,21 @@ class MultiwavelengthImageBandInlineAdmin( admin.TabularInline ):
         js = ( 'media/js/mwl_band_admin.js', )
 
     def band_display( self, obj ):
-        """ The band the frequency falls into, worked out by the model. """
+        """ The band the wavelength falls into, next to its frequency. """
         band = obj.band if obj is not None else None
         return format_html( '<span class="mwl-band-derived" data-band="{}">{}</span>',
-            band or '', obj.get_band_display() if band else '\u2014' )
+            band or '',
+            '%s \u00b7 %s' % ( obj.get_band_display(), obj.frequency_display )
+            if band else '\u2014' )
     band_display.short_description = _('Band')
 
     def formfield_for_dbfield( self, db_field, request, **kwargs ):
         field = super( MultiwavelengthImageBandInlineAdmin, self ).formfield_for_dbfield( db_field, request, **kwargs )
-        if db_field.name == 'frequency':
+        if db_field.name == 'wavelength':
             # A number input fights with exponential notation in some
-            # browsers; FloatField.to_python parses "1e13" from a text box.
-            field.widget = forms.TextInput( attrs={ 'class': 'vTextField mwl-frequency',
-                'placeholder': 'e.g. 1e13', 'size': '12' } )
+            # browsers; FloatField.to_python parses "1e7" from a text box.
+            field.widget = forms.TextInput( attrs={ 'class': 'vTextField mwl-wavelength',
+                'placeholder': 'e.g. 550', 'size': '12' } )
         elif db_field.name == 'description':
             field.widget = forms.Textarea( attrs={ 'rows': 3, 'cols': 40 } )
         return field
