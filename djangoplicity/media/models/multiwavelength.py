@@ -42,7 +42,7 @@ from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.translation import TranslationProxyMixin
 from djangoplicity.media.consts import MULTIPLICATION_SIGN, \
-    SPEED_OF_LIGHT, SUPERSCRIPT_DIGITS
+    SPEED_OF_LIGHT_NM, SUPERSCRIPT_DIGITS, WAVELENGTH_UNITS
 from djangoplicity.media.models.images import Image
 from djangoplicity.metadata.archives import fields as metadatafields
 from djangoplicity.translation.fields import TranslationForeignKey
@@ -84,23 +84,36 @@ WAVELENGTH_BAND_RANGES = (
 )
 
 
-def band_for_frequency( frequency ):
+def band_for_wavelength( wavelength ):
     """
-    The band of the spectrum a frequency in hertz falls into, or None when there is no usable frequency.
+    The band a wavelength in nanometres falls into, or None if it is not
+    usable. Values off either end are pinned to it, so that every saved
+    observation has a band: under 1e-4 nm is gamma-ray, over 1e9 nm is radio.
     """
-    if not frequency or frequency <= 0:
+    if not wavelength or wavelength <= 0:
         return None
-    for lower, band in WAVELENGTH_BAND_CUTS:
-        if frequency >= lower:
+    for band, _lower, upper in WAVELENGTH_BAND_RANGES:
+        if wavelength <= upper:
             return band
     return WavelengthBand.RADIO
 
 
-def wavelength_for_frequency( frequency ):
-    """ The wavelength in metres of a frequency in hertz, or None. """
-    if not frequency or frequency <= 0:
+def frequency_for_wavelength( wavelength ):
+    """ The frequency in hertz of a wavelength in nanometres, or None. """
+    if not wavelength or wavelength <= 0:
         return None
-    return SPEED_OF_LIGHT / frequency
+    return SPEED_OF_LIGHT_NM / wavelength
+
+
+def wavelength_label( wavelength ):
+    """ A wavelength in nanometres as "550 nm", "400 um" or "1 cm". """
+    if not wavelength or wavelength <= 0:
+        return u''
+    for factor, unit in WAVELENGTH_UNITS:
+        value = wavelength / factor
+        if value >= 1:
+            return u'%g %s' % ( round( value, 1 ), unit )
+    return u'%.3g pm' % ( wavelength / 1e-3 )
 
 
 def superscript( number ):
@@ -282,8 +295,8 @@ class MultiwavelengthImageBand( models.Model ):
 
     @property
     def band( self ):
-        """ The band of the spectrum this frequency falls into. """
-        return band_for_frequency( self.frequency )
+        """ The band of the spectrum this wavelength falls into. """
+        return band_for_wavelength( self.wavelength )
 
     def get_band_display( self ):
         """
@@ -294,14 +307,22 @@ class MultiwavelengthImageBand( models.Model ):
         return WAVELENGTH_BAND_LABELS.get( self.band, '' )
 
     @property
-    def wavelength( self ):
-        """ The wavelength of the observation, in metres. """
-        return wavelength_for_frequency( self.frequency )
+    def frequency( self ):
+        """
+        The frequency in hertz, from the wavelength. Not a column, so it
+        cannot be used in filter() or order_by(): use `wavelength` instead.
+        """
+        return frequency_for_wavelength( self.wavelength )
 
     @property
     def frequency_display( self ):
         """ The frequency as the page and the admin show it. """
         return frequency_label( self.frequency )
+
+    @property
+    def wavelength_display( self ):
+        """ The wavelength as the page and the admin show it. """
+        return wavelength_label( self.wavelength )
 
     @property
     def credit( self ):
