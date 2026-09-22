@@ -246,7 +246,7 @@ class MultiwavelengthImageBand( models.Model ):
     multiwavelength_image = TranslationForeignKey( MultiwavelengthImage,
         related_name='bands', only_sources=True, on_delete=models.CASCADE )
     frequency = models.FloatField( verbose_name=_('Frequency (Hz)'), db_index=True,
-        validators=[MinValueValidator( 1.0 )],
+        validators=[MinValueValidator( 1.0 )], default=5.5e14,
         help_text=_('Frequency of the observation in hertz, e.g. 1e13. The band '
                     'of the spectrum is worked out from it.') )
     is_main = models.BooleanField( default=False, verbose_name=_('Main'),
