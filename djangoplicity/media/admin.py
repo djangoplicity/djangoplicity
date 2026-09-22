@@ -788,7 +788,7 @@ class MultiwavelengthImageBandInlineFormSet( BaseInlineFormSet ):
 class MultiwavelengthImageBandInlineAdmin( admin.TabularInline ):
     model = MultiwavelengthImageBand
     formset = MultiwavelengthImageBandInlineFormSet
-    fields = ( 'frequency', 'band_display', 'is_main', 'image',
+    fields = ( 'wavelength', 'band_display', 'is_main', 'image',
                'caption_align', 'title', 'description', )
     readonly_fields = ( 'band_display', )
     raw_id_fields = ( 'image', )
