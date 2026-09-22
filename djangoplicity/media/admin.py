@@ -767,7 +767,7 @@ ImageComparisonAdmin.inlines += [ImageComparisonProxyInlineAdmin]
 class MultiwavelengthImageBandInlineFormSet( BaseInlineFormSet ):
     """
     One row per image, in the order the editor adds them. The band is not
-    picked here: it follows from the frequency (see MultiwavelengthImageBand),
+    picked here: it follows from the wavelength (see MultiwavelengthImageBand),
     so an object can carry several images of the same band.
     """
     def clean( self ):
