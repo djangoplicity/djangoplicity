@@ -841,10 +841,10 @@ class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanH
 
     def render_change_form( self, request, context, *args, **kwargs ):
         # Hand the band bounds to mwl_band_admin.js so they are defined in
-        # one place only (WAVELENGTH_BAND_CUTS) instead of copied into JS.
-        context['wavelength_band_cuts'] = [
-            [ lower, str( WAVELENGTH_BAND_LABELS[band] ) ]
-            for lower, band in WAVELENGTH_BAND_CUTS ]
+        # one place only (WAVELENGTH_BAND_RANGES) instead of copied into JS.
+        context['wavelength_band_ranges'] = [
+            [ lower, upper, str( WAVELENGTH_BAND_LABELS[band] ) ]
+            for band, lower, upper in WAVELENGTH_BAND_RANGES ]
         return super( MultiwavelengthImageAdmin, self ).render_change_form(
             request, context, *args, **kwargs )
 

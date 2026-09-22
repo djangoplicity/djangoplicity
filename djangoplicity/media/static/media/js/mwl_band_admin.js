@@ -1,18 +1,25 @@
 // Multiwavelength image admin: preview of the derived band.
 //
-// The editor types a frequency in hertz and the band of the spectrum follows
-// from it, but the band is a property of the model, so it is only known once
-// the row has been saved. This fills the read-only Band column in as the
-// editor types, using the bounds the change form renders into
-// #mwl-band-cuts from WAVELENGTH_BAND_CUTS.
+// The editor types a wavelength in nanometres and the band of the spectrum
+// follows from it, but the band is a property of the model, so it is only
+// known once the row has been saved. This fills the read-only Band column in
+// as the editor types, using the bounds the change form renders into
+// #mwl-band-ranges from WAVELENGTH_BAND_RANGES.
 (function () {
   'use strict';
 
-  var SPEED_OF_LIGHT = 299792458;
-  var cuts = null;   // [[lowerHz, label], ...] highest energy first
+  var SPEED_OF_LIGHT_NM = 2.99792458e17;   // nm/s
+  var ranges = null;   // [[loNm, hiNm, label], ...] shortest wavelength first
 
-  function loadCuts() {
-    var node = document.getElementById('mwl-band-cuts');
+  // Mirrors SUPERSCRIPT_DIGITS in djangoplicity/media/consts.py.
+  var SUPERSCRIPT_DIGITS = {
+    '-': '⁻', '0': '⁰', '1': '¹', '2': '²',
+    '3': '³', '4': '⁴', '5': '⁵', '6': '⁶',
+    '7': '⁷', '8': '⁸', '9': '⁹'
+  };
+
+  function loadRanges() {
+    var node = document.getElementById('mwl-band-ranges');
     if (!node) {
       return null;
     }
@@ -23,33 +30,38 @@
     }
   }
 
-  function bandFor(hz) {
-    for (var i = 0; i < cuts.length; i++) {
-      if (hz >= cuts[i][0]) {
-        return cuts[i][1];
+  // Mirrors band_for_wavelength() on the model: the bands touch, so a value
+  // on a bound goes to the higher energy band, and anything past the radio
+  // end is pinned to radio.
+  function bandFor(nm) {
+    for (var i = 0; i < ranges.length; i++) {
+      if (nm <= ranges[i][1]) {
+        return ranges[i][2];
       }
     }
-    return cuts[cuts.length - 1][1];
+    return ranges[ranges.length - 1][2];
   }
 
-  // "500 nm", "1 mm", "10 cm"...
-  function wavelengthLabel(hz) {
-    var metres = SPEED_OF_LIGHT / hz;
-    var units = [
-      { factor: 1, name: 'm' },
-      { factor: 1e-2, name: 'cm' },
-      { factor: 1e-3, name: 'mm' },
-      { factor: 1e-6, name: 'µm' },
-      { factor: 1e-9, name: 'nm' },
-      { factor: 1e-12, name: 'pm' }
-    ];
-    for (var i = 0; i < units.length; i++) {
-      var value = metres / units[i].factor;
-      if (value >= 1) {
-        return (Math.round(value * 10) / 10) + ' ' + units[i].name;
-      }
+  function superscript(number) {
+    return String(number).replace(/[-0-9]/g, function (c) {
+      return SUPERSCRIPT_DIGITS[c];
+    });
+  }
+
+  // The frequency the wavelength comes to, as "3×10¹⁶ Hz" or "10⁸ Hz".
+  // Mirrors frequency_label() on the model, carry rule included.
+  function frequencyLabel(nm) {
+    var hz = SPEED_OF_LIGHT_NM / nm;
+    var exponent = Math.floor(Math.log(hz) / Math.LN10);
+    var coefficient = Math.round((hz / Math.pow(10, exponent)) * 10) / 10;
+    if (coefficient >= 10) {
+      coefficient /= 10;
+      exponent += 1;
     }
-    return metres.toExponential(1) + ' m';
+    if (coefficient === 1) {
+      return '10' + superscript(exponent) + ' Hz';
+    }
+    return coefficient + '×' + '10' + superscript(exponent) + ' Hz';
   }
 
   function update(input) {
@@ -58,29 +70,29 @@
     if (!cell) {
       return;
     }
-    var hz = parseFloat(input.value);
-    if (!isFinite(hz) || hz <= 0) {
+    var nm = parseFloat(input.value);
+    if (!isFinite(nm) || nm <= 0) {
       cell.textContent = '—';
       cell.removeAttribute('data-band');
       return;
     }
-    cell.textContent = bandFor(hz) + ' · ' + wavelengthLabel(hz);
+    cell.textContent = bandFor(nm) + ' · ' + frequencyLabel(nm);
   }
 
   function init() {
-    cuts = loadCuts();
-    if (!cuts || !cuts.length) {
+    ranges = loadRanges();
+    if (!ranges || !ranges.length) {
       return;
     }
     // Delegated, so rows added with "Add another" are covered too.
     document.addEventListener('input', function (event) {
       var target = event.target;
-      if (target && target.classList && target.classList.contains('mwl-frequency')) {
+      if (target && target.classList && target.classList.contains('mwl-wavelength')) {
         update(target);
       }
     });
     Array.prototype.forEach.call(
-      document.querySelectorAll('.mwl-frequency'), update);
+      document.querySelectorAll('.mwl-wavelength'), update);
   }
 
   if (document.readyState === 'loading') {
