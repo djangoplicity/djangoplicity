@@ -360,9 +360,13 @@ SPLIT_AUDIO_TYPES = (
 )
 
 #
-# Multiwavelength: frequency to wavelength conversion and frequency labels
+# Multiwavelength: wavelength to frequency conversion and frequency labels
 #
 SPEED_OF_LIGHT = 299792458.0  # m/s
+
+# The observations are stored in nanometres, so the conversion to hertz is
+# c/lambda with c in nm/s.
+SPEED_OF_LIGHT_NM = SPEED_OF_LIGHT * 1e9  # 2.99792458e17 nm/s
 
 # Convert each number into its superscript unicode character. This is used to display the frequency units in a more compact form.
 SUPERSCRIPT_DIGITS = {
