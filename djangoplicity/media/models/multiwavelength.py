@@ -69,16 +69,18 @@ class WavelengthBand( models.TextChoices ):
 WAVELENGTH_BAND_LABELS = dict( WavelengthBand.choices )
 
 
-# Lower frequency bound (Hz) of every band, highest energy first. A frequency
-# on a boundary belongs to the higher energy band.
-WAVELENGTH_BAND_CUTS = (
-    ( 3.0e19, WavelengthBand.GAMMA_RAY ),
-    ( 3.0e16, WavelengthBand.X_RAY ),
-    ( 7.5e14, WavelengthBand.ULTRAVIOLET ),
-    ( 4.3e14, WavelengthBand.VISIBLE ),
-    ( 3.0e11, WavelengthBand.INFRARED ),
-    ( 3.0e8, WavelengthBand.MICROWAVE ),
-    ( 0.0, WavelengthBand.RADIO ),
+# Closed wavelength interval (nanometres) of every band, shortest wavelength
+# (highest energy) first. The bands touch, and a wavelength exactly on a bound
+# belongs to the higher energy band, which is why band_for_wavelength() below
+# compares against the upper bound.
+WAVELENGTH_BAND_RANGES = (
+    ( WavelengthBand.GAMMA_RAY, 1e-4, 0.01 ),
+    ( WavelengthBand.X_RAY, 0.01, 10.0 ),
+    ( WavelengthBand.ULTRAVIOLET, 10.0, 380.0 ),
+    ( WavelengthBand.VISIBLE, 380.0, 780.0 ),
+    ( WavelengthBand.INFRARED, 780.0, 400000.0 ),
+    ( WavelengthBand.MICROWAVE, 400000.0, 1e7 ),
+    ( WavelengthBand.RADIO, 1e7, 1e9 ),
 )
 
 
