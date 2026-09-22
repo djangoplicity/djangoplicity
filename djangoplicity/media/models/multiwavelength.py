@@ -195,7 +195,7 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
         filled in. The source bands are copied, not modified, so the source
         instances stay untouched.
         """
-        bands = [b for b in self.get_source().bands.all() if b.frequency]
+        bands = [b for b in self.get_source().bands.all() if b.wavelength]
 
         if self.is_translation():
             translated = dict( ( t.band_id, t ) for t in self.band_translations.all() )
@@ -238,17 +238,18 @@ class MultiwavelengthImageBand( models.Model ):
     """
     One observation of a MultiwavelengthImage: the visual shown when the
     visitor picks this point of the spectrum, together with its own title and
-    description. The editor types the frequency of the observation and the
+    description. The editor types the wavelength of the observation and the
     band is worked out from it, so an object can carry several images of the
     same band. Bands are shared by all translations (see
     MultiwavelengthImageBandTranslation for the translated texts).
     """
     multiwavelength_image = TranslationForeignKey( MultiwavelengthImage,
         related_name='bands', only_sources=True, on_delete=models.CASCADE )
-    frequency = models.FloatField( verbose_name=_('Frequency (Hz)'), db_index=True,
-        validators=[MinValueValidator( 1.0 )], default=5.5e14,
-        help_text=_('Frequency of the observation in hertz, e.g. 1e13. The band '
-                    'of the spectrum is worked out from it.') )
+    wavelength = models.FloatField( verbose_name=_('Wavelength (nm)'), db_index=True,
+        validators=[MinValueValidator( 1e-6 )], default=550.0,
+        help_text=_('Wavelength of the observation in nanometres, e.g. 550 for '
+                    'visible light or 1e6 for 1 mm. The band of the spectrum is '
+                    'worked out from it.') )
     is_main = models.BooleanField( default=False, verbose_name=_('Main'),
         help_text=_('Shown when the page opens and used as the main visual of the '
                     'object. At most one image per object.') )
@@ -260,7 +261,7 @@ class MultiwavelengthImageBand( models.Model ):
         default=CaptionAlign.LEFT, help_text=_('Side of the image where the band text is shown') )
 
     class Meta:
-        ordering = ['-frequency']
+        ordering = ['wavelength']
         verbose_name = _('Wavelength band')
         app_label = 'media'
         constraints = [
@@ -269,13 +270,13 @@ class MultiwavelengthImageBand( models.Model ):
             models.UniqueConstraint( fields=['multiwavelength_image'],
                 condition=Q( is_main=True ),
                 name='media_mwlband_one_main_per_image' ),
-            models.CheckConstraint( check=Q( frequency__gt=0 ),
-                name='media_mwlband_frequency_positive' ),
+            models.CheckConstraint( check=Q( wavelength__gt=0 ),
+                name='media_mwlband_wavelength_positive' ),
         ]
 
     def __str__( self ):
-        return "%s: %s (%.3g Hz)" % (
-            self.multiwavelength_image_id, self.get_band_display(), self.frequency or 0 )
+        return "%s: %s (%.3g nm)" % (
+            self.multiwavelength_image_id, self.get_band_display(), self.wavelength or 0 )
 
     @property
     def band( self ):
