@@ -832,6 +832,11 @@ class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanH
                     ( None, {'fields': ( 'id', 'priority' ) } ),
                     ( _(u'Language'), {'fields': ( 'lang', ) } ),
                     ( 'Publishing', {'fields': ( 'published', ( 'release_date', 'embargo_date' ), ), } ),
+                    ( 'Display mode', {
+                        'fields': ( 'use_wavelength_selector', ),
+                        'description': _(u'How the images are presented on the public page: along the spectrum, '
+                                         u'or with a simpler image switcher.'),
+                    } ),
                     ( 'Content', {'fields': ( 'title', 'subtitle', 'description', 'credit' ), } ),
                 )
     ordering = ( '-release_date', '-id', )
