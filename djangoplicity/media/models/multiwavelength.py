@@ -30,15 +30,19 @@
 # POSSIBILITY OF SUCH DAMAGE
 
 import copy
+import math
 
+from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import signals
+from django.db.models import Q, signals
 from django.utils.translation import ugettext_lazy as _
 from six import python_2_unicode_compatible
 
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel
 from djangoplicity.archives.translation import TranslationProxyMixin
+from djangoplicity.media.consts import MULTIPLICATION_SIGN, \
+    SPEED_OF_LIGHT_NM, SUPERSCRIPT_DIGITS, WAVELENGTH_UNITS
 from djangoplicity.media.models.images import Image
 from djangoplicity.metadata.archives import fields as metadatafields
 from djangoplicity.translation.fields import TranslationForeignKey
@@ -62,11 +66,79 @@ class WavelengthBand( models.TextChoices ):
     RADIO = 'radio', _('Radio')
 
 
-# Position of every band on the spectrum, shortest wavelength first. Bands are
-# always presented in this order, so MultiwavelengthImageBand carries no order
-# field of its own.
-WAVELENGTH_BAND_ORDER = dict(
-    ( value, index ) for index, value in enumerate( WavelengthBand.values ) )
+WAVELENGTH_BAND_LABELS = dict( WavelengthBand.choices )
+
+
+# Closed wavelength interval (nanometres) of every band, shortest wavelength
+# (highest energy) first. The bands touch, and a wavelength exactly on a bound
+# belongs to the higher energy band, which is why band_for_wavelength() below
+# compares against the upper bound.
+WAVELENGTH_BAND_RANGES = (
+    ( WavelengthBand.GAMMA_RAY, 1e-4, 0.01 ),
+    ( WavelengthBand.X_RAY, 0.01, 10.0 ),
+    ( WavelengthBand.ULTRAVIOLET, 10.0, 380.0 ),
+    ( WavelengthBand.VISIBLE, 380.0, 780.0 ),
+    ( WavelengthBand.INFRARED, 780.0, 400000.0 ),
+    ( WavelengthBand.MICROWAVE, 400000.0, 1e7 ),
+    ( WavelengthBand.RADIO, 1e7, 1e9 ),
+)
+
+
+def band_for_wavelength( wavelength ):
+    """
+    The band a wavelength in nanometres falls into, or None if it is not
+    usable. Values off either end are pinned to it, so that every saved
+    observation has a band: under 1e-4 nm is gamma-ray, over 1e9 nm is radio.
+    """
+    if not wavelength or wavelength <= 0:
+        return None
+    for band, _lower, upper in WAVELENGTH_BAND_RANGES:
+        if wavelength <= upper:
+            return band
+    return WavelengthBand.RADIO
+
+
+def frequency_for_wavelength( wavelength ):
+    """ The frequency in hertz of a wavelength in nanometres, or None. """
+    if not wavelength or wavelength <= 0:
+        return None
+    return SPEED_OF_LIGHT_NM / wavelength
+
+
+def wavelength_label( wavelength ):
+    """ A wavelength in nanometres as "550 nm", "400 um" or "1 cm". """
+    if not wavelength or wavelength <= 0:
+        return u''
+    for factor, unit in WAVELENGTH_UNITS:
+        value = wavelength / factor
+        if value >= 1:
+            return u'%g %s' % ( round( value, 1 ), unit )
+    return u'%.3g pm' % ( wavelength / 1e-3 )
+
+
+def superscript( number ):
+    """ "13" -> "13" in superscript digits. """
+    return u''.join( SUPERSCRIPT_DIGITS.get( c, c ) for c in str( number ) )
+
+
+def frequency_label( frequency ):
+    """
+    A frequency in hertz as "3x10^13 Hz" or "10^8 Hz", with Unicode superscripts instead of <sup> so it also works 
+    as plain text.
+    """
+    if not frequency or frequency <= 0:
+        return u''
+    # Scientific notation: 3.2e13 -> coefficient 3.2, exponent 13.
+    exponent = int( math.floor( math.log10( frequency ) ) )
+    coefficient = round( frequency / ( 10.0 ** exponent ), 1 )
+    # Rounding can push the coefficient up to 10 (9.97 -> 10.0): carry it over.
+    if coefficient >= 10:
+        coefficient /= 10.0
+        exponent += 1
+    if coefficient == 1:
+        return u'10%s Hz' % superscript( exponent )
+    return u'%g%s10%s Hz' % (
+        coefficient, MULTIPLICATION_SIGN, superscript( exponent ) )
 
 
 class CaptionAlign( models.TextChoices ):
@@ -88,9 +160,6 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
     description = archive_fields.DescriptionField()
     credit = metadatafields.AVMCreditField()
     priority = archive_fields.PriorityField( default=0 )
-    main_band = models.CharField( max_length=16, choices=WavelengthBand.choices,
-        default=WavelengthBand.VISIBLE, verbose_name=_('Main band'),
-        help_text=_('Band shown when the page opens and used as the main visual of the object') )
 
     class Translation:
         fields = ['title', 'subtitle', 'description', 'credit', ]
@@ -130,22 +199,23 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
 
     def ordered_bands( self ):
         """
-        The bands of this object sorted along the spectrum, from gamma-ray to
-        radio. Sorting is done in Python so a prefetch of `bands__image` (or
-        `source__bands__image` for translations) is reused instead of
-        triggering another query.
+        The images of this object along the spectrum, from the shortest
+        wavelength (gamma-ray) to the longest (radio). Several images may share
+        a band. The order comes from MultiwavelengthImageBand.Meta.ordering,
+        which the prefetch of `bands__image` (or `source__bands__image` for
+        translations) carries with it, so no sorting is needed here.
 
         On a translation the bands come from the source, with the title and
         description replaced by the translated ones where they have been
         filled in. The source bands are copied, not modified, so the source
         instances stay untouched.
         """
-        bands = [b for b in self.get_source().bands.all() if b.band in WAVELENGTH_BAND_ORDER]
+        bands = [b for b in self.get_source().bands.all() if b.wavelength]
 
         if self.is_translation():
-            translated = dict( ( t.band, t ) for t in self.band_translations.all() )
+            translated = dict( ( t.band_id, t ) for t in self.band_translations.all() )
             for i, band in enumerate( bands ):
-                t = translated.get( band.band )
+                t = translated.get( band.pk )
                 if t is None:
                     continue
                 band = copy.copy( band )
@@ -155,16 +225,16 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
                     band.description = t.description
                 bands[i] = band
 
-        return sorted( bands, key=lambda b: b.spectrum_index )
+        return bands
 
     def main_band_object( self ):
         """
-        The band selected as main in the admin, or the shortest-wavelength
-        band the object has if that one is missing.
+        The image ticked as main in the admin, or the shortest-wavelength one
+        the object has if none is ticked.
         """
         bands = self.ordered_bands()
         for band in bands:
-            if band.band == self.main_band:
+            if band.is_main:
                 return band
         return bands[0] if bands else None
 
@@ -181,15 +251,23 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
 @python_2_unicode_compatible
 class MultiwavelengthImageBand( models.Model ):
     """
-    One wavelength view of a MultiwavelengthImage: the visual shown when the
-    visitor selects this band, together with its own title and description.
-    Bands are shared by all translations (see MultiwavelengthImageBandTranslation
-    for the translated texts).
+    One observation of a MultiwavelengthImage: the visual shown when the
+    visitor picks this point of the spectrum, together with its own title and
+    description. The editor types the wavelength of the observation and the
+    band is worked out from it, so an object can carry several images of the
+    same band. Bands are shared by all translations (see
+    MultiwavelengthImageBandTranslation for the translated texts).
     """
     multiwavelength_image = TranslationForeignKey( MultiwavelengthImage,
         related_name='bands', only_sources=True, on_delete=models.CASCADE )
-    band = models.CharField( max_length=16, choices=WavelengthBand.choices,
-        db_index=True )
+    wavelength = models.FloatField( verbose_name=_('Wavelength (nm)'), db_index=True,
+        validators=[MinValueValidator( 1e-6 )], default=550.0,
+        help_text=_('Wavelength of the observation in nanometres, e.g. 550 for '
+                    'visible light or 1e6 for 1 mm. The band of the spectrum is '
+                    'worked out from it.') )
+    is_main = models.BooleanField( default=False, verbose_name=_('Main'),
+        help_text=_('Shown when the page opens and used as the main visual of the '
+                    'object. At most one image per object.') )
     image = TranslationForeignKey( Image, verbose_name=_('Related Image'),
         only_sources=True, on_delete=models.CASCADE )
     title = models.CharField( max_length=255, blank=True )
@@ -198,17 +276,53 @@ class MultiwavelengthImageBand( models.Model ):
         default=CaptionAlign.LEFT, help_text=_('Side of the image where the band text is shown') )
 
     class Meta:
-        unique_together = ( 'multiwavelength_image', 'band' )
+        ordering = ['wavelength']
         verbose_name = _('Wavelength band')
         app_label = 'media'
+        constraints = [
+            # The admin formset checks this too, so that the editor gets a
+            # form error instead of an IntegrityError.
+            models.UniqueConstraint( fields=['multiwavelength_image'],
+                condition=Q( is_main=True ),
+                name='media_mwlband_one_main_per_image' ),
+            models.CheckConstraint( check=Q( wavelength__gt=0 ),
+                name='media_mwlband_wavelength_positive' ),
+        ]
 
     def __str__( self ):
-        return "%s: %s" % ( self.multiwavelength_image_id, self.get_band_display() )
+        return "%s: %s (%.3g nm)" % (
+            self.multiwavelength_image_id, self.get_band_display(), self.wavelength or 0 )
 
     @property
-    def spectrum_index( self ):
-        """ Position of the band on the spectrum (0 = gamma-ray). """
-        return WAVELENGTH_BAND_ORDER.get( self.band, len( WAVELENGTH_BAND_ORDER ) )
+    def band( self ):
+        """ The band of the spectrum this wavelength falls into. """
+        return band_for_wavelength( self.wavelength )
+
+    def get_band_display( self ):
+        """
+        Human readable name of the band. `band` is no longer a field with
+        choices, so Django does not generate this helper any more, but the
+        templates still call it.
+        """
+        return WAVELENGTH_BAND_LABELS.get( self.band, '' )
+
+    @property
+    def frequency( self ):
+        """
+        The frequency in hertz, from the wavelength. Not a column, so it
+        cannot be used in filter() or order_by(): use `wavelength` instead.
+        """
+        return frequency_for_wavelength( self.wavelength )
+
+    @property
+    def frequency_display( self ):
+        """ The frequency as the page and the admin show it. """
+        return frequency_label( self.frequency )
+
+    @property
+    def wavelength_display( self ):
+        """ The wavelength as the page and the admin show it. """
+        return wavelength_label( self.wavelength )
 
     @property
     def credit( self ):
@@ -219,16 +333,16 @@ class MultiwavelengthImageBand( models.Model ):
 @python_2_unicode_compatible
 class MultiwavelengthImageBandTranslation( models.Model ):
     """
-    Translated title and description of one band of the spectrum for one
-    translation of a MultiwavelengthImage. The language is the one of the
-    translation it belongs to, and the band is matched by its spectrum value
-    against the source bands, so the rows can be filled in before the source
-    is even chosen. Empty values fall back to the source band's text.
+    Translated title and description of one MultiwavelengthImageBand.
+
+    Linked to the band row itself, since several images can share a band
+    name. Empty values fall back to the source band's text.
     """
     translation = TranslationForeignKey( MultiwavelengthImage,
         related_name='band_translations', only_sources=False, on_delete=models.CASCADE )
-    band = models.CharField( max_length=16, choices=WavelengthBand.choices,
-        db_index=True )
+    band = models.ForeignKey( 'media.MultiwavelengthImageBand',
+        related_name='translations', on_delete=models.CASCADE,
+        verbose_name=_('Wavelength band') )
     title = models.CharField( max_length=255, blank=True )
     description = models.TextField( blank=True )
 
@@ -238,12 +352,7 @@ class MultiwavelengthImageBandTranslation( models.Model ):
         app_label = 'media'
 
     def __str__( self ):
-        return "%s: %s" % ( self.translation_id, self.get_band_display() )
-
-    @property
-    def spectrum_index( self ):
-        """ Position of the band on the spectrum (0 = gamma-ray). """
-        return WAVELENGTH_BAND_ORDER.get( self.band, len( WAVELENGTH_BAND_ORDER ) )
+        return "%s: %s" % ( self.translation_id, self.band )
 
 
 # ========================================================================

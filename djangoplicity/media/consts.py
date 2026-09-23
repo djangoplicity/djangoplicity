@@ -358,3 +358,32 @@ SPLIT_AUDIO_TYPES = (
     ('712surround', '7.1.2 Surround'),
     ('audio_description', 'Audio Description'),
 )
+
+#
+# Multiwavelength: wavelength to frequency conversion and frequency labels
+#
+SPEED_OF_LIGHT = 299792458.0  # m/s
+
+# The observations are stored in nanometres, so the conversion to hertz is
+# c/lambda with c in nm/s.
+SPEED_OF_LIGHT_NM = SPEED_OF_LIGHT * 1e9  # 2.99792458e17 nm/s
+
+# Convert each number into its superscript unicode character. This is used to display the frequency units in a more compact form.
+SUPERSCRIPT_DIGITS = {
+    u'-': u'\u207b', u'0': u'\u2070', u'1': u'\u00b9', u'2': u'\u00b2',
+    u'3': u'\u00b3', u'4': u'\u2074', u'5': u'\u2075', u'6': u'\u2076',
+    u'7': u'\u2077', u'8': u'\u2078', u'9': u'\u2079',
+}
+
+MULTIPLICATION_SIGN = u'\u00d7'
+
+# Units for wavelength_label(): a wavelength in nanometres takes the first
+# one it reaches, so they go largest first.
+WAVELENGTH_UNITS = (
+    ( 1e9, u'm' ),
+    ( 1e7, u'cm' ),
+    ( 1e6, u'mm' ),
+    ( 1e3, u'\u00b5m' ),
+    ( 1.0, u'nm' ),
+    ( 1e-3, u'pm' ),
+)

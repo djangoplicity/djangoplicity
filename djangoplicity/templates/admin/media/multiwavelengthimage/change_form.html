@@ -1,0 +1,12 @@
+{% extends "admin/change_form.html" %}
+{% comment %}
+The band of every image is worked out from its wavelength, so the bounds of
+each band have to reach mwl_band_admin.js. They are rendered here, from
+WAVELENGTH_BAND_RANGES (see MultiwavelengthImageAdmin.render_change_form),
+instead of being copied into the JS, where they could drift from the model.
+{% endcomment %}
+
+{% block admin_change_form_document_ready %}
+{{ block.super }}
+{{ wavelength_band_ranges|json_script:"mwl-band-ranges" }}
+{% endblock %}

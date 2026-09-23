@@ -71,12 +71,12 @@ class MultiwavelengthImageOptions( ArchiveOptions ):
     )
 
     class Queries( object ):
-        default = AllPublicQuery( browsers=( 'normal', 'viewall' ), verbose_name=_("Multiwavelength Universe"), feed_name="default" )
-        embargo = EmbargoQuery( browsers=( 'normal', 'viewall' ), verbose_name=_("Multiwavelength Universe (embargoed)") )
-        staging = StagingQuery( browsers=( 'normal', 'viewall' ), verbose_name=_("Multiwavelength Universe (staging)") )
+        default = AllPublicQuery( browsers=( 'normal', 'viewall' ), verbose_name=_("Multiwavelength Viewers"), feed_name="default" )
+        embargo = EmbargoQuery( browsers=( 'normal', 'viewall' ), verbose_name=_("Multiwavelength Viewers (embargoed)") )
+        staging = StagingQuery( browsers=( 'normal', 'viewall' ), verbose_name=_("Multiwavelength Viewers (staging)") )
 
     class Browsers( object ):
-        normal = NormalBrowser( paginate_by=20 )
+        normal = NormalBrowser( paginate_by=52 )
         viewall = ViewAllBrowser()
 
     class ResourceProtection( object ):
