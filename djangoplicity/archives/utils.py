@@ -246,7 +246,11 @@ def initialize_resource(instance, format, ext=None):
     storage = FileSystemStorage()
     if ext:
         localbase += '.' + ext
-    return ResourceFile(localbase, storage)
+    resource = ResourceFile(localbase, storage)
+    # The content servers need to know which format the resource belongs to,
+    # e.g. to handle 'zoomable' (a directory) differently from a plain file
+    resource.format = format
+    return resource
 
 
 def get_instance_resources(instance) -> List[ArchiveResource]:
