@@ -160,6 +160,11 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
     description = archive_fields.DescriptionField()
     credit = metadatafields.AVMCreditField()
     priority = archive_fields.PriorityField( default=0 )
+    # Not in Translation.fields, so translations inherit it from the source.
+    use_wavelength_selector = models.BooleanField( default=True,
+        verbose_name=_('Wavelength selector'),
+        help_text=_('Show the spectrum selector. Untick it to show a simpler '
+                    'image switcher instead.') )
 
     class Translation:
         fields = ['title', 'subtitle', 'description', 'credit', ]
