@@ -40,6 +40,7 @@ from djangoplicity.archives.contrib.info import admin_edit_for_site, \
 from djangoplicity.archives.contrib.queries import AllPublicQuery, \
     EmbargoQuery, StagingQuery, UnpublishedQuery
 from djangoplicity.archives.options import ArchiveOptions
+from djangoplicity.media import views
 from djangoplicity.media.info import object_id
 from djangoplicity.media.models import MultiwavelengthImageProxy
 
@@ -52,6 +53,10 @@ class MultiwavelengthImageOptions( ArchiveOptions ):
     # ArchiveOptions.prefetch_related), so the source bands are prefetched
     # through 'source' for translated objects.
     prefetch_related = ( 'bands__image', 'source__bands__image', 'band_translations', )
+
+    detail_views = (
+        { 'url_pattern': 'fullscreen-comparison/', 'view': views.ZoomableCompareDetailView(), 'urlname_suffix': 'fullscreen_comparison', },
+    )
 
     search_fields = ( 'id', 'title', 'subtitle', 'description', 'credit', )
 

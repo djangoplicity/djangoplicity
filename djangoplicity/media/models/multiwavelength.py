@@ -160,6 +160,11 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
     description = archive_fields.DescriptionField()
     credit = metadatafields.AVMCreditField()
     priority = archive_fields.PriorityField( default=0 )
+    # Not in Translation.fields, so translations inherit it from the source.
+    use_wavelength_selector = models.BooleanField( default=True,
+        verbose_name=_('Wavelength selector'),
+        help_text=_('Show the spectrum selector. Untick it to show a simpler '
+                    'image switcher instead.') )
 
     class Translation:
         fields = ['title', 'subtitle', 'description', 'credit', ]
@@ -237,6 +242,36 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
             if band.is_main:
                 return band
         return bands[0] if bands else None
+
+    def get_zoomable_images( self ):
+        """
+        Gets the images to show in the zoomable viewer, ordered by wavelength.
+        Only images with zoomable tiles are used. Repeated images are not shown.
+        The image of the main band is marked as main. If it has no tiles, the
+        first image is the main one.
+        """
+        main = self.main_band_object()
+        main_image_id = main.image_id if main is not None else None
+
+        images = []
+        seen = set()
+        for band in self.ordered_bands():
+            if band.image_id in seen or not band.image.resource_zoomable:
+                continue
+            seen.add( band.image_id )
+            images.append( {
+                'image': band.image,
+                'title': band.title,
+                'label': str( band.get_band_display() ),
+                'is_main': band.image_id == main_image_id,
+            } )
+
+        # The main image has no tiles: use the first image instead.
+        has_main = any( image['is_main'] for image in images )
+        if images and not has_main:
+            images[0]['is_main'] = True
+
+        return images
 
     @property
     def main_visual( self ):
