@@ -117,7 +117,7 @@
     }
   }
 
-  // ------------------------------------------------------------- Crossfade
+  // CROSSFADE CONTROLS
 
   // Brings the viewer and the controls in line with baseId and comparedId.
   function refresh() {
