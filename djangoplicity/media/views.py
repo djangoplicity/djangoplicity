@@ -133,6 +133,50 @@ class ImageComparisonFullscreenDetailView( GenericDetailView ):
         return t.render( context, request )
 
 
+class ZoomableCompareDetailView( GenericDetailView ):
+    """
+    Fullscreen zoomable page to compare two or more images with a crossfade.
+
+    The model needs a get_zoomable_images() method. It returns a list of
+    dicts with 'image', 'title', 'label' and 'is_main'.
+    """
+    def vary_on( self, request, model, obj, state, admin_rights, **kwargs ):
+        return ['zoomable_compare']
+
+    def render( self, request, model, obj, state, admin_rights, **kwargs ):
+        images = obj.get_zoomable_images()
+        if not images:
+            raise Http404
+
+        layers = []
+        for item in images:
+            image = item['image']
+            thumb = image.resource_thumb350x or image.resource_screen
+            layers.append( {
+                'id': image.id,
+                'title': item['title'] or image.title,
+                'label': item['label'],
+                'is_main': item['is_main'],
+                'width': image.width,
+                'height': image.height,
+                'tiles_url': zoomable_tiles_url( image ),
+                'thumb': thumb.url if thumb else None,
+            } )
+
+        t = loader.select_template( [
+            'archives/%s/detail_zoomable_compare.html' % model._meta.model_name,
+            'archives/detail_zoomable_compare.html',
+        ] )
+
+        context = {
+            'object': obj,
+            'layers': layers,
+            'back_url': obj.get_absolute_url(),
+        }
+
+        return t.render( context, request )
+
+
 def image_passthrough( request, token='', format='', id='', ext='', **kwargs ):
     """
     Serve a static image if token is correct.
