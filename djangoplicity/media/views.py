@@ -44,6 +44,37 @@ from djangoplicity.archives.contrib.security.views import serve_file
 from djangoplicity.contentserver.constants import AccessTagControl
 
 
+def _zoomable_proxy( obj ):
+    """
+    Returns two values:
+    - True if the zoomable tiles are private and must use the proxy.
+    - The proxy URL of the tiles folder.
+    """
+    access_tag = None
+    tiles_proxy_url = None
+    if hasattr(obj, 'get_access_tag_for_format') and obj.get_access_tag_for_format:
+        access_tag = obj.get_access_tag_for_format('zoomable')
+        tiles_proxy_url = reverse('zoomable_resource_proxy', kwargs={
+            'model': obj._meta.model_name,
+            'format': 'zoomable',
+            'id': obj.id,
+            'resource_path': '_',  # placeholder to replace then in openseadragon
+        }).rsplit('/_', 1)[0] + '/'
+    return access_tag == AccessTagControl.PRIVATE, tiles_proxy_url
+
+
+def zoomable_tiles_url( image ):
+    """
+    Returns the URL of the folder with the zoomable tiles of the image.
+    Private tiles use the proxy URL. The URL ends with "/" because
+    OpenSeadragon needs it.
+    """
+    should_use_zoomable_proxy, tiles_proxy_url = _zoomable_proxy( image )
+    if should_use_zoomable_proxy:
+        return tiles_proxy_url
+    return '%s/' % image.resource_zoomable.url
+
+
 class ZoomableDetailView( GenericDetailView ):
     """
     View class for generating a detail page showing a
@@ -63,21 +94,12 @@ class ZoomableDetailView( GenericDetailView ):
         template_names = ['archives/detail_zoomable.html']
 
         t = template_loader.select_template( template_names )
-        
-        access_tag = None
-        tiles_proxy_url = None
-        if hasattr(obj, 'get_access_tag_for_format') and obj.get_access_tag_for_format:
-            access_tag = obj.get_access_tag_for_format('zoomable')
-            tiles_proxy_url = reverse('zoomable_resource_proxy', kwargs={
-                'model': obj._meta.model_name,
-                'format': 'zoomable',
-                'id': obj.id,
-                'resource_path': '_',  # placeholder to replace then in openseadragon
-        }).rsplit('/_', 1)[0] + '/'
+
+        should_use_zoomable_proxy, tiles_proxy_url = _zoomable_proxy( obj )
         # Request context setup
         context = {
             'object': obj,
-            'should_use_zoomable_proxy': access_tag == AccessTagControl.PRIVATE,
+            'should_use_zoomable_proxy': should_use_zoomable_proxy,
             'tiles_proxy_url': tiles_proxy_url  
         }
 
