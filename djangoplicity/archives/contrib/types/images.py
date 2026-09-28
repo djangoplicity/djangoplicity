@@ -86,7 +86,7 @@ class LargeJpegType(ImageFileType):
 class WebPType(ImageFileType):
     verbose_name = _('WebP')
     exts = ['webp']
-    compression_quality = 80
+    compression_quality = 90
     content_type = 'image/webp'
 
 class PublicationJpegType(JpegType):
@@ -379,7 +379,22 @@ class Poster400yType(JpegType):
 
 class ScreensizeWebPType(WebPType):
     verbose_name = _(u'Screensize WebP')
-    compression_quality = 80 
+    compression_quality = 85
     width = 1280
+    unsharp = 25
+    upscale = True
+
+class Thumb300yWebPType(WebPType):
+    verbose_name = _(u'Thumbnail 300y WebP')
+    compression_quality = 85
+    height = 300
+    unsharp = 70
+    upscale = True
+
+
+class Thumb700xWebPType(WebPType):
+    verbose_name = _(u'Thumbnail 700x WebP')
+    compression_quality = 85
+    width = 700
     unsharp = 25
     upscale = True
