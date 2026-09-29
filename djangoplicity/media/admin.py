@@ -788,7 +788,9 @@ class MultiwavelengthImageBandInlineFormSet( BaseInlineFormSet ):
 class MultiwavelengthImageBandInlineAdmin( admin.TabularInline ):
     model = MultiwavelengthImageBand
     formset = MultiwavelengthImageBandInlineFormSet
-    fields = ( 'wavelength', 'band_display', 'is_main', 'image',
+    verbose_name = _('Wavelength image')
+    verbose_name_plural = _('Wavelength images')
+    fields =( 'wavelength', 'band_display', 'is_main', 'image',
                'caption_align', 'title', 'description', )
     readonly_fields = ( 'band_display', )
     raw_id_fields = ( 'image', )
@@ -830,6 +832,11 @@ class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanH
                     ( None, {'fields': ( 'id', 'priority' ) } ),
                     ( _(u'Language'), {'fields': ( 'lang', ) } ),
                     ( 'Publishing', {'fields': ( 'published', ( 'release_date', 'embargo_date' ), ), } ),
+                    ( 'Display mode', {
+                        'fields': ( 'use_wavelength_selector', ),
+                        'description': _(u'How the images are presented on the public page: along the spectrum, '
+                                         u'or with a simpler image switcher.'),
+                    } ),
                     ( 'Content', {'fields': ( 'title', 'subtitle', 'description', 'credit' ), } ),
                 )
     ordering = ( '-release_date', '-id', )

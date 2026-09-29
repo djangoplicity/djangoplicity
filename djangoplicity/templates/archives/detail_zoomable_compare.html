@@ -1,0 +1,362 @@
+{% load i18n static pipeline %}<!DOCTYPE html>
+{% comment %}
+Fullscreen zoomable viewer with crossfade, rendered by
+djangoplicity.media.views.ZoomableCompareDetailView.
+
+Context:
+    object      The archive item.
+    layers      Images with zoomable tiles, main first (see the view).
+    back_url    Page the viewer goes back to.
+
+Sites can extend this template as
+archives/<model_name>/detail_zoomable_compare.html to add their favicon,
+analytics, etc. in the extra_head block.
+{% endcomment %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ object.title }}{% endblock %}</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #fff;
+        }
+
+        #zoom {
+            position: absolute;
+            inset: 0;
+        }
+
+        .zc-bar {
+            position: absolute;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        .zc-bar > * {
+            pointer-events: auto;
+        }
+
+        .zc-top {
+            top: 0;
+            background: linear-gradient(rgba(0, 0, 0, .7), transparent);
+        }
+
+        /* Gallery on the left half, crossfade controls on the right one */
+        .zc-bottom {
+            bottom: 0;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 24px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, .85));
+        }
+
+        .zc-title {
+            flex: 1;
+            min-width: 0;
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .zc-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 12px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, .35);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .55);
+            color: #fff;
+            font: inherit;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .zc-btn--icon {
+            padding: 0;
+        }
+
+        .zc-btn:hover,
+        .zc-btn:focus-visible {
+            border-color: #fff;
+        }
+
+        .zc-strip {
+            display: flex;
+            gap: 8px;
+            padding: 2px 32px 6px 0;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, .35) transparent;
+            -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+            mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+        }
+
+        .zc-thumb {
+            position: relative;
+            flex: 0 0 auto;
+            width: 104px;
+            padding: 0;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            background: #111;
+            color: #fff;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .zc-thumb img {
+            display: block;
+            width: 100%;
+            height: 58px;
+            object-fit: cover;
+        }
+
+        .zc-thumb span {
+            display: block;
+            padding: 3px 6px;
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .zc-thumb.is-base {
+            border-color: #fff;
+            cursor: default;
+        }
+
+        .zc-thumb.is-compared {
+            border-color: #00b0d3;
+        }
+
+        /* "1" on the base image, "2" on the compared one */
+        .zc-badge {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            color: #000;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 18px;
+            text-align: center;
+        }
+
+        .zc-thumb.is-compared .zc-badge {
+            background: #00b0d3;
+        }
+
+        .zc-badge:empty {
+            display: none;
+        }
+
+        .zc-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .zc-fade {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .zc-fade[hidden] {
+            display: none;
+        }
+
+        .zc-fade-names,
+        .zc-fade-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .zc-fade-names {
+            justify-content: space-between;
+        }
+
+        .zc-fade-row input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .zc-fade-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .zc-fade .zc-badge {
+            position: static;
+            flex: 0 0 auto;
+        }
+
+        .zc-swap {
+            gap: 8px;
+            padding: 0 14px 0 8px;
+            font-weight: 600;
+        }
+
+        /* Each click moves the two badges across the arrow, so the left one
+           alternates between 1 and 2. Badge (18px) + gap + arrow (16px) + gap. */
+        .zc-swap-pair {
+            --zc-swap-distance: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 15px;
+        }
+
+        .zc-swap-arrow {
+            width: 16px;
+            font-weight: normal;
+            text-align: center;
+        }
+
+        .zc-swap .zc-badge {
+            position: static;
+            transition: transform 300ms ease;
+        }
+
+        .zc-swap.is-swapped .zc-badge--base {
+            transform: translateX(var(--zc-swap-distance));
+        }
+
+        .zc-swap.is-swapped .zc-badge--compared {
+            transform: translateX(calc(-1 * var(--zc-swap-distance)));
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .zc-swap .zc-badge {
+                transition: none;
+            }
+        }
+
+        .zc-badge--compared {
+            background: #00b0d3;
+        }
+
+        .zc-fade-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .zc-hint {
+            margin: 0;
+            font-size: 13px;
+            opacity: .75;
+        }
+
+        /* Phones: one column, the crossfade above the gallery */
+        @media (max-width: 768px) {
+            .zc-bottom {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 12px;
+            }
+
+            .zc-panel {
+                order: -1;
+            }
+
+            .zc-title {
+                font-size: 14px;
+            }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div id="zoom"></div>
+
+    <header class="zc-bar zc-top">
+        <a class="zc-btn" href="{{ back_url }}">&larr; {% trans "Back" %}</a>
+        <h1 class="zc-title">{{ object.title }}</h1>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-in title="{% trans 'Zoom in' %}" aria-label="{% trans 'Zoom in' %}">+</button>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-out title="{% trans 'Zoom out' %}" aria-label="{% trans 'Zoom out' %}">&minus;</button>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-home title="{% trans 'Fit to screen' %}" aria-label="{% trans 'Fit to screen' %}">&#8962;</button>
+        <button type="button" class="zc-btn" data-zc-fullscreen>{% trans "Fullscreen" %}</button>
+    </header>
+
+    <footer class="zc-bar zc-bottom">
+        {# zoomable_compare.js marks the base image (1) and the compared one (2) #}
+        <div class="zc-strip" role="group" aria-label="{% trans 'Image to compare' %}">
+            {% for layer in layers %}
+            <button type="button" class="zc-thumb" data-id="{{ layer.id }}" aria-pressed="false"
+                    title="{{ layer.title }}{% if layer.label %} — {{ layer.label }}{% endif %}">
+                {% if layer.thumb %}
+                    <img src="{{ layer.thumb }}" alt="" loading="lazy">
+                {% endif %}
+                <span>{{ layer.label|default:layer.title }}</span>
+                <i class="zc-badge" aria-hidden="true"></i>
+            </button>
+            {% endfor %}
+        </div>
+
+        {% if layers|length > 1 %}
+        <div class="zc-panel">
+            <p class="zc-hint" data-zc-hint>{% trans "Pick an image to compare it with this one." %}</p>
+            <div class="zc-fade" data-zc-fade hidden>
+                <div class="zc-fade-names">
+                    <span class="zc-fade-label">
+                        <i class="zc-badge zc-badge--base" aria-hidden="true">1</i>
+                        <span class="zc-fade-name" data-zc-base-name></span>
+                    </span>
+                    <span class="zc-fade-label">
+                        <i class="zc-badge zc-badge--compared" aria-hidden="true">2</i>
+                        <span class="zc-fade-name" data-zc-fade-name></span>
+                    </span>
+                </div>
+                <div class="zc-fade-row">
+                    <input type="range" min="0" max="1" step="0.01" value="0.5" data-zc-opacity
+                           aria-label="{% trans 'Opacity of the compared image' %}">
+                    <button type="button" class="zc-btn zc-swap" data-zc-swap
+                            title="{% trans 'Swap images 1 and 2: the compared image becomes the base one' %}">
+                        <span class="zc-swap-pair" aria-hidden="true">
+                            <i class="zc-badge zc-badge--base">1</i><b class="zc-swap-arrow">&#8644;</b><i class="zc-badge zc-badge--compared">2</i>
+                        </span>
+                        {% trans "Swap" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </footer>
+
+    {{ layers|json_script:"zoomable-layers" }}
+    {% javascript 'openseadragon' %}
+    <script src="{% static 'media/js/zoomable_compare.js' %}"></script>
+</body>
+</html>

@@ -44,6 +44,37 @@ from djangoplicity.archives.contrib.security.views import serve_file
 from djangoplicity.contentserver.constants import AccessTagControl
 
 
+def _zoomable_proxy( obj ):
+    """
+    Returns two values:
+    - True if the zoomable tiles are private and must use the proxy.
+    - The proxy URL of the tiles folder.
+    """
+    access_tag = None
+    tiles_proxy_url = None
+    if hasattr(obj, 'get_access_tag_for_format') and obj.get_access_tag_for_format:
+        access_tag = obj.get_access_tag_for_format('zoomable')
+        tiles_proxy_url = reverse('zoomable_resource_proxy', kwargs={
+            'model': obj._meta.model_name,
+            'format': 'zoomable',
+            'id': obj.id,
+            'resource_path': '_',  # placeholder to replace then in openseadragon
+        }).rsplit('/_', 1)[0] + '/'
+    return access_tag == AccessTagControl.PRIVATE, tiles_proxy_url
+
+
+def zoomable_tiles_url( image ):
+    """
+    Returns the URL of the folder with the zoomable tiles of the image.
+    Private tiles use the proxy URL. The URL ends with "/" because
+    OpenSeadragon needs it.
+    """
+    should_use_zoomable_proxy, tiles_proxy_url = _zoomable_proxy( image )
+    if should_use_zoomable_proxy:
+        return tiles_proxy_url
+    return '%s/' % image.resource_zoomable.url
+
+
 class ZoomableDetailView( GenericDetailView ):
     """
     View class for generating a detail page showing a
@@ -63,21 +94,12 @@ class ZoomableDetailView( GenericDetailView ):
         template_names = ['archives/detail_zoomable.html']
 
         t = template_loader.select_template( template_names )
-        
-        access_tag = None
-        tiles_proxy_url = None
-        if hasattr(obj, 'get_access_tag_for_format') and obj.get_access_tag_for_format:
-            access_tag = obj.get_access_tag_for_format('zoomable')
-            tiles_proxy_url = reverse('zoomable_resource_proxy', kwargs={
-                'model': obj._meta.model_name,
-                'format': 'zoomable',
-                'id': obj.id,
-                'resource_path': '_',  # placeholder to replace then in openseadragon
-        }).rsplit('/_', 1)[0] + '/'
+
+        should_use_zoomable_proxy, tiles_proxy_url = _zoomable_proxy( obj )
         # Request context setup
         context = {
             'object': obj,
-            'should_use_zoomable_proxy': access_tag == AccessTagControl.PRIVATE,
+            'should_use_zoomable_proxy': should_use_zoomable_proxy,
             'tiles_proxy_url': tiles_proxy_url  
         }
 
@@ -106,6 +128,50 @@ class ImageComparisonFullscreenDetailView( GenericDetailView ):
         # Request context setup
         context = {
             'object': obj,
+        }
+
+        return t.render( context, request )
+
+
+class ZoomableCompareDetailView( GenericDetailView ):
+    """
+    Fullscreen zoomable page to compare two or more images with a crossfade.
+
+    The model needs a get_zoomable_images() method. It returns a list of
+    dicts with 'image', 'title', 'label' and 'is_main'.
+    """
+    def vary_on( self, request, model, obj, state, admin_rights, **kwargs ):
+        return ['zoomable_compare']
+
+    def render( self, request, model, obj, state, admin_rights, **kwargs ):
+        images = obj.get_zoomable_images()
+        if not images:
+            raise Http404
+
+        layers = []
+        for item in images:
+            image = item['image']
+            thumb = image.resource_thumb350x or image.resource_screen
+            layers.append( {
+                'id': image.id,
+                'title': item['title'] or image.title,
+                'label': item['label'],
+                'is_main': item['is_main'],
+                'width': image.width,
+                'height': image.height,
+                'tiles_url': zoomable_tiles_url( image ),
+                'thumb': thumb.url if thumb else None,
+            } )
+
+        t = loader.select_template( [
+            'archives/%s/detail_zoomable_compare.html' % model._meta.model_name,
+            'archives/detail_zoomable_compare.html',
+        ] )
+
+        context = {
+            'object': obj,
+            'layers': layers,
+            'back_url': obj.get_absolute_url(),
         }
 
         return t.render( context, request )
