@@ -338,7 +338,7 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
         logger.info('Deleting old zoomify "%s"', target)
         shutil.rmtree(target)
 
-    logger.debug('Moving "%s" to "%s"', zoomable_dir, target)
+    logger.info('Moving "%s" to "%s"', zoomable_dir, target)
     shutil.move(zoomable_dir, target)
 
     # Clean up temporary file
