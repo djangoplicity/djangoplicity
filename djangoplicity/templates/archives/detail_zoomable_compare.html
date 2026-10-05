@@ -252,77 +252,71 @@ analytics, etc. in the extra_head block.
             font-size: 13px;
         }
 
-        .zc-fade[hidden] {
-            display: none;
-        }
-
-        .zc-fade-names,
         .zc-fade-row {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .zc-fade-names {
-            justify-content: space-between;
-        }
-
         .zc-fade-row input {
             flex: 1;
-            min-width: 0;
+            min-width: 60px;
         }
 
-        .zc-fade-label {
-            display: flex;
+        .zc-fade-row input:disabled {
+            opacity: .35;
+        }
+
+        /* Images 1 and 2 at both ends of the crossfade: one select each */
+        .zc-select {
+            display: inline-flex;
+            flex: 0 1 auto;
             align-items: center;
             gap: 6px;
+            max-width: 38%;
             min-width: 0;
+            height: 32px;
+            padding: 0 6px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, .35);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .55);
+        }
+
+        .zc-select:hover,
+        .zc-select:focus-within {
+            border-color: #fff;
+        }
+
+        .zc-select--compared {
+            border-color: #00b0d3;
+        }
+
+        .zc-select select {
+            min-width: 0;
+            max-width: 100%;
+            padding: 0 4px;
+            border: 0;
+            background: transparent;
+            color: #fff;
+            font: inherit;
+            font-size: 13px;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+
+        .zc-select select:focus {
+            outline: none;
+        }
+
+        .zc-select option {
+            background: #111;
+            color: #fff;
         }
 
         .zc-fade .zc-badge {
             position: static;
             flex: 0 0 auto;
-        }
-
-        .zc-swap {
-            gap: 8px;
-            padding: 0 14px 0 8px;
-            font-weight: 600;
-        }
-
-        /* Each click moves the two badges across the arrow, so the left one
-           alternates between 1 and 2. Badge (18px) + gap + arrow (16px) + gap. */
-        .zc-swap-pair {
-            --zc-swap-distance: 40px;
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            font-size: 15px;
-        }
-
-        .zc-swap-arrow {
-            width: 16px;
-            font-weight: normal;
-            text-align: center;
-        }
-
-        .zc-swap .zc-badge {
-            position: static;
-            transition: transform 300ms ease;
-        }
-
-        .zc-swap.is-swapped .zc-badge--base {
-            transform: translateX(var(--zc-swap-distance));
-        }
-
-        .zc-swap.is-swapped .zc-badge--compared {
-            transform: translateX(calc(-1 * var(--zc-swap-distance)));
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .zc-swap .zc-badge {
-                transition: none;
-            }
         }
 
         .zc-badge--compared {
@@ -333,12 +327,6 @@ analytics, etc. in the extra_head block.
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-
-        .zc-hint {
-            margin: 0;
-            font-size: 13px;
-            opacity: .75;
         }
 
         /* Phones: one column, the crossfade above the gallery */
@@ -409,28 +397,23 @@ analytics, etc. in the extra_head block.
 
         {% if layers|length > 1 %}
         <div class="zc-panel">
-            <p class="zc-hint" data-zc-hint>{% trans "Pick an image to compare it with this one." %}</p>
-            <div class="zc-fade" data-zc-fade hidden>
-                <div class="zc-fade-names">
-                    <span class="zc-fade-label">
-                        <i class="zc-badge zc-badge--base" aria-hidden="true">1</i>
-                        <span class="zc-fade-name" data-zc-base-name></span>
-                    </span>
-                    <span class="zc-fade-label">
-                        <i class="zc-badge zc-badge--compared" aria-hidden="true">2</i>
-                        <span class="zc-fade-name" data-zc-fade-name></span>
-                    </span>
-                </div>
+            <div class="zc-fade" data-zc-fade>
                 <div class="zc-fade-row">
+                    <label class="zc-select">
+                        <i class="zc-badge zc-badge--base" aria-hidden="true">1</i>
+                        <select data-zc-select="base" aria-label="{% trans 'Image 1' %}">
+                            {% for layer in layers %}<option value="{{ layer.id }}">{{ layer.label|default:layer.title }}</option>{% endfor %}
+                        </select>
+                    </label>
                     <input type="range" min="0" max="1" step="0.01" value="0.5" data-zc-opacity
                            aria-label="{% trans 'Opacity of the compared image' %}">
-                    <button type="button" class="zc-btn zc-swap" data-zc-swap
-                            title="{% trans 'Swap images 1 and 2: the compared image becomes the base one' %}">
-                        <span class="zc-swap-pair" aria-hidden="true">
-                            <i class="zc-badge zc-badge--base">1</i><b class="zc-swap-arrow">&#8644;</b><i class="zc-badge zc-badge--compared">2</i>
-                        </span>
-                        {% trans "Swap" %}
-                    </button>
+                    <label class="zc-select zc-select--compared">
+                        <i class="zc-badge zc-badge--compared" aria-hidden="true">2</i>
+                        <select data-zc-select="compared" aria-label="{% trans 'Image 2' %}">
+                            <option value="">{% trans "Pick an image" %}</option>
+                            {% for layer in layers %}<option value="{{ layer.id }}">{{ layer.label|default:layer.title }}</option>{% endfor %}
+                        </select>
+                    </label>
                 </div>
             </div>
         </div>

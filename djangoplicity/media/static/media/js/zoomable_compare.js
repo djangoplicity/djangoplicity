@@ -1,8 +1,9 @@
 // Fullscreen zoomable viewer to compare two images (templates/archives/detail_zoomable_compare.html).
 //
 // Image 1 is the base image. Image 2 is on top of it. The slider changes
-// the opacity of image 2. The user picks image 2 in the gallery. The swap
-// button changes image 1 and image 2, so the user can compare any two images.
+// the opacity of image 2. A select at each end of the slider picks image 1
+// and image 2, so any two images can be compared; a click on a thumbnail of
+// the gallery is a shortcut to pick image 2.
 //
 // The page opens with ?base=<id> as image 1 (or the main image if there is
 // no base). ?compare=<id> is optional and opens with that image as image 2.
@@ -24,6 +25,7 @@
   'use strict';
 
   var ZOOM_STEP = 1.5;
+  var FADE_STEP = 0.1;     // crossfade moved by one press of an arrow key
 
   var viewer = null;
   var viewerOpen = false;
@@ -201,24 +203,21 @@
     revealThumb(baseId);
   }
 
-  // The compared image becomes the base and the other way round. The slider
-  // is mirrored so that what is on screen does not change.
-  function swap() {
-    if (comparedId === null) {
+  // The new image 1, picked in its select. If it was image 2, the old
+  // image 1 takes its place, so the pair is kept.
+  function setBase(id) {
+    if (id === baseId) {
       return;
     }
-    var id = baseId;
-    baseId = comparedId;
-    comparedId = id;
-    if (ui.slider) {
-      ui.slider.value = 1 - sliderOpacity();
+    if (id === comparedId) {
+      comparedId = baseId;
     }
-    ui.swap.classList.toggle('is-swapped');
+    baseId = id;
     refresh();
     revealThumb(baseId);
   }
 
-  // Thumbnails, slider labels and hint follow the base and compared images.
+  // Thumbnails, selects and slider follow the base and compared images.
   function updateControls() {
     ui.strip.querySelectorAll('.zc-thumb').forEach(function (thumb) {
       var id = thumb.getAttribute('data-id');
@@ -238,10 +237,13 @@
     });
 
     if (ui.fade) {
-      ui.fade.hidden = comparedId === null;
-      ui.hint.hidden = comparedId !== null;
-      ui.baseName.textContent = layerName(baseId);
-      ui.comparedName.textContent = layerName(comparedId);
+      ui.selectBase.value = baseId;
+      ui.selectCompared.value = comparedId === null ? '' : comparedId;
+      // An image cannot be 1 and 2 at once
+      Array.prototype.forEach.call(ui.selectCompared.options, function (option) {
+        option.disabled = option.value === baseId;
+      });
+      ui.slider.disabled = comparedId === null;
     }
 
     // So the detail page shows this pair when the browser's back button
@@ -262,14 +264,17 @@
   // ZOOMABLE VIEWER CONTROLS
 
   function bindGalleryEvents() {
-    // Clicking a thumbnail makes it the compared image, unless it is the base.
+    // Clicking a thumbnail makes it image 2, unless it is image 1; clicking
+    // image 2 again removes it.
     ui.strip.addEventListener('click', function (event) {
       var thumb = event.target.closest('.zc-thumb');
-      if (!thumb || thumb.getAttribute('data-id') === baseId) {
+      if (!thumb) {
         return;
       }
       var id = thumb.getAttribute('data-id');
-      setCompared(id === comparedId ? null : id);
+      if (id !== baseId) {
+        setCompared(id === comparedId ? null : id);
+      }
     });
 
     // A vertical mouse wheel scrolls the gallery sideways.
@@ -282,16 +287,47 @@
     }, { passive: false });
   }
 
+  function applySliderOpacity() {
+    if (comparedId !== null && tiledImages[comparedId]) {
+      tiledImages[comparedId].setOpacity(sliderOpacity());
+    }
+  }
+
   function bindSlider() {
     if (!ui.slider) {
       return;
     }
-    ui.slider.addEventListener('input', function () {
-      if (comparedId !== null && tiledImages[comparedId]) {
-        tiledImages[comparedId].setOpacity(sliderOpacity());
+    ui.slider.addEventListener('input', applySliderOpacity);
+
+    // While two images are compared, the left and right arrows move the
+    // crossfade (towards image 1 and image 2) instead of panning the image,
+    // which is what OpenSeadragon does with them. Caught on the way down, so
+    // before OpenSeadragon's own handler; the slider and the selects keep
+    // their own keys.
+    window.addEventListener('keydown', function (event) {
+      var step = event.key === 'ArrowRight' ? FADE_STEP : (event.key === 'ArrowLeft' ? -FADE_STEP : 0);
+      var tag = (event.target.tagName || '').toLowerCase();
+      if (!step || comparedId === null || tag === 'input' || tag === 'select' ||
+          event.metaKey || event.ctrlKey || event.altKey) {
+        return;
       }
+      event.preventDefault();
+      event.stopPropagation();
+      ui.slider.value = Math.min(1, Math.max(0, sliderOpacity() + step));
+      applySliderOpacity();
+    }, true);
+  }
+
+  function bindSelects() {
+    if (!ui.fade) {
+      return;
+    }
+    ui.selectBase.addEventListener('change', function () {
+      setBase(ui.selectBase.value);
     });
-    onClick('[data-zc-swap]', swap);
+    ui.selectCompared.addEventListener('change', function () {
+      setCompared(ui.selectCompared.value || null);
+    });
   }
 
   function bindZoomButtons() {
@@ -387,11 +423,9 @@
 
     ui.strip = document.querySelector('.zc-strip');
     ui.fade = document.querySelector('[data-zc-fade]');
-    ui.baseName = document.querySelector('[data-zc-base-name]');
-    ui.comparedName = document.querySelector('[data-zc-fade-name]');
-    ui.hint = document.querySelector('[data-zc-hint]');
+    ui.selectBase = document.querySelector('[data-zc-select="base"]');
+    ui.selectCompared = document.querySelector('[data-zc-select="compared"]');
     ui.slider = document.querySelector('[data-zc-opacity]');
-    ui.swap = document.querySelector('[data-zc-swap]');
     ui.fullscreen = document.querySelector('[data-zc-fullscreen]');
     ui.loading = document.querySelector('[data-zc-loading]');
     ui.error = document.querySelector('[data-zc-error]');
@@ -416,6 +450,7 @@
 
     bindGalleryEvents();
     bindSlider();
+    bindSelects();
     bindZoomButtons();
     bindFullscreenButton();
     if (embedded) {
