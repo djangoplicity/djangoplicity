@@ -12,7 +12,14 @@
 // same framing are aligned, also if they have a different size in pixels.
 //
 // An image is loaded the first time it is needed. After that it stays in the
-// viewer but hidden, so it is fast to show it again.
+// viewer but hidden, so it is fast to show it again. Until its first tiles are
+// on screen a loading message is shown, and an error one if they fail.
+//
+// With ?embed=1 the page is in an iframe of the detail page (see
+// multiwavelength.js in the site). It then talks to that page with
+// postMessage: "Close" hands back the image on screen, the fullscreen button
+// asks the page to put the whole overlay in fullscreen, and the page can
+// change the images shown without reloading the iframe.
 (function () {
   'use strict';
 
@@ -20,12 +27,15 @@
 
   var viewer = null;
   var viewerOpen = false;
-  // The three objects below are keyed by image id.
+  // The five objects below are keyed by image id.
   var layersById = {};     // Layers as the view rendered them
   var tiledImages = {};    // Tiled images already added to the viewer
   var loading = {};        // Images whose tiled image is still being added
+  var shown = {};          // Images whose first tiles have been drawn
+  var failed = {};         // Images whose tiles could not be loaded
   var baseId = null;      // image at the bottom (1)
   var comparedId = null;   // image on top of it (2), or null
+  var embedded = false;
   var ui = {};
 
   // Functions to read and use the image data from the page.
@@ -74,6 +84,7 @@
   // Adds the image aligned with the others; refresh() places it once ready.
   function addTiledImage(id) {
     loading[id] = true;
+    delete failed[id];
     viewer.addTiledImage({
       tileSource: tileSource(layersById[id]),
       x: 0,
@@ -82,13 +93,47 @@
       opacity: 0,
       success: function (event) {
         delete loading[id];
+        watchFirstDraw(id, event.item);
         tiledImages[id] = event.item;
         refresh();
       },
       error: function () {
+        // Not kept, so picking the image again tries once more
         delete loading[id];
+        failed[id] = true;
+        updateStatus();
       }
     });
+  }
+
+  // An image counts as shown once all the tiles of the first view it is
+  // drawn in have arrived. Later zooms load more tiles without the message.
+  function watchFirstDraw(id, item) {
+    if (item.getFullyLoaded()) {
+      shown[id] = true;
+      return;
+    }
+    item.addHandler('fully-loaded-change', function onChange(event) {
+      if (event.fullyLoaded) {
+        shown[id] = true;
+        item.removeHandler('fully-loaded-change', onChange);
+        updateStatus();
+      }
+    });
+  }
+
+  // Loading message while image 1 or 2 has no tiles on screen yet; error
+  // message if one of them failed.
+  function updateStatus() {
+    var visible = [baseId, comparedId].filter(function (id) { return id !== null; });
+    var hasFailed = visible.some(function (id) { return failed[id]; });
+    var isLoading = !hasFailed && visible.some(function (id) { return !shown[id]; });
+    if (ui.loading) {
+      ui.loading.hidden = !isLoading;
+    }
+    if (ui.error) {
+      ui.error.hidden = !hasFailed;
+    }
   }
 
   // Puts every tiled image where the current base and compared ids say:
@@ -115,6 +160,7 @@
     if (comparedId !== null && tiledImages[comparedId]) {
       world.setItemIndex(tiledImages[comparedId], world.getItemCount() - 1);
     }
+    viewer.forceRedraw();
   }
 
   // CROSSFADE CONTROLS
@@ -122,6 +168,7 @@
   // Brings the viewer and the controls in line with baseId and comparedId.
   function refresh() {
     updateControls();
+    updateStatus();
     if (!viewerOpen) {
       return;   // the 'open' handler calls refresh() again
     }
@@ -133,10 +180,25 @@
     placeTiledImages();
   }
 
+  // A new image 2 starts half faded in, as on the first pick: kept at the
+  // previous position, a slider left near image 1 would hide it completely.
   function setCompared(id) {
+    if (id !== null && id !== comparedId && ui.slider) {
+      ui.slider.value = 0.5;
+    }
     comparedId = id;
     refresh();
     revealThumb(comparedId);
+  }
+
+  // Shows another pair without reloading, when the detail page asks.
+  function setPair(base, compared) {
+    if (!layersById[base]) {
+      return;
+    }
+    baseId = base;
+    setCompared(compared && compared !== base && layersById[compared] ? compared : null);
+    revealThumb(baseId);
   }
 
   // The compared image becomes the base and the other way round. The slider
@@ -180,6 +242,12 @@
       ui.hint.hidden = comparedId !== null;
       ui.baseName.textContent = layerName(baseId);
       ui.comparedName.textContent = layerName(comparedId);
+    }
+
+    // So the detail page shows this pair when the browser's back button
+    // closes the overlay instead of the Close button.
+    if (embedded) {
+      postToParent({ type: 'mwl:pair', base: baseId, compare: comparedId });
     }
   }
 
@@ -236,16 +304,64 @@
     onClick('[data-zc-home]', function () { viewer.viewport.goHome(); });
   }
 
+  // The icon and the label say what the button does next: enter or exit.
+  function showFullscreenState(active) {
+    var button = ui.fullscreen;
+    var label = button.getAttribute(active ? 'data-label-exit' : 'data-label-enter');
+    button.classList.toggle('is-fullscreen', active);
+    button.setAttribute('aria-label', label);
+    button.setAttribute('title', label);
+  }
+
+  // Embedded, the detail page puts its whole overlay in fullscreen and tells
+  // the state back (see bindParentMessages); alone, this page does it itself.
   function bindFullscreenButton() {
     if (!document.fullscreenEnabled) {
-      document.querySelector('[data-zc-fullscreen]').hidden = true;
+      ui.fullscreen.hidden = true;
       return;
     }
     onClick('[data-zc-fullscreen]', function () {
-      if (document.fullscreenElement) {
+      if (embedded) {
+        postToParent({ type: 'mwl:fullscreen' });
+      } else if (document.fullscreenElement) {
         document.exitFullscreen();
       } else {
         document.documentElement.requestFullscreen();
+      }
+    });
+    if (!embedded) {
+      document.addEventListener('fullscreenchange', function () {
+        showFullscreenState(!!document.fullscreenElement);
+      });
+    }
+  }
+
+  // EMBEDDED IN THE DETAIL PAGE
+
+  function postToParent(message) {
+    window.parent.postMessage(message, window.location.origin);
+  }
+
+  function close() {
+    postToParent({ type: 'mwl:close', base: baseId, compare: comparedId });
+  }
+
+  function bindParentMessages() {
+    onClick('[data-zc-close]', close);
+    // In fullscreen the browser takes Escape for itself and leaves it
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        close();
+      }
+    });
+    window.addEventListener('message', function (event) {
+      if (event.origin !== window.location.origin || event.source !== window.parent || !event.data) {
+        return;
+      }
+      if (event.data.type === 'mwl:show') {
+        setPair(String(event.data.base), event.data.compare ? String(event.data.compare) : null);
+      } else if (event.data.type === 'mwl:fullscreen-state') {
+        showFullscreenState(!!event.data.active);
       }
     });
   }
@@ -276,23 +392,38 @@
     ui.hint = document.querySelector('[data-zc-hint]');
     ui.slider = document.querySelector('[data-zc-opacity]');
     ui.swap = document.querySelector('[data-zc-swap]');
+    ui.fullscreen = document.querySelector('[data-zc-fullscreen]');
+    ui.loading = document.querySelector('[data-zc-loading]');
+    ui.error = document.querySelector('[data-zc-error]');
+    embedded = window.parent !== window && !!document.querySelector('[data-zc-close]');
 
     baseId = idFromUrl('base') || main.id;
     var compared = idFromUrl('compare');
     comparedId = compared !== baseId ? compared : null;
 
     viewer = createViewer(layersById[baseId]);
+    var firstId = baseId;
     viewer.addOnceHandler('open', function () {
       viewerOpen = true;
-      tiledImages[baseId] = viewer.world.getItemAt(0);
+      tiledImages[firstId] = viewer.world.getItemAt(0);
+      watchFirstDraw(firstId, tiledImages[firstId]);
       refresh();
+    });
+    viewer.addOnceHandler('open-failed', function () {
+      failed[firstId] = true;
+      updateStatus();
     });
 
     bindGalleryEvents();
     bindSlider();
     bindZoomButtons();
     bindFullscreenButton();
+    if (embedded) {
+      bindParentMessages();
+      postToParent({ type: 'mwl:ready' });
+    }
     updateControls();
+    updateStatus();
     revealThumb(baseId);
   }
 
