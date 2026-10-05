@@ -7,6 +7,8 @@ Context:
     object      The archive item.
     layers      Images with zoomable tiles, main first (see the view).
     back_url    Page the viewer goes back to.
+    embedded    True when the page is in an iframe of the detail page
+                (?embed=1): it closes the iframe instead of going back.
 
 Sites can extend this template as
 archives/<model_name>/detail_zoomable_compare.html to add their favicon,
@@ -360,13 +362,34 @@ analytics, etc. in the extra_head block.
 <body>
     <div id="zoom"></div>
 
+    <p class="zc-status" data-zc-loading role="status" hidden>
+        <span class="zc-spinner" aria-hidden="true"></span>{% trans "Loading image…" %}
+    </p>
+    <p class="zc-status" data-zc-error role="alert" hidden>{% trans "This image could not be loaded." %}</p>
+
     <header class="zc-bar zc-top">
+        {% if embedded %}
+        <button type="button" class="zc-btn" data-zc-close>&times; {% trans "Close" %}</button>
+        {% else %}
         <a class="zc-btn" href="{{ back_url }}">&larr; {% trans "Back" %}</a>
+        {% endif %}
         <h1 class="zc-title">{{ object.title }}</h1>
-        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-in title="{% trans 'Zoom in' %}" aria-label="{% trans 'Zoom in' %}">+</button>
-        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-out title="{% trans 'Zoom out' %}" aria-label="{% trans 'Zoom out' %}">&minus;</button>
-        <button type="button" class="zc-btn zc-btn--icon" data-zc-home title="{% trans 'Fit to screen' %}" aria-label="{% trans 'Fit to screen' %}">&#8962;</button>
-        <button type="button" class="zc-btn" data-zc-fullscreen>{% trans "Fullscreen" %}</button>
+        {# SVG icons: text glyphs (+, −, ⌂) sit off centre in a round button #}
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-in title="{% trans 'Zoom in' %}" aria-label="{% trans 'Zoom in' %}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-out title="{% trans 'Zoom out' %}" aria-label="{% trans 'Zoom out' %}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+        </button>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-home title="{% trans 'Fit to screen' %}" aria-label="{% trans 'Fit to screen' %}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7M6 9.5V20h12V9.5"/></svg>
+        </button>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-fullscreen
+                title="{% trans 'Fullscreen' %}" aria-label="{% trans 'Fullscreen' %}"
+                data-label-enter="{% trans 'Fullscreen' %}" data-label-exit="{% trans 'Exit fullscreen' %}">
+            <svg data-zc-icon-enter viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+            <svg data-zc-icon-exit viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+        </button>
     </header>
 
     <footer class="zc-bar zc-bottom">
