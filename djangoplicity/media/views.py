@@ -139,9 +139,22 @@ class ZoomableCompareDetailView( GenericDetailView ):
 
     The model needs a get_zoomable_images() method. It returns a list of
     dicts with 'image', 'title', 'label' and 'is_main'.
+
+    With ?embed=1 the page is meant to be shown in an iframe of the detail
+    page of the same site: it closes instead of linking back, and it may be
+    framed by pages of the same origin.
     """
     def vary_on( self, request, model, obj, state, admin_rights, **kwargs ):
-        return ['zoomable_compare']
+        return ['zoomable_compare', 'embed' if self.is_embedded( request ) else 'page']
+
+    def is_embedded( self, request ):
+        return request.GET.get( 'embed' ) == '1'
+
+    def response( self, html, **kwargs ):
+        response = super( ZoomableCompareDetailView, self ).response( html, **kwargs )
+        # XFrameOptionsMiddleware keeps a header that is already set
+        response['X-Frame-Options'] = 'SAMEORIGIN'
+        return response
 
     def render( self, request, model, obj, state, admin_rights, **kwargs ):
         images = obj.get_zoomable_images()
@@ -172,6 +185,7 @@ class ZoomableCompareDetailView( GenericDetailView ):
             'object': obj,
             'layers': layers,
             'back_url': obj.get_absolute_url(),
+            'embedded': self.is_embedded( request ),
         }
 
         return t.render( context, request )
