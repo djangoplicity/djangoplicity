@@ -94,7 +94,66 @@ analytics, etc. in the extra_head block.
         }
 
         .zc-btn--icon {
+            width: 34px;
             padding: 0;
+        }
+
+        .zc-btn svg {
+            display: block;
+            flex: 0 0 auto;
+        }
+
+        /* Enter or exit icon, after the state of the fullscreen */
+        .zc-btn [data-zc-icon-exit],
+        .zc-btn.is-fullscreen [data-zc-icon-enter] {
+            display: none;
+        }
+
+        .zc-btn.is-fullscreen [data-zc-icon-exit] {
+            display: block;
+        }
+
+        /* Shown while the tiles of an image are loading, or when they fail */
+        .zc-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .7);
+            font-size: 13px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .zc-status[hidden] {
+            display: none;
+        }
+
+        .zc-spinner {
+            width: 18px;
+            height: 18px;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, .3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: zc-spin 800ms linear infinite;
+        }
+
+        @keyframes zc-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .zc-spinner {
+                animation-duration: 2.4s;
+            }
         }
 
         .zc-btn:hover,
