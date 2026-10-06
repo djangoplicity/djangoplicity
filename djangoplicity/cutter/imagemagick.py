@@ -296,8 +296,10 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
         os.makedirs(zoomable_dir)
 
     # Detect whether the original has an embedded ICC profile
-    proc = Popen(['vips', 'header', '-a', source], stdout=PIPE, stderr=PIPE, encoding='utf8')
+    proc = Popen(['vipsheader', '-a', source], stdout=PIPE, stderr=PIPE, encoding='utf8')
     stdout, stderr = proc.communicate()
+    if proc.returncode != 0:
+        logger.warning('vipsheader failed for %s (exit=%s): %s', source, proc.returncode, stderr.strip())
     has_profile = 'icc-profile-data' in stdout
     logger.info('Embedded ICC profile for %s: %s', source, has_profile)
 
