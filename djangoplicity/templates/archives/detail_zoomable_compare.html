@@ -402,7 +402,7 @@ analytics, etc. in the extra_head block.
                     <label class="zc-select">
                         <i class="zc-badge zc-badge--base" aria-hidden="true">1</i>
                         <select data-zc-select="base" aria-label="{% trans 'Image 1' %}">
-                            {% for layer in layers %}<option value="{{ layer.id }}">{{ layer.label|default:layer.title }}</option>{% endfor %}
+                            {% for layer in layers %}<option value="{{ layer.id }}">{{ layer.id }}{% if layer.label %} - {{ layer.label }}{% endif %}</option>{% endfor %}
                         </select>
                     </label>
                     <input type="range" min="0" max="1" step="0.01" value="0.5" data-zc-opacity
@@ -411,7 +411,7 @@ analytics, etc. in the extra_head block.
                         <i class="zc-badge zc-badge--compared" aria-hidden="true">2</i>
                         <select data-zc-select="compared" aria-label="{% trans 'Image 2' %}">
                             <option value="">{% trans "Pick an image" %}</option>
-                            {% for layer in layers %}<option value="{{ layer.id }}">{{ layer.label|default:layer.title }}</option>{% endfor %}
+                            {% for layer in layers %}<option value="{{ layer.id }}">{{ layer.id }}{% if layer.label %} - {{ layer.label }}{% endif %}</option>{% endfor %}
                         </select>
                     </label>
                 </div>
