@@ -38,6 +38,7 @@ from django.test import RequestFactory, TestCase, override_settings
 from djangoplicity.media import views
 from djangoplicity.media.models import Image, MultiwavelengthImage, \
     MultiwavelengthImageBand
+from djangoplicity.media.options import MultiwavelengthImageOptions
 
 
 @override_settings( USE_I18N=True )
@@ -122,10 +123,13 @@ class ZoomableCompareTestCase( TestCase ):
     def _ids( self, obj ):
         return [ i['image'].id for i in obj.get_zoomable_images() ]
 
-    def _render( self, obj ):
-        request = RequestFactory().get( '/multiwavelength/%s/fullscreen-comparison/' % obj.pk )
+    def _request( self, obj, embed=False ):
+        return RequestFactory().get( '/multiwavelength/%s/fullscreen-comparison/' % obj.pk,
+                                     { 'embed': '1' } if embed else {} )
+
+    def _render( self, obj, embed=False ):
         return views.ZoomableCompareDetailView().render(
-            request, MultiwavelengthImage, obj, None, False )
+            self._request( obj, embed ), MultiwavelengthImage, obj, None, False )
 
     def test_ordered_by_wavelength_with_main_marked( self, _resource ):
         self._band( 'mwltest-radio', 1e8 )
@@ -196,3 +200,32 @@ class ZoomableCompareTestCase( TestCase ):
 
         with self.assertRaises( Http404 ):
             self._render( self.source )
+
+    @mock.patch.object( views, '_zoomable_proxy', return_value=( False, None ) )
+    def test_embedded_page_closes_instead_of_going_back( self, _proxy, _resource ):
+        self._band( 'mwltest-visible', 550.0, is_main=True )
+
+        page = self._render( self.source )
+        embedded = self._render( self.source, embed=True )
+
+        back = 'href="%s"' % self.source.get_absolute_url()
+        self.assertIn( back, page )
+        self.assertNotIn( 'data-zc-close', page )
+        self.assertIn( 'data-zc-close', embedded )
+        self.assertNotIn( back, embedded )
+
+    def test_embedded_page_is_cached_apart( self, _resource ):
+        view = views.ZoomableCompareDetailView()
+
+        page = view.vary_on( self._request( self.source ), MultiwavelengthImage, self.source, None, False )
+        embedded = view.vary_on( self._request( self.source, embed=True ), MultiwavelengthImage, self.source, None, False )
+
+        self.assertNotEqual( page, embedded )
+
+    def test_can_be_framed_by_the_same_origin( self, _resource ):
+        view = views.ZoomableCompareDetailView()
+        view.options = MultiwavelengthImageOptions
+
+        response = view.response( '<html></html>' )
+
+        self.assertEqual( response['X-Frame-Options'], 'SAMEORIGIN' )

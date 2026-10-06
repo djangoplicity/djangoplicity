@@ -7,6 +7,8 @@ Context:
     object      The archive item.
     layers      Images with zoomable tiles, main first (see the view).
     back_url    Page the viewer goes back to.
+    embedded    True when the page is in an iframe of the detail page
+                (?embed=1): it closes the iframe instead of going back.
 
 Sites can extend this template as
 archives/<model_name>/detail_zoomable_compare.html to add their favicon,
@@ -94,7 +96,66 @@ analytics, etc. in the extra_head block.
         }
 
         .zc-btn--icon {
+            width: 34px;
             padding: 0;
+        }
+
+        .zc-btn svg {
+            display: block;
+            flex: 0 0 auto;
+        }
+
+        /* Enter or exit icon, after the state of the fullscreen */
+        .zc-btn [data-zc-icon-exit],
+        .zc-btn.is-fullscreen [data-zc-icon-enter] {
+            display: none;
+        }
+
+        .zc-btn.is-fullscreen [data-zc-icon-exit] {
+            display: block;
+        }
+
+        /* Shown while the tiles of an image are loading, or when they fail */
+        .zc-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .7);
+            font-size: 13px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .zc-status[hidden] {
+            display: none;
+        }
+
+        .zc-spinner {
+            width: 18px;
+            height: 18px;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, .3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: zc-spin 800ms linear infinite;
+        }
+
+        @keyframes zc-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .zc-spinner {
+                animation-duration: 2.4s;
+            }
         }
 
         .zc-btn:hover,
@@ -191,77 +252,71 @@ analytics, etc. in the extra_head block.
             font-size: 13px;
         }
 
-        .zc-fade[hidden] {
-            display: none;
-        }
-
-        .zc-fade-names,
         .zc-fade-row {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .zc-fade-names {
-            justify-content: space-between;
-        }
-
         .zc-fade-row input {
             flex: 1;
-            min-width: 0;
+            min-width: 60px;
         }
 
-        .zc-fade-label {
-            display: flex;
+        .zc-fade-row input:disabled {
+            opacity: .35;
+        }
+
+        /* Images 1 and 2 at both ends of the crossfade: one select each */
+        .zc-select {
+            display: inline-flex;
+            flex: 0 1 auto;
             align-items: center;
             gap: 6px;
+            max-width: 38%;
             min-width: 0;
+            height: 32px;
+            padding: 0 6px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, .35);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, .55);
+        }
+
+        .zc-select:hover,
+        .zc-select:focus-within {
+            border-color: #fff;
+        }
+
+        .zc-select--compared {
+            border-color: #00b0d3;
+        }
+
+        .zc-select select {
+            min-width: 0;
+            max-width: 100%;
+            padding: 0 4px;
+            border: 0;
+            background: transparent;
+            color: #fff;
+            font: inherit;
+            font-size: 13px;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+
+        .zc-select select:focus {
+            outline: none;
+        }
+
+        .zc-select option {
+            background: #111;
+            color: #fff;
         }
 
         .zc-fade .zc-badge {
             position: static;
             flex: 0 0 auto;
-        }
-
-        .zc-swap {
-            gap: 8px;
-            padding: 0 14px 0 8px;
-            font-weight: 600;
-        }
-
-        /* Each click moves the two badges across the arrow, so the left one
-           alternates between 1 and 2. Badge (18px) + gap + arrow (16px) + gap. */
-        .zc-swap-pair {
-            --zc-swap-distance: 40px;
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            font-size: 15px;
-        }
-
-        .zc-swap-arrow {
-            width: 16px;
-            font-weight: normal;
-            text-align: center;
-        }
-
-        .zc-swap .zc-badge {
-            position: static;
-            transition: transform 300ms ease;
-        }
-
-        .zc-swap.is-swapped .zc-badge--base {
-            transform: translateX(var(--zc-swap-distance));
-        }
-
-        .zc-swap.is-swapped .zc-badge--compared {
-            transform: translateX(calc(-1 * var(--zc-swap-distance)));
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .zc-swap .zc-badge {
-                transition: none;
-            }
         }
 
         .zc-badge--compared {
@@ -272,12 +327,6 @@ analytics, etc. in the extra_head block.
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
-
-        .zc-hint {
-            margin: 0;
-            font-size: 13px;
-            opacity: .75;
         }
 
         /* Phones: one column, the crossfade above the gallery */
@@ -301,13 +350,34 @@ analytics, etc. in the extra_head block.
 <body>
     <div id="zoom"></div>
 
+    <p class="zc-status" data-zc-loading role="status" hidden>
+        <span class="zc-spinner" aria-hidden="true"></span>{% trans "Loading image…" %}
+    </p>
+    <p class="zc-status" data-zc-error role="alert" hidden>{% trans "This image could not be loaded." %}</p>
+
     <header class="zc-bar zc-top">
+        {% if embedded %}
+        <button type="button" class="zc-btn" data-zc-close>&times; {% trans "Close" %}</button>
+        {% else %}
         <a class="zc-btn" href="{{ back_url }}">&larr; {% trans "Back" %}</a>
+        {% endif %}
         <h1 class="zc-title">{{ object.title }}</h1>
-        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-in title="{% trans 'Zoom in' %}" aria-label="{% trans 'Zoom in' %}">+</button>
-        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-out title="{% trans 'Zoom out' %}" aria-label="{% trans 'Zoom out' %}">&minus;</button>
-        <button type="button" class="zc-btn zc-btn--icon" data-zc-home title="{% trans 'Fit to screen' %}" aria-label="{% trans 'Fit to screen' %}">&#8962;</button>
-        <button type="button" class="zc-btn" data-zc-fullscreen>{% trans "Fullscreen" %}</button>
+        {# SVG icons: text glyphs (+, −, ⌂) sit off centre in a round button #}
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-in title="{% trans 'Zoom in' %}" aria-label="{% trans 'Zoom in' %}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-zoom-out title="{% trans 'Zoom out' %}" aria-label="{% trans 'Zoom out' %}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+        </button>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-home title="{% trans 'Fit to screen' %}" aria-label="{% trans 'Fit to screen' %}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7M6 9.5V20h12V9.5"/></svg>
+        </button>
+        <button type="button" class="zc-btn zc-btn--icon" data-zc-fullscreen
+                title="{% trans 'Fullscreen' %}" aria-label="{% trans 'Fullscreen' %}"
+                data-label-enter="{% trans 'Fullscreen' %}" data-label-exit="{% trans 'Exit fullscreen' %}">
+            <svg data-zc-icon-enter viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+            <svg data-zc-icon-exit viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+        </button>
     </header>
 
     <footer class="zc-bar zc-bottom">
@@ -327,28 +397,23 @@ analytics, etc. in the extra_head block.
 
         {% if layers|length > 1 %}
         <div class="zc-panel">
-            <p class="zc-hint" data-zc-hint>{% trans "Pick an image to compare it with this one." %}</p>
-            <div class="zc-fade" data-zc-fade hidden>
-                <div class="zc-fade-names">
-                    <span class="zc-fade-label">
-                        <i class="zc-badge zc-badge--base" aria-hidden="true">1</i>
-                        <span class="zc-fade-name" data-zc-base-name></span>
-                    </span>
-                    <span class="zc-fade-label">
-                        <i class="zc-badge zc-badge--compared" aria-hidden="true">2</i>
-                        <span class="zc-fade-name" data-zc-fade-name></span>
-                    </span>
-                </div>
+            <div class="zc-fade" data-zc-fade>
                 <div class="zc-fade-row">
+                    <label class="zc-select">
+                        <i class="zc-badge zc-badge--base" aria-hidden="true">1</i>
+                        <select data-zc-select="base" aria-label="{% trans 'Image 1' %}">
+                            {% for layer in layers %}<option value="{{ layer.id }}">{{ layer.id }}{% if layer.label %} - {{ layer.label }}{% endif %}</option>{% endfor %}
+                        </select>
+                    </label>
                     <input type="range" min="0" max="1" step="0.01" value="0.5" data-zc-opacity
                            aria-label="{% trans 'Opacity of the compared image' %}">
-                    <button type="button" class="zc-btn zc-swap" data-zc-swap
-                            title="{% trans 'Swap images 1 and 2: the compared image becomes the base one' %}">
-                        <span class="zc-swap-pair" aria-hidden="true">
-                            <i class="zc-badge zc-badge--base">1</i><b class="zc-swap-arrow">&#8644;</b><i class="zc-badge zc-badge--compared">2</i>
-                        </span>
-                        {% trans "Swap" %}
-                    </button>
+                    <label class="zc-select zc-select--compared">
+                        <i class="zc-badge zc-badge--compared" aria-hidden="true">2</i>
+                        <select data-zc-select="compared" aria-label="{% trans 'Image 2' %}">
+                            <option value="">{% trans "Pick an image" %}</option>
+                            {% for layer in layers %}<option value="{{ layer.id }}">{{ layer.id }}{% if layer.label %} - {{ layer.label }}{% endif %}</option>{% endfor %}
+                        </select>
+                    </label>
                 </div>
             </div>
         </div>
