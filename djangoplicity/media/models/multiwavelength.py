@@ -34,6 +34,7 @@ import math
 
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.conf import settings
 from django.db.models import Q, signals
 from django.utils.translation import ugettext_lazy as _
 from six import python_2_unicode_compatible
@@ -174,6 +175,7 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
         # No resources of its own - the visuals live in the Image archive.
 
         class Meta:
+            root = getattr( settings, 'MULTIWAVELENGTH_ARCHIVE_ROOT', 'archives/multiwavelength/' )
             release_date = True
             embargo_date = True
             last_modified = True

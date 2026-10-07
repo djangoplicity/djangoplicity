@@ -92,7 +92,15 @@ class StaticFilesProtectorCache(object):
             opt = _do_import(option_string)
 
             # Get directory for current model:
-            protected_path = mdl.Archive.Meta.root
+            try:
+                protected_path = mdl.Archive.Meta.root
+            except AttributeError:
+                logger.error(
+                    "Archive.Meta.root is not defined for model %s.%s",
+                    mdl.__module__,
+                    mdl.__name__,
+                )
+                continue
             if protected_path[-1] == os.path.sep:
                 protected_path = protected_path[:-1]
 
