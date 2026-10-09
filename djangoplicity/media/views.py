@@ -138,7 +138,8 @@ class ZoomableCompareDetailView( GenericDetailView ):
     Fullscreen zoomable page to compare two or more images with a crossfade.
 
     The model needs a get_zoomable_images() method. It returns a list of
-    dicts with 'image', 'title', 'label' and 'is_main'.
+    dicts with 'image', 'title', 'label' and 'is_main', and optionally
+    'wavelength'.
 
     With ?embed=1 the page is meant to be shown in an iframe of the detail
     page of the same site: it closes instead of linking back, and it may be
@@ -169,6 +170,7 @@ class ZoomableCompareDetailView( GenericDetailView ):
                 'id': image.id,
                 'title': item['title'] or image.title,
                 'label': item['label'],
+                'wavelength': item.get( 'wavelength', '' ),
                 'is_main': item['is_main'],
                 'width': image.width,
                 'height': image.height,

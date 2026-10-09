@@ -54,7 +54,7 @@
 
   function layerName(id) {
     var layer = layersById[id];
-    return layer ? (layer.label || layer.title) : '';
+    return layer ? (layer.title || layer.label) : '';
   }
 
   function tileSource(layer) {

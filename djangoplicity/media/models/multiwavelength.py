@@ -275,6 +275,7 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
                 'image': band.image,
                 'title': band.title,
                 'label': str( band.get_band_display() ),
+                'wavelength': band.wavelength_display,
                 'is_main': band.image_id == main_image_id,
             } )
 
