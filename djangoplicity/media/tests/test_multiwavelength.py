@@ -33,6 +33,7 @@ import json
 from unittest import mock
 
 from django.http import Http404
+from django.template.loader import render_to_string
 from django.test import RequestFactory, TestCase, override_settings
 
 from djangoplicity.media import views
@@ -92,6 +93,125 @@ class WavelengthSelectorTestCase( TestCase ):
             self.assertEqual( [ b.pk for b in source.ordered_bands() ],
                               [ xray.pk, visible.pk, radio.pk ] )
             self.assertEqual( source.main_band_object().pk, visible.pk )
+
+
+
+@override_settings( USE_I18N=True )
+class OverlayUrlsTestCase( TestCase ):
+    """ The constellations and annotations overlays of MultiwavelengthImage. """
+
+    URL = 'https://cdn.test/overlays/mwltest-constellations.png'
+
+    def setUp( self ):
+        self.source = MultiwavelengthImage.objects.create(
+            id='mwltest', title='Test object' )
+
+    def _translation( self ):
+        return MultiwavelengthImage.objects.create(
+            id='mwltest-es', title='Objeto de prueba', lang='es', source=self.source )
+
+    def test_empty_by_default( self ):
+        self.assertEqual( self.source.constellations_image_url, '' )
+        self.assertEqual( self.source.annotations_image_url, '' )
+
+    def test_new_translation_inherits_them( self ):
+        self.source.constellations_image_url = self.URL
+        self.source.save()
+
+        self.assertEqual( self._translation().constellations_image_url, self.URL )
+
+    def test_change_on_source_reaches_translations( self ):
+        translation = self._translation()
+
+        self.source.annotations_image_url = self.URL
+        self.source.save()
+
+        translation.refresh_from_db()
+        self.assertEqual( translation.annotations_image_url, self.URL )
+
+
+# Images whose id ends in '-nobanner' have no banner1920.
+def _banner_resource( instance, *args, **kwargs ):
+    if instance.id.endswith( '-nobanner' ):
+        return None
+    return mock.Mock( url='https://cdn.test/banner1920/%s.jpg' % instance.id )
+
+
+def _screen_resource( instance, *args, **kwargs ):
+    return mock.Mock( url='https://cdn.test/screen/%s.jpg' % instance.id )
+
+
+@override_settings( USE_I18N=True )
+@mock.patch.object( Image.Archive.zoomable, 'get_resource_for_instance', return_value=None )
+@mock.patch.object( Image.Archive.screen, 'get_resource_for_instance', side_effect=_screen_resource )
+@mock.patch.object( Image.Archive.banner1920, 'get_resource_for_instance', side_effect=_banner_resource )
+class StageImageTestCase( TestCase ):
+    """ The picture each band shows on the stage, and the overlay toggles. """
+
+    def setUp( self ):
+        self.source = MultiwavelengthImage.objects.create(
+            id='mwltest', title='Test object' )
+
+    def _band( self, image_id, width=2000, height=1000 ):
+        image = Image.objects.create( id=image_id, title=image_id, priority=0,
+                                      width=width, height=height )
+        return MultiwavelengthImageBand.objects.create(
+            multiwavelength_image=self.source, image=image, wavelength=550.0 )
+
+    def _toolbar( self ):
+        obj = MultiwavelengthImage.objects.get( pk=self.source.pk )
+        return render_to_string( 'archives/multiwavelength/_toolbar.html',
+                                 { 'object': obj, 'bands': obj.ordered_bands() } )
+
+    def test_banner_first( self, *_resources ):
+        band = self._band( 'mwltest-visible' )
+
+        self.assertTrue( band.hero_is_banner )
+        self.assertEqual( band.hero.url, 'https://cdn.test/banner1920/mwltest-visible.jpg' )
+        self.assertEqual( band.hero_ratio, '2.1333' )
+
+    def test_screen_without_banner( self, *_resources ):
+        band = self._band( 'mwltest-visible-nobanner', width=1000, height=1000 )
+
+        self.assertFalse( band.hero_is_banner )
+        self.assertEqual( band.hero.url, 'https://cdn.test/screen/mwltest-visible-nobanner.jpg' )
+        self.assertEqual( band.hero_ratio, '1.0000' )
+
+    def test_no_ratio_without_size( self, *_resources ):
+        band = self._band( 'mwltest-visible-nobanner', width=0, height=0 )
+
+        self.assertEqual( band.hero_ratio, '' )
+
+    def test_no_toggles_without_overlays( self, *_resources ):
+        self._band( 'mwltest-visible' )
+
+        html = self._toolbar()
+
+        self.assertNotIn( 'mwl-layer-toggle', html )
+
+    def test_toggle_only_for_the_overlays_it_has( self, *_resources ):
+        self._band( 'mwltest-visible' )
+        self.source.constellations_image_url = 'https://cdn.test/c.png'
+        self.source.save()
+
+        html = self._toolbar()
+
+        self.assertIn( 'data-layer="constellations"', html )
+        self.assertNotIn( 'data-layer="annotations"', html )
+
+    def test_both_toggles_in_both_modes( self, *_resources ):
+        self._band( 'mwltest-visible' )
+        self.source.constellations_image_url = 'https://cdn.test/c.png'
+        self.source.annotations_image_url = 'https://cdn.test/a.png'
+
+        for selector in ( True, False ):
+            self.source.use_wavelength_selector = selector
+            self.source.save()
+
+            html = self._toolbar()
+
+            self.assertIn( 'data-layer="constellations"', html )
+            self.assertIn( 'data-layer="annotations"', html )
 
 
 # Images whose id ends in '-notiles' have no zoomable tiles.
