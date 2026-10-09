@@ -166,6 +166,16 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
         verbose_name=_('Wavelength selector'),
         help_text=_('Show the spectrum selector. Untick it to show a simpler '
                     'image switcher instead.') )
+    # Transparent PNGs laid over the image on screen, each with its own toggle
+    # on the page. Like the selector, translations inherit them.
+    constellations_image_url = models.URLField( max_length=255, blank=True,
+        verbose_name=_('Constellations image URL'),
+        help_text=_('Full URL of a transparent PNG with the constellations, in '
+                    'the screen format. Leave it empty if there is none.') )
+    annotations_image_url = models.URLField( max_length=255, blank=True,
+        verbose_name=_('Annotations image URL'),
+        help_text=_('Full URL of a transparent PNG with the annotations, in '
+                    'the screen format. Leave it empty if there is none.') )
 
     class Translation:
         fields = ['title', 'subtitle', 'description', 'credit', ]
@@ -365,6 +375,44 @@ class MultiwavelengthImageBand( models.Model ):
     def credit( self ):
         """ Bands don't carry their own credit - use the image's. """
         return self.image.credit
+
+    def _hero_resource( self ):
+        """
+        ( resource, is_banner ) of the picture shown on the stage. Looked up
+        once, as the page reads it several times.
+        """
+        if not hasattr( self, '_hero' ):
+            banner = self.image.resource_banner1920
+            self._hero = ( banner, True ) if banner else ( self.image.resource_screen, False )
+        return self._hero
+
+    @property
+    def hero( self ):
+        """
+        The picture shown on the stage, in both display modes: banner1920
+        when the image has one, screen otherwise.
+        """
+        return self._hero_resource()[0]
+
+    @property
+    def hero_is_banner( self ):
+        return self._hero_resource()[1]
+
+    @property
+    def hero_ratio( self ):
+        """
+        Width / height of the hero as a plain number, for the overlays to
+        match its shape: the banner is cropped to a fixed size, while screen
+        keeps the shape of the original. Empty if it is not known.
+        """
+        if self.hero_is_banner:
+            banner = Image.Archive.banner1920.type
+            width, height = banner.width, banner.height
+        else:
+            width, height = self.image.width, self.image.height
+        if not width or not height:
+            return ''
+        return '%.4f' % ( float( width ) / height )
 
 
 @python_2_unicode_compatible
