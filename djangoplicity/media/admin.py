@@ -837,6 +837,11 @@ class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanH
                         'description': _(u'How the images are presented on the public page: along the spectrum, '
                                          u'or with a simpler image switcher.'),
                     } ),
+                    ( 'Overlays', {
+                        'fields': ( 'constellations_image_url', 'annotations_image_url', ),
+                        'description': _(u'Transparent images laid over the image on screen. Each one gets a '
+                                         u'toggle on the public page; leave it empty to hide the toggle.'),
+                    } ),
                     ( 'Content', {'fields': ( 'title', 'subtitle', 'description', 'credit' ), } ),
                 )
     ordering = ( '-release_date', '-id', )
