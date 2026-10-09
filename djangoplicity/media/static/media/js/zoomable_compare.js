@@ -338,6 +338,28 @@
     onClick('[data-zc-zoom-in]', function () { zoomBy(ZOOM_STEP); });
     onClick('[data-zc-zoom-out]', function () { zoomBy(1 / ZOOM_STEP); });
     onClick('[data-zc-home]', function () { viewer.viewport.goHome(); });
+
+    // + and - zoom like the buttons wherever the focus is (OpenSeadragon only
+    // listens to them on its canvas). = and _ are the same keys unshifted.
+    // Caught on the way down so OpenSeadragon does not zoom a second time;
+    // Ctrl/Cmd + and - are left to the browser's own zoom.
+    var KEY_FACTORS = { '+': ZOOM_STEP, '=': ZOOM_STEP, '-': 1 / ZOOM_STEP, '_': 1 / ZOOM_STEP };
+
+    window.addEventListener('keydown', function (event) {
+      var factor = KEY_FACTORS[event.key];
+      if (!factor) {
+        return;
+      }
+      if (event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+      if (event.target.closest('input, select, textarea')) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      zoomBy(factor);
+    }, true);
   }
 
   // The icon and the label say what the button does next: enter or exit.
