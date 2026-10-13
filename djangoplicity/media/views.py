@@ -86,7 +86,6 @@ class ZoomableDetailView( GenericDetailView ):
     def render( self, request, model, obj, state, admin_rights, **kwargs ):
         options = ArchiveOptions()
         has_access, reason = _has_access_permissions(request, obj, options)
-        print(f"ZoomableDetailView: has_access={has_access}, reason={reason}")
         if not has_access:
             return HttpResponseForbidden(reason)
 
@@ -138,7 +137,8 @@ class ZoomableCompareDetailView( GenericDetailView ):
     Fullscreen zoomable page to compare two or more images with a crossfade.
 
     The model needs a get_zoomable_images() method. It returns a list of
-    dicts with 'image', 'title', 'label' and 'is_main'.
+    dicts with 'image', 'title', 'label' and 'is_main', and optionally
+    'wavelength'.
 
     With ?embed=1 the page is meant to be shown in an iframe of the detail
     page of the same site: it closes instead of linking back, and it may be
@@ -169,6 +169,7 @@ class ZoomableCompareDetailView( GenericDetailView ):
                 'id': image.id,
                 'title': item['title'] or image.title,
                 'label': item['label'],
+                'wavelength': item.get( 'wavelength', '' ),
                 'is_main': item['is_main'],
                 'width': image.width,
                 'height': image.height,

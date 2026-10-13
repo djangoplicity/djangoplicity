@@ -826,7 +826,7 @@ class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanH
     list_display = ( 'id', 'title', 'published', 'priority', 'release_date', 'embargo_date', view_link( 'multiwavelength' ) )
     list_filter = ( 'published', 'last_modified', 'created', 'release_date', 'embargo_date', )
     list_editable = ( 'published', 'priority', )
-    search_fields = ( 'id', 'title', 'subtitle', 'description', 'credit', )
+    search_fields = ( 'id', 'title', 'subtitle', 'description' )
     date_hierarchy = 'release_date'
     fieldsets = (
                     ( None, {'fields': ( 'id', 'priority' ) } ),
@@ -837,10 +837,15 @@ class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanH
                         'description': _(u'How the images are presented on the public page: along the spectrum, '
                                          u'or with a simpler image switcher.'),
                     } ),
-                    ( 'Content', {'fields': ( 'title', 'subtitle', 'description', 'credit' ), } ),
+                    ( 'Overlays', {
+                        'fields': ( 'constellations_image_url', 'annotations_image_url', ),
+                        'description': _(u'Transparent images laid over the image on screen. Each one gets a '
+                                         u'toggle on the public page; leave it empty to hide the toggle.'),
+                    } ),
+                    ( 'Content', {'fields': ( 'title', 'subtitle', 'description' ), } ),
                 )
     ordering = ( '-release_date', '-id', )
-    richtext_fields = ( 'description', 'credit', )
+    richtext_fields = ( 'description', )
     actions = ['action_toggle_published']
     inlines = [MultiwavelengthImageBandInlineAdmin]
 
@@ -954,7 +959,7 @@ class MultiwavelengthImageProxyAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.C
                     ( 'Language', {'fields': ( 'lang', 'source', 'translation_ready', ) } ),
                     ( None, {'fields': ( 'id', ) } ),
                     ( 'Publishing', {'fields': ( 'published', ), } ),
-                    ( 'Content', {'fields': ( 'title', 'subtitle', 'description', 'credit', ), } ),
+                    ( 'Content', {'fields': ( 'title', 'subtitle', 'description' ), } ),
                 )
     ordering = MultiwavelengthImageAdmin.ordering
     richtext_fields = MultiwavelengthImageAdmin.richtext_fields
