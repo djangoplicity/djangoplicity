@@ -86,7 +86,6 @@ class ZoomableDetailView( GenericDetailView ):
     def render( self, request, model, obj, state, admin_rights, **kwargs ):
         options = ArchiveOptions()
         has_access, reason = _has_access_permissions(request, obj, options)
-        print(f"ZoomableDetailView: has_access={has_access}, reason={reason}")
         if not has_access:
             return HttpResponseForbidden(reason)
 
