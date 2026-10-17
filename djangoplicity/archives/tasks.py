@@ -8,6 +8,7 @@
 
 from __future__ import with_statement
 from builtins import str
+from datetime import datetime, timedelta
 import glob
 import hashlib
 import os
@@ -242,6 +243,53 @@ def embargo_release_date_task(app_label, module_name, object_id, typ):
     if hasattr(obj, action):
         logger.info('Will run %s action for %s (%s)', typ, app_label, object_id)
         getattr(obj, action)()
+
+
+@task(name="archives.schedule_embargo_release_date_tasks", ignore_result=True)
+def schedule_embargo_release_date_tasks():
+    '''
+    Schedule embargo_release_date_task for archives whose embargo/release date
+    was too far in the future to be scheduled when it was set (see
+    ArchiveModel.set_embargo_date_task)
+    '''
+    from djangoplicity.archives.base import ArchiveModel
+
+    logger = get_task_logger(__name__)
+
+    # Same 4 weeks limit used by ArchiveModel.set_embargo_date_task
+    now = datetime.now()
+    one_month = now + timedelta(weeks=4)
+
+    for model in apps.get_models():
+        # Proxy models share the table of their concrete model
+        if not issubclass(model, ArchiveModel) or model._meta.proxy:
+            continue
+
+        for typ in ('embargo', 'release'):
+            date_field = '%s_date' % typ
+            task_field = '%s_task_id' % typ
+
+            # Some archives disable embargo_date/release_date in Archive.Meta
+            if not hasattr(model, date_field) or not hasattr(model, task_field):
+                continue
+
+            # Dates inside the 4 weeks window that were never scheduled
+            pending = model.objects.filter(**{
+                '%s__gt' % date_field: now,
+                '%s__lt' % date_field: one_month,
+                '%s__isnull' % task_field: True,
+            })
+
+            for obj in pending:
+                set_date_task = getattr(obj, 'set_%s_date_task' % typ)
+                set_date_task()
+
+                # Use update to avoid triggering save signals
+                task_id = getattr(obj, task_field)
+                model.objects.filter(pk=obj.pk).update(**{task_field: task_id})
+
+                logger.info('Scheduled %s task for %s.%s (%s)', typ,
+                    model._meta.app_label, model._meta.model_name, obj.pk)
 
 
 @task
