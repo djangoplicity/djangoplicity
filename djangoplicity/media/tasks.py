@@ -878,6 +878,32 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendta
         current_app.send_task(*args, **str_keys(kwargs))
 
 
+@task(name='media.process_video_derivatives', ignore_result=True)
+def process_video_derivatives(app_label, model_name, pk, formats=None,
+        imported_formats=None, user_id=None, generate_portrait=False,
+        replace_formats=False, sendtask_callback=None, sendtask_tasksetid=None):
+    '''
+    Generate the video derivatives (ultra_hd, ultra_hd_h265, hd_1080_screen,
+    hd_1080_broadcast and optionally portrait formats) from the master file
+    '''
+    from djangoplicity.media import ffmpeg
+
+    # Create temporary directory
+    tmp_dir = tempfile.mkdtemp(dir=settings.TMP_DIR)
+
+    try:
+        ffmpeg.process_video_derivatives(app_label, model_name, pk, formats,
+            imported_formats, tmp_dir, user_id, generate_portrait, replace_formats)
+    finally:
+        # Clean up temporary directory
+        shutil.rmtree(tmp_dir)
+
+    # send_task callback
+    if sendtask_callback:
+        args, kwargs = sendtask_callback  # pylint: disable=W0633
+        current_app.send_task(*args, **str_keys(kwargs))
+
+
 @task
 def image_observation_tagging_notification(pk):
     '''

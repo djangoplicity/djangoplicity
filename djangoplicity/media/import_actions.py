@@ -94,6 +94,32 @@ def video_extras():
     return action
 
 
+def process_video_derivatives_action():
+    '''
+    Import action to generate the video derivatives from the master file
+    (only if the master was imported, see ffmpeg.process_video_derivatives)
+    '''
+    def action(taskset, model, options, obj, data, form_values, conf={}, reimport=False):
+        # If we are importing new formats we receive a list, otherwise
+        # it is empty (e.g. in case of a re-import)
+        imported_formats = data.get('formats') or None
+        if isinstance(imported_formats, str):
+            imported_formats = [f.strip() for f in imported_formats.split(';')]
+
+        kwargs = {
+            'formats': conf.get('formats'),
+            'imported_formats': imported_formats,
+            'user_id': conf.get('user_id'),
+            'generate_portrait': form_values.get('generate_portrait', False),
+            'replace_formats': form_values.get('replace_formats', False),
+        }
+
+        taskset.add('media.process_video_derivatives', args=['media', 'Video', obj.pk], kwargs=kwargs)
+
+        return taskset, conf
+    return action
+
+
 def upload_youtube_action():
     """
     Upload the video to Youtube
