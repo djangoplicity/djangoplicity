@@ -503,7 +503,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     def action_generate_portrait_derivatives(self, request, objects):
         self._generate_video_derivatives(request, objects, VIDEOS_PORTRAIT_FORMATS)
 
-    action_generate_portrait_derivatives.short_description = _('Generate portrait formats from master (UHD Broadcast)')
+    action_generate_portrait_derivatives.short_description = _('Re-generate portrait formats from master (UHD Broadcast)')
 
     def get_actions( self, request ):
         """
