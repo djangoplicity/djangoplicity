@@ -721,8 +721,12 @@ def process_image_derivatives(app_label, module_name, pk, formats,
             args += ['-flatten', tmp_path]
             logger.debug(' '.join(args))
 
-            if not _run_command(args):
-                raise Exception('Could not create MPC file %s for "%s"' % (tmp_path, pk))
+            # ImageMagick can exit with != 0 on non fatal errors (e.g. the malformed
+            # EXIF of Photoshop BigTIFFs) and still write the output, so we only fail
+            # if the file wasn't created. _run_command logs the exit code and stderr
+            _run_command(args)
+            if not os.path.exists(tmp_path):
+                raise Exception('Could not create MPC file %s for "%s", see the previous log line for the command error' % (tmp_path, pk))
 
         # Create output directory
         output_dir = os.path.join(tmp_dir, fmt.name)
@@ -739,13 +743,12 @@ def process_image_derivatives(app_label, module_name, pk, formats,
         logger.debug('Generating "%s" from "%s": %s', fmt_name, derived,
                         ' '.join(convert_args))
 
-        if not _run_command(convert_args, env=env):
-            raise Exception('Could not generate %s for "%s"' % (fmt_name, pk))
+        _run_command(convert_args, env=env)
 
         # Copy the output files to the archive
         path = glob.glob(os.path.join(tmp_dir, fmt_name, '%s.*' % pk))
         if not path:
-            raise Exception('Could not generate %s for "%s"' % (fmt_name, pk))
+            raise Exception('Could not generate %s for "%s", see the previous log line for the command error' % (fmt_name, pk))
 
         fmt_dir = os.path.join(dest_dir, fmt_name)
         if not os.path.exists(fmt_dir):
