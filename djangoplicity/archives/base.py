@@ -821,7 +821,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
         base_access_tag = self.get_access_tag()
         is_embargoed = self.is_embargoed()
         
-        content_server = MEDIA_CONTENT_SERVERS[self.content_server]
+        content_server = MEDIA_CONTENT_SERVERS.get(self.content_server)
         if not content_server:
             return AccessTagControl.PUBLIC
 
@@ -840,7 +840,7 @@ class ArchiveModel( with_metaclass(ArchiveBase, object) ):
             return
         
         # 2. Check if content server is valid
-        content_server = MEDIA_CONTENT_SERVERS[self.content_server]
+        content_server = MEDIA_CONTENT_SERVERS.get(self.content_server)
         if not content_server:
             return
         
