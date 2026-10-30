@@ -41,6 +41,25 @@ MEDIA_CONTENT_SERVERS = getattr(settings, 'MEDIA_CONTENT_SERVERS', {})
 MP4BOX_PATH = getattr(settings, 'MP4BOX_PATH', '/usr/local/bin/MP4Box')
 MP4FRAGMENT_PATH = getattr(settings, 'MP4FRAGMENT_PATH', '/usr/local/bin/mp4fragment')
 
+#
+# Path to ffmpeg/ffprobe and formats used to generate video derivatives
+#
+FFMPEG_PATH = getattr(settings, 'FFMPEG_PATH', '/usr/bin/ffmpeg')
+FFPROBE_PATH = getattr(settings, 'FFPROBE_PATH', '/usr/bin/ffprobe')
+
+VIDEOS_MASTER_FORMAT = 'ultra_hd_broadcast'
+VIDEOS_DERIVED_FORMATS = ['ultra_hd_h265', 'ultra_hd', 'hd_1080_broadcast', 'hd_1080_screen']
+VIDEOS_PORTRAIT_FORMATS = ['portrait_hd', 'portrait_hd_broadcast']
+
+# Help text shown in the video import page (ArchiveOptions.Import.help_text)
+VIDEOS_IMPORT_HELP_TEXT = (
+    'When the master file (%s) is imported, the following derived formats '
+    'will be generated if they don\'t already exist: %s. '
+    'Check "Portrait" to also generate %s (center crop of the master), '
+    'and "Replace" to re-generate them even if they already exist. '
+    '"Delete old formats" only removes files of legacy formats no longer used, it does not re-generate anything.'
+) % (VIDEOS_MASTER_FORMAT, ', '.join(VIDEOS_DERIVED_FORMATS), ', '.join(VIDEOS_PORTRAIT_FORMATS))
+
 
 #
 # Colour definitions

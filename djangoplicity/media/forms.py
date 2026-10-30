@@ -96,7 +96,16 @@ class VideoImportForm( GenericImportForm ):
     """
     Extra form fields for the video file import
     """
-    delete_old_formats = forms.BooleanField( required=False, initial=True )
+    # Delete the files of legacy formats no longer used (see remove_old_resources
+    # in VideoOptions.Import.actions), it doesn't affect the derived formats
+    delete_old_formats = forms.BooleanField( required=False, initial=True,
+        help_text='Delete the files of legacy formats no longer used (e.g. hd720p_broadcast, broadcast_sd_part1). Current formats are not affected' )
+    # Generate portrait_hd and portrait_hd_broadcast from the master file
+    generate_portrait = forms.BooleanField( required=False, initial=False, label='Portrait',
+        help_text='Generate portrait_hd and portrait_hd_broadcast (center crop of the master)' )
+    # Re-generate the derived formats from the master even if they already exist
+    replace_formats = forms.BooleanField( required=False, initial=False, label='Replace',
+        help_text='Re-generate the derived formats from the master even if they already exist' )
 
     def __init__(self, *args, **kwargs):
         '''

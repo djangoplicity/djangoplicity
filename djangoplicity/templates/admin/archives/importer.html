@@ -11,6 +11,10 @@
   {% endif %}
   {{ formset.media }}
   <script type="text/javascript" src="{% static "admin/js/actions.min.js" %}"></script>
+  <style>
+    /* Allow long column headers to wrap instead of overlapping */
+    #changelist table thead th { white-space: normal; vertical-align: bottom; padding: 8px 10px; }
+  </style>
 
 {% endblock %}
 
@@ -38,6 +42,7 @@
     {% endif %}
 
     <p><div class="description">Files may be imported by placing them in {{ import_root }}, respecting the {{ opts.model_name }} archive folder structure.</div></p>
+    {% if help_text %}<p class="help">{{ help_text }}</p>{% endif %}
     <div class="module " id="changelist">
     <h2>Import files</h2>
     {% if formset.forms %}
@@ -48,7 +53,7 @@
                 <th>Import</th>
                 {% for field in formset.forms.0 %}
                     {% if not forloop.last %}
-                        <th>{{ field.label_tag }}</th>
+                        <th{% if field.help_text %} title="{{ field.help_text }}"{% endif %}>{{ field.label_tag }}</th>
                     {%endif%}
                 {% endfor %}
             </tr>
