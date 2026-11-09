@@ -50,7 +50,8 @@ from djangoplicity.contentserver.admin import ContentDeliveryAdmin
 from djangoplicity.contrib import admin as dpadmin
 from djangoplicity.contrib.admin import AdminRichTextAreaWidget
 from djangoplicity.cutter.admin import CropAdmin
-from djangoplicity.media.consts import IMAGE_AVM_FORMATS
+from djangoplicity.media.consts import IMAGE_AVM_FORMATS, VIDEOS_DERIVED_FORMATS, \
+    VIDEOS_PORTRAIT_FORMATS
 from djangoplicity.media.models import ImageExposure, ImageContact, Image, \
         VideoContact, Video, VideoSubtitle, ImageColor, Color, PictureOfTheWeek, \
         ImageComparison, ImageProxy, ImageComparisonProxy, PictureOfTheWeekProxy, \
@@ -422,7 +423,7 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     ordering = ('-last_modified', )
     richtext_fields = ('description', 'credit', )
     readonly_fields = ('content_server_ready', )
-    actions = ['action_toggle_published', 'action_toggle_featured', 'action_update_subtitles', 'action_reimport', 'action_video_extras', 'action_resync_resources', 'action_resync_content_server_resources_model', 'action_resync_resource_privacy', 'action_youtube_upload', 'action_generate_thumbnail', 'action_delete_from_content_server']
+    actions = ['action_toggle_published', 'action_toggle_featured', 'action_update_subtitles', 'action_reimport', 'action_video_extras', 'action_resync_resources', 'action_resync_content_server_resources_model', 'action_resync_resource_privacy', 'action_youtube_upload', 'action_generate_thumbnail', 'action_generate_video_derivatives', 'action_generate_portrait_derivatives', 'action_delete_from_content_server']
     inlines = [ VideoContactInlineAdmin ]
 
     class Media:
@@ -478,6 +479,31 @@ class VideoAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
         self.message_user(request, _('Generating thumbnail of videos'))
 
     action_generate_thumbnail.short_description = 'Generate thumbnail at position: {}'.format(getattr(settings, 'VIDEOS_THUMBNAIL_POSITION', 5))
+
+    def _generate_video_derivatives(self, request, objects, formats):
+        from djangoplicity.celery.serialtaskset import SerialSendTaskSet
+
+        for obj in objects:
+            taskset = SerialSendTaskSet()
+            # Formats are given explicitly to re-generate them even if they already exist
+            taskset.add('media.process_video_derivatives', args=['media', 'Video', obj.pk],
+                kwargs={'formats': formats, 'user_id': request.user.pk})
+            taskset.add('djangoplicity.archives.tasks.compute_checksums', args=['media', 'video', obj.pk])
+            taskset.add('djangoplicity.contentserver.tasks.sync_content_server',
+                args=['djangoplicity.media.models.videos', 'Video', obj.pk],
+                kwargs={'formats': formats})
+            taskset.send_task()
+        self.message_user(request, _('Re-generating video formats from the master file (%s)') % ', '.join(formats))
+
+    def action_generate_video_derivatives(self, request, objects):
+        self._generate_video_derivatives(request, objects, VIDEOS_DERIVED_FORMATS)
+
+    action_generate_video_derivatives.short_description = _('Re-generate video formats from master (UHD Broadcast)')
+
+    def action_generate_portrait_derivatives(self, request, objects):
+        self._generate_video_derivatives(request, objects, VIDEOS_PORTRAIT_FORMATS)
+
+    action_generate_portrait_derivatives.short_description = _('Re-generate portrait formats from master (UHD Broadcast)')
 
     def get_actions( self, request ):
         """

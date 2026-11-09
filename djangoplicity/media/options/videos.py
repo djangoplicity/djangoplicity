@@ -55,7 +55,9 @@ from djangoplicity.contentserver.import_actions import sync_content_server
 from djangoplicity.media.forms import VideoImportForm, SubtitleImportForm
 from djangoplicity.media.import_actions import enable_faststart, \
     embed_subtitles, fragment_mp4, upload_youtube_action, video_extras, \
-    generate_thumbnail_action
+    generate_thumbnail_action, process_video_derivatives_action
+from djangoplicity.media.consts import VIDEOS_DERIVED_FORMATS, \
+    VIDEOS_PORTRAIT_FORMATS, VIDEOS_IMPORT_HELP_TEXT
 from djangoplicity.media.info import related_releases, related_announcements, \
     duration, shadowbox_link, object_id, object_language, video_magnet_uri_link, \
     web_categories, frame_rate
@@ -137,10 +139,11 @@ class VideoOptions( ArchiveOptions ):
                 }
         } ),
         ( ugettext_noop('HD'), {
-            'resources': ( shadowbox_link('hd_and_apple', 1280, 720, player='qt'), 'hd_1080p25_screen', 'ext_highres', 'portrait_hd', 'ext_playback'),
+            'resources': ( shadowbox_link('hd_and_apple', 1280, 720, player='qt'), 'hd_1080p25_screen', 'hd_1080_screen', 'ext_highres', 'portrait_hd', 'ext_playback'),
             'icons': {
                 'shadowbox_link': 'movie',
                 'hd_1080p25_screen': 'movie',
+                'hd_1080_screen': 'movie',
                 'portrait_hd': 'movie',
                 }
         } ),
@@ -168,13 +171,14 @@ class VideoOptions( ArchiveOptions ):
                 }
         } ),
         ( ugettext_noop('For Broadcasters'), {
-            'resources': ( 'ultra_hd_broadcast', 'hd_1080p25_broadcast', 'hd_broadcast_720p50', 'hd_broadcast_720p25', 'portrait_hd_broadcast', 'broadcast_sd', 'broadcast_sd_old', ),
+            'resources': ( 'ultra_hd_broadcast', 'hd_1080p25_broadcast', 'hd_1080_broadcast', 'hd_broadcast_720p50', 'hd_broadcast_720p25', 'portrait_hd_broadcast', 'broadcast_sd', 'broadcast_sd_old', ),
             'icons': {
                 'broadcast_sd': 'movie',
                 'broadcast_sd_old': 'movie',
                 'hd_broadcast_720p25': 'movie',
                 'hd_broadcast_720p50': 'movie',
                 'hd_1080p25_broadcast': 'movie',
+                'hd_1080_broadcast': 'movie',
                 'ultra_hd_broadcast': 'movie',
                 'portrait_hd_broadcast': 'movie',
                 }
@@ -255,6 +259,7 @@ class VideoOptions( ArchiveOptions ):
         form = VideoImportForm
         metadata = 'original'
         uploadable = True
+        help_text = VIDEOS_IMPORT_HELP_TEXT
         scan_directories = [
             # Image
             ( 'original', ( '.jpg', '.jpeg', '.tif', '.png', ) ),
@@ -276,7 +281,7 @@ class VideoOptions( ArchiveOptions ):
             ( 'cylindrical_8kmaster', ( '.zip', ) ),
             ( 'cylindrical_16kmaster', ( '.zip', ) ),
             # Ultra HD
-            ( 'ultra_hd_broadcast', ( '.avi', ) ),
+            ( 'ultra_hd_broadcast', ( '.avi', '.mov', ) ),
             ( 'ultra_hd_h265', ( '.mkv', '.mp4' ) ),
             ( 'ultra_hd', ( '.mp4', ) ),
             # 8k
@@ -285,13 +290,15 @@ class VideoOptions( ArchiveOptions ):
             # HD
             ( 'hd_and_apple', ( '.mp4', '.m4v' ) ),
             ( 'hd_1080p25_screen', ( '.mp4' ) ),
-            ( 'portrait_hd', ('.mp4')),
+            ( 'hd_1080_screen', ( '.mp4', ) ),
+            ( 'portrait_hd', ('.mp4', )),
             # Broadcast
             ( 'broadcast_sd', ( '.avi', '.mxf', '.mov', '.mp4' ) ),
             ( 'hd_broadcast_720p25', ( '.mxf', '.m2t', '.mov' ) ),
             ( 'hd_broadcast_720p50', ( '.mxf', '.m2t', '.mov' ) ),
             ( 'hd_1080p25_broadcast', ( '.avi', '.mxf' ) ),
-            ( 'portrait_hd_broadcast', ('.mov')),
+            ( 'hd_1080_broadcast', ( '.mov', '.mxf', ) ),
+            ( 'portrait_hd_broadcast', ('.mov', )),
             # Large
             ( 'large_qt', ( '.mov', ) ),
             # Medium
@@ -352,6 +359,7 @@ class VideoOptions( ArchiveOptions ):
                 'hd_broadcast_720p50_part10',
             ] + getattr( settings, 'VIDEOS_FORMATS_REMOVE', [] ) ),
             move_resources,
+            process_video_derivatives_action(),
             rename_resource_ext( 'hd_and_apple', 'mp4', 'm4v' ),
             enable_faststart( 'hd_and_apple', 'large_qt' ),
             fragment_mp4('hd_1080p25_screen'),
@@ -360,7 +368,7 @@ class VideoOptions( ArchiveOptions ):
             generate_thumbnail_action(),
             process_image_derivatives(),
             compute_archive_checksums(),
-            sync_content_server(extra_formats=['videoframe']),
+            sync_content_server(extra_formats=['videoframe'] + VIDEOS_DERIVED_FORMATS + VIDEOS_PORTRAIT_FORMATS),
             upload_youtube_action()
         ]
 

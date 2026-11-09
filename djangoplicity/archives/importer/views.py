@@ -160,6 +160,7 @@ def manage_archive_imports(request, archive_model, archive_options):
                 'app_label': archive_model._meta.app_label,
                 'opts': archive_model._meta,
                 'invalid': invalid,
+                'help_text': getattr(archive_options.Import, 'help_text', None),
             })
         else:
             for frm in formset.cleaned_data:
@@ -245,4 +246,5 @@ def manage_archive_imports(request, archive_model, archive_options):
         'app_label': archive_model._meta.app_label,
         'opts': archive_model._meta,
         'invalid': invalid,
+        'help_text': getattr(archive_options.Import, 'help_text', None),
     })
