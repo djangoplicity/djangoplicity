@@ -854,6 +854,12 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendta
         if position == 'middle':
             position = int(v.duration_in_seconds() / 2)
 
+        # Compare the duration betweem mplayer and ffprobe
+        ffprobe_duration = Popen(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', path],
+            stdout=PIPE, stderr=PIPE, encoding='utf8').communicate()[0].strip()
+        logger.info('Thumbnail for "%s": file_duration=%s, duration of %s (ffprobe)=%s, position=%s',
+            pk, v.file_duration, fmt, ffprobe_duration, position)
+
         cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 -vf "format=rgb24" {output}'.format(position=position, input=path, output=output)
         if force_generation:
             cmd += ' -y' # To overwrite image
