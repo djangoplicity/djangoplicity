@@ -60,6 +60,14 @@ VIDEOS_IMPORT_HELP_TEXT = (
     '"Delete old formats" only removes files of legacy formats no longer used, it does not re-generate anything.'
 ) % (VIDEOS_MASTER_FORMAT, ', '.join(VIDEOS_DERIVED_FORMATS), ', '.join(VIDEOS_PORTRAIT_FORMATS))
 
+# Help text shown in the image import page (ArchiveOptions.Import.help_text)
+IMAGES_IMPORT_HELP_TEXT = (
+    '"Transparent zoomable" generates the zoomable tiles as PNG keeping the alpha channel '
+    '(useful for annotation/overlay layers, requires VIPS). '
+    '"Transparent derivatives" generates the derived formats (large, screen, thumbs...) as PNG '
+    'keeping the alpha channel instead of JPG.'
+)
+
 
 #
 # Colour definitions

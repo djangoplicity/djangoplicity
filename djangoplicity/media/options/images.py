@@ -59,6 +59,7 @@ from djangoplicity.archives.views import SerializationDetailView
 from djangoplicity.contentserver.import_actions import sync_content_server
 from djangoplicity.cutter.imagemagick import identify_image
 from djangoplicity.media import views
+from djangoplicity.media.consts import IMAGES_IMPORT_HELP_TEXT
 from djangoplicity.media.forms import ImageImportForm
 from djangoplicity.media.info import related_releases, related_announcements, \
     related_science_announcements, pixel_size, distance, constellation, \
@@ -200,9 +201,10 @@ class ImageOptions( ArchiveOptions ):
     class Import( object ):
         form = ImageImportForm
         uploadable = True
+        help_text = IMAGES_IMPORT_HELP_TEXT
         metadata = 'original'
         scan_directories = [
-            ('original', ('.tif', '.psb', '.jpg')),
+            ('original', ('.tif', '.psb', '.jpg', '.png')),
             ('banner1920', ('.jpg', )),
             ('newsfeature', ('.jpg', )),
         ]
@@ -285,6 +287,8 @@ class ImageOptions( ArchiveOptions ):
 
         obj.wallpapers = form_values["wallpapers"]
         obj.zoomify = form_values["zoomify"]
+        obj.transparent_zoomable = form_values["transparent_zoomable"]
+        obj.transparent_derivatives = form_values["transparent_derivatives"]
         if 'credit' in form_values:
             obj.credit = form_values['credit']
 
