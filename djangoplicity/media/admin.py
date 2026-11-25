@@ -240,7 +240,7 @@ class ImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, Renam
     filter_horizontal = ( 'web_category', 'subject_category', 'subject_name', 'tagging_status', 'proposal', 'publication')
     search_fields = ( 'id', 'title', 'headline', 'description', 'credit', )
     fieldsets = (
-        ( None, {'fields': ( 'id', 'priority', 'published', ('featured', 'zoomify', 'wallpapers', 'print_layout', 'zoomable', 'keep_newsfeature'), ) } ),
+        ( None, {'fields': ( 'id', 'priority', 'published', ('featured', 'zoomify', 'wallpapers', 'print_layout', 'zoomable', 'keep_newsfeature'), ('transparent_zoomable', 'transparent_derivatives'), ) } ),
         ( _(u'Language'), {'fields': ( 'lang', ) } ),
         ( _(u'Status'), {'fields': ( 'tagging_status', ), 'classes': ('collapse',) } ),
         ( _(u'Content Metadata'), {'fields': ( 'title', 'headline', 'description', 'credit', 'web_category', 'subject_category', 'subject_name', 'distance_ly', 'distance_ly_is_accurate', 'distance_z', 'distance_notes', 'type', 'proposal', 'publication'), 'classes': ('collapse',) } ),
