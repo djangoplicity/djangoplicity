@@ -79,6 +79,10 @@ IDENTIFY = '%s %s %s' % (os.path.join(IM_PATH, 'identify'), IM_LIMITS, TEMPORARY
 
 SRGB_PROFILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),'icc', 'sRGB-IEC61966-2.1.icc')
 
+# Tiles suffix used by vips dzsave for the zoomable, PNG keeps the alpha channel
+ZOOMIFY_VIPS_SUFFIX = '.jpg[Q=90]'
+ZOOMIFY_VIPS_TRANSPARENT_SUFFIX = '.png'
+
 # We need to keep generating the classic wallpapers until we are sure that we are no longer using them in the templates, 
 # for instance, they are used in the Top100 extension
 # CLASSIC_WALLPAPER_TYPES = [
@@ -148,11 +152,23 @@ def _get_crop_offset(archive, fmt):
         return '+0%+d' % int(round(offset * ratio))
 
 
+def _get_output_ext(archive, fmt):
+    '''
+    Return the output extension for the given format: PNG instead of JPG if
+    the archive requires transparent derivatives
+    '''
+    ext = fmt.type.exts[0]
+    if ext == 'jpg' and getattr(archive, 'transparent_derivatives', False):
+        return 'png'
+    return ext
+
+
 def _get_convert_args(archive, width, height, fmt, tmp_path, output_dir):
     '''
     Retuns the array of argument for the given image format
     '''
     args = CONVERT.split()
+    output_ext = _get_output_ext(archive, fmt)
 
     # For small images we use -thumbnail which optimize the file size
     if _format_is_lte_size(fmt, 700):
@@ -185,7 +201,7 @@ def _get_convert_args(archive, width, height, fmt, tmp_path, output_dir):
         args += [
             RESIZE, '%sx%s' % (fmt.type.width or '', fmt.type.height or '')
         ]
-    elif fmt.type.exts[0] == 'jpg' and (width > 65500 or height > 65500):
+    elif output_ext == 'jpg' and (width > 65500 or height > 65500):
         # JPEG has a maximum size of 65,535×65,535 pixels
         if width > height:
             args += [RESIZE, '65500x']
@@ -200,7 +216,7 @@ def _get_convert_args(archive, width, height, fmt, tmp_path, output_dir):
         args += ['-unsharp', '1x1+%s+0' % (fmt.type.unsharp / 100.0)]
 
     # Compression quality
-    if hasattr(fmt.type, 'compression_quality'):
+    if hasattr(fmt.type, 'compression_quality') and output_ext == fmt.type.exts[0]:
         args += ['-quality', '%s' % fmt.type.compression_quality]
 
     # Compression type
@@ -224,11 +240,11 @@ def _get_convert_args(archive, width, height, fmt, tmp_path, output_dir):
     # Output path
     output_path = os.path.join(
         output_dir,
-        '%s.%s' % (archive.pk, fmt.type.exts[0])
+        '%s.%s' % (archive.pk, output_ext)
     )
 
     # Force BigTIFF when needed
-    if fmt.type.exts[0] in ('tif', 'tiff') and _must_use_bigtiff(fmt, width, height):
+    if output_ext in ('tif', 'tiff') and _must_use_bigtiff(fmt, width, height):
         output_path = 'tiff64:%s' % output_path
 
     if hasattr(fmt.type, 'force_format'):
@@ -288,7 +304,15 @@ def _run_command(args, logger_name=None, env=None):
     return True
 
 
-def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
+def _get_dzsave_args(source, zoomable_dir, basename, transparent=False):
+    '''
+    Returns the vips dzsave arguments, with PNG tiles if transparent
+    '''
+    suffix = ZOOMIFY_VIPS_TRANSPARENT_SUFFIX if transparent else ZOOMIFY_VIPS_SUFFIX
+    return ['vips', 'dzsave', source, zoomable_dir, '--basename', basename, '--suffix', suffix, '--layout', 'zoomify', '--strip']
+
+
+def _generate_zoomify_vips(archive, tmp_dir, dest_dir, transparent=False):
     source = archive.resource_original.path
     subdir = 'zoomable'
     zoomable_dir = os.path.join(tmp_dir, subdir)
@@ -317,7 +341,7 @@ def _generate_zoomify_vips(archive, tmp_dir, dest_dir):
         logger.info('No embedded ICC profile for %s, skipping icc_transform (assuming sRGB)', archive.pk)
 
     logger.info(f"Generating zoomify tiles using VIPS for {sRGBSource} into tmpdir: {zoomable_dir}")
-    args = ['vips', 'dzsave', sRGBSource, zoomable_dir, '--basename', subdir, '--suffix', '.jpg[Q=90]', '--layout', 'zoomify', '--strip']
+    args = _get_dzsave_args(sRGBSource, zoomable_dir, subdir, transparent=transparent)
     if not _run_command(args):
         logger.error('Aborting zoomable generation for %s: dzsave failed', archive.pk)
         return
@@ -651,9 +675,12 @@ def process_image_derivatives(app_label, module_name, pk, formats,
 
         if fmt.type.verbose_name == 'Zoomable':
             logger.info('Generating "%s" for %s', fmt.name, archive.pk)
+            transparent = getattr(archive, 'transparent_zoomable', False)
             if hasattr(settings, 'DP_IMAGES_ZOOMIFY_WITH_VIPS') and settings.DP_IMAGES_ZOOMIFY_WITH_VIPS is True:
-                _generate_zoomify_vips(archive, tmp_dir, dest_dir)
+                _generate_zoomify_vips(archive, tmp_dir, dest_dir, transparent=transparent)
             else:
+                if transparent:
+                    logger.warning('Transparent zoomable for %s requires DP_IMAGES_ZOOMIFY_WITH_VIPS, generating JPG tiles', archive.pk)
                 _generate_zoomify(archive, width, height, tmp_dir, dest_dir)
             continue
 
@@ -696,9 +723,10 @@ def process_image_derivatives(app_label, module_name, pk, formats,
                 # Delete file if not generated but there
                 # (from a previous other image with same id)
                 try:
-                    fmt_file = os.path.join(dest_dir, fmt_name, '{}.{}'.format(pk, fmt.type.exts[0]))
-                    if os.path.exists(fmt_file):
-                        os.remove(fmt_file)
+                    for ext in fmt.exts:
+                        fmt_file = os.path.join(dest_dir, fmt_name, '{}.{}'.format(pk, ext))
+                        if os.path.exists(fmt_file):
+                            os.remove(fmt_file)
                 except OSError as e:
                     if e.errno == errno.ENOENT:
                         logger.info('%s, no such file or directory', fmt_name)
@@ -714,7 +742,9 @@ def process_image_derivatives(app_label, module_name, pk, formats,
             logger.debug('Creating MPC file: %s', tmp_path)
             # -background none is to keep the transparency untouched (if any)
             args = CONVERT.split() + [source.path]
-            if hasattr(fmt.type, 'exts') and fmt.type.exts and fmt.type.exts[0] == 'jpg':
+            if getattr(archive, 'transparent_derivatives', False):
+                args += ['-background', 'none']
+            elif hasattr(fmt.type, 'exts') and fmt.type.exts and fmt.type.exts[0] == 'jpg':
                 args += ['-background', 'white', '-alpha', 'remove']
             else:
                 args += ['-alpha', 'Deactivate']
@@ -756,6 +786,13 @@ def process_image_derivatives(app_label, module_name, pk, formats,
 
         dest_path = os.path.join(fmt_dir, os.path.basename(path[0]))
         shutil.move(path[0], dest_path)
+
+        # Remove the file with the other extension (e.g. jpg/png), if any
+        for ext in fmt.exts:
+            other_path = os.path.join(fmt_dir, '%s.%s' % (pk, ext))
+            if other_path != dest_path and os.path.exists(other_path):
+                logger.info('Deleting old "%s"', other_path)
+                os.remove(other_path)
 
         # Make sure permissions are correct
         os.chmod(dest_path, stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
