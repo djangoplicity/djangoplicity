@@ -49,6 +49,10 @@ class ImageImportForm( GenericImportForm ):
     """
     zoomify = forms.BooleanField( required=False, initial=True )
     wallpapers = forms.BooleanField( required=False, initial=True )
+    transparent_zoomable = forms.BooleanField( required=False, initial=False, label='Transparent zoomable',
+        help_text='Generate the zoomable tiles as PNG keeping the alpha channel (requires VIPS)' )
+    transparent_derivatives = forms.BooleanField( required=False, initial=False, label='Transparent derivatives',
+        help_text='Generate the derived formats (large, screen, thumbs...) as PNG keeping the alpha channel instead of JPG' )
 
     def __init__(self, *args, **kwargs):
         '''
