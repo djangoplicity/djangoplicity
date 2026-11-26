@@ -848,7 +848,7 @@ class MultiwavelengthImageBandInlineAdmin( admin.TabularInline ):
         return field
 
 
-class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, ArchiveAdmin ):
+class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanHTMLAdmin, RenameAdmin, ArchiveAdmin, ContentDeliveryAdmin ):
     list_display = ( 'id', 'title', 'published', 'priority', 'release_date', 'embargo_date', view_link( 'multiwavelength' ) )
     list_filter = ( 'published', 'last_modified', 'created', 'release_date', 'embargo_date', )
     list_editable = ( 'published', 'priority', )
@@ -869,10 +869,12 @@ class MultiwavelengthImageAdmin( dpadmin.DjangoplicityModelAdmin, dpadmin.CleanH
                                          u'toggle on the public page; leave it empty to hide the toggle.'),
                     } ),
                     ( 'Content', {'fields': ( 'title', 'subtitle', 'description' ), } ),
+                    ( _(u'Content Delivery'), {'fields': ( 'content_server', 'content_server_ready'), 'classes': ('collapse',) } ),
                 )
     ordering = ( '-release_date', '-id', )
     richtext_fields = ( 'description', )
-    actions = ['action_toggle_published']
+    readonly_fields = ('content_server_ready', )
+    actions = ['action_toggle_published', 'action_reimport', 'action_resync_resources']
     inlines = [MultiwavelengthImageBandInlineAdmin]
 
     def get_queryset( self, request ):

@@ -39,7 +39,9 @@ from djangoplicity.archives.contrib.info import admin_edit_for_site, \
     admin_add_translation, priority, published, release_date
 from djangoplicity.archives.contrib.queries import AllPublicQuery, \
     EmbargoQuery, StagingQuery, UnpublishedQuery
+from djangoplicity.archives.importer.import_actions import move_resources
 from djangoplicity.archives.options import ArchiveOptions
+from djangoplicity.contentserver.import_actions import sync_content_server
 from djangoplicity.media import views
 from djangoplicity.media.info import object_id
 from djangoplicity.media.models import MultiwavelengthImageProxy
@@ -88,3 +90,15 @@ class MultiwavelengthImageOptions( ArchiveOptions ):
         unpublished = ( UnpublishedQuery, security.UNPUBLISHED_PERMS )
         staging = ( StagingQuery, security.STAGING_PERMS )
         embargo = ( EmbargoQuery, security.EMBARGO )
+
+    class Import( object ):
+        # The folder of the annotations pyramid is copied by hand to
+        # <import root>/multiwavelength/annotations_zoomable/<id>/
+        uploadable = False
+        scan_directories = [
+            ( 'annotations_zoomable', ( '', ) ),
+        ]
+        actions = [
+            move_resources,
+            sync_content_server(),
+        ]

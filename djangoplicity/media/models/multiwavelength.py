@@ -31,6 +31,8 @@
 
 import copy
 import math
+import os
+from xml.etree import ElementTree
 
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -41,7 +43,11 @@ from six import python_2_unicode_compatible
 
 from djangoplicity.archives import fields as archive_fields
 from djangoplicity.archives.base import ArchiveModel
+from djangoplicity.archives.contrib import types
+from djangoplicity.archives.resources import ResourceManager
 from djangoplicity.archives.translation import TranslationProxyMixin
+from djangoplicity.contentserver.constants import AccessTagControl
+from djangoplicity.contentserver.models import ContentDeliveryModel
 from djangoplicity.media.consts import MULTIPLICATION_SIGN, \
     SPEED_OF_LIGHT_NM, SUPERSCRIPT_DIGITS, WAVELENGTH_UNITS
 from djangoplicity.media.models.images import Image
@@ -148,12 +154,14 @@ class CaptionAlign( models.TextChoices ):
 
 
 @python_2_unicode_compatible
-class MultiwavelengthImage( ArchiveModel, TranslationModel ):
+class MultiwavelengthImage( ArchiveModel, TranslationModel, ContentDeliveryModel ):
     """
     An astronomical object presented across several bands of the
     electromagnetic spectrum. The visitor switches band and the visual is
-    swapped, so the archive itself holds no file resources: every visual comes
-    from the Image archive through MultiwavelengthImageBand.
+    swapped. Every visual comes from the Image archive through
+    MultiwavelengthImageBand; the only file resource of the archive is the
+    Zoomify pyramid of the annotations shown over them in the zoomable
+    viewer, synced to the content server.
     """
     id = archive_fields.IdField()
     title = archive_fields.TitleField()
@@ -182,7 +190,10 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
         excludes = ['published', 'last_modified', 'created', ]
 
     class Archive:
-        # No resources of its own - the visuals live in the Image archive.
+        # The visuals live in the Image archive. This is the folder of the
+        # Zoomify pyramid (ImageProperties.xml and TileGroupN/ with PNG tiles)
+        # laid over them in the zoomable viewer.
+        annotations_zoomable = ResourceManager( type=types.ZoomableOverlayType )
 
         class Meta:
             root = getattr( settings, 'MULTIWAVELENGTH_ARCHIVE_ROOT', 'archives/multiwavelength/' )
@@ -285,6 +296,46 @@ class MultiwavelengthImage( ArchiveModel, TranslationModel ):
             images[0]['is_main'] = True
 
         return images
+
+    def get_zoomable_annotations( self ):
+        """
+        The Zoomify pyramid of the annotations laid over the images in the
+        zoomable viewer, or None if there is none. OpenSeadragon does not
+        read ImageProperties.xml for Zoomify, so the width and height are
+        read here from the local copy of the folder.
+        """
+        resource = self.resource_annotations_zoomable
+        if not resource:
+            return None
+        try:
+            properties = ElementTree.parse( os.path.join( resource.path, 'ImageProperties.xml' ) ).getroot()
+            width = int( properties.get( 'WIDTH' ) )
+            height = int( properties.get( 'HEIGHT' ) )
+        except ( OSError, ElementTree.ParseError, TypeError, ValueError ):
+            return None
+        return {
+            'tiles_url': '%s/' % resource.url,
+            'width': width,
+            'height': height,
+        }
+
+    def get_access_tag_for_format( self, fmt ):
+        # The annotations are public in the content server from the start,
+        # also while the object is unpublished or embargoed.
+        if fmt == 'annotations_zoomable':
+            return AccessTagControl.PUBLIC
+        return super( MultiwavelengthImage, self ).get_access_tag_for_format( fmt )
+
+    def update_resource_privacy( self ):
+        """
+        Does nothing. annotations_zoomable is the only resource of the archive
+        and it is always public (see get_access_tag_for_format), so there is
+        no access tag to change when the object is published or its dates
+        change, and re-tagging would go through every tile of the pyramid
+        for nothing. If a resource that follows the publishing state is ever
+        added to the archive, this override has to go.
+        """
+        return
 
     @property
     def main_visual( self ):
