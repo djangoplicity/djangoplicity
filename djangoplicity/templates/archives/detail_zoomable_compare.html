@@ -6,6 +6,8 @@ djangoplicity.media.views.ZoomableCompareDetailView.
 Context:
     object      The archive item.
     layers      Images with zoomable tiles, main first (see the view).
+    annotations Zoomify pyramid laid over the images, with its toggle, or
+                None (see the view).
     back_url    Page the viewer goes back to.
     embedded    True when the page is in an iframe of the detail page
                 (?embed=1): it closes the iframe instead of going back.
@@ -113,6 +115,10 @@ analytics, etc. in the extra_head block.
 
         .zc-btn.is-fullscreen [data-zc-icon-exit] {
             display: block;
+        }
+
+        .zc-btn[hidden] {
+            display: none;
         }
 
         /* Shown while the tiles of an image are loading, or when they fail */
@@ -390,6 +396,11 @@ analytics, etc. in the extra_head block.
             <svg data-zc-icon-enter viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
             <svg data-zc-icon-exit viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
         </button>
+        {% if annotations %}
+        {# zoomable_compare.js hides it if the annotations cannot be loaded #}
+        <button type="button" class="zc-btn" data-zc-annotations aria-pressed="true"
+                data-label-on="{% trans 'Annotations ON' %}" data-label-off="{% trans 'Annotations OFF' %}">{% trans "Annotations ON" %}</button>
+        {% endif %}
     </header>
 
     <footer class="zc-bar zc-bottom">
@@ -436,6 +447,9 @@ analytics, etc. in the extra_head block.
     </footer>
 
     {{ layers|json_script:"zoomable-layers" }}
+    {% if annotations %}
+    {{ annotations|json_script:"zoomable-annotations" }}
+    {% endif %}
     {% javascript 'openseadragon' %}
     <script src="{% static 'media/js/zoomable_compare.js' %}"></script>
 </body>
