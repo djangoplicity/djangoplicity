@@ -58,6 +58,16 @@ class ZoomableType(ImageFileType):
     exts = []
 
 
+class ZoomableOverlayType(ImageFileType):
+    """
+    Folder with a ready-made Zoomify pyramid (ImageProperties.xml and
+    TileGroupN/ with PNG tiles) laid over the images in the zoomable viewer.
+    It is imported as is, not generated from an original.
+    """
+    verbose_name = _(u'Zoomable overlay')
+    exts = []
+
+
 class PngType(ImageFileType):
     verbose_name = _('PNG')
     exts = ['png']

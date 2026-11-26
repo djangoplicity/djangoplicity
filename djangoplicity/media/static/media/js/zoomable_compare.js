@@ -16,6 +16,10 @@
 // viewer but hidden, so it is fast to show it again. Until its first tiles are
 // on screen a loading message is shown, and an error one if they fail.
 //
+// If the page has annotations (a Zoomify pyramid with transparent PNG
+// tiles), they are one more tiled image, always on top of image 1 and 2 and
+// not part of the crossfade: only their button shows or hides them.
+//
 // With ?embed=1 the page is in an iframe of the detail page (see
 // multiwavelength.js in the site). It then talks to that page with
 // postMessage: "Close" hands back the image on screen, the fullscreen button
@@ -38,6 +42,9 @@
   var baseId = null;      // image at the bottom (1)
   var comparedId = null;   // image on top of it (2), or null
   var embedded = false;
+  var annotations = null;       // Annotations as the view rendered them, or null
+  var annotationsItem = null;   // Their tiled image, once added to the viewer
+  var annotationsShown = true;
   var ui = {};
 
   // Functions to read and use the image data from the page.
@@ -50,6 +57,11 @@
       layersById[layer.id] = layer;
     });
     return layers;
+  }
+
+  function readAnnotations() {
+    var node = document.getElementById('zoomable-annotations');
+    return node ? JSON.parse(node.textContent) : null;
   }
 
   function layerName(id) {
@@ -108,6 +120,32 @@
     });
   }
 
+  // The OpenSeadragon version on the page writes .jpg in every Zoomify tile
+  // address, and the annotation tiles are PNG. Not in tiledImages, so the
+  // crossfade, the loading and the error messages leave them alone; if they
+  // cannot be added their button is hidden.
+  function addAnnotations() {
+    var source = new OpenSeadragon.ZoomifyTileSource(tileSource(annotations));
+    var jpg = source.getTileUrl;
+    source.getTileUrl = function (level, x, y) {
+      return jpg.call(source, level, x, y).replace(/\.jpg$/, '.png');
+    };
+    viewer.addTiledImage({
+      tileSource: source,
+      x: 0,
+      y: 0,
+      width: 1,
+      opacity: annotationsShown ? 1 : 0,
+      success: function (event) {
+        annotationsItem = event.item;
+        placeTiledImages();
+      },
+      error: function () {
+        ui.annotations.hidden = true;
+      }
+    });
+  }
+
   // An image counts as shown once all the tiles of the first view it is
   // drawn in have arrived. Later zooms load more tiles without the message.
   function watchFirstDraw(id, item) {
@@ -161,6 +199,9 @@
     }
     if (comparedId !== null && tiledImages[comparedId]) {
       world.setItemIndex(tiledImages[comparedId], world.getItemCount() - 1);
+    }
+    if (annotationsItem) {
+      world.setItemIndex(annotationsItem, world.getItemCount() - 1);
     }
     viewer.forceRedraw();
   }
@@ -362,6 +403,21 @@
     }, true);
   }
 
+  // The label says whether the annotations are on screen.
+  function bindAnnotationsButton() {
+    if (!ui.annotations) {
+      return;
+    }
+    ui.annotations.addEventListener('click', function () {
+      annotationsShown = !annotationsShown;
+      ui.annotations.setAttribute('aria-pressed', annotationsShown ? 'true' : 'false');
+      ui.annotations.textContent = ui.annotations.getAttribute(annotationsShown ? 'data-label-on' : 'data-label-off');
+      if (annotationsItem) {
+        annotationsItem.setOpacity(annotationsShown ? 1 : 0);
+      }
+    });
+  }
+
   // The icon and the label say what the button does next: enter or exit.
   function showFullscreenState(active) {
     var button = ui.fullscreen;
@@ -438,6 +494,7 @@
 
   function init() {
     var layers = readLayers();
+    annotations = readAnnotations();
     var main = layers.filter(function (layer) { return layer.is_main; })[0] || layers[0];
     if (!main) {
       return;
@@ -451,6 +508,7 @@
     ui.fullscreen = document.querySelector('[data-zc-fullscreen]');
     ui.loading = document.querySelector('[data-zc-loading]');
     ui.error = document.querySelector('[data-zc-error]');
+    ui.annotations = document.querySelector('[data-zc-annotations]');
     embedded = window.parent !== window && !!document.querySelector('[data-zc-close]');
 
     baseId = idFromUrl('base') || main.id;
@@ -463,6 +521,9 @@
       viewerOpen = true;
       tiledImages[firstId] = viewer.world.getItemAt(0);
       watchFirstDraw(firstId, tiledImages[firstId]);
+      if (annotations && ui.annotations) {
+        addAnnotations();
+      }
       refresh();
     });
     viewer.addOnceHandler('open-failed', function () {
@@ -475,6 +536,7 @@
     bindSelects();
     bindZoomButtons();
     bindFullscreenButton();
+    bindAnnotationsButton();
     if (embedded) {
       bindParentMessages();
       postToParent({ type: 'mwl:ready' });
