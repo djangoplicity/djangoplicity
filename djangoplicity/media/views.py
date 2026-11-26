@@ -138,7 +138,9 @@ class ZoomableCompareDetailView( GenericDetailView ):
 
     The model needs a get_zoomable_images() method. It returns a list of
     dicts with 'image', 'title', 'label' and 'is_main', and optionally
-    'wavelength'.
+    'wavelength'. An optional get_zoomable_annotations() method returns a
+    Zoomify pyramid ('tiles_url', 'width', 'height') laid over the images,
+    or None.
 
     With ?embed=1 the page is meant to be shown in an iframe of the detail
     page of the same site: it closes instead of linking back, and it may be
@@ -185,6 +187,7 @@ class ZoomableCompareDetailView( GenericDetailView ):
         context = {
             'object': obj,
             'layers': layers,
+            'annotations': obj.get_zoomable_annotations() if hasattr( obj, 'get_zoomable_annotations' ) else None,
             'back_url': obj.get_absolute_url(),
             'embedded': self.is_embedded( request ),
         }
