@@ -854,6 +854,12 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendta
         if position == 'middle':
             position = int(v.duration_in_seconds() / 2)
 
+        # Compare the duration betweem mplayer and ffprobe
+        ffprobe_duration = Popen(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', path],
+            stdout=PIPE, stderr=PIPE, encoding='utf8').communicate()[0].strip()
+        logger.info('Thumbnail for "%s": file_duration=%s, duration of %s (ffprobe)=%s, position=%s',
+            pk, v.file_duration, fmt, ffprobe_duration, position)
+
         cmd = 'ffmpeg -ss {position} -i {input} -vframes 1 -q:v 2 -vf "format=rgb24" {output}'.format(position=position, input=path, output=output)
         if force_generation:
             cmd += ' -y' # To overwrite image
@@ -864,11 +870,18 @@ def generate_thumbnail(app_label, model_name, pk, sendtask_callback=None, sendta
         # Check output raises and error if return code of command is not zero and returns the error as a byte string
         import subprocess
         try:
-            subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+            ffmpeg_output = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+            logger.info('ffmpeg output for "%s":\n%s', pk, ffmpeg_output.decode('utf-8', errors='replace'))
         except subprocess.CalledProcessError as e:
             error = 'The command "{}" returned error: {}'.format(cmd, e.output)
             logger.warning(e)
             raise Exception(error)
+
+        # ffmpeg can exit with 0 without generating the output (e.g. when -ss is beyond the end)
+        if os.path.exists(output):
+            logger.info('Thumbnail generated for "%s": %s', pk, output)
+        else:
+            logger.warning('Thumbnail NOT generated for "%s" from format "%s" at %s seconds: %s', pk, fmt, position, output)
 
         add_admin_history(v, 'Generated thumbnail from {} at {} seconds'.format(fmt, position))  # pylint: disable=undefined-loop-variable
 
