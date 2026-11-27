@@ -380,15 +380,15 @@ class AnnotationsCompareViewTestCase( _TempMediaMixin, TestCase ):
         data = html.split( 'id="zoomable-annotations"', 1 )[1].split( '>', 1 )[1].split( '</script>', 1 )[0]
         return json.loads( data )
 
-    def test_toggle_on_with_annotations( self, *_mocks ):
+    def test_toggle_off_with_annotations( self, *_mocks ):
         self._make_pyramid()
 
         for embed in ( False, True ):
             html = self._render( embed )
 
             header = html.split( '<header class="zc-bar zc-top">', 1 )[1].split( '</header>', 1 )[0]
-            self.assertIn( 'data-zc-annotations aria-pressed="true"', header )
-            self.assertIn( '>Annotations ON</button>', header )
+            self.assertIn( 'data-zc-annotations aria-pressed="false"', header )
+            self.assertIn( '>Annotations OFF</button>', header )
             self.assertIn( 'data-label-off="Annotations OFF"', header )
             annotations = self._annotations_json( html )
             self.assertEqual( ( annotations['width'], annotations['height'] ), ( 60000, 30000 ) )

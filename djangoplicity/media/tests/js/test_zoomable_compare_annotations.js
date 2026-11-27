@@ -96,12 +96,12 @@ function load({ annotations = ANNOTATIONS, search = '' } = {}) {
     error: element(),
     zoomIn: element(), zoomOut: element(), home: element(),
     annotations: annotations ? element({
-      'aria-pressed': 'true', 'data-label-on': 'Annotations ON', 'data-label-off': 'Annotations OFF' }) : null,
+      'aria-pressed': 'false', 'data-label-on': 'Annotations ON', 'data-label-off': 'Annotations OFF' }) : null,
   };
   ui.slider.value = '0.5';
   ui.error.hidden = true;
   if (ui.annotations) {
-    ui.annotations.textContent = 'Annotations ON';
+    ui.annotations.textContent = 'Annotations OFF';
   }
   const selectors = {
     '.zc-strip': ui.strip,
@@ -185,7 +185,7 @@ test('C10/AC8: only the overlay tile addresses end in .png', () => {
   assert.strictEqual(overlay.tileSource.getTileUrl(3, 1, 2), ANNOTATIONS.tiles_url + 'TileGroup0/3-1-2.png');
   assert.strictEqual(overlay.x, 0);
   assert.strictEqual(overlay.width, 1);
-  assert.strictEqual(overlay.opacity, 1);
+  assert.strictEqual(overlay.opacity, 0);
 
   // The images keep the plain Zoomify description (OpenSeadragon writes .jpg)
   assert.strictEqual(page.viewerOptions().tileSources[0].type, 'zoomifytileservice');
@@ -203,6 +203,7 @@ test('C10/AC8: the .jpg to .png change does not leak to other Zoomify sources', 
 
 test('AC5/AC6: the overlay stays on top when image 2 is added and when the images change', () => {
   const page = load({ search: '?compare=radio' });
+  page.ui.annotations.dispatch('click');
   page.open();
 
   const overlay = page.succeed(true);
@@ -243,30 +244,30 @@ test('AC7: the button is the only thing that hides and shows the overlay', () =>
   const button = page.ui.annotations;
 
   button.dispatch('click');
-  assert.strictEqual(button.getAttribute('aria-pressed'), 'false');
-  assert.strictEqual(button.textContent, 'Annotations OFF');
-  assert.strictEqual(overlay.opacity, 0);
+  assert.strictEqual(button.getAttribute('aria-pressed'), 'true');
+  assert.strictEqual(button.textContent, 'Annotations ON');
+  assert.strictEqual(overlay.opacity, 1);
 
-  // Crossfade and image changes leave it hidden
+  // Crossfade and image changes leave it shown
   page.ui.slider.value = '0.9';
   page.ui.slider.dispatch('input');
   page.ui.selectBase.value = 'radio';
   page.ui.selectBase.dispatch('change');
-  assert.strictEqual(overlay.opacity, 0);
+  assert.strictEqual(overlay.opacity, 1);
 
   button.dispatch('click');
-  assert.strictEqual(button.getAttribute('aria-pressed'), 'true');
-  assert.strictEqual(button.textContent, 'Annotations ON');
-  assert.strictEqual(overlay.opacity, 1);
+  assert.strictEqual(button.getAttribute('aria-pressed'), 'false');
+  assert.strictEqual(button.textContent, 'Annotations OFF');
+  assert.strictEqual(overlay.opacity, 0);
 });
 
-test('AC7: turned off before the overlay loads, it is added hidden', () => {
+test('AC7: turned on before the overlay loads, it is added visible', () => {
   const page = load();
   page.ui.annotations.dispatch('click');   // before the viewer opens
   page.open();
   const overlay = page.succeed(true);
-  assert.strictEqual(overlay.opacity, 0);
-  assert.strictEqual(page.ui.annotations.getAttribute('aria-pressed'), 'false');
+  assert.strictEqual(overlay.opacity, 1);
+  assert.strictEqual(page.ui.annotations.getAttribute('aria-pressed'), 'true');
 });
 
 test('AC11/P6: if the overlay cannot be added, the button is hidden and no error is shown', () => {
