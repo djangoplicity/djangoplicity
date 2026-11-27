@@ -6,7 +6,9 @@
 // the gallery is a shortcut to pick image 2.
 //
 // The page opens with ?base=<id> as image 1 (or the main image if there is
-// no base). ?compare=<id> is optional and opens with that image as image 2.
+// no base). ?compare=<id> is optional and opens with that image as image 2;
+// without it image 2 is the next image of the gallery, or the previous one if
+// image 1 is the last.
 //
 // All images are in the same OpenSeadragon viewer, so they have the same
 // zoom and position. Every image has x=0 and width 1, so images with the
@@ -18,7 +20,8 @@
 //
 // If the page has annotations (a Zoomify pyramid with transparent PNG
 // tiles), they are one more tiled image, always on top of image 1 and 2 and
-// not part of the crossfade: only their button shows or hides them.
+// not part of the crossfade: only their button shows or hides them. They
+// start hidden.
 //
 // With ?embed=1 the page is in an iframe of the detail page (see
 // multiwavelength.js in the site). It then talks to that page with
@@ -35,6 +38,7 @@
   var viewerOpen = false;
   // The five objects below are keyed by image id.
   var layersById = {};     // Layers as the view rendered them
+  var layerIds = [];       // Their ids in the order of the gallery
   var tiledImages = {};    // Tiled images already added to the viewer
   var loading = {};        // Images whose tiled image is still being added
   var shown = {};          // Images whose first tiles have been drawn
@@ -44,7 +48,7 @@
   var embedded = false;
   var annotations = null;       // Annotations as the view rendered them, or null
   var annotationsItem = null;   // Their tiled image, once added to the viewer
-  var annotationsShown = true;
+  var annotationsShown = false;
   var ui = {};
 
   // Functions to read and use the image data from the page.
@@ -55,6 +59,7 @@
     layers.forEach(function (layer) {
       layer.id = String(layer.id);   // data-id attributes are strings
       layersById[layer.id] = layer;
+      layerIds.push(layer.id);
     });
     return layers;
   }
@@ -240,7 +245,7 @@
       return;
     }
     baseId = base;
-    setCompared(compared && compared !== base && layersById[compared] ? compared : null);
+    setCompared(pickCompared(base, compared));
     revealThumb(baseId);
   }
 
@@ -492,6 +497,22 @@
     return id && layersById[id] ? id : null;
   }
 
+  // Image 2 when none is asked for: the next image of the gallery, or the
+  // previous one if the base is the last. Null with a single image.
+  function defaultCompared(base) {
+    var index = layerIds.indexOf(base);
+    return layerIds[index + 1] || layerIds[index - 1] || null;
+  }
+
+  // Image 2 for a base: the one asked for if it exists and is not the base
+  // itself, otherwise the default.
+  function pickCompared(base, compared) {
+    if (compared && compared !== base && layersById[compared]) {
+      return compared;
+    }
+    return defaultCompared(base);
+  }
+
   function init() {
     var layers = readLayers();
     annotations = readAnnotations();
@@ -512,8 +533,7 @@
     embedded = window.parent !== window && !!document.querySelector('[data-zc-close]');
 
     baseId = idFromUrl('base') || main.id;
-    var compared = idFromUrl('compare');
-    comparedId = compared !== baseId ? compared : null;
+    comparedId = pickCompared(baseId, idFromUrl('compare'));
 
     viewer = createViewer(layersById[baseId]);
     var firstId = baseId;

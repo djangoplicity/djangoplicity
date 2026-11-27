@@ -398,8 +398,8 @@ analytics, etc. in the extra_head block.
         </button>
         {% if annotations %}
         {# zoomable_compare.js hides it if the annotations cannot be loaded #}
-        <button type="button" class="zc-btn" data-zc-annotations aria-pressed="true"
-                data-label-on="{% trans 'Annotations ON' %}" data-label-off="{% trans 'Annotations OFF' %}">{% trans "Annotations ON" %}</button>
+        <button type="button" class="zc-btn" data-zc-annotations aria-pressed="false"
+                data-label-on="{% trans 'Annotations ON' %}" data-label-off="{% trans 'Annotations OFF' %}">{% trans "Annotations OFF" %}</button>
         {% endif %}
     </header>
 
